@@ -13,5 +13,6 @@ coverage.xml
 node_modules/
 dist/
 build/
+.worktrees/
 .DS_Store
 Thumbs.db
