@@ -11,7 +11,7 @@
 
 ## 코덱스에서 이어가기
 
-1. 코덱스에서 `C:\WORK\WORK\claim-ledger` 폴더를 엽니다.
+1. 코덱스에서 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1` 폴더를 엽니다.
 2. [AGENTS.md](AGENTS.md)를 먼저 읽습니다.
 3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 현재 상태와 첫 작업을 확인합니다.
 4. [Phase 0 구현 계획](docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md)을 순서대로 실행합니다.

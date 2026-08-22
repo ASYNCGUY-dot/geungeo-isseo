@@ -2,7 +2,7 @@
 
 - 기준 시각: 2026-08-22 Asia/Seoul
 - 상태: 기획 확정, 애플리케이션 구현 전
-- 다음 작업 위치: `C:\WORK\WORK\claim-ledger`
+- 다음 작업 위치: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
 
 ## 확정된 결정
 
@@ -68,7 +68,7 @@
 ## 관련 경로
 
 - 복습 저장소: `C:\WORK\WORK\donga-review`
-- 프로젝트 저장소: `C:\WORK\WORK\claim-ledger`
+- 프로젝트 저장소: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
 - AI Agent Wiki: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
 - 위키 데이터 실측: `AI-Sessions/wiki/sources/건기식-프로젝트-데이터소스-실측.md`
 - 위키 프로젝트 결정: `AI-Sessions/wiki/decisions/3차-프로젝트-주제-검토-2026-08-22.md`
