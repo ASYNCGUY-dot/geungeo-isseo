@@ -69,10 +69,12 @@ def render_report(
     )
     lines.extend(
         (
+            "- API result code: `INFO-000`",
             f"- API total count: `{total_count}`",
             f"- Fetched count: `{audit.record_count}`",
             f"- Unique official report numbers: `{audit.unique_report_count}`",
             f"- Duplicate official report numbers: `{audit.duplicate_report_count}`",
+            f"- Phase 0 decision: `{'CONTINUE_PRODUCT_MVP' if status == 'PASS' else 'LIMIT_TO_USER_SUPPLIED_LABELS'}`",
             "",
             "## Field completeness",
             "",
@@ -110,7 +112,14 @@ def main() -> int:
         identity_missing = (
             audit.missing_name_count + audit.missing_company_count > 0
         )
-        status = "PASS" if not identity_missing and audit.duplicate_report_count == 0 else "LIMITED"
+        candidate_coverage_missing = any(count < 1 for count in audit.candidate_counts.values())
+        status = (
+            "PASS"
+            if not identity_missing
+            and audit.duplicate_report_count == 0
+            and not candidate_coverage_missing
+            else "LIMITED"
+        )
         write_report(
             render_report(
                 retrieved_at=retrieved_at,
