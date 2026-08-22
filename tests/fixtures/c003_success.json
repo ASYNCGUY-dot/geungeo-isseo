@@ -1,0 +1,24 @@
+{
+  "C003": {
+    "RESULT": {"MSG": "정상처리되었습니다.", "CODE": "INFO-000"},
+    "total_count": "2",
+    "row": [
+      {
+        "PRDLST_REPORT_NO": "TEST-0001",
+        "PRDLST_NM": "루테인 테스트 제품 A",
+        "BSSH_NM": "테스트 제조사 A",
+        "PRIMARY_FNCLTY": "눈 건강에 도움을 줄 수 있음",
+        "RAWMTRL_NM": "루테인지아잔틴복합추출물",
+        "NTK_MTHD": "1일 1회, 1회 1캡슐"
+      },
+      {
+        "PRDLST_REPORT_NO": "TEST-0002",
+        "PRDLST_NM": "오메가3 테스트 제품 B",
+        "BSSH_NM": "테스트 제조사 B",
+        "PRIMARY_FNCLTY": "혈중 중성지질 개선에 도움을 줄 수 있음",
+        "RAWMTRL_NM": "EPA 및 DHA 함유 유지",
+        "NTK_MTHD": "1일 1회, 1회 2캡슐"
+      }
+    ]
+  }
+}
