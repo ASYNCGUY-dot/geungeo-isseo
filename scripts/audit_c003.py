@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import argparse
+import json
 import os
+import tempfile
+from collections.abc import Iterable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -9,6 +13,14 @@ from claimledger.errors import DataSourceError
 from claimledger.sources.food_safety import C003Client, CoverageAudit, audit_products
 
 REPORT_PATH = Path(__file__).parents[1] / "docs" / "evidence" / "C003_COVERAGE_REPORT.md"
+EXPORT_FIELDS = (
+    "report_no",
+    "name",
+    "company",
+    "primary_function",
+    "raw_materials",
+    "intake_method",
+)
 
 
 def fetch_all_products(client: C003Client) -> tuple[int, list[ProductCandidate]]:
@@ -102,12 +114,52 @@ def write_report(content: str) -> None:
     REPORT_PATH.write_text(content, encoding="utf-8")
 
 
+def write_products_jsonl(
+    products: Iterable[ProductCandidate], output_path: Path
+) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            dir=output_path.parent,
+            prefix=f".{output_path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+            for product in products:
+                row = {field: getattr(product, field) for field in EXPORT_FIELDS}
+                handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")))
+                handle.write("\n")
+        temporary_path.replace(output_path)
+    except BaseException:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+        raise
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Audit Food Safety Korea C003 products")
+    parser.add_argument(
+        "--export-products",
+        type=Path,
+        help="write the six approved review fields to a local UTF-8 JSONL file",
+    )
+    return parser.parse_args(argv)
+
+
 def main() -> int:
+    args = parse_args()
     retrieved_at = datetime.now(UTC)
-    api_key = os.environ.get("FOODSAFETY_API_KEY", "")
+    api_key = os.environ.get("FOOD_SAFETY_API_KEY", "")
     try:
         client = C003Client(api_key=api_key)
         total_count, products = fetch_all_products(client)
+        if args.export_products is not None:
+            write_products_jsonl(products, args.export_products)
         audit = audit_products(products)
         identity_missing = (
             audit.missing_name_count + audit.missing_company_count > 0

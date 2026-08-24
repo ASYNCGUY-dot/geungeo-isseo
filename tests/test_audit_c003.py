@@ -1,7 +1,14 @@
+import json
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
 
+import pytest
+
+from claimledger.domain import ProductCandidate
 from claimledger.sources.food_safety import CoverageAudit
-from scripts.audit_c003 import render_report
+from scripts import audit_c003
+from scripts.audit_c003 import parse_args, render_report, write_products_jsonl
 
 
 def test_success_report_preserves_api_code_and_phase_decision() -> None:
@@ -30,3 +37,76 @@ def test_success_report_preserves_api_code_and_phase_decision() -> None:
 
     assert "API result code: `INFO-000`" in report
     assert "Phase 0 decision: `CONTINUE_PRODUCT_MVP`" in report
+
+
+def test_export_products_jsonl_contains_only_approved_review_fields(tmp_path: Path) -> None:
+    output_path = tmp_path / "c003-products.jsonl"
+    product = ProductCandidate(
+        report_no="TEST-0001",
+        name="테스트 제품",
+        company="테스트 회사",
+        primary_function="눈 건강에 도움을 줄 수 있음",
+        raw_materials="루테인",
+        intake_method="하루 1회",
+        source_id="C003",
+        retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
+    )
+
+    write_products_jsonl((product,), output_path)
+
+    raw_export = output_path.read_text(encoding="utf-8")
+    exported = json.loads(raw_export)
+    assert exported == {
+        "report_no": "TEST-0001",
+        "name": "테스트 제품",
+        "company": "테스트 회사",
+        "primary_function": "눈 건강에 도움을 줄 수 있음",
+        "raw_materials": "루테인",
+        "intake_method": "하루 1회",
+    }
+    assert "local-c003-api-key-must-not-leak" not in raw_export
+    assert "C003" not in raw_export
+    assert "RESULT" not in raw_export
+    assert "total_count" not in raw_export
+    assert "source_id" not in raw_export
+    assert "retrieved_at" not in raw_export
+
+
+def test_cli_accepts_the_documented_export_products_path() -> None:
+    args = parse_args(["--export-products", r"data\c003-products.jsonl"])
+
+    assert args.export_products == Path(r"data\c003-products.jsonl")
+
+
+def test_cli_export_products_writes_the_redacted_dataset(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output_path = tmp_path / "data" / "c003-products.jsonl"
+    product = ProductCandidate(
+        report_no="TEST-0001",
+        name="테스트 제품",
+        company="테스트 회사",
+        primary_function="눈 건강에 도움을 줄 수 있음",
+        raw_materials="루테인",
+        intake_method="하루 1회",
+        source_id="C003",
+        retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
+    )
+
+    def fetch_one_product(client: object) -> tuple[int, list[ProductCandidate]]:
+        del client
+        return 1, [product]
+
+    monkeypatch.setattr(audit_c003, "REPORT_PATH", tmp_path / "coverage-report.md")
+    monkeypatch.setattr(audit_c003, "fetch_all_products", fetch_one_product)
+    monkeypatch.setenv("FOOD_SAFETY_API_KEY", "test-only-placeholder")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["audit_c003.py", "--export-products", str(output_path)],
+    )
+
+    assert audit_c003.main() == 0
+    assert json.loads(output_path.read_text(encoding="utf-8"))[
+        "report_no"
+    ] == "TEST-0001"

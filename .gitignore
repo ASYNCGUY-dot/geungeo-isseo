@@ -13,6 +13,7 @@ coverage.xml
 node_modules/
 dist/
 build/
+/data/c003-products.jsonl
 .worktrees/
 .DS_Store
 Thumbs.db
