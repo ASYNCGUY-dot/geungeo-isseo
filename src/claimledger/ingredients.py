@@ -17,6 +17,8 @@ _SOURCE_FIELDS: tuple[IngredientSourceField, ...] = (
 )
 _REQUIRED_OFFICIAL_FIELDS = ("primary_function", "raw_materials")
 _FLAVOR_SUFFIXES = ("맛", "향", "flavor", "flavour")
+_ABSENCE_PREFIXES = ("non", "without")
+_ABSENCE_SUFFIXES = ("free", "없음", "무첨가")
 _ALIASES: dict[IngredientGroup, tuple[str, ...]] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: (
         "루테인지아잔틴복합추출물",
@@ -45,12 +47,20 @@ _ALIASES: dict[IngredientGroup, tuple[str, ...]] = {
 
 
 def _alias_pattern(alias: str) -> re.Pattern[str]:
-    return re.compile(re.escape(alias), re.IGNORECASE)
+    escaped_alias = re.escape(alias)
+    if alias.isascii():
+        return re.compile(f"(?<![A-Za-z0-9]){escaped_alias}(?![A-Za-z0-9])", re.IGNORECASE)
+    return re.compile(escaped_alias, re.IGNORECASE)
 
 
-def _is_flavor_context(text: str, match_end: int) -> bool:
+def _is_disallowed_context(text: str, match_start: int, match_end: int) -> bool:
+    preceding_text = text[:match_start].rstrip(" -").casefold()
     following_text = text[match_end:].lstrip(" -").casefold()
-    return following_text.startswith(_FLAVOR_SUFFIXES)
+    return (
+        preceding_text.endswith(_ABSENCE_PREFIXES)
+        or following_text.startswith(_FLAVOR_SUFFIXES)
+        or following_text.startswith(_ABSENCE_SUFFIXES)
+    )
 
 
 def _find_matches(
@@ -61,7 +71,7 @@ def _find_matches(
     for alias in _ALIASES[group]:
         for match in _alias_pattern(alias).finditer(text):
             span = match.span()
-            if _is_flavor_context(text, match.end()) or any(
+            if _is_disallowed_context(text, match.start(), match.end()) or any(
                 start < span[1] and span[0] < end for start, end in occupied_spans
             ):
                 continue

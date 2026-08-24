@@ -95,6 +95,23 @@ def test_english_flavor_prose_is_not_an_ingredient_alias() -> None:
     assert mapping.groups == ()
 
 
+@pytest.mark.parametrize("raw_materials", ["luteinase", "omega30", "coq10ase"])
+def test_english_alias_substrings_do_not_map_compound_words(raw_materials: str) -> None:
+    mapping = map_ingredients(product(raw_materials=raw_materials))
+
+    assert mapping.status is MappingStatus.AMBIGUOUS
+    assert mapping.groups == ()
+    assert mapping.evidence == ()
+
+
+def test_probiotic_free_is_not_positive_ingredient_evidence() -> None:
+    mapping = map_ingredients(product(raw_materials="probiotic-free"))
+
+    assert mapping.status is MappingStatus.AMBIGUOUS
+    assert mapping.groups == ()
+    assert mapping.evidence == ()
+
+
 @pytest.mark.parametrize(
     ("raw_materials", "group"),
     [
