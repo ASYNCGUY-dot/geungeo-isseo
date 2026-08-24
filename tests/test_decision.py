@@ -71,6 +71,22 @@ def test_product_specific_evidence_must_match_report_number() -> None:
     )
 
 
+def test_mismatched_non_supporting_product_evidence_prevents_confirmation() -> None:
+    mismatched_non_supporting = SUPPORTING_EVIDENCE.model_copy(
+        update={"product_report_no": "TEST-9999", "supports_claim": False}
+    )
+
+    assert (
+        decide_supported_claim(
+            CLAIM,
+            CONFIRMED_PRODUCT,
+            [SUPPORTING_EVIDENCE, mismatched_non_supporting],
+            READY_BUNDLE,
+        )
+        is Verdict.UNVERIFIABLE
+    )
+
+
 def test_ready_bundle_must_match_confirmed_product_report_number() -> None:
     conflicting_bundle = READY_BUNDLE.model_copy(update={"report_no": "TEST-9999"})
 
@@ -80,6 +96,47 @@ def test_ready_bundle_must_match_confirmed_product_report_number() -> None:
             CONFIRMED_PRODUCT,
             [SUPPORTING_EVIDENCE],
             conflicting_bundle,
+        )
+
+
+def test_rebadged_bundle_for_another_report_cannot_confirm() -> None:
+    other_product = PRODUCT.model_copy(
+        update={
+            "report_no": "TEST-0002",
+            "name": "다른 루테인 제품",
+            "company": "다른 제조사",
+        }
+    )
+    other_confirmed_product = ConfirmedProduct(
+        product=other_product,
+        confirmed_by_user=True,
+    )
+    other_supporting_evidence = SUPPORTING_EVIDENCE.model_copy(
+        update={"product_report_no": "TEST-0002"}
+    )
+    rebadged_bundle = READY_BUNDLE.model_copy(update={"report_no": "TEST-0002"})
+
+    with pytest.raises(DecisionInvariantError, match="REPORT_NUMBER_CONFLICT"):
+        decide_supported_claim(
+            CLAIM,
+            other_confirmed_product,
+            [other_supporting_evidence],
+            rebadged_bundle,
+        )
+
+
+def test_bundle_snapshot_must_match_every_confirmed_product_source_field() -> None:
+    altered_product = PRODUCT.model_copy(update={"company": "다른 제조사"})
+    altered_bundle = build_product_evidence(
+        ConfirmedProduct(product=altered_product, confirmed_by_user=True)
+    )
+
+    with pytest.raises(DecisionInvariantError, match="PRODUCT_SNAPSHOT_CONFLICT"):
+        decide_supported_claim(
+            CLAIM,
+            CONFIRMED_PRODUCT,
+            [SUPPORTING_EVIDENCE],
+            altered_bundle,
         )
 
 

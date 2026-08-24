@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -33,6 +33,7 @@ def test_confirmed_product_with_complete_official_data_builds_ready_bundle() -> 
     bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
 
     assert bundle.status is ProductEvidenceStatus.READY
+    assert bundle.product_snapshot.model_dump() == CORE_PRODUCT.model_dump()
     assert bundle.report_no == CONFIRMED_CORE_PRODUCT.product.report_no
     assert bundle.ingredient_mapping.status is MappingStatus.VERIFIED
     assert all(
@@ -142,6 +143,81 @@ def test_readiness_guard_recomputes_structural_readiness() -> None:
 
     with pytest.raises(DecisionInvariantError, match="AMBIGUOUS_INGREDIENT_MAPPING"):
         require_product_evidence_ready(forged_ready_bundle)
+
+
+def test_verified_mapping_with_empty_contents_cannot_be_forged_ready() -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    empty_verified_mapping = bundle.ingredient_mapping.model_copy(
+        update={"groups": (), "evidence": ()}
+    )
+    forged_bundle = bundle.model_copy(
+        update={"ingredient_mapping": empty_verified_mapping}
+    )
+
+    with pytest.raises(
+        DecisionInvariantError, match="INVALID_VERIFIED_INGREDIENT_MAPPING"
+    ):
+        require_product_evidence_ready(forged_bundle)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("source_ids", ("C003", "MFDS")),
+        ("source_timestamps", (NOW, NOW + timedelta(seconds=1))),
+    ],
+)
+def test_altered_aggregate_provenance_cannot_be_forged_ready(
+    field: str, value: tuple[object, ...]
+) -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    forged_bundle = bundle.model_copy(update={field: value})
+
+    with pytest.raises(DecisionInvariantError, match="SOURCE_PROVENANCE_CONFLICT"):
+        require_product_evidence_ready(forged_bundle)
+
+
+def test_altered_official_function_contents_cannot_be_forged_ready() -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    altered_statement = bundle.official_functions[0].model_copy(
+        update={"original_text": "변조된 공식 기능 문구"}
+    )
+    forged_bundle = bundle.model_copy(update={"official_functions": (altered_statement,)})
+
+    with pytest.raises(DecisionInvariantError, match="OFFICIAL_FUNCTION_CONFLICT"):
+        require_product_evidence_ready(forged_bundle)
+
+
+def test_altered_official_caution_contents_cannot_be_forged_ready() -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    altered_caution = bundle.official_cautions[0].model_copy(
+        update={"original_text": "변조된 섭취 주의 문구"}
+    )
+    forged_bundle = bundle.model_copy(
+        update={"official_cautions": (altered_caution, *bundle.official_cautions[1:])}
+    )
+
+    with pytest.raises(DecisionInvariantError, match="OFFICIAL_CAUTION_CONFLICT"):
+        require_product_evidence_ready(forged_bundle)
+
+
+def test_altered_safety_signal_contents_cannot_be_forged_ready() -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    altered_signal = bundle.safety_signals[0].model_copy(
+        update={"message": "변조된 안전 문구"}
+    )
+    forged_bundle = bundle.model_copy(update={"safety_signals": (altered_signal,)})
+
+    with pytest.raises(DecisionInvariantError, match="SAFETY_SIGNAL_CONFLICT"):
+        require_product_evidence_ready(forged_bundle)
+
+
+def test_raw_string_status_raises_stable_domain_error() -> None:
+    bundle = build_product_evidence(CONFIRMED_CORE_PRODUCT)
+    forged_bundle = bundle.model_copy(update={"status": "ready"})
+
+    with pytest.raises(DecisionInvariantError, match="INVALID_STATUS"):
+        require_product_evidence_ready(forged_bundle)
 
 
 def test_readiness_guard_accepts_only_a_ready_bundle() -> None:
