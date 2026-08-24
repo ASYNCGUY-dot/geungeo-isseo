@@ -108,8 +108,7 @@ def _caution_status(source_text: str) -> OfficialFieldStatus:
     return OfficialFieldStatus.UNVERIFIABLE
 
 
-def extract_official_cautions(product: ProductCandidate) -> tuple[OfficialProductCaution, ...]:
-    source_text = product.intake_method
+def _extract_intake_cautions(source_text: str) -> tuple[OfficialProductCaution, ...]:
     segments = _split_reviewed_segments(source_text) if source_text.strip() else (source_text,)
     if segments is None:
         return (
@@ -120,7 +119,7 @@ def extract_official_cautions(product: ProductCandidate) -> tuple[OfficialProduc
                 parser_version=CAUTION_PARSER_VERSION,
             ),
         )
-    cautions = [
+    return tuple(
         OfficialProductCaution(
             status=_caution_status(segment),
             source_field="intake_method",
@@ -128,17 +127,28 @@ def extract_official_cautions(product: ProductCandidate) -> tuple[OfficialProduc
             parser_version=CAUTION_PARSER_VERSION,
         )
         for segment in segments
-    ]
-    if any(marker in product.raw_materials for marker in _RAW_MATERIAL_CAUTION_MARKERS):
-        cautions.append(
-            OfficialProductCaution(
-                status=OfficialFieldStatus.VERIFIED,
-                source_field="raw_materials",
-                original_text=product.raw_materials,
-                parser_version=CAUTION_PARSER_VERSION,
-            )
-        )
-    return tuple(cautions)
+    )
+
+
+def _extract_raw_material_caution(source_text: str) -> OfficialProductCaution:
+    if not source_text.strip():
+        status = OfficialFieldStatus.MISSING
+    elif any(marker in source_text for marker in _RAW_MATERIAL_CAUTION_MARKERS):
+        status = OfficialFieldStatus.VERIFIED
+    else:
+        status = OfficialFieldStatus.UNVERIFIABLE
+    return OfficialProductCaution(
+        status=status,
+        source_field="raw_materials",
+        original_text=source_text,
+        parser_version=CAUTION_PARSER_VERSION,
+    )
+
+
+def extract_official_cautions(product: ProductCandidate) -> tuple[OfficialProductCaution, ...]:
+    return _extract_intake_cautions(product.intake_method) + (
+        _extract_raw_material_caution(product.raw_materials),
+    )
 
 
 __all__ = [

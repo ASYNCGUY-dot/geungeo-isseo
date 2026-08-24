@@ -135,6 +135,54 @@ def test_caution_extraction_uses_reviewed_raw_material_allergen_text() -> None:
     assert raw_material_cautions[0].original_text == source_text
 
 
+def test_malformed_intake_does_not_suppress_recognized_raw_material_evidence() -> None:
+    raw_materials = "정제어유, 대두 함유"
+    intake_method = "1일 1회;"
+
+    cautions = extract_official_cautions(
+        product(raw_materials=raw_materials, intake_method=intake_method)
+    )
+
+    assert [(caution.source_field, caution.status, caution.original_text) for caution in cautions] == [
+        ("intake_method", OfficialFieldStatus.UNVERIFIABLE, intake_method),
+        ("raw_materials", OfficialFieldStatus.VERIFIED, raw_materials),
+    ]
+
+
+def test_blank_intake_keeps_missing_status_alongside_recognized_raw_material_evidence() -> None:
+    raw_materials = "정제어유, 대두 함유"
+
+    cautions = extract_official_cautions(product(intake_method="", raw_materials=raw_materials))
+
+    assert [(caution.source_field, caution.status, caution.original_text) for caution in cautions] == [
+        ("intake_method", OfficialFieldStatus.MISSING, ""),
+        ("raw_materials", OfficialFieldStatus.VERIFIED, raw_materials),
+    ]
+
+
+def test_blank_raw_materials_remain_explicitly_missing() -> None:
+    intake_method = "의약품 복용 시 전문가와 상담하십시오."
+
+    cautions = extract_official_cautions(product(intake_method=intake_method, raw_materials=""))
+
+    assert [(caution.source_field, caution.status, caution.original_text) for caution in cautions] == [
+        ("intake_method", OfficialFieldStatus.VERIFIED, intake_method),
+        ("raw_materials", OfficialFieldStatus.MISSING, ""),
+    ]
+
+
+def test_unrecognized_raw_material_text_remains_unverifiable() -> None:
+    raw_materials = "정제어유, 천연향료"
+
+    cautions = extract_official_cautions(product(raw_materials=raw_materials))
+
+    raw_material_cautions = [
+        caution for caution in cautions if caution.source_field == "raw_materials"
+    ]
+    assert raw_material_cautions[0].status is OfficialFieldStatus.UNVERIFIABLE
+    assert raw_material_cautions[0].original_text == raw_materials
+
+
 def test_unknown_caution_text_is_unverifiable_not_rewritten() -> None:
     source_text = "맛있게 드십시오."
 
