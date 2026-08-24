@@ -1,5 +1,6 @@
 import json
 import sys
+from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -70,6 +71,38 @@ def test_export_products_jsonl_contains_only_approved_review_fields(tmp_path: Pa
     assert "total_count" not in raw_export
     assert "source_id" not in raw_export
     assert "retrieved_at" not in raw_export
+
+
+def test_interrupted_export_preserves_destination_and_cleans_ignored_staging(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output_path = tmp_path / "data" / "c003-products.jsonl"
+    staging_dir = tmp_path / "build" / "c003-export"
+    output_path.parent.mkdir(parents=True)
+    output_path.write_text("previous-export\n", encoding="utf-8")
+    product = ProductCandidate(
+        report_no="TEST-0001",
+        name="테스트 제품",
+        company="테스트 회사",
+        primary_function="눈 건강에 도움을 줄 수 있음",
+        raw_materials="루테인",
+        intake_method="하루 1회",
+        source_id="C003",
+        retrieved_at=datetime(2026, 8, 24, tzinfo=UTC),
+    )
+
+    def interrupted_products() -> Iterator[ProductCandidate]:
+        yield product
+        assert len(tuple(staging_dir.glob("*.tmp"))) == 1
+        raise RuntimeError("interrupted export")
+
+    monkeypatch.setattr(audit_c003, "EXPORT_STAGING_DIR", staging_dir)
+
+    with pytest.raises(RuntimeError, match="interrupted export"):
+        write_products_jsonl(interrupted_products(), output_path)
+
+    assert output_path.read_text(encoding="utf-8") == "previous-export\n"
+    assert not staging_dir.exists()
 
 
 def test_cli_accepts_the_documented_export_products_path() -> None:

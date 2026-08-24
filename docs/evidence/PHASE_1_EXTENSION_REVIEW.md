@@ -14,7 +14,11 @@
 The local export path is `data/c003-products.jsonl`. Git ignores only this exact
 generated dataset path; the rest of `data/` remains eligible for intentionally
 redacted fixtures. Generated review files remain ignored under the existing
-`build/` rule.
+`build/` rule. Export writes are staged under `build/c003-export/`, which is on
+the same project volume and already ignored by that rule, before `os.replace`
+atomically replaces the final ignored JSONL path. Normal failures remove their
+temporary file and clean the staging directory when it is empty; crash remnants
+remain ignored under `build/`.
 
 Each exported JSONL object is limited to these six fields:
 

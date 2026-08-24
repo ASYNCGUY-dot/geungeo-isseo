@@ -13,6 +13,7 @@ from claimledger.errors import DataSourceError
 from claimledger.sources.food_safety import C003Client, CoverageAudit, audit_products
 
 REPORT_PATH = Path(__file__).parents[1] / "docs" / "evidence" / "C003_COVERAGE_REPORT.md"
+EXPORT_STAGING_DIR = Path(__file__).parents[1] / "build" / "c003-export"
 EXPORT_FIELDS = (
     "report_no",
     "name",
@@ -118,13 +119,14 @@ def write_products_jsonl(
     products: Iterable[ProductCandidate], output_path: Path
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    EXPORT_STAGING_DIR.mkdir(parents=True, exist_ok=True)
     temporary_path: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(
             mode="w",
             encoding="utf-8",
             newline="\n",
-            dir=output_path.parent,
+            dir=EXPORT_STAGING_DIR,
             prefix=f".{output_path.name}.",
             suffix=".tmp",
             delete=False,
@@ -134,11 +136,16 @@ def write_products_jsonl(
                 row = {field: getattr(product, field) for field in EXPORT_FIELDS}
                 handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")))
                 handle.write("\n")
-        temporary_path.replace(output_path)
+        os.replace(temporary_path, output_path)
     except BaseException:
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
         raise
+    finally:
+        try:
+            EXPORT_STAGING_DIR.rmdir()
+        except OSError:
+            pass
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
