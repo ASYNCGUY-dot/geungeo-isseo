@@ -1,6 +1,16 @@
-from collections.abc import Sequence
+import hashlib
+import json
+from collections.abc import Iterable
 
-from claimledger.domain import Claim, ConfirmedProduct, EvidenceRecord, Verdict
+from pydantic import ValidationError
+
+from claimledger.domain import (
+    CLAIM_FINGERPRINT_VERSION,
+    Claim,
+    ClaimSupportRecord,
+    ConfirmedProduct,
+    Verdict,
+)
 from claimledger.errors import DecisionInvariantError
 from claimledger.identity import require_confirmed_product
 from claimledger.product_evidence import (
@@ -10,25 +20,45 @@ from claimledger.product_evidence import (
 )
 
 
+def claim_fingerprint(claim: Claim) -> str:
+    payload = json.dumps(
+        (
+            CLAIM_FINGERPRINT_VERSION,
+            claim.original_text,
+            claim.normalized_subject,
+        ),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return f"{CLAIM_FINGERPRINT_VERSION}:{hashlib.sha256(payload).hexdigest()}"
+
+
 def decide_supported_claim(
     claim: Claim,
     product: ConfirmedProduct | None,
-    evidence: Sequence[EvidenceRecord],
+    evidence: Iterable[ClaimSupportRecord],
     product_evidence: ProductEvidenceBundle,
 ) -> Verdict:
-    del claim
     confirmed_product = require_confirmed_product(product)
     report_no = confirmed_product.product.report_no
-    if any(
-        record.product_report_no is not None and record.product_report_no != report_no
-        for record in evidence
-    ):
+
+    try:
+        validated_claim = Claim.model_validate(claim.model_dump(warnings=False))
+        support_records = tuple(
+            ClaimSupportRecord.model_validate(record.model_dump(warnings=False))
+            for record in evidence
+        )
+    except (AttributeError, TypeError, ValueError, ValidationError):
         return Verdict.UNVERIFIABLE
-    if not evidence:
+    if not support_records:
         return Verdict.UNVERIFIABLE
 
-    supporting_evidence = [record for record in evidence if record.supports_claim]
-    if not supporting_evidence:
+    fingerprint = claim_fingerprint(validated_claim)
+    if any(
+        record.claim_fingerprint != fingerprint
+        or record.confirmed_product_report_no != report_no
+        for record in support_records
+    ):
         return Verdict.UNVERIFIABLE
 
     require_product_evidence_ready(product_evidence)

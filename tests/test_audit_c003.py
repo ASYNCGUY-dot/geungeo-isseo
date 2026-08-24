@@ -5,8 +5,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
-from claimledger.domain import ProductCandidate
+from claimledger.domain import ExtensionReviewProduct, ProductCandidate
 from claimledger.sources.food_safety import CoverageAudit
 from scripts import audit_c003
 from scripts.audit_c003 import parse_args, render_report, write_products_jsonl
@@ -71,6 +72,39 @@ def test_export_products_jsonl_contains_only_approved_review_fields(tmp_path: Pa
     assert "total_count" not in raw_export
     assert "source_id" not in raw_export
     assert "retrieved_at" not in raw_export
+
+
+@pytest.mark.parametrize(
+    "source_less_product",
+    [
+        ExtensionReviewProduct(
+            report_no="TEST-0001",
+            name="테스트 제품",
+            company="테스트 회사",
+            primary_function="눈 건강에 도움을 줄 수 있음",
+            raw_materials="루테인",
+            intake_method="하루 1회",
+        ),
+        ProductCandidate.model_construct(
+            report_no="TEST-0001",
+            name="테스트 제품",
+            company="테스트 회사",
+            primary_function="눈 건강에 도움을 줄 수 있음",
+            raw_materials="루테인",
+            intake_method="하루 1회",
+        ),
+    ],
+)
+def test_export_rejects_products_without_validated_c003_provenance(
+    tmp_path: Path,
+    source_less_product: object,
+) -> None:
+    output_path = tmp_path / "c003-products.jsonl"
+
+    with pytest.raises(ValidationError):
+        write_products_jsonl((source_less_product,), output_path)
+
+    assert not output_path.exists()
 
 
 def test_interrupted_export_preserves_destination_and_cleans_ignored_staging(

@@ -8,7 +8,7 @@
 
 ## 현재 검증 결과
 
-깨끗한 작업 트리에서 다음 명령을 새로 실행했다.
+본 문서와 final-fix 대상 tracked diff에 대해 다음 명령을 새로 실행했다.
 
 ```cmd
 .venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
@@ -17,11 +17,12 @@ git diff --check
 git status --short --branch
 ```
 
-- 전체 테스트: `182 passed`
-- 전체 커버리지: `96%` (`802` statements, `34` missed)
+- 전체 테스트: `203 passed`
+- 전체 커버리지: `96%` (`840` statements, `34` missed)
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
-- 검증 직후 상태: `## phase-0-c003-data-gate` (변경 없음)
+- 검증 입력 상태: final-fix 대상 `12`개 tracked 파일만 수정됨. ignored SDD 보고서는
+  이 tracked 파일 수에 포함하지 않았다.
 
 핵심 불변식 묶음도 별도로 실행했다.
 
@@ -43,14 +44,19 @@ git status --short --branch
 - 공식 출처가 확인된 일반 주의 신호와 `is_safety_clearance == false` 불변식
 - 확인 제품, 공식 문구, 원료 매핑, 안전 신호를 동일 제품 스냅샷에 묶는 제품 근거
   준비 게이트
+- `confirmed` 양성 경로에서 버전이 지정된 claim fingerprint, 확인 제품 신고번호,
+  literal matched evidence, source id/URL, 조회 시각을 묶는 불변 support record 경계
 - 다섯 비교 원료군의 결정적 표본 추출, 균등 가중 점수, 사람 검토 입력 검증,
   recommendation-only 결과
-- C003 제품 6개 필드만 내보내는 redacted JSONL export와 오프라인 review-pack 생성기
+- C003 제품 6개 필드만 내보내는 redacted JSONL export, 동일 6필드 불변 review DTO,
+  exporter-to-loader-to-sampler 오프라인 review-pack 생성기
 - 라이브 JSONL, export staging, review-pack 산출물의 Git ignore 경계
 
-Phase 1 구현 커밋은 시작 커밋을 포함하는 정확한 범위
-`37a8234^..b1f625a`이며 총 `20`개다. Coverage 정의를 실제 출력 중
-`UNVERIFIABLE`이 아닌 비율로 바로잡은 계획 수정은 별도 커밋 `1da369e`다.
+원래 Task 1~8 구현 범위는 `37a8234^..b1f625a`의 `20`개이며, 초기 검증 인수인계
+커밋은 `48cd278`이다. 본 문서를 포함한 final-fix는 단일 커밋 subject
+`fix: close Phase 1 integration gaps`로 구성하며, 정확한 SHA와 최종 범위는 커밋 후
+`git log`로 확인한다. Coverage 정의를 실제 출력 중 `UNVERIFIABLE`이 아닌 비율로
+바로잡은 계획 수정은 별도 커밋 `1da369e`다.
 
 ## 라이브 측정과 사람 검토 상태
 
@@ -102,7 +108,7 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 - FastAPI, 영속화, 감사 이벤트, SSE
 - React 사용자 확인 흐름과 접근성·이해도 검증
 - 인증·권한 관리
-- `main` 병합, 원격 저장소 생성, push, 배포
+- 사용자 승인 후 별도로 수행할 `main` 병합·원격 연결·배포 운영 단계
 
 ## 남아 있는 비차단 개선사항
 
@@ -123,7 +129,9 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 - 검증 시작과 문서 작성 시 `main`은
   `cd7095b1ab19781dcacaeb09ccc86402782509d1`에 있었고 작업 브랜치의 merge-base와
   같았다. 작업은 별도 worktree에서만 수행했다.
-- `git remote -v` 결과가 비어 있고 브랜치 upstream도 없다. 원격 push는 수행하지 않았다.
+- 검증 시 `git remote -v` 결과, 브랜치 upstream, `refs/remotes`가 모두 비어 있었다.
+  따라서 그 검증 시점의 checkout에는 구성된 remote·upstream·remote-tracking push
+  목적지가 없었다. 이 현재 상태를 전체 Git 작업 이력에 대한 증명으로 확대하지 않는다.
 
 ## 확정된 제품 원칙
 
@@ -143,7 +151,7 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 
 ## 다음 코덱스에 전달할 한 문장
 
-> Phase 1 오프라인 제품 근거 기반은 182개 테스트와 핵심 불변식 106개로 검증됐지만,
+> Phase 1 오프라인 제품 근거 기반은 203개 테스트와 핵심 불변식 106개로 검증됐지만,
 > 라이브 export와 100건 사람 검토는 아직 실행되지 않았다. 승인된 운영자 키로 redacted
 > review pack을 만든 뒤 측정값과 라벨을 채우기 전에는 확장 원료를 선택하거나 Phase 2를
 > 시작하지 말라.

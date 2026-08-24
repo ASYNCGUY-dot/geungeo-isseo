@@ -3,7 +3,14 @@ from enum import StrEnum
 from typing import Annotated, Literal
 from urllib.parse import urlparse
 
-from pydantic import AfterValidator, BaseModel, StringConstraints, model_validator
+from pydantic import (
+    AfterValidator,
+    AnyHttpUrl,
+    AwareDatetime,
+    BaseModel,
+    StringConstraints,
+    model_validator,
+)
 
 NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
@@ -15,6 +22,11 @@ def _require_literal_nonblank_text(value: str) -> str:
 
 
 LiteralSourceText = Annotated[str, AfterValidator(_require_literal_nonblank_text)]
+CLAIM_FINGERPRINT_VERSION = "claim-sha256-v1"
+ClaimFingerprint = Annotated[
+    str,
+    StringConstraints(pattern=rf"^{CLAIM_FINGERPRINT_VERSION}:[0-9a-f]{{64}}$"),
+]
 
 
 class Verdict(StrEnum):
@@ -59,6 +71,28 @@ class ProductCandidate(BaseModel):
     intake_method: str = ""
     source_id: Literal["C003"]
     retrieved_at: datetime
+
+
+class ExtensionReviewProduct(BaseModel):
+    model_config = {"frozen": True, "extra": "forbid"}
+
+    report_no: NonBlankText
+    name: NonBlankText
+    company: NonBlankText
+    primary_function: str
+    raw_materials: str
+    intake_method: str
+
+    @classmethod
+    def from_candidate(cls, candidate: ProductCandidate) -> "ExtensionReviewProduct":
+        return cls(
+            report_no=candidate.report_no,
+            name=candidate.name,
+            company=candidate.company,
+            primary_function=candidate.primary_function,
+            raw_materials=candidate.raw_materials,
+            intake_method=candidate.intake_method,
+        )
 
 
 SearchMatchedField = Literal["report_no", "name", "company"]
@@ -258,13 +292,31 @@ class SafetySignal(BaseModel):
 
 
 class ConfirmedProduct(BaseModel):
+    model_config = {"frozen": True}
+
     product: ProductCandidate
     confirmed_by_user: Literal[True]
 
 
 class Claim(BaseModel):
-    original_text: NonBlankText
+    model_config = {"frozen": True}
+
+    original_text: LiteralSourceText
     normalized_subject: NonBlankText
+
+
+class ClaimSupportRecord(BaseModel):
+    model_config = {"frozen": True, "extra": "forbid"}
+
+    evidence_id: NonBlankText
+    claim_fingerprint: ClaimFingerprint
+    confirmed_product_report_no: NonBlankText
+    matched_evidence_text: LiteralSourceText
+    source_id: NonBlankText
+    source_url: AnyHttpUrl
+    retrieved_at: AwareDatetime
+    applicability: Literal["direct"]
+    applicability_rule_version: Literal["claim-support-v1"]
 
 
 class EvidenceRecord(BaseModel):

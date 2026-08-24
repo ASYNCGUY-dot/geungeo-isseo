@@ -7,6 +7,7 @@ from typing import Annotated, ClassVar, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from claimledger.domain import (
+    ExtensionReviewProduct,
     IngredientGroup,
     MappingStatus,
     NonBlankText,
@@ -129,19 +130,21 @@ class ExtensionRecommendations(BaseModel):
     finalized: Literal[False] = False
 
 
-def _canonical_products(products: Sequence[ProductCandidate]) -> tuple[ProductCandidate, ...]:
+def _canonical_products(
+    products: Sequence[ProductCandidate | ExtensionReviewProduct],
+) -> tuple[ProductCandidate | ExtensionReviewProduct, ...]:
     ordered = sorted(
         products,
         key=lambda product: (product.report_no, product.model_dump_json()),
     )
-    unique_by_report_no: dict[str, ProductCandidate] = {}
+    unique_by_report_no: dict[str, ProductCandidate | ExtensionReviewProduct] = {}
     for product in ordered:
         unique_by_report_no.setdefault(product.report_no, product)
     return tuple(unique_by_report_no.values())
 
 
 def select_review_sample(
-    products: Sequence[ProductCandidate],
+    products: Sequence[ProductCandidate | ExtensionReviewProduct],
     group: IngredientGroup,
     size: int = DEFAULT_REVIEW_SIZE,
     seed: int = DEFAULT_REVIEW_SEED,

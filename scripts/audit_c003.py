@@ -8,20 +8,13 @@ from collections.abc import Iterable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
-from claimledger.domain import ProductCandidate
+from claimledger.domain import ExtensionReviewProduct, ProductCandidate
 from claimledger.errors import DataSourceError
 from claimledger.sources.food_safety import C003Client, CoverageAudit, audit_products
 
 REPORT_PATH = Path(__file__).parents[1] / "docs" / "evidence" / "C003_COVERAGE_REPORT.md"
 EXPORT_STAGING_DIR = Path(__file__).parents[1] / "build" / "c003-export"
-EXPORT_FIELDS = (
-    "report_no",
-    "name",
-    "company",
-    "primary_function",
-    "raw_materials",
-    "intake_method",
-)
+EXPORT_FIELDS = tuple(ExtensionReviewProduct.model_fields)
 
 
 def fetch_all_products(client: C003Client) -> tuple[int, list[ProductCandidate]]:
@@ -133,7 +126,10 @@ def write_products_jsonl(
         ) as handle:
             temporary_path = Path(handle.name)
             for product in products:
-                row = {field: getattr(product, field) for field in EXPORT_FIELDS}
+                validated_product = ProductCandidate.model_validate(
+                    product.model_dump(warnings=False)
+                )
+                row = ExtensionReviewProduct.from_candidate(validated_product).model_dump()
                 handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")))
                 handle.write("\n")
         os.replace(temporary_path, output_path)

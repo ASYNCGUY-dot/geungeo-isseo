@@ -7,7 +7,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from claimledger.domain import ProductCandidate
+from claimledger.domain import ExtensionReviewProduct
 from claimledger.extension_selection import (
     COMPARISON_GROUPS,
     DEFAULT_REVIEW_SEED,
@@ -60,20 +60,20 @@ def _reject_possible_secrets(raw_input: str) -> None:
         raise ReviewBuildError("input contains a possible live secret")
 
 
-def _parse_record(value: Any, line_number: int) -> ProductCandidate:
+def _parse_record(value: Any, line_number: int) -> ExtensionReviewProduct:
     if not isinstance(value, dict):
         raise ReviewBuildError(f"line {line_number} must contain one JSON object")
-    unknown_fields = set(value).difference(ProductCandidate.model_fields)
+    unknown_fields = set(value).difference(ExtensionReviewProduct.model_fields)
     if unknown_fields:
         fields = ", ".join(sorted(unknown_fields))
         raise ReviewBuildError(f"line {line_number} contains unexpected fields: {fields}")
     try:
-        return ProductCandidate.model_validate(value)
+        return ExtensionReviewProduct.model_validate(value)
     except ValidationError as exc:
         raise ReviewBuildError(f"line {line_number} is not a valid product record: {exc}") from exc
 
 
-def load_products(input_path: Path) -> tuple[ProductCandidate, ...]:
+def load_products(input_path: Path) -> tuple[ExtensionReviewProduct, ...]:
     if not input_path.is_file():
         raise ReviewBuildError(f"input file does not exist: {input_path}")
     try:
@@ -82,7 +82,7 @@ def load_products(input_path: Path) -> tuple[ProductCandidate, ...]:
         raise ReviewBuildError("input must be UTF-8 JSONL") from exc
     _reject_possible_secrets(raw_input)
 
-    products: list[ProductCandidate] = []
+    products: list[ExtensionReviewProduct] = []
     for line_number, line in enumerate(raw_input.splitlines(), start=1):
         if not line.strip():
             raise ReviewBuildError(f"line {line_number} is blank")
@@ -105,7 +105,7 @@ def load_products(input_path: Path) -> tuple[ProductCandidate, ...]:
 
 
 def build_samples(
-    products: tuple[ProductCandidate, ...], seed: int
+    products: tuple[ExtensionReviewProduct, ...], seed: int
 ) -> tuple[ReviewSample, ...]:
     samples: list[ReviewSample] = []
     for group in COMPARISON_GROUPS:

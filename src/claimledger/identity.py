@@ -1,5 +1,7 @@
 from collections.abc import Sequence
 
+from pydantic import ValidationError
+
 from claimledger.domain import ConfirmedProduct, ProductCandidate
 from claimledger.errors import IdentityRequiredError
 
@@ -23,4 +25,7 @@ def confirm_candidate(
 def require_confirmed_product(product: ConfirmedProduct | None) -> ConfirmedProduct:
     if product is None:
         raise IdentityRequiredError("user-confirmed product is required")
-    return product
+    try:
+        return ConfirmedProduct.model_validate(product.model_dump(warnings=False))
+    except (AttributeError, TypeError, ValidationError) as exc:
+        raise IdentityRequiredError("user-confirmed product is required") from exc

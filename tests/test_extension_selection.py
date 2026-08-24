@@ -17,6 +17,8 @@ from claimledger.extension_selection import (
     score_extension_candidate,
     select_review_sample,
 )
+from scripts.audit_c003 import write_products_jsonl
+from scripts.build_extension_review import build_samples, load_products
 
 NOW = datetime(2026, 8, 24, tzinfo=UTC)
 
@@ -300,8 +302,6 @@ def jsonl_records(per_group: int = 20) -> list[dict[str, object]]:
                     "primary_function": "건강에 도움을 줄 수 있음",
                     "raw_materials": RAW_MATERIALS[group],
                     "intake_method": "1일 1회",
-                    "source_id": "C003",
-                    "retrieved_at": "2026-08-24T00:00:00Z",
                 }
             )
     return records
@@ -331,6 +331,76 @@ def run_cli(input_path: Path, output_dir: Path) -> subprocess.CompletedProcess[s
         capture_output=True,
         text=True,
     )
+
+
+def test_exporter_output_loads_and_builds_exact_five_by_twenty_samples(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    input_path = tmp_path / "c003-products.jsonl"
+    monkeypatch.setattr(
+        "scripts.audit_c003.EXPORT_STAGING_DIR",
+        tmp_path / "c003-export-staging",
+    )
+    products = tuple(
+        ProductCandidate(
+            **record,
+            source_id="C003",
+            retrieved_at=NOW,
+        )
+        for record in jsonl_records()
+    )
+
+    write_products_jsonl(products, input_path)
+
+    exported_rows = tuple(
+        json.loads(line) for line in input_path.read_text(encoding="utf-8").splitlines()
+    )
+    approved_fields = {
+        "report_no",
+        "name",
+        "company",
+        "primary_function",
+        "raw_materials",
+        "intake_method",
+    }
+    prohibited_fields = {
+        "api_key",
+        "RESULT",
+        "total_count",
+        "source_id",
+        "retrieved_at",
+    }
+    assert len(exported_rows) == 100
+    assert all(set(row) == approved_fields for row in exported_rows)
+    assert all(prohibited_fields.isdisjoint(row) for row in exported_rows)
+
+    loaded_products = load_products(input_path)
+    samples = build_samples(loaded_products, seed=20260823)
+
+    assert {
+        group.value: len(
+            {
+                sample.report_no
+                for sample in samples
+                if sample.group is group
+            }
+        )
+        for group in COMPARISON_GROUPS
+    } == {group.value: 20 for group in COMPARISON_GROUPS}
+    assert len(samples) == 100
+    assert all(not hasattr(product, "source_id") for product in loaded_products)
+    assert all(not hasattr(product, "retrieved_at") for product in loaded_products)
+
+
+def test_loaded_export_rows_are_immutable(tmp_path: Path) -> None:
+    input_path = tmp_path / "products.jsonl"
+    write_jsonl(input_path, jsonl_records(per_group=1))
+
+    loaded_product = load_products(input_path)[0]
+
+    with pytest.raises(ValidationError, match="frozen"):
+        loaded_product.name = "변조된 이름"
 
 
 def test_cli_builds_reproducible_20_per_group_review_files(tmp_path: Path) -> None:

@@ -1,6 +1,7 @@
 import re
 
 from claimledger.domain import (
+    ExtensionReviewProduct,
     IngredientGroup,
     IngredientMapping,
     IngredientMatchEvidence,
@@ -86,7 +87,9 @@ def _find_matches(
     return tuple(matches)
 
 
-def map_ingredients(product: ProductCandidate) -> IngredientMapping:
+def map_ingredients(
+    product: ProductCandidate | ExtensionReviewProduct,
+) -> IngredientMapping:
     if not any(getattr(product, field).strip() for field in _REQUIRED_OFFICIAL_FIELDS):
         return IngredientMapping(
             status=MappingStatus.UNVERIFIABLE,
