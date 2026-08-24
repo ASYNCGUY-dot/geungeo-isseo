@@ -81,6 +81,43 @@ class ProductSearchResult(BaseModel):
     normalization_version: Literal["product-search-v1"] = "product-search-v1"
 
 
+class IngredientGroup(StrEnum):
+    LUTEIN_ZEAXANTHIN = "lutein_zeaxanthin"
+    OMEGA3 = "omega3"
+    PROBIOTICS = "probiotics"
+    MILK_THISTLE = "milk_thistle"
+    VITAMIN_D = "vitamin_d"
+    RED_GINSENG = "red_ginseng"
+    COENZYME_Q10 = "coenzyme_q10"
+    MAGNESIUM = "magnesium"
+
+
+class MappingStatus(StrEnum):
+    VERIFIED = "verified_mapping"
+    AMBIGUOUS = "ambiguous"
+    UNVERIFIABLE = "unverifiable"
+
+
+IngredientSourceField = Literal["name", "primary_function", "raw_materials"]
+
+
+class IngredientMatchEvidence(BaseModel):
+    model_config = {"frozen": True}
+
+    group: IngredientGroup
+    source_field: IngredientSourceField
+    matched_text: LiteralSourceText
+
+
+class IngredientMapping(BaseModel):
+    model_config = {"frozen": True}
+
+    status: MappingStatus
+    groups: tuple[IngredientGroup, ...]
+    evidence: tuple[IngredientMatchEvidence, ...]
+    rule_version: Literal["ingredient-map-v1"] = "ingredient-map-v1"
+
+
 class ConfirmedProduct(BaseModel):
     product: ProductCandidate
     confirmed_by_user: Literal[True]
