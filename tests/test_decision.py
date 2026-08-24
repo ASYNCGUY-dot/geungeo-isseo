@@ -140,6 +140,27 @@ def test_bundle_snapshot_must_match_every_confirmed_product_source_field() -> No
         )
 
 
+def test_genuine_other_report_bundle_uses_report_conflict_precedence() -> None:
+    other_product = PRODUCT.model_copy(
+        update={
+            "report_no": "TEST-0002",
+            "name": "다른 루테인 제품",
+            "company": "다른 제조사",
+        }
+    )
+    other_bundle = build_product_evidence(
+        ConfirmedProduct(product=other_product, confirmed_by_user=True)
+    )
+
+    with pytest.raises(DecisionInvariantError, match="REPORT_NUMBER_CONFLICT"):
+        decide_supported_claim(
+            CLAIM,
+            CONFIRMED_PRODUCT,
+            [SUPPORTING_EVIDENCE],
+            other_bundle,
+        )
+
+
 def test_non_ready_product_evidence_cannot_clear_claim() -> None:
     incomplete_product = CONFIRMED_PRODUCT.model_copy(
         update={"product": PRODUCT.model_copy(update={"raw_materials": ""})}

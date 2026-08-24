@@ -33,6 +33,8 @@ def decide_supported_claim(
 
     require_product_evidence_ready(product_evidence)
     confirmed_snapshot = ProductSourceSnapshot.from_candidate(confirmed_product.product)
+    if product_evidence.product_snapshot.report_no != confirmed_snapshot.report_no:
+        raise DecisionInvariantError("product evidence is not ready: REPORT_NUMBER_CONFLICT")
     if product_evidence.product_snapshot != confirmed_snapshot:
         raise DecisionInvariantError("product evidence is not ready: PRODUCT_SNAPSHOT_CONFLICT")
     return Verdict.CONFIRMED
