@@ -48,6 +48,7 @@ _SECRET_PATTERNS = (
         re.IGNORECASE,
     ),
 )
+_SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
 
 
 class ReviewBuildError(ValueError):
@@ -129,15 +130,21 @@ def _sample_row(sample: ReviewSample, seed: int) -> dict[str, object]:
     return {
         "seed": seed,
         "group": sample.group.value,
-        "report_no": sample.report_no,
-        "name": sample.name,
-        "company": sample.company,
-        "primary_function": sample.primary_function,
-        "raw_materials": sample.raw_materials,
-        "intake_method": sample.intake_method,
+        "report_no": _spreadsheet_safe(sample.report_no),
+        "name": _spreadsheet_safe(sample.name),
+        "company": _spreadsheet_safe(sample.company),
+        "primary_function": _spreadsheet_safe(sample.primary_function),
+        "raw_materials": _spreadsheet_safe(sample.raw_materials),
+        "intake_method": _spreadsheet_safe(sample.intake_method),
         "mapping_status": sample.mapping_status.value,
         "mapping_rule_version": sample.mapping_rule_version,
     }
+
+
+def _spreadsheet_safe(value: str) -> str:
+    if value.startswith(_SPREADSHEET_FORMULA_PREFIXES):
+        return f"'{value}"
+    return value
 
 
 def _write_csv(path: Path, fields: tuple[str, ...], rows: list[dict[str, object]]) -> None:
@@ -160,7 +167,7 @@ def write_review_pack(output_dir: Path, samples: tuple[ReviewSample, ...], seed:
         [
             {
                 "group": sample.group.value,
-                "report_no": sample.report_no,
+                "report_no": _spreadsheet_safe(sample.report_no),
                 "advertising_risk_score_1_to_5": "",
                 "functional_diversity_score_1_to_5": "",
                 "implementation_feasibility_score_1_to_5": "",

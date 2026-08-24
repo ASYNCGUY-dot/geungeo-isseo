@@ -1,7 +1,8 @@
 import random
-from collections.abc import Sequence
+from collections import Counter
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -61,12 +62,48 @@ class ExtensionCandidateStats(BaseModel):
         return self
 
 
+class _FourComponentMapping(BaseModel, Mapping[str, float]):
+    model_config = ConfigDict(frozen=True)
+
+    component_names: ClassVar[tuple[str, ...]] = (
+        "data_quality",
+        "advertising_risk",
+        "functional_diversity",
+        "implementation_feasibility",
+    )
+
+    def __getitem__(self, key: str) -> float:
+        if key not in self.component_names:
+            raise KeyError(key)
+        return getattr(self, key)
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(self.component_names)
+
+    def __len__(self) -> int:
+        return len(self.component_names)
+
+
+class ExtensionScoreComponents(_FourComponentMapping):
+    data_quality: Rate
+    advertising_risk: Rate
+    functional_diversity: Rate
+    implementation_feasibility: Rate
+
+
+class ExtensionScoreWeights(_FourComponentMapping):
+    data_quality: Literal[0.25] = 0.25
+    advertising_risk: Literal[0.25] = 0.25
+    functional_diversity: Literal[0.25] = 0.25
+    implementation_feasibility: Literal[0.25] = 0.25
+
+
 class ScoredExtensionCandidate(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     stats: ExtensionCandidateStats
-    components: dict[str, float]
-    weights: dict[str, float]
+    components: ExtensionScoreComponents
+    weights: ExtensionScoreWeights
     balanced_score: Rate
 
 
@@ -76,7 +113,7 @@ class ExtensionRecommendation(BaseModel):
     category: Literal["clarity", "high_risk_high_value"]
     group: IngredientGroup
     balanced_score: Rate
-    components: dict[str, float]
+    components: ExtensionScoreComponents
     reviewer: NonBlankText
     reviewed_at: datetime
     rationale: NonBlankText
@@ -143,13 +180,13 @@ def select_review_sample(
 
 
 def score_extension_candidate(stats: ExtensionCandidateStats) -> ScoredExtensionCandidate:
-    components = {
-        "data_quality": (stats.complete_record_rate + stats.verified_mapping_rate) / 2,
-        "advertising_risk": stats.advertising_risk_score / 5,
-        "functional_diversity": stats.functional_diversity_score / 5,
-        "implementation_feasibility": stats.implementation_feasibility_score / 5,
-    }
-    weights = {component: 0.25 for component in components}
+    components = ExtensionScoreComponents(
+        data_quality=(stats.complete_record_rate + stats.verified_mapping_rate) / 2,
+        advertising_risk=stats.advertising_risk_score / 5,
+        functional_diversity=stats.functional_diversity_score / 5,
+        implementation_feasibility=stats.implementation_feasibility_score / 5,
+    )
+    weights = ExtensionScoreWeights()
     balanced_score = sum(components[name] * weights[name] for name in components)
     return ScoredExtensionCandidate(
         stats=stats,
@@ -177,14 +214,30 @@ def _recommendation(
 
 
 def recommend_extension_candidates(
-    candidates: Sequence[ScoredExtensionCandidate],
+    reviewed_stats: Sequence[ExtensionCandidateStats],
 ) -> ExtensionRecommendations:
-    if len(candidates) < 2:
-        raise ValueError("at least two scored comparison candidates are required")
+    if any(not isinstance(stats, ExtensionCandidateStats) for stats in reviewed_stats):
+        raise TypeError("recommendations require ExtensionCandidateStats inputs")
 
-    by_group = {candidate.stats.group: candidate for candidate in candidates}
-    if len(by_group) != len(candidates):
-        raise ValueError("scored comparison candidates must have unique groups")
+    group_counts = Counter(stats.group for stats in reviewed_stats)
+    duplicates = tuple(group for group in COMPARISON_GROUPS if group_counts[group] > 1)
+    if duplicates:
+        values = ", ".join(group.value for group in duplicates)
+        raise ValueError(f"reviewed candidate groups must be unique; duplicates: {values}")
+
+    unexpected = tuple(
+        sorted(set(group_counts).difference(COMPARISON_GROUPS), key=lambda group: group.value)
+    )
+    if unexpected:
+        values = ", ".join(group.value for group in unexpected)
+        raise ValueError(f"reviewed candidate groups contain unexpected groups: {values}")
+
+    missing = tuple(group for group in COMPARISON_GROUPS if group_counts[group] == 0)
+    if missing:
+        values = ", ".join(group.value for group in missing)
+        raise ValueError(f"reviewed candidate groups incomplete; missing: {values}")
+
+    candidates = tuple(score_extension_candidate(stats) for stats in reviewed_stats)
 
     clarity = max(
         candidates,

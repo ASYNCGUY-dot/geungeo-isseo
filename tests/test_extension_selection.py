@@ -12,6 +12,7 @@ from claimledger.domain import IngredientGroup, ProductCandidate
 from claimledger.extension_selection import (
     COMPARISON_GROUPS,
     ExtensionCandidateStats,
+    ScoredExtensionCandidate,
     recommend_extension_candidates,
     score_extension_candidate,
     select_review_sample,
@@ -78,7 +79,7 @@ def test_extension_score_keeps_data_risk_diversity_and_feasibility_separate() ->
             "implementation_feasibility": 1.0,
         }
     )
-    assert scored.weights == {
+    assert dict(scored.weights.items()) == {
         "data_quality": 0.25,
         "advertising_risk": 0.25,
         "functional_diversity": 0.25,
@@ -152,46 +153,130 @@ def candidate_stats(
     )
 
 
-def test_recommendations_are_transparent_distinct_and_never_finalized() -> None:
-    scored = tuple(
-        score_extension_candidate(stats)
-        for stats in (
-            candidate_stats(
-                IngredientGroup.MILK_THISTLE,
-                complete_record_rate=1.0,
-                verified_mapping_rate=1.0,
-                advertising_risk_score=1,
-                functional_diversity_score=2,
-                implementation_feasibility_score=5,
-            ),
-            candidate_stats(
-                IngredientGroup.VITAMIN_D,
-                complete_record_rate=0.8,
-                verified_mapping_rate=0.8,
-                advertising_risk_score=5,
-                functional_diversity_score=5,
-                implementation_feasibility_score=3,
-            ),
-            candidate_stats(
-                IngredientGroup.MAGNESIUM,
-                complete_record_rate=0.9,
-                verified_mapping_rate=0.9,
-                advertising_risk_score=3,
-                functional_diversity_score=3,
-                implementation_feasibility_score=4,
-            ),
-        )
+def reviewed_comparison_stats() -> tuple[ExtensionCandidateStats, ...]:
+    return (
+        candidate_stats(
+            IngredientGroup.MILK_THISTLE,
+            complete_record_rate=1.0,
+            verified_mapping_rate=1.0,
+            advertising_risk_score=1,
+            functional_diversity_score=2,
+            implementation_feasibility_score=5,
+        ),
+        candidate_stats(
+            IngredientGroup.VITAMIN_D,
+            complete_record_rate=0.8,
+            verified_mapping_rate=0.8,
+            advertising_risk_score=5,
+            functional_diversity_score=5,
+            implementation_feasibility_score=3,
+        ),
+        candidate_stats(
+            IngredientGroup.RED_GINSENG,
+            complete_record_rate=0.75,
+            verified_mapping_rate=0.7,
+            advertising_risk_score=4,
+            functional_diversity_score=3,
+            implementation_feasibility_score=3,
+        ),
+        candidate_stats(
+            IngredientGroup.COENZYME_Q10,
+            complete_record_rate=0.7,
+            verified_mapping_rate=0.65,
+            advertising_risk_score=3,
+            functional_diversity_score=4,
+            implementation_feasibility_score=2,
+        ),
+        candidate_stats(
+            IngredientGroup.MAGNESIUM,
+            complete_record_rate=0.9,
+            verified_mapping_rate=0.9,
+            advertising_risk_score=3,
+            functional_diversity_score=3,
+            implementation_feasibility_score=4,
+        ),
     )
 
-    recommendations = recommend_extension_candidates(scored)
+
+def test_recommendations_require_all_five_groups_and_remain_non_final() -> None:
+    stats = reviewed_comparison_stats()
+
+    recommendations = recommend_extension_candidates(stats)
 
     assert recommendations.clarity.group is IngredientGroup.MILK_THISTLE
     assert recommendations.high_risk_high_value.group is IngredientGroup.VITAMIN_D
-    assert recommendations.clarity.components == scored[0].components
+    assert recommendations.clarity.components["data_quality"] == 1.0
     assert "data_quality" in recommendations.clarity.rationale
     assert "advertising_risk" in recommendations.high_risk_high_value.rationale
     assert recommendations.status == "recommendation_only"
     assert recommendations.finalized is False
+
+
+def test_recommendations_reject_a_missing_comparison_group() -> None:
+    stats = reviewed_comparison_stats()[:-1]
+
+    with pytest.raises(
+        ValueError,
+        match="reviewed candidate groups incomplete; missing: magnesium",
+    ):
+        recommend_extension_candidates(stats)
+
+
+def test_recommendations_reject_duplicate_comparison_groups() -> None:
+    stats = reviewed_comparison_stats()
+
+    with pytest.raises(
+        ValueError,
+        match="reviewed candidate groups must be unique; duplicates: milk_thistle",
+    ):
+        recommend_extension_candidates(stats + (stats[0],))
+
+
+def test_recommendations_reject_forged_scored_candidate_values() -> None:
+    stats = reviewed_comparison_stats()
+    forged = ScoredExtensionCandidate.model_construct(
+        stats=stats[0],
+        components={
+            "data_quality": 0.0,
+            "advertising_risk": 1.0,
+            "functional_diversity": 1.0,
+            "implementation_feasibility": 0.0,
+        },
+        weights={"data_quality": 1.0},
+        balanced_score=1.0,
+    )
+
+    with pytest.raises(
+        TypeError,
+        match="recommendations require ExtensionCandidateStats inputs",
+    ):
+        recommend_extension_candidates((forged, *stats[1:]))
+
+
+def test_scored_component_and_weight_structures_are_immutable() -> None:
+    scored = score_extension_candidate(reviewed_comparison_stats()[0])
+
+    with pytest.raises(TypeError):
+        scored.components["data_quality"] = 0.0
+    with pytest.raises(ValidationError):
+        scored.components.data_quality = 0.0
+    with pytest.raises(TypeError):
+        scored.weights["data_quality"] = 1.0
+    with pytest.raises(ValidationError):
+        scored.weights.data_quality = 1.0
+
+    assert dict(scored.components.items()) == {
+        "data_quality": 1.0,
+        "advertising_risk": 0.2,
+        "functional_diversity": 0.4,
+        "implementation_feasibility": 1.0,
+    }
+    assert dict(scored.weights.items()) == {
+        "data_quality": 0.25,
+        "advertising_risk": 0.25,
+        "functional_diversity": 0.25,
+        "implementation_feasibility": 0.25,
+    }
 
 
 RAW_MATERIALS = {
@@ -278,6 +363,52 @@ def test_cli_builds_reproducible_20_per_group_review_files(tmp_path: Path) -> No
     summary = (first_output / "README.md").read_text(encoding="utf-8")
     assert "recommendation only" in summary.lower()
     assert "finalized extension ingredients: none" in summary.lower()
+
+
+def test_cli_neutralizes_formula_prefixes_without_changing_sampled_source_text(
+    tmp_path: Path,
+) -> None:
+    input_path = tmp_path / "formula-products.jsonl"
+    output_dir = tmp_path / "output"
+    records = jsonl_records()
+    records[0].update(
+        {
+            "report_no": "=FORMULA-000",
+            "name": "+SUM(1,1)",
+            "company": "-1+1",
+            "primary_function": "@formula",
+            "raw_materials": "\t=CMD 밀크씨슬",
+            "intake_method": "\r=CMD",
+        }
+    )
+    write_jsonl(input_path, records)
+
+    result = run_cli(input_path, output_dir)
+
+    assert result.returncode == 0, result.stderr
+    with (output_dir / "samples.csv").open(encoding="utf-8", newline="") as handle:
+        sample_rows = list(csv.DictReader(handle))
+    formula_row = next(row for row in sample_rows if row["report_no"] == "'=FORMULA-000")
+    assert formula_row == {
+        "seed": "20260823",
+        "group": "milk_thistle",
+        "report_no": "'=FORMULA-000",
+        "name": "'+SUM(1,1)",
+        "company": "'-1+1",
+        "primary_function": "'@formula",
+        "raw_materials": "'\t=CMD 밀크씨슬",
+        "intake_method": "'\r=CMD",
+        "mapping_status": "verified_mapping",
+        "mapping_rule_version": "ingredient-map-v1",
+    }
+    with (output_dir / "review_labels.csv").open(
+        encoding="utf-8", newline=""
+    ) as handle:
+        label_rows = list(csv.DictReader(handle))
+    assert any(row["report_no"] == "'=FORMULA-000" for row in label_rows)
+
+    source_record = json.loads(input_path.read_text(encoding="utf-8").splitlines()[0])
+    assert source_record == records[0]
 
 
 @pytest.mark.parametrize("failure", ["duplicate", "secret", "malformed", "undersized"])
