@@ -113,7 +113,7 @@ def test_evaluation_reports_false_clearance_recall_and_coverage_separately() -> 
     )
     assert summary.false_clearance_rate == 0.0
     assert summary.confirmed_recall == 1.0
-    assert summary.coverage == 2 / 3
+    assert summary.coverage == 1 / 3
     assert summary.unverifiable_count == 2
 ```
 
