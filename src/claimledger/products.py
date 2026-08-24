@@ -33,30 +33,34 @@ def _search_tokens(text: str) -> frozenset[str]:
 
 
 def _matched_fields(
-    document: ProductSearchDocument, query_tokens: frozenset[str]
+    document: ProductSearchDocument, query: str, query_tokens: frozenset[str]
 ) -> tuple[SearchMatchedField, ...]:
     field_tokens = {
-        "report_no": _search_tokens(document.normalized_report_no),
         "name": _search_tokens(document.normalized_name),
         "company": _search_tokens(document.normalized_company),
     }
-    return tuple(
-        field for field in _MATCH_FIELD_ORDER if field_tokens[field].intersection(query_tokens)
+    matched_fields: list[SearchMatchedField] = []
+    if query == document.normalized_report_no:
+        matched_fields.append("report_no")
+    matched_fields.extend(
+        field
+        for field in _MATCH_FIELD_ORDER[1:]
+        if field_tokens[field].intersection(query_tokens)
     )
+    return tuple(matched_fields)
 
 
 def _rank_document(
     document: ProductSearchDocument, query: str, query_tokens: frozenset[str]
 ) -> tuple[int, int, tuple[SearchMatchedField, ...]] | None:
-    matched_fields = _matched_fields(document, query_tokens)
-    document_tokens = _search_tokens(
-        f"{document.normalized_name} {document.normalized_company}"
-    )
+    matched_fields = _matched_fields(document, query, query_tokens)
+    combined_text = f"{document.normalized_name} {document.normalized_company}"
+    document_tokens = _search_tokens(combined_text)
     token_overlap = len(query_tokens.intersection(document_tokens))
 
     if query == document.normalized_report_no:
         return 3, token_overlap, ("report_no",)
-    if query_tokens == document_tokens:
+    if query == combined_text:
         return 2, token_overlap, ("name", "company")
     if token_overlap > 0:
         return 1, token_overlap, matched_fields

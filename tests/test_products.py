@@ -55,6 +55,47 @@ def test_search_ranks_exact_report_number_before_text_matches() -> None:
     assert results[0].matched_fields == ("report_no",)
 
 
+def test_partial_report_number_tokens_are_not_report_number_evidence() -> None:
+    product = PRODUCT_A.model_copy(
+        update={"report_no": "ALPHA-123", "name": "Omega Prime", "company": "Acme"}
+    )
+
+    result = search_products([product], "ALPHA omega")[0]
+
+    assert result.matched_fields == ("name",)
+
+
+@pytest.mark.parametrize(
+    ("query", "near_match", "exact_match"),
+    [
+        (
+            "acme labs omega pro",
+            {"report_no": "A", "name": "omega pro", "company": "acme labs"},
+            {"report_no": "B", "name": "acme labs", "company": "omega pro"},
+        ),
+        (
+            "a b co",
+            {"report_no": "A", "name": "A-B", "company": "co"},
+            {"report_no": "B", "name": "A B", "company": "co"},
+        ),
+        (
+            "omega co",
+            {"report_no": "A", "name": "omega omega", "company": "co"},
+            {"report_no": "B", "name": "omega", "company": "co"},
+        ),
+    ],
+    ids=("reordered", "punctuation", "repeated-token"),
+)
+def test_exact_name_company_tier_preserves_normalized_text_identity(
+    query: str, near_match: dict[str, str], exact_match: dict[str, str]
+) -> None:
+    results = search_products(
+        [PRODUCT_A.model_copy(update=near_match), PRODUCT_A.model_copy(update=exact_match)], query
+    )
+
+    assert [result.candidate.report_no for result in results] == ["B", "A"]
+
+
 def test_search_uses_report_number_to_break_equal_token_overlap() -> None:
     tied = search_products(
         [
