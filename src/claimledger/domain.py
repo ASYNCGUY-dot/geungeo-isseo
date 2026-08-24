@@ -165,6 +165,58 @@ class OfficialProductCaution(BaseModel):
     parser_version: Literal["official-caution-v1"] = "official-caution-v1"
 
 
+SafetySignalKind = Literal["official_product_caution", "official_interaction_caution"]
+
+
+class InteractionEvidence(BaseModel):
+    model_config = {"frozen": True}
+
+    source_id: NonBlankText
+    source_url: NonBlankText | None = None
+    official_identifier: NonBlankText | None = None
+    retrieved_at: datetime
+    source_text: LiteralSourceText
+    product_report_no: NonBlankText | None = None
+
+    @model_validator(mode="after")
+    def _require_source_reference(self) -> "InteractionEvidence":
+        if self.source_url is None and self.official_identifier is None:
+            raise ValueError("interaction evidence requires a source URL or official identifier")
+        return self
+
+
+class SafetySignal(BaseModel):
+    model_config = {"frozen": True}
+
+    kind: SafetySignalKind
+    message: NonBlankText
+    source_id: NonBlankText
+    source_url: NonBlankText | None = None
+    official_identifier: NonBlankText | None = None
+    retrieved_at: datetime
+    source_text: LiteralSourceText
+    is_safety_clearance: Literal[False] = False
+
+    @model_validator(mode="after")
+    def _require_general_caution_only(self) -> "SafetySignal":
+        if self.source_url is None and self.official_identifier is None:
+            raise ValueError("safety signal requires a source URL or official identifier")
+
+        normalized_message = self.message.casefold()
+        prohibited_phrases = (
+            "안전합니다",
+            "상호작용 없음",
+            "복용해도 됩니다",
+            "부작용이 없습니다",
+            "safe",
+            "no interaction",
+            "can take",
+        )
+        if any(phrase in normalized_message for phrase in prohibited_phrases):
+            raise ValueError("safety signal message must not express safety clearance")
+        return self
+
+
 class ConfirmedProduct(BaseModel):
     product: ProductCandidate
     confirmed_by_user: Literal[True]
