@@ -22,6 +22,12 @@ class EvaluationCase(BaseModel):
     ingredient_group: NonBlankText
     expected_verdict: Verdict
     frozen: Literal[True]
+    report_no: NonBlankText
+    source_id: NonBlankText
+    retrieved_at: datetime
+    rule_version: NonBlankText
+    matched_source_text: NonBlankText
+    source_url: NonBlankText
 
 
 class EvaluationSummary(BaseModel):

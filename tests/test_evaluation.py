@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import pytest
 
 from claimledger.domain import EvaluationCase, Verdict
@@ -7,6 +9,23 @@ from claimledger.evaluation import (
     false_clearance_rate,
     zero_error_upper_bound,
 )
+
+NOW = datetime(2026, 8, 24, tzinfo=UTC)
+
+
+def _case(case_id: str, expected_verdict: Verdict) -> EvaluationCase:
+    return EvaluationCase(
+        case_id=case_id,
+        ingredient_group="omega3",
+        expected_verdict=expected_verdict,
+        frozen=True,
+        report_no=f"C003-{case_id}",
+        source_id="C003",
+        retrieved_at=NOW,
+        rule_version="evaluation-label-v1",
+        matched_source_text="EPA 및 DHA 함유 유지",
+        source_url=f"https://example.test/c003/{case_id}",
+    )
 
 
 def test_false_clearance_rate_counts_only_harmful_direction() -> None:
@@ -31,24 +50,9 @@ def test_mismatched_evaluation_lengths_are_rejected() -> None:
 
 def test_evaluation_reports_false_clearance_recall_and_coverage_separately() -> None:
     cases = [
-        EvaluationCase(
-            case_id="a",
-            ingredient_group="omega3",
-            expected_verdict=Verdict.CONFIRMED,
-            frozen=True,
-        ),
-        EvaluationCase(
-            case_id="b",
-            ingredient_group="omega3",
-            expected_verdict=Verdict.MISMATCH,
-            frozen=True,
-        ),
-        EvaluationCase(
-            case_id="c",
-            ingredient_group="omega3",
-            expected_verdict=Verdict.UNVERIFIABLE,
-            frozen=True,
-        ),
+        _case("a", Verdict.CONFIRMED),
+        _case("b", Verdict.MISMATCH),
+        _case("c", Verdict.UNVERIFIABLE),
     ]
 
     summary = evaluate_verdicts(
@@ -67,3 +71,38 @@ def test_confirmed_recall_is_zero_without_expected_confirmed_cases() -> None:
         [Verdict.MISMATCH, Verdict.UNVERIFIABLE],
         [Verdict.CONFIRMED, Verdict.MISMATCH],
     ) == 0.0
+
+
+def test_public_metrics_normalize_serialized_verdicts() -> None:
+    expected = ["confirmed", "mismatch"]
+    actual = ["confirmed", "confirmed"]
+
+    assert false_clearance_rate(expected, actual) == 1.0
+    assert confirmed_recall(expected, actual) == 1.0
+
+
+def test_evaluation_normalizes_serialized_actual_verdicts() -> None:
+    summary = evaluate_verdicts(
+        [_case("serialized", Verdict.MISMATCH)],
+        ["unverifiable"],
+    )
+
+    assert summary.coverage == 0.0
+    assert summary.unverifiable_count == 1
+
+
+@pytest.mark.parametrize("metric", [false_clearance_rate, confirmed_recall])
+@pytest.mark.parametrize(
+    ("expected", "actual"),
+    [(["not-a-verdict"], ["confirmed"]), (["confirmed"], ["not-a-verdict"]), (["confirmed"], [None])],
+)
+def test_public_metrics_reject_unknown_or_malformed_verdicts(
+    metric: object, expected: list[object], actual: list[object]
+) -> None:
+    with pytest.raises(ValueError, match="verdict"):
+        metric(expected, actual)  # type: ignore[operator]
+
+
+def test_evaluation_rejects_unknown_serialized_actual_verdict() -> None:
+    with pytest.raises(ValueError, match="verdict"):
+        evaluate_verdicts([_case("invalid-actual", Verdict.MISMATCH)], ["not-a-verdict"])
