@@ -112,6 +112,16 @@ def test_evaluation_case_rejects_missing_retrieval_provenance() -> None:
         EvaluationCase.model_validate(payload)
 
 
+def test_evaluation_case_preserves_literal_matched_source_text() -> None:
+    literal_source_text = "  루테인 지아잔틴 복합 추출물\n"
+    payload = _case("literal-source").model_dump()
+    payload["matched_source_text"] = literal_source_text
+
+    case = EvaluationCase.model_validate(payload)
+
+    assert case.matched_source_text == literal_source_text
+
+
 def test_evaluation_revalidates_frozen_case_constructed_with_blank_provenance() -> None:
     invalid_case = EvaluationCase.model_construct(
         case_id="constructed-invalid",

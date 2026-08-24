@@ -2,9 +2,18 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, StringConstraints
+from pydantic import AfterValidator, BaseModel, StringConstraints
 
 NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
+def _require_literal_nonblank_text(value: str) -> str:
+    if not value.strip():
+        raise ValueError("literal source text must not be blank")
+    return value
+
+
+LiteralSourceText = Annotated[str, AfterValidator(_require_literal_nonblank_text)]
 
 
 class Verdict(StrEnum):
@@ -26,7 +35,7 @@ class EvaluationCase(BaseModel):
     source_id: NonBlankText
     retrieved_at: datetime
     rule_version: NonBlankText
-    matched_source_text: NonBlankText
+    matched_source_text: LiteralSourceText
     source_url: NonBlankText
 
 
