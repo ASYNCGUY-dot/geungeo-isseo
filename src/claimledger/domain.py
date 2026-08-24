@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import AfterValidator, BaseModel, StringConstraints
+from pydantic import AfterValidator, BaseModel, StringConstraints, model_validator
 
 NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
@@ -116,6 +116,53 @@ class IngredientMapping(BaseModel):
     groups: tuple[IngredientGroup, ...]
     evidence: tuple[IngredientMatchEvidence, ...]
     rule_version: Literal["ingredient-map-v1"] = "ingredient-map-v1"
+
+
+class OfficialFieldStatus(StrEnum):
+    VERIFIED = "verified"
+    MISSING = "missing"
+    UNVERIFIABLE = "unverifiable"
+
+
+OfficialExpressionStrength = Literal[
+    "possibility",
+    "support",
+    "improvement",
+    "guarantee",
+    "treatment_prevention",
+]
+
+OfficialCautionSourceField = Literal["raw_materials", "intake_method"]
+
+
+class OfficialFunctionStatement(BaseModel):
+    model_config = {"frozen": True}
+
+    status: OfficialFieldStatus
+    original_text: str
+    effect_key: str | None = None
+    expression_strength: OfficialExpressionStrength | None = None
+    parser_version: Literal["official-function-v1"] = "official-function-v1"
+
+    @model_validator(mode="after")
+    def _validate_structured_meaning(self) -> "OfficialFunctionStatement":
+        has_structured_meaning = self.effect_key is not None and self.expression_strength is not None
+        if self.status is OfficialFieldStatus.VERIFIED and not has_structured_meaning:
+            raise ValueError("verified official function requires effect key and expression strength")
+        if self.status is not OfficialFieldStatus.VERIFIED and (
+            self.effect_key is not None or self.expression_strength is not None
+        ):
+            raise ValueError("unverified official function must not contain structured meaning")
+        return self
+
+
+class OfficialProductCaution(BaseModel):
+    model_config = {"frozen": True}
+
+    status: OfficialFieldStatus
+    source_field: OfficialCautionSourceField
+    original_text: str
+    parser_version: Literal["official-caution-v1"] = "official-caution-v1"
 
 
 class ConfirmedProduct(BaseModel):
