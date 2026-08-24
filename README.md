@@ -5,20 +5,42 @@
 ## 현재 상태
 
 - 2026-08-22: 3차 프로젝트 주제와 제품 원칙 확정
-- 현재 저장소에는 승인된 기획, 의사결정 기록, 코덱스 인수인계, Phase 0 구현 계획만 있습니다.
-- 애플리케이션 코드는 아직 작성하지 않았습니다.
+- 2026-08-24: Phase 1의 결정적 제품 검색·원료 매핑·공식 문구·안전 신호·제품 근거
+  준비 게이트·평가 계약·확장 원료 review-pack 기반을 구현했습니다.
+- 최신 오프라인 검증은 `182 passed`, 전체 커버리지 `96%`이며 Ruff와
+  `git diff --check`도 통과했습니다.
+- 라이브 C003 export와 review-pack 생성은 키가 없어 `NOT RUN`, 사람 라벨 100건은
+  `PENDING`, 확장 원료는 아직 선택하지 않았습니다.
+- OCR, URL crawler, LLM, RAG, 전체 판정 규칙, FastAPI, React, 인증은 아직 구현하지
+  않았습니다. 따라서 현재 코드는 완성된 애플리케이션이나 배포 서비스가 아닙니다.
 - 복습 코드는 별도 저장소 `C:\WORK\WORK\donga-review`에 유지합니다.
 
 ## 코덱스에서 이어가기
 
-1. 코덱스에서 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1` 폴더를 엽니다.
+1. 병합 전에는 코덱스에서
+   `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1\.worktrees\phase-0-c003-data-gate`
+   worktree를 엽니다.
 2. [AGENTS.md](AGENTS.md)를 먼저 읽습니다.
-3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 현재 상태와 첫 작업을 확인합니다.
-4. [Phase 0 구현 계획](docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md)을 순서대로 실행합니다.
+3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 구현 범위, 검증 결과, 미구현 경계를
+   확인합니다.
+4. [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록된
+   운영 명령과 사람 검토 절차를 따릅니다.
 
-첫 구현 목표는 화면 제작이 아니라 **식약처 C003 데이터의 실제 커버리지와 결측률을 측정하여 프로젝트의 핵심 데이터가 충분한지 확인하는 것**입니다.
+현재 다음 작업은 화면 제작이나 Phase 2 구현이 아니라 **redacted 라이브 export와 다섯
+비교군 100건의 사람 검토를 완료하여 확장 원료 판단 근거를 측정하는 것**입니다.
 
-## 확정된 MVP 경계
+오프라인 검증 명령은 다음과 같습니다.
+
+```cmd
+.venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
+.venv\Scripts\ruff.exe check src tests scripts
+git diff --check
+```
+
+## 목표 MVP 경계 (현재 미구현 기능 포함)
+
+아래는 최종 MVP의 목표이며 현재 지원 기능 목록이 아닙니다. 실제 구현 상태는 위의
+`현재 상태`와 [코덱스 핸드오프](docs/CODEX_HANDOFF.md)를 기준으로 판단합니다.
 
 MVP가 하는 일:
 
@@ -43,6 +65,10 @@ MVP가 하지 않는 일:
 - [정확도 우선 경계 결정](docs/decisions/0001-accuracy-first-boundary.md): 왜 이 범위로 시작하는지
 - [코덱스 핸드오프](docs/CODEX_HANDOFF.md): 다음 세션이 바로 시작할 수 있는 현재 상태
 - [Phase 0 구현 계획](docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md): 첫 구현 체크리스트
+- [Phase 1 구현 계획](docs/superpowers/plans/2026-08-23-phase-1-product-evidence-foundation.md):
+  제품 근거 기반 구현·검증 체크리스트
+- [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md): 라이브 측정과
+  사람 검토의 현재 상태
 
 ## 지식 기록소
 
