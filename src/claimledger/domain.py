@@ -167,53 +167,30 @@ class OfficialProductCaution(BaseModel):
 
 
 SafetySignalKind = Literal["official_product_caution", "official_interaction_caution"]
-SafetyCautionCategory = Literal[
-    "consult_professional",
-    "allergen",
-    "avoid_excess_intake",
-    "adverse_event",
-]
+SafetyCautionCategory = Literal["consult_professional"]
 OfficialInteractionSourceId = Literal["MFDS"]
 OfficialInteractionSourceCategory = Literal["official_ingredient_guidance"]
 
-_CAUTION_CATEGORY_MARKERS: dict[SafetyCautionCategory, tuple[str, ...]] = {
-    "consult_professional": ("전문가와 상담",),
-    "allergen": ("알레르기", "함유"),
-    "avoid_excess_intake": ("과다 섭취",),
-    "adverse_event": ("이상 사례",),
+_APPROVED_GENERAL_CAUTION_TEXTS: dict[SafetyCautionCategory, frozenset[str]] = {
+    "consult_professional": frozenset({"의약품 복용 시 전문가와 상담하십시오."}),
 }
-_PROHIBITED_SAFETY_MESSAGE_PHRASES = (
-    "안전합니다",
-    "안전한 제품",
-    "상호작용 없음",
-    "상호작용이 없습니다",
-    "복용해도 됩니다",
-    "함께 복용해도 문제 없습니다",
-    "부작용이 없습니다",
-    "부작용 없다",
-    "효과가 있습니다",
-    "효과 있음",
-    "복용량",
-    "용량을 줄이",
-    "용량을 늘이",
-    "복용을 중단",
-    "safe",
-    "no interaction",
-    "can take",
-)
+
+
+def _is_registered_mfds_url(source_url: str) -> bool:
+    host = urlparse(source_url).hostname
+    return host == "foodsafetykorea.go.kr" or (
+        host is not None and host.endswith(".foodsafetykorea.go.kr")
+    )
 
 
 def _validate_general_caution_text(category: SafetyCautionCategory, source_text: str) -> None:
-    normalized_text = source_text.casefold()
-    if any(phrase in normalized_text for phrase in _PROHIBITED_SAFETY_MESSAGE_PHRASES):
-        raise ValueError("safety signal message must not express clearance, claims, or recommendations")
-    if not any(marker in source_text for marker in _CAUTION_CATEGORY_MARKERS[category]):
-        raise ValueError("caution text does not match its validated caution category")
+    if source_text not in _APPROVED_GENERAL_CAUTION_TEXTS[category]:
+        raise ValueError("caution text is not an approved literal general caution")
 
 
 def classify_general_caution(source_text: str) -> SafetyCautionCategory | None:
-    for category, markers in _CAUTION_CATEGORY_MARKERS.items():
-        if any(marker in source_text for marker in markers):
+    for category, approved_texts in _APPROVED_GENERAL_CAUTION_TEXTS.items():
+        if source_text in approved_texts:
             return category
     return None
 
@@ -235,10 +212,8 @@ class InteractionEvidence(BaseModel):
     def _require_source_reference(self) -> "InteractionEvidence":
         if self.source_url is None and self.official_identifier is None:
             raise ValueError("interaction evidence requires a source URL or official identifier")
-        if self.source_url is not None:
-            host = urlparse(self.source_url).hostname
-            if host is None or not (host == "foodsafetykorea.go.kr" or host.endswith(".foodsafetykorea.go.kr")):
-                raise ValueError("interaction evidence URL must belong to the registered official source")
+        if self.source_url is not None and not _is_registered_mfds_url(self.source_url):
+            raise ValueError("interaction evidence URL must belong to the registered official source")
         _validate_general_caution_text(self.caution_category, self.source_text)
         return self
 
@@ -254,12 +229,27 @@ class SafetySignal(BaseModel):
     retrieved_at: datetime
     source_text: LiteralSourceText
     caution_category: SafetyCautionCategory
+    official_source_category: OfficialInteractionSourceCategory | None = None
+    official_source_verified: Literal[True] | None = None
     is_safety_clearance: Literal[False] = False
 
     @model_validator(mode="after")
     def _require_general_caution_only(self) -> "SafetySignal":
         if self.source_url is None and self.official_identifier is None:
             raise ValueError("safety signal requires a source URL or official identifier")
+
+        if self.kind == "official_product_caution":
+            if self.source_id != "C003" or self.official_identifier is None:
+                raise ValueError("official product caution requires C003 identity and official identifier")
+        else:
+            if (
+                self.source_id != "MFDS"
+                or self.official_source_category != "official_ingredient_guidance"
+                or self.official_source_verified is not True
+            ):
+                raise ValueError("official interaction caution requires registered MFDS provenance")
+            if self.source_url is not None and not _is_registered_mfds_url(self.source_url):
+                raise ValueError("official interaction caution URL must belong to the registered official source")
 
         if self.message != self.source_text:
             raise ValueError("safety signal message must preserve literal source text")

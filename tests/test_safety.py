@@ -35,7 +35,7 @@ def test_safety_signal_can_never_express_clearance() -> None:
         kind="official_product_caution",
         message=CAUTION_TEXT,
         source_id="C003",
-        source_url="https://example.test/official/TEST-SAFETY-001",
+        official_identifier="TEST-SAFETY-001",
         retrieved_at=NOW,
         source_text=CAUTION_TEXT,
         caution_category=CONSULT_PROFESSIONAL,
@@ -48,7 +48,7 @@ def test_safety_signal_can_never_express_clearance() -> None:
             kind="official_product_caution",
             message=CAUTION_TEXT,
             source_id="C003",
-            source_url="https://example.test/official/TEST-SAFETY-001",
+            official_identifier="TEST-SAFETY-001",
             retrieved_at=NOW,
             source_text=CAUTION_TEXT,
             caution_category=CONSULT_PROFESSIONAL,
@@ -135,6 +135,65 @@ def test_legitimate_general_caution_remains_accepted() -> None:
     assert signal.is_safety_clearance is False
 
 
+@pytest.mark.parametrize(
+    "message",
+    [
+        "혈당 개선에 도움이 됩니다. 전문가와 상담하십시오.",
+        "상호작용이 없다. 전문가와 상담하십시오.",
+        "복용 횟수를 줄이고 전문가와 상담하십시오.",
+        "귀하께서는 와파린을 피하고 전문가와 상담하십시오.",
+    ],
+)
+def test_safety_signal_rejects_marker_containing_semantic_bypasses(message: str) -> None:
+    with pytest.raises(ValidationError):
+        SafetySignal(
+            kind="official_product_caution",
+            message=message,
+            source_id="C003",
+            official_identifier="TEST-SAFETY-001",
+            retrieved_at=NOW,
+            source_text=message,
+            caution_category=CONSULT_PROFESSIONAL,
+        )
+
+
+def test_direct_interaction_signal_rejects_unverified_source_provenance() -> None:
+    with pytest.raises(ValidationError):
+        SafetySignal(
+            kind="official_interaction_caution",
+            message=CAUTION_TEXT,
+            source_id="blog",
+            source_url="https://example.test/blog-post",
+            retrieved_at=NOW,
+            source_text=CAUTION_TEXT,
+            caution_category=CONSULT_PROFESSIONAL,
+        )
+
+
+def test_direct_product_signal_requires_c003_identity_and_official_identifier() -> None:
+    with pytest.raises(ValidationError):
+        SafetySignal(
+            kind="official_product_caution",
+            message=CAUTION_TEXT,
+            source_id="blog",
+            official_identifier="TEST-SAFETY-001",
+            retrieved_at=NOW,
+            source_text=CAUTION_TEXT,
+            caution_category=CONSULT_PROFESSIONAL,
+        )
+
+    with pytest.raises(ValidationError):
+        SafetySignal(
+            kind="official_product_caution",
+            message=CAUTION_TEXT,
+            source_id="C003",
+            source_url="https://www.foodsafetykorea.go.kr/product/TEST-SAFETY-001",
+            retrieved_at=NOW,
+            source_text=CAUTION_TEXT,
+            caution_category=CONSULT_PROFESSIONAL,
+        )
+
+
 def test_absent_interaction_evidence_does_not_create_no_interaction_message() -> None:
     assert build_safety_signals(CONFIRMED_PRODUCT, [], []) == ()
 
@@ -193,6 +252,8 @@ def test_registered_official_interaction_evidence_becomes_general_signal() -> No
             retrieved_at=NOW,
             source_text=evidence.source_text,
             caution_category=CONSULT_PROFESSIONAL,
+            official_source_category=OFFICIAL_INGREDIENT_GUIDANCE,
+            official_source_verified=True,
         ),
     )
 

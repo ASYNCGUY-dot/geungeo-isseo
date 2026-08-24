@@ -47,6 +47,8 @@ def build_safety_signals(
                 retrieved_at=evidence.retrieved_at,
                 source_text=evidence.source_text,
                 caution_category=evidence.caution_category,
+                official_source_category=evidence.official_source_category,
+                official_source_verified=evidence.official_source_verified,
             )
         )
 
