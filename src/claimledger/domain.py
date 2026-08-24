@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Literal
+from urllib.parse import urlparse
 
 from pydantic import AfterValidator, BaseModel, StringConstraints, model_validator
 
@@ -166,22 +167,79 @@ class OfficialProductCaution(BaseModel):
 
 
 SafetySignalKind = Literal["official_product_caution", "official_interaction_caution"]
+SafetyCautionCategory = Literal[
+    "consult_professional",
+    "allergen",
+    "avoid_excess_intake",
+    "adverse_event",
+]
+OfficialInteractionSourceId = Literal["MFDS"]
+OfficialInteractionSourceCategory = Literal["official_ingredient_guidance"]
+
+_CAUTION_CATEGORY_MARKERS: dict[SafetyCautionCategory, tuple[str, ...]] = {
+    "consult_professional": ("전문가와 상담",),
+    "allergen": ("알레르기", "함유"),
+    "avoid_excess_intake": ("과다 섭취",),
+    "adverse_event": ("이상 사례",),
+}
+_PROHIBITED_SAFETY_MESSAGE_PHRASES = (
+    "안전합니다",
+    "안전한 제품",
+    "상호작용 없음",
+    "상호작용이 없습니다",
+    "복용해도 됩니다",
+    "함께 복용해도 문제 없습니다",
+    "부작용이 없습니다",
+    "부작용 없다",
+    "효과가 있습니다",
+    "효과 있음",
+    "복용량",
+    "용량을 줄이",
+    "용량을 늘이",
+    "복용을 중단",
+    "safe",
+    "no interaction",
+    "can take",
+)
+
+
+def _validate_general_caution_text(category: SafetyCautionCategory, source_text: str) -> None:
+    normalized_text = source_text.casefold()
+    if any(phrase in normalized_text for phrase in _PROHIBITED_SAFETY_MESSAGE_PHRASES):
+        raise ValueError("safety signal message must not express clearance, claims, or recommendations")
+    if not any(marker in source_text for marker in _CAUTION_CATEGORY_MARKERS[category]):
+        raise ValueError("caution text does not match its validated caution category")
+
+
+def classify_general_caution(source_text: str) -> SafetyCautionCategory | None:
+    for category, markers in _CAUTION_CATEGORY_MARKERS.items():
+        if any(marker in source_text for marker in markers):
+            return category
+    return None
 
 
 class InteractionEvidence(BaseModel):
     model_config = {"frozen": True}
 
-    source_id: NonBlankText
+    source_id: OfficialInteractionSourceId
     source_url: NonBlankText | None = None
     official_identifier: NonBlankText | None = None
     retrieved_at: datetime
     source_text: LiteralSourceText
     product_report_no: NonBlankText | None = None
+    official_source_category: OfficialInteractionSourceCategory
+    official_source_verified: Literal[True]
+    caution_category: SafetyCautionCategory
 
     @model_validator(mode="after")
     def _require_source_reference(self) -> "InteractionEvidence":
         if self.source_url is None and self.official_identifier is None:
             raise ValueError("interaction evidence requires a source URL or official identifier")
+        if self.source_url is not None:
+            host = urlparse(self.source_url).hostname
+            if host is None or not (host == "foodsafetykorea.go.kr" or host.endswith(".foodsafetykorea.go.kr")):
+                raise ValueError("interaction evidence URL must belong to the registered official source")
+        _validate_general_caution_text(self.caution_category, self.source_text)
         return self
 
 
@@ -195,6 +253,7 @@ class SafetySignal(BaseModel):
     official_identifier: NonBlankText | None = None
     retrieved_at: datetime
     source_text: LiteralSourceText
+    caution_category: SafetyCautionCategory
     is_safety_clearance: Literal[False] = False
 
     @model_validator(mode="after")
@@ -202,18 +261,9 @@ class SafetySignal(BaseModel):
         if self.source_url is None and self.official_identifier is None:
             raise ValueError("safety signal requires a source URL or official identifier")
 
-        normalized_message = self.message.casefold()
-        prohibited_phrases = (
-            "안전합니다",
-            "상호작용 없음",
-            "복용해도 됩니다",
-            "부작용이 없습니다",
-            "safe",
-            "no interaction",
-            "can take",
-        )
-        if any(phrase in normalized_message for phrase in prohibited_phrases):
-            raise ValueError("safety signal message must not express safety clearance")
+        if self.message != self.source_text:
+            raise ValueError("safety signal message must preserve literal source text")
+        _validate_general_caution_text(self.caution_category, self.message)
         return self
 
 

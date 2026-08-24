@@ -6,6 +6,7 @@ from claimledger.domain import (
     OfficialFieldStatus,
     OfficialProductCaution,
     SafetySignal,
+    classify_general_caution,
 )
 
 
@@ -14,18 +15,22 @@ def build_safety_signals(
     product_cautions: Sequence[OfficialProductCaution],
     interaction_evidence: Sequence[InteractionEvidence],
 ) -> tuple[SafetySignal, ...]:
-    product_signals = tuple(
-        SafetySignal(
-            kind="official_product_caution",
-            message=caution.original_text,
-            source_id=product.product.source_id,
-            official_identifier=product.product.report_no,
-            retrieved_at=product.product.retrieved_at,
-            source_text=caution.original_text,
+    product_signals: list[SafetySignal] = []
+    for caution in product_cautions:
+        category = classify_general_caution(caution.original_text)
+        if caution.status is not OfficialFieldStatus.VERIFIED or category is None:
+            continue
+        product_signals.append(
+            SafetySignal(
+                kind="official_product_caution",
+                message=caution.original_text,
+                source_id=product.product.source_id,
+                official_identifier=product.product.report_no,
+                retrieved_at=product.product.retrieved_at,
+                source_text=caution.original_text,
+                caution_category=category,
+            )
         )
-        for caution in product_cautions
-        if caution.status is OfficialFieldStatus.VERIFIED
-    )
 
     report_no = product.product.report_no
     interaction_signals: list[SafetySignal] = []
@@ -41,7 +46,8 @@ def build_safety_signals(
                 official_identifier=evidence.official_identifier,
                 retrieved_at=evidence.retrieved_at,
                 source_text=evidence.source_text,
+                caution_category=evidence.caution_category,
             )
         )
 
-    return product_signals + tuple(interaction_signals)
+    return tuple(product_signals) + tuple(interaction_signals)
