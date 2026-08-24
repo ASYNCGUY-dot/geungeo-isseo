@@ -1,0 +1,32 @@
+[
+  {
+    "report_no": "TEST-OMEGA-001",
+    "name": "오메가3 1000mg",
+    "company": "테스트 제조사",
+    "primary_function": "혈행 개선에 도움을 줄 수 있음",
+    "raw_materials": "EPA 및 DHA 함유 유지",
+    "intake_method": "1일 1회, 1캡슐",
+    "source_id": "C003",
+    "retrieved_at": "2026-08-22T00:00:00+00:00"
+  },
+  {
+    "report_no": "TEST-OMEGA-002",
+    "name": "오메가3 1000mg",
+    "company": "다른 제조사",
+    "primary_function": "혈행 개선에 도움을 줄 수 있음",
+    "raw_materials": "EPA 및 DHA 함유 유지",
+    "intake_method": "1일 1회, 1캡슐",
+    "source_id": "C003",
+    "retrieved_at": "2026-08-22T00:00:00+00:00"
+  },
+  {
+    "report_no": "TEST-LUTEIN-003",
+    "name": "루테인 지아잔틴",
+    "company": "테스트 제조사",
+    "primary_function": "눈 건강에 도움을 줄 수 있음",
+    "raw_materials": "루테인지아잔틴복합추출물",
+    "intake_method": "1일 1회, 1캡슐",
+    "source_id": "C003",
+    "retrieved_at": "2026-08-22T00:00:00+00:00"
+  }
+]

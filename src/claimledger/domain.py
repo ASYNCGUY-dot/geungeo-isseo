@@ -60,6 +60,27 @@ class ProductCandidate(BaseModel):
     retrieved_at: datetime
 
 
+SearchMatchedField = Literal["report_no", "name", "company"]
+
+
+class ProductSearchDocument(BaseModel):
+    model_config = {"frozen": True}
+
+    product: ProductCandidate
+    normalized_report_no: str
+    normalized_name: str
+    normalized_company: str
+    normalization_version: Literal["product-search-v1"] = "product-search-v1"
+
+
+class ProductSearchResult(BaseModel):
+    model_config = {"frozen": True}
+
+    candidate: ProductCandidate
+    matched_fields: tuple[SearchMatchedField, ...]
+    normalization_version: Literal["product-search-v1"] = "product-search-v1"
+
+
 class ConfirmedProduct(BaseModel):
     product: ProductCandidate
     confirmed_by_user: Literal[True]
