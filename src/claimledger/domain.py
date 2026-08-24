@@ -15,6 +15,25 @@ class Verdict(StrEnum):
     CONTRADICTED = "contradicted"
 
 
+class EvaluationCase(BaseModel):
+    model_config = {"frozen": True}
+
+    case_id: NonBlankText
+    ingredient_group: NonBlankText
+    expected_verdict: Verdict
+    frozen: Literal[True]
+
+
+class EvaluationSummary(BaseModel):
+    model_config = {"frozen": True}
+
+    sample_size: int
+    false_clearance_rate: float
+    confirmed_recall: float
+    coverage: float
+    unverifiable_count: int
+
+
 class ProductCandidate(BaseModel):
     report_no: NonBlankText
     name: NonBlankText
