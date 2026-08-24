@@ -112,6 +112,24 @@ def test_probiotic_free_is_not_positive_ingredient_evidence() -> None:
     assert mapping.evidence == ()
 
 
+@pytest.mark.parametrize("raw_materials", ["non-lutein", "without lutein"])
+def test_english_absence_prefix_is_not_positive_ingredient_evidence(raw_materials: str) -> None:
+    mapping = map_ingredients(product(raw_materials=raw_materials))
+
+    assert mapping.status is MappingStatus.AMBIGUOUS
+    assert mapping.groups == ()
+    assert mapping.evidence == ()
+
+
+@pytest.mark.parametrize("raw_materials", ["cinnamon lutein", "cannon lutein"])
+def test_english_word_ending_in_non_does_not_suppress_lutein(raw_materials: str) -> None:
+    mapping = map_ingredients(product(raw_materials=raw_materials))
+
+    assert mapping.status is MappingStatus.VERIFIED
+    assert mapping.groups == (IngredientGroup.LUTEIN_ZEAXANTHIN,)
+    assert mapping.evidence[0].matched_text == "lutein"
+
+
 @pytest.mark.parametrize(
     ("raw_materials", "group"),
     [

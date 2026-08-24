@@ -17,8 +17,8 @@ _SOURCE_FIELDS: tuple[IngredientSourceField, ...] = (
 )
 _REQUIRED_OFFICIAL_FIELDS = ("primary_function", "raw_materials")
 _FLAVOR_SUFFIXES = ("맛", "향", "flavor", "flavour")
-_ABSENCE_PREFIXES = ("non", "without")
 _ABSENCE_SUFFIXES = ("free", "없음", "무첨가")
+_ABSENCE_PREFIX_PATTERN = re.compile(r"(?:^|[^A-Za-z0-9])(?:non|without)[ -]*$", re.IGNORECASE)
 _ALIASES: dict[IngredientGroup, tuple[str, ...]] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: (
         "루테인지아잔틴복합추출물",
@@ -54,10 +54,10 @@ def _alias_pattern(alias: str) -> re.Pattern[str]:
 
 
 def _is_disallowed_context(text: str, match_start: int, match_end: int) -> bool:
-    preceding_text = text[:match_start].rstrip(" -").casefold()
+    preceding_text = text[:match_start]
     following_text = text[match_end:].lstrip(" -").casefold()
     return (
-        preceding_text.endswith(_ABSENCE_PREFIXES)
+        _ABSENCE_PREFIX_PATTERN.search(preceding_text) is not None
         or following_text.startswith(_FLAVOR_SUFFIXES)
         or following_text.startswith(_ABSENCE_SUFFIXES)
     )
