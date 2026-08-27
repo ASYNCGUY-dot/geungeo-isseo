@@ -1,5 +1,9 @@
 # C003 Coverage Report
 
+> This file preserves the latest successful coverage measurement. It is not a
+> current export result. See [C003 Live Attempt Report](C003_LIVE_ATTEMPT.md)
+> for the latest live attempt status.
+
 - Audit timestamp: `2026-08-22T15:27:28.041740+00:00`
 - Source: `Food Safety Korea C003`
 - Status: `PASS`

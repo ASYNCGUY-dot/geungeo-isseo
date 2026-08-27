@@ -13,6 +13,9 @@ from claimledger.errors import DataSourceError
 from claimledger.sources.food_safety import C003Client, CoverageAudit, audit_products
 
 REPORT_PATH = Path(__file__).parents[1] / "docs" / "evidence" / "C003_COVERAGE_REPORT.md"
+ATTEMPT_REPORT_PATH = (
+    Path(__file__).parents[1] / "docs" / "evidence" / "C003_LIVE_ATTEMPT.md"
+)
 EXPORT_STAGING_DIR = Path(__file__).parents[1] / "build" / "c003-export"
 EXPORT_FIELDS = tuple(ExtensionReviewProduct.model_fields)
 
@@ -51,9 +54,10 @@ def render_report(
     total_count: int | None = None,
     audit: CoverageAudit | None = None,
     blocked_reason: str | None = None,
+    title: str = "C003 Coverage Report",
 ) -> str:
     lines = [
-        "# C003 Coverage Report",
+        f"# {title}",
         "",
         f"- Audit timestamp: `{retrieved_at.isoformat()}`",
         "- Source: `Food Safety Korea C003`",
@@ -106,6 +110,11 @@ def render_report(
 def write_report(content: str) -> None:
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(content, encoding="utf-8")
+
+
+def write_attempt_report(content: str) -> None:
+    ATTEMPT_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ATTEMPT_REPORT_PATH.write_text(content, encoding="utf-8")
 
 
 def write_products_jsonl(
@@ -175,21 +184,30 @@ def main() -> int:
             and not candidate_coverage_missing
             else "LIMITED"
         )
-        write_report(
+        report = render_report(
+            retrieved_at=retrieved_at,
+            status=status,
+            total_count=total_count,
+            audit=audit,
+        )
+        write_report(report)
+        write_attempt_report(
             render_report(
                 retrieved_at=retrieved_at,
                 status=status,
                 total_count=total_count,
                 audit=audit,
+                title="C003 Live Attempt Report",
             )
         )
         return 0
     except DataSourceError as error:
-        write_report(
+        write_attempt_report(
             render_report(
                 retrieved_at=retrieved_at,
                 status="BLOCKED",
                 blocked_reason=str(error),
+                title="C003 Live Attempt Report",
             )
         )
         print(f"C003 audit blocked: {error}")

@@ -165,6 +165,7 @@ def test_cli_export_products_writes_the_redacted_dataset(
         return 1, [product]
 
     monkeypatch.setattr(audit_c003, "REPORT_PATH", tmp_path / "coverage-report.md")
+    monkeypatch.setattr(audit_c003, "ATTEMPT_REPORT_PATH", tmp_path / "live-attempt.md")
     monkeypatch.setattr(audit_c003, "fetch_all_products", fetch_one_product)
     monkeypatch.setenv("FOOD_SAFETY_API_KEY", "test-only-placeholder")
     monkeypatch.setattr(
@@ -177,3 +178,30 @@ def test_cli_export_products_writes_the_redacted_dataset(
     assert json.loads(output_path.read_text(encoding="utf-8"))[
         "report_no"
     ] == "TEST-0001"
+    coverage_report = (tmp_path / "coverage-report.md").read_text(encoding="utf-8")
+    attempt_report = (tmp_path / "live-attempt.md").read_text(encoding="utf-8")
+    assert coverage_report.startswith("# C003 Coverage Report")
+    assert attempt_report.startswith("# C003 Live Attempt Report")
+    assert "Status: `LIMITED`" in coverage_report
+    assert "Status: `LIMITED`" in attempt_report
+
+
+def test_cli_blocked_attempt_preserves_previous_successful_report(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    coverage_report_path = tmp_path / "coverage-report.md"
+    attempt_report_path = tmp_path / "live-attempt.md"
+    previous_success = "# C003 Coverage Report\n\n- Status: `PASS`\n"
+    coverage_report_path.write_text(previous_success, encoding="utf-8")
+
+    monkeypatch.setattr(audit_c003, "REPORT_PATH", coverage_report_path)
+    monkeypatch.setattr(audit_c003, "ATTEMPT_REPORT_PATH", attempt_report_path)
+    monkeypatch.delenv("FOOD_SAFETY_API_KEY", raising=False)
+    monkeypatch.setattr(sys, "argv", ["audit_c003.py"])
+
+    assert audit_c003.main() == 1
+    assert coverage_report_path.read_text(encoding="utf-8") == previous_success
+    blocked_attempt = attempt_report_path.read_text(encoding="utf-8")
+    assert blocked_attempt.startswith("# C003 Live Attempt Report")
+    assert "Status: `BLOCKED`" in blocked_attempt
+    assert "C003 API key is required" in blocked_attempt
