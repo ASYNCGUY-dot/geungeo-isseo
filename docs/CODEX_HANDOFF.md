@@ -1,14 +1,15 @@
 # Codex 인수인계 — 근거영수증 / ClaimLedger
 
-- 기준일: `2026-08-24 Asia/Seoul`
+- 기준일: `2026-08-27 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **Phase 1 오프라인 제품 근거 기반 구현·검증 완료, 라이브 확장 원료 검토 대기**
+- 상태: **Phase 1 오프라인 제품 근거 기반 구현·검증 완료, C003 ERROR-503으로 라이브 확장 원료 검토 차단**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
 ## 현재 검증 결과
 
-본 문서와 final-fix 대상 tracked diff에 대해 다음 명령을 새로 실행했다.
+`7271074 fix: preserve successful C003 audit evidence`까지 포함한 현재 브랜치에 대해
+다음 명령을 새로 실행했다.
 
 ```cmd
 .venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
@@ -17,12 +18,13 @@ git diff --check
 git status --short --branch
 ```
 
-- 전체 테스트: `203 passed`
+- 전체 테스트: `204 passed`
 - 전체 커버리지: `96%` (`840` statements, `34` missed)
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
-- 검증 입력 상태: final-fix 대상 `12`개 tracked 파일만 수정됨. ignored SDD 보고서는
-  이 tracked 파일 수에 포함하지 않았다.
+- 핵심 불변식 묶음: `106 passed in 0.28s`
+- 라이브 export와 review-pack 경로: 둘 다 없음
+- 변경 diff와 최신 시도 보고서의 키·키 포함 URL 패턴 검사: 매치 없음
 
 핵심 불변식 묶음도 별도로 실행했다.
 
@@ -30,7 +32,7 @@ git status --short --branch
 .venv\Scripts\python.exe -m pytest tests\test_identity.py tests\test_ingredients.py tests\test_official.py tests\test_product_evidence.py tests\test_safety.py tests\test_evaluation_dataset.py -q
 ```
 
-결과는 `106 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
+결과는 `106 passed in 0.28s`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
 안전 승인 금지, 제품 근거 준비 상태, 평가 데이터 계약을 포함한다.
 
 ## Phase 1에서 구현된 범위
@@ -60,8 +62,10 @@ git status --short --branch
 
 ## 라이브 측정과 사람 검토 상태
 
-- `FOOD_SAFETY_API_KEY`: 현재 프로세스 환경에 없음
-- 라이브 C003 export: `NOT RUN`
+- 영구 프로세스 `FOOD_SAFETY_API_KEY`: 없음. 로컬 비추적 `.env`의 레거시
+  `FOODSAFETY_API_KEY` 값을 이번 하위 프로세스에서만 올바른 이름으로 연결함
+- 라이브 C003 export: `BLOCKED`; `2026-08-27 11:09-11:10 KST`에 세 번 시도했고
+  매번 공식 API가 `ERROR-503`과 주간 혼잡 안내를 반환함
 - 라이브 review-pack 생성: `NOT RUN`
 - 현재 export 건수·고유 신고번호 수·필드 완전성: `NOT MEASURED`
 - 비교군별 pool/sample 수와 `verified_mapping` / `ambiguous` / `unverifiable`
@@ -75,10 +79,15 @@ Phase 0의 `45,720 / 45,720` 수치는
 `2026-08-22T15:27:28.041740+00:00`의 별도 과거 측정이다. 이를 현재 Phase 1
 export 또는 확장 원료 검토 결과로 재사용하지 않는다.
 
+최신 차단 상태는
+[`docs/evidence/C003_LIVE_ATTEMPT.md`](evidence/C003_LIVE_ATTEMPT.md)에 별도로
+기록했다. `7271074`부터 실패 시도는 과거 성공 coverage 보고서를 덮어쓰지 않는다.
+
 ## 다음 검토 작업
 
-승인된 운영자가 키를 로컬 CMD 환경에만 설정한 뒤 다음을 실행한다. 키 값을 문서,
-로그, 명령 출력에 복사하지 않는다.
+식약처 메시지에 제시된 주간 혼잡 시간 이후 승인된 운영자가 키를 로컬 CMD 환경에만
+설정한 뒤 다음을 실행한다. 키 값을 문서, 로그, 명령 출력에 복사하지 않는다. 로컬
+비추적 `.env`의 레거시 변수명은 실행 전에 canonical `FOOD_SAFETY_API_KEY`로 바꾼다.
 
 ```cmd
 set FOOD_SAFETY_API_KEY=your-local-key
@@ -151,7 +160,7 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 
 ## 다음 코덱스에 전달할 한 문장
 
-> Phase 1 오프라인 제품 근거 기반은 203개 테스트와 핵심 불변식 106개로 검증됐지만,
-> 라이브 export와 100건 사람 검토는 아직 실행되지 않았다. 승인된 운영자 키로 redacted
-> review pack을 만든 뒤 측정값과 라벨을 채우기 전에는 확장 원료를 선택하거나 Phase 2를
-> 시작하지 말라.
+> Phase 1 오프라인 제품 근거 기반은 204개 테스트와 핵심 불변식 106개로 검증됐다.
+> 2026-08-27 라이브 C003는 세 번 모두 ERROR-503으로 차단됐으므로, 주간 혼잡 시간 이후
+> redacted export를 다시 만들고 100건 사람 라벨을 채우기 전에는 확장 원료를 선택하거나
+> Phase 2를 시작하지 말라.

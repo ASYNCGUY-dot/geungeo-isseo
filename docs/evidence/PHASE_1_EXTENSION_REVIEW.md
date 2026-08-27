@@ -1,9 +1,10 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-08-24 Asia/Seoul`
-- Live export status: `NOT RUN`
+- Status date: `2026-08-27 Asia/Seoul`
+- Live export status: `BLOCKED`
 - Live review-pack generation status: `NOT RUN`
-- Reason: `FOOD_SAFETY_API_KEY` was not present in the local process environment.
+- Reason: three C003 attempts at approximately `11:09-11:10 KST` all returned
+  official API `ERROR-503` with the daytime congestion notice.
 - Planned deterministic seed: `20260823`
 - Planned sample size: `20` per comparison group, `100` total
 - Human review status: `PENDING`; no live review pack was available for labeling.
@@ -38,6 +39,11 @@ No current C003 dataset was exported in this run, so current exported-record
 counts, uniqueness, field completeness, comparison-group pool sizes, and mapping
 state counts or rates are `NOT MEASURED`.
 
+The key was connected only inside the request subprocess and neither its value nor
+the key-bearing request URL was printed. The three service errors are recorded in
+[`C003_LIVE_ATTEMPT.md`](C003_LIVE_ATTEMPT.md). They do not prove successful key
+authorization or current dataset completeness.
+
 The dated Phase 0 report at `docs/evidence/C003_COVERAGE_REPORT.md` records a
 separate `2026-08-22T15:27:28.041740+00:00` measurement: 45,720 fetched records,
 45,720 unique report numbers, no duplicate report numbers, and completeness of
@@ -67,8 +73,11 @@ human review or prove clinical equivalence.
 
 ## Authorized operator commands
 
-Run these commands in **CMD** with a locally supplied key. Do not paste the key
-into a tracked file or command output.
+Retry outside the API's stated daytime congestion window. Run these commands in
+**CMD** with a locally supplied key. Do not paste the key into a tracked file or
+command output. The canonical variable name is `FOOD_SAFETY_API_KEY`; the local
+untracked file currently uses the legacy name `FOODSAFETY_API_KEY` and should be
+renamed locally before the next run.
 
 ```cmd
 set FOOD_SAFETY_API_KEY=your-local-key
