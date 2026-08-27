@@ -2,14 +2,13 @@
 
 - 기준일: `2026-08-27 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **Phase 1 오프라인 제품 근거 기반 구현·검증 완료, C003 ERROR-503으로 라이브 확장 원료 검토 차단**
+- 상태: **Phase 1 라이브 C003 export·review-pack 검증 완료, 사람 라벨 100건 검토 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
 ## 현재 검증 결과
 
-`7271074 fix: preserve successful C003 audit evidence`까지 포함한 현재 브랜치에 대해
-다음 명령을 새로 실행했다.
+현재 worktree 내용에 대해 다음 명령을 새로 실행했다.
 
 ```cmd
 .venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
@@ -22,8 +21,8 @@ git status --short --branch
 - 전체 커버리지: `96%` (`840` statements, `34` missed)
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
-- 핵심 불변식 묶음: `106 passed in 0.28s`
-- 라이브 export와 review-pack 경로: 둘 다 없음
+- 핵심 불변식 묶음: `106 passed`
+- 라이브 export와 review-pack 경로: 둘 다 로컬 ignored 경로에 존재
 - 변경 diff와 최신 시도 보고서의 키·키 포함 URL 패턴 검사: 매치 없음
 
 핵심 불변식 묶음도 별도로 실행했다.
@@ -32,7 +31,7 @@ git status --short --branch
 .venv\Scripts\python.exe -m pytest tests\test_identity.py tests\test_ingredients.py tests\test_official.py tests\test_product_evidence.py tests\test_safety.py tests\test_evaluation_dataset.py -q
 ```
 
-결과는 `106 passed in 0.28s`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
+결과는 `106 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
 안전 승인 금지, 제품 근거 준비 상태, 평가 데이터 계약을 포함한다.
 
 ## Phase 1에서 구현된 범위
@@ -62,32 +61,30 @@ git status --short --branch
 
 ## 라이브 측정과 사람 검토 상태
 
-- 영구 프로세스 `FOOD_SAFETY_API_KEY`: 없음. 로컬 비추적 `.env`의 레거시
-  `FOODSAFETY_API_KEY` 값을 이번 하위 프로세스에서만 올바른 이름으로 연결함
-- 라이브 C003 export: `BLOCKED`; `2026-08-27 11:09-11:10 KST`에 세 번 시도했고
-  매번 공식 API가 `ERROR-503`과 주간 혼잡 안내를 반환함
-- 라이브 review-pack 생성: `NOT RUN`
-- 현재 export 건수·고유 신고번호 수·필드 완전성: `NOT MEASURED`
-- 비교군별 pool/sample 수와 `verified_mapping` / `ambiguous` / `unverifiable`
-  건수·비율: `NOT MEASURED`
+- 조회 시각: `2026-08-27T12:42:29.050550+00:00` (`21:42:29 KST`)
+- 라이브 C003 export: `PASS`, API `INFO-000`, `45,907 / 45,907`
+- 신고번호: 고유 `45,907`, 중복 `0`
+- export 스키마: 모든 행이 승인된 정확히 6필드
+- 결측: 제품명 `0`, 업체명 `0`, 기능성 `100`, 원재료 `1`, 섭취방법 `409`
+- export 보안 검사: 실제 키 값·URL·응답 envelope·금지 메타데이터 검출 `0`
+- export SHA-256: `CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E`
+- 라이브 review-pack: `GENERATED_AND_VERIFIED`, 다섯 비교군 각 `20`, 총 `100`
+- 표본 신고번호: 그룹별 고유 `20`, 전체 고유 `100`
+- 표본 6필드 완전성: `100 / 100`
 - 계획 표본: 다섯 비교군별 `20`, 총 `100`, seed `20260823`
-- 100건 사람 라벨 검토: `PENDING`
+- 100건 사람 라벨 검토: `PENDING`, 유효 라벨 `0 / 100`
 - 선택된 확장 원료: 없음. 검토 전에는 추천 또는 최종 선택을 만들지 않는다.
 
-Phase 0의 `45,720 / 45,720` 수치는
-[`docs/evidence/C003_COVERAGE_REPORT.md`](evidence/C003_COVERAGE_REPORT.md)에 기록된
-`2026-08-22T15:27:28.041740+00:00`의 별도 과거 측정이다. 이를 현재 Phase 1
-export 또는 확장 원료 검토 결과로 재사용하지 않는다.
-
-최신 차단 상태는
+현재 성공 상태는
 [`docs/evidence/C003_LIVE_ATTEMPT.md`](evidence/C003_LIVE_ATTEMPT.md)에 별도로
-기록했다. `7271074`부터 실패 시도는 과거 성공 coverage 보고서를 덮어쓰지 않는다.
+기록했다. 비교군별 pool·mapping 상태·표본 상태와 파일 해시는
+[`docs/evidence/PHASE_1_EXTENSION_REVIEW.md`](evidence/PHASE_1_EXTENSION_REVIEW.md)에
+있다.
 
 ## 다음 검토 작업
 
-식약처 메시지에 제시된 주간 혼잡 시간 이후 승인된 운영자가 키를 로컬 CMD 환경에만
-설정한 뒤 다음을 실행한다. 키 값을 문서, 로그, 명령 출력에 복사하지 않는다. 로컬
-비추적 `.env`의 레거시 변수명은 실행 전에 canonical `FOOD_SAFETY_API_KEY`로 바꾼다.
+동일 데이터셋과 review-pack을 재생성해야 할 때만 승인된 운영자가 키를 로컬 CMD
+환경에 설정한 뒤 다음을 실행한다. 키 값을 문서, 로그, 명령 출력에 복사하지 않는다.
 
 ```cmd
 set FOOD_SAFETY_API_KEY=your-local-key
@@ -95,11 +92,11 @@ set FOOD_SAFETY_API_KEY=your-local-key
 .venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review --seed 20260823
 ```
 
-그 다음 다섯 비교군이 각각 고유 신고번호 `20`개를 제공하는지 확인하고, 여섯 export
-필드의 완전성 및 매핑 상태 건수·비율을 기록한다. 예상하지 않은 응답 envelope, 키,
-URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양성·구현 가능성에 대한 사람
-라벨 `100`건을 모두 수집한다. 모든 라벨이 유효할 때만 recommendation-only 결과를
-검토하며, 최종 확장 원료 선택은 별도 사용자 결정으로 남긴다.
+현재 다음 작업은 `build/extension-review/samples.csv`를 참고해
+`build/extension-review/review_labels.csv`의 광고 위험·기능 다양성·구현 가능성 점수,
+검토자, 검토 시각을 100건 모두 사람이 입력하는 것이다. 모든 라벨이 유효할 때만
+recommendation-only 결과를 검토하며, 최종 확장 원료 선택은 별도 사용자 결정으로
+남긴다.
 
 상세 상태는
 [`docs/evidence/PHASE_1_EXTENSION_REVIEW.md`](evidence/PHASE_1_EXTENSION_REVIEW.md)를
@@ -130,8 +127,8 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 
 - 라이브 경로 `data/c003-products.jsonl`은 `.gitignore`의 정확한 경로 규칙으로 보호된다.
 - `build/c003-export/`와 `build/extension-review/`은 `build/` 규칙으로 보호된다.
-- 검증 시 세 경로는 모두 없었고 `git ls-files -- data build` 및
-  `git ls-files '*.jsonl'` 결과는 비어 있었다.
+- 현재 두 생성 경로는 로컬에 존재하지만 `git status`에서 제외되며,
+  `git ls-files -- data build` 및 `git ls-files '*.jsonl'` 결과는 비어 있다.
 - tracked/staged 내용의 key-like assignment와 고신뢰 토큰 형식을 검사하고, fixture 및
   evidence 문서의 건강 상세정보·후기·Q&A 구조 필드를 별도로 검사한다. 허용된 빈 환경
   선언, 코드 변수, 합성 `test-key`, 문서 예시만 수동 확인 대상으로 남긴다.
@@ -161,6 +158,6 @@ URL, 사용자 데이터가 없는지 검사한 뒤 광고 위험·기능 다양
 ## 다음 코덱스에 전달할 한 문장
 
 > Phase 1 오프라인 제품 근거 기반은 204개 테스트와 핵심 불변식 106개로 검증됐다.
-> 2026-08-27 라이브 C003는 세 번 모두 ERROR-503으로 차단됐으므로, 주간 혼잡 시간 이후
-> redacted export를 다시 만들고 100건 사람 라벨을 채우기 전에는 확장 원료를 선택하거나
-> Phase 2를 시작하지 말라.
+> 2026-08-27 21:42 KST 라이브 C003 `45,907 / 45,907`건과 5×20 review-pack도
+> 검증됐지만 사람 라벨은 `0 / 100`이다. 100건을 모두 사람이 검토하기 전에는 확장
+> 원료를 선택하거나 Phase 2를 시작하지 말라.
