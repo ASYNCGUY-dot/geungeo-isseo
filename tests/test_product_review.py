@@ -19,6 +19,8 @@ from claimledger.product_review import (
     validate_product_review_pack,
     wilson_interval,
 )
+from scripts import validate_product_review as validate_review_module
+from scripts.validate_product_review import main as validate_review_main
 
 NOW = datetime(2026, 8, 28, 9, 0, tzinfo=UTC)
 
@@ -984,3 +986,117 @@ def test_invalid_status_cannot_claim_zero_review_progress() -> None:
             pending_label_count=0,
             issues=(ReviewIssue(code="bad_pack", message="pack is invalid"),),
         )
+
+
+def test_cli_returns_two_for_pending_without_writing_summary(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pack_dir, source_export = write_valid_blank_pack(tmp_path)
+    output = tmp_path / "summary.json"
+
+    exit_code = validate_review_main(
+        [
+            "--pack-dir",
+            str(pack_dir),
+            "--source-export",
+            str(source_export),
+            "--summary-output",
+            str(output),
+        ],
+        validated_at=NOW,
+    )
+
+    stdout = capsys.readouterr().out
+    assert exit_code == 2
+    assert json.loads(stdout)["status"] == "PENDING"
+    assert not output.exists()
+
+
+def test_cli_returns_three_for_invalid_without_writing_summary(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pack_dir, source_export = write_valid_blank_pack(tmp_path)
+    (pack_dir / "unexpected.txt").write_text("unexpected", encoding="utf-8")
+    output = tmp_path / "summary.json"
+
+    exit_code = validate_review_main(
+        [
+            "--pack-dir",
+            str(pack_dir),
+            "--source-export",
+            str(source_export),
+            "--summary-output",
+            str(output),
+        ],
+        validated_at=NOW,
+    )
+
+    stdout = capsys.readouterr().out
+    assert exit_code == 3
+    assert json.loads(stdout)["status"] == "INVALID"
+    assert not output.exists()
+
+
+def test_cli_returns_zero_and_atomically_writes_complete_summary(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pack_dir, source_export = write_completed_pack(tmp_path)
+    output = tmp_path / "nested" / "summary.json"
+
+    exit_code = validate_review_main(
+        [
+            "--pack-dir",
+            str(pack_dir),
+            "--source-export",
+            str(source_export),
+            "--summary-output",
+            str(output),
+        ],
+        validated_at=NOW,
+    )
+
+    stdout = capsys.readouterr().out
+    saved_text = output.read_text(encoding="utf-8")
+    saved = json.loads(saved_text)
+    assert exit_code == 0
+    assert saved_text == stdout
+    assert saved["status"] == "COMPLETE"
+    assert saved["advertising_evidence_status"] == "NOT_MEASURED"
+    assert saved["extension_recommendation_status"] == "BLOCKED"
+    assert saved["finalized"] is False
+    assert "name" not in saved_text
+    assert "raw_materials" not in saved_text
+    assert "review_note" not in saved_text
+    assert list(output.parent.glob(".summary.json.*.tmp")) == []
+
+
+def test_cli_cleans_temporary_summary_when_atomic_replace_fails(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pack_dir, source_export = write_completed_pack(tmp_path)
+    output = tmp_path / "summary.json"
+
+    def fail_replace(source: Path, destination: Path) -> None:
+        raise OSError(f"simulated replace failure: {source.name} -> {destination.name}")
+
+    monkeypatch.setattr(validate_review_module.os, "replace", fail_replace)
+
+    with pytest.raises(OSError, match="simulated replace failure"):
+        validate_review_main(
+            [
+                "--pack-dir",
+                str(pack_dir),
+                "--source-export",
+                str(source_export),
+                "--summary-output",
+                str(output),
+            ],
+            validated_at=NOW,
+        )
+
+    assert not output.exists()
+    assert list(tmp_path.glob(".summary.json.*.tmp")) == []
