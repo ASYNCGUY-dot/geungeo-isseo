@@ -1,13 +1,15 @@
-# Codex 인수인계 — 근거영수증 / ClaimLedger
+# Codex 인수인계 — 근거있어
 
 - 기준 시각: 2026-08-22 Asia/Seoul
 - 상태: 기획 확정, 애플리케이션 구현 전
-- 다음 작업 위치: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
+- 다음 작업 위치: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 
 ## 확정된 결정
 
 - 3차 프로젝트 주제는 **미디어 검수 에이전트**다.
-- 제품 작업명은 **근거영수증**, 영문·저장소명은 **ClaimLedger**다.
+- 소비자 서비스·프로젝트명은 **근거있어**다.
+- 주장별 대표 결과물은 **근거영수증**, 내부 검증엔진은 **ClaimLedger**다.
+- 로컬 폴더와 향후 원격 저장소 슬러그는 `geungeo-isseo`다.
 - MVP는 건강기능식품 광고의 주장과 공식·과학적 근거의 일치 여부만 다룬다.
 - 개인 맞춤 효능·안전·상호작용·진단 기능은 현재 범위에서 제외한다.
 - LLM은 주장을 추출하지만 최종 판정은 규칙 엔진이 수행한다.
@@ -61,14 +63,15 @@
 - 식품안전나라 C003·I2710 활용신청 승인 여부
 - 개인 프로젝트 제출 파일명의 `팀명` 자리에 사용할 명칭
 - 초기 후보 원료 3종을 그대로 사용할지 여부
-- 프로젝트 원격 저장소를 private으로 만들 GitHub 계정·리포 이름
+- 프로젝트 원격 저장소를 private으로 만들 GitHub 계정과 생성 시점. 후보 리포 이름은
+  `geungeo-isseo`로 확정했다.
 
 이 중 Phase 0을 직접 막는 것은 C003 접근 상태뿐이다. 나머지는 코드 없이 먼저 추측하지 않고 필요한 시점에 사용자에게 한 번에 하나씩 확인한다.
 
 ## 관련 경로
 
 - 복습 저장소: `C:\WORK\WORK\donga-review`
-- 프로젝트 저장소: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
+- 프로젝트 저장소: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 - AI Agent Wiki: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
 - 위키 데이터 실측: `AI-Sessions/wiki/sources/건기식-프로젝트-데이터소스-실측.md`
 - 위키 프로젝트 결정: `AI-Sessions/wiki/decisions/3차-프로젝트-주제-검토-2026-08-22.md`

@@ -1,17 +1,23 @@
-# 근거영수증 / ClaimLedger
+# 근거있어
 
-건강기능식품 광고가 한 주장을 **공식 제품 정보와 선별된 과학적 근거에 대조하여, 확인된 범위와 확인할 수 없는 범위를 함께 보여주는 정확도 우선 검수 서비스**입니다.
+**건강광고, 말보다 근거부터.**
+
+근거있어는 건강기능식품 광고가 한 주장을 **공식 제품 정보와 선별된 과학적 근거에
+대조하여, 확인된 범위와 확인할 수 없는 범위를 주장별 근거영수증으로 보여주는 정확도
+우선 검수 서비스**입니다. `ClaimLedger`는 내부 검증엔진 이름입니다.
 
 ## 현재 상태
 
 - 2026-08-22: 3차 프로젝트 주제와 제품 원칙 확정
+- 2026-08-28: 소비자 서비스·프로젝트명을 **근거있어**로 확정했습니다. 대표 결과물은
+  **근거영수증**, 내부 검증엔진은 **ClaimLedger**, 저장소 슬러그는 `geungeo-isseo`입니다.
 - 현재 저장소에는 승인된 기획, 의사결정 기록, 코덱스 인수인계, Phase 0 구현 계획만 있습니다.
 - 애플리케이션 코드는 아직 작성하지 않았습니다.
 - 복습 코드는 별도 저장소 `C:\WORK\WORK\donga-review`에 유지합니다.
 
 ## 코덱스에서 이어가기
 
-1. 코덱스에서 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1` 폴더를 엽니다.
+1. 코덱스에서 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo` 폴더를 엽니다.
 2. [AGENTS.md](AGENTS.md)를 먼저 읽습니다.
 3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 현재 상태와 첫 작업을 확인합니다.
 4. [Phase 0 구현 계획](docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md)을 순서대로 실행합니다.
