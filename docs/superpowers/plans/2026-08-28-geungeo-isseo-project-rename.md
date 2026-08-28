@@ -365,3 +365,22 @@ rg -n '_persnal V1|근거영수증 / ClaimLedger|근거영수증-claimledger|202
 Expected: old path `False`, new path `True`. 마지막 `rg` 결과는 이전 이름과 경로를
 설명하는 승인된 역사 기록뿐이며 현재 README, handoff, AGENTS, index, workspace 포인터에는
 일치가 없다.
+
+## Execution Record — 2026-08-29
+
+- 브랜드 설계: `ecf765c`
+- 이름 변경 계획: `ebea0d8`
+- feature 문서·메타데이터: `7be7b33`
+- main 현재 문서: `3892928`
+- 위키 파일명·링크: `9d57f19`
+- 실제 루트: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
+- 이전 `_persnal V1` 경로: 존재하지 않음
+- worktree 복구: main `3892928`, `phase-0-c003-data-gate` `7be7b33`; 두 경로 모두
+  `geungeo-isseo` 아래에서 clean
+- remote: 구성되지 않음
+- Git 객체 검사: `git fsck --full` exit `0`; dangling blob만 보고됐고 손상 객체는 없음
+- 첫 post-move 테스트: editable `.pth`의 이전 절대경로 때문에 수집 오류 14건
+- 원인 복구: `.venv`의 `claimledger 0.1.0` editable 설치를 제거하고
+  `geungeo-isseo 0.1.0`을 `--no-deps --no-build-isolation --editable .`로 재설치
+- 복구 검증: site-packages 이전 경로 `0`, `claimledger`는 새 `src/claimledger`에서 import,
+  전체 `280 passed`, `1,260` statements / `40` missed (`96.83%`), Ruff 통과

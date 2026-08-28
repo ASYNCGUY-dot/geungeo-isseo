@@ -1,6 +1,6 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-08-28 Asia/Seoul`
+- 기준일: `2026-08-29 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
 - 상태: **C003 사람 검토 v2 pack·검증 CLI 준비 완료, 사람 라벨 100건 검토 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
@@ -26,6 +26,12 @@ git status --short --branch
 - v2 네 파일의 고신뢰 key/token, URL, C003 envelope, 금지 메타데이터 패턴: 각 `0`
 - 메인 checkout의 로컬 `.env`에서 실제 키 값 `1`개를 값 비노출 방식으로 대조한 결과,
   v2 네 파일 내 동일 문자열: `0`
+- 2026-08-29 저장소 루트를 `_persnal V1`에서 `geungeo-isseo`로 이동하고
+  `git worktree repair`로 main·feature 양방향 절대경로를 복구했다.
+- 최초 이동 후 테스트는 `.venv`의 기존 `__editable__.claimledger-0.1.0.pth`가 이전
+  절대경로를 가리켜 수집 오류 14건으로 실패했다. 기존 editable 배포를 제거하고
+  `pip install --no-deps --no-build-isolation --editable .`로 재설치한 뒤 이전 경로 0건,
+  `claimledger` 새 경로 import, 전체 `280 passed`, Ruff 통과를 새로 확인했다.
 
 핵심 불변식 묶음도 별도로 실행했다.
 
