@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 import subprocess
 import sys
@@ -17,6 +18,8 @@ from claimledger.extension_selection import (
     score_extension_candidate,
     select_review_sample,
 )
+from claimledger.product_review import ProductReviewManifest, ReviewGroupCounts
+from scripts import build_extension_review as review_builder
 from scripts.audit_c003 import write_products_jsonl
 from scripts.build_extension_review import build_samples, load_products
 
@@ -314,7 +317,12 @@ def write_jsonl(path: Path, records: list[dict[str, object]]) -> None:
     )
 
 
-def run_cli(input_path: Path, output_dir: Path) -> subprocess.CompletedProcess[str]:
+def run_cli(
+    input_path: Path,
+    output_dir: Path,
+    *,
+    seed: int = 20260823,
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [
             sys.executable,
@@ -324,7 +332,7 @@ def run_cli(input_path: Path, output_dir: Path) -> subprocess.CompletedProcess[s
             "--output-dir",
             str(output_dir),
             "--seed",
-            "20260823",
+            str(seed),
         ],
         cwd=Path(__file__).parents[1],
         check=False,
@@ -416,13 +424,37 @@ def test_cli_builds_reproducible_20_per_group_review_files(tmp_path: Path) -> No
     assert second.returncode == 0, second.stderr
     assert {path.name for path in first_output.iterdir()} == {
         "README.md",
-        "review_labels.csv",
+        "manifest.json",
+        "product_review_labels.csv",
         "samples.csv",
     }
     assert all(
         (first_output / name).read_bytes() == (second_output / name).read_bytes()
-        for name in ("README.md", "review_labels.csv", "samples.csv")
+        for name in (
+            "README.md",
+            "manifest.json",
+            "product_review_labels.csv",
+            "samples.csv",
+        )
     )
+    manifest = json.loads((first_output / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest == {
+        "contract_version": "c003-product-review-v2",
+        "group_counts": {
+            "coenzyme_q10": 20,
+            "magnesium": 20,
+            "milk_thistle": 20,
+            "red_ginseng": 20,
+            "vitamin_d": 20,
+        },
+        "mapping_rule_versions": ["ingredient-map-v1"],
+        "sample_count": 100,
+        "samples_sha256": hashlib.sha256(
+            (first_output / "samples.csv").read_bytes()
+        ).hexdigest().upper(),
+        "seed": 20260823,
+        "source_export_sha256": hashlib.sha256(input_path.read_bytes()).hexdigest().upper(),
+    }
     with (first_output / "samples.csv").open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 100
@@ -430,9 +462,24 @@ def test_cli_builds_reproducible_20_per_group_review_files(tmp_path: Path) -> No
         group.value: len({row["report_no"] for row in rows if row["group"] == group.value})
         for group in COMPARISON_GROUPS
     } == {group.value: 20 for group in COMPARISON_GROUPS}
+    with (first_output / "product_review_labels.csv").open(
+        encoding="utf-8", newline=""
+    ) as handle:
+        assert next(csv.reader(handle)) == [
+            "group",
+            "report_no",
+            "mapping_verdict",
+            "mapping_reason_code",
+            "function_text_status",
+            "function_reason_code",
+            "review_note",
+            "reviewer",
+            "reviewed_at_iso8601",
+        ]
     summary = (first_output / "README.md").read_text(encoding="utf-8")
-    assert "recommendation only" in summary.lower()
-    assert "finalized extension ingredients: none" in summary.lower()
+    assert "advertising evidence: NOT_MEASURED" in summary
+    assert "recommendation: BLOCKED" in summary
+    assert "finalized: false" in summary
 
 
 def test_cli_neutralizes_formula_prefixes_without_changing_sampled_source_text(
@@ -471,7 +518,7 @@ def test_cli_neutralizes_formula_prefixes_without_changing_sampled_source_text(
         "mapping_status": "verified_mapping",
         "mapping_rule_version": "ingredient-map-v1",
     }
-    with (output_dir / "review_labels.csv").open(
+    with (output_dir / "product_review_labels.csv").open(
         encoding="utf-8", newline=""
     ) as handle:
         label_rows = list(csv.DictReader(handle))
@@ -479,6 +526,80 @@ def test_cli_neutralizes_formula_prefixes_without_changing_sampled_source_text(
 
     source_record = json.loads(input_path.read_text(encoding="utf-8").splitlines()[0])
     assert source_record == records[0]
+
+
+def test_cli_refuses_to_overwrite_an_existing_review_pack(tmp_path: Path) -> None:
+    input_path = tmp_path / "products.jsonl"
+    output_dir = tmp_path / "output"
+    write_jsonl(input_path, jsonl_records())
+    output_dir.mkdir()
+    (output_dir / "keep.txt").write_text("preserve", encoding="utf-8")
+
+    result = run_cli(input_path, output_dir)
+
+    assert result.returncode != 0
+    assert "output directory already exists" in result.stderr
+    assert (output_dir / "keep.txt").read_text(encoding="utf-8") == "preserve"
+
+
+def test_write_failure_removes_the_new_incomplete_review_pack(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    input_path = tmp_path / "products.jsonl"
+    output_dir = tmp_path / "output"
+    write_jsonl(input_path, jsonl_records())
+    samples = build_samples(load_products(input_path), seed=20260823)
+    real_write_csv = review_builder._write_csv
+
+    def fail_label_write(
+        path: Path,
+        fields: tuple[str, ...],
+        rows: list[dict[str, object]],
+    ) -> None:
+        if path.name == "product_review_labels.csv":
+            raise OSError("simulated label write failure")
+        real_write_csv(path, fields, rows)
+
+    monkeypatch.setattr(review_builder, "_write_csv", fail_label_write)
+
+    with pytest.raises(review_builder.ReviewBuildError, match="could not write review pack"):
+        review_builder.write_review_pack(
+            output_dir,
+            samples,
+            20260823,
+            source_export_path=input_path,
+        )
+
+    assert not output_dir.exists()
+
+
+def test_cli_rejects_noncanonical_v2_seed(tmp_path: Path) -> None:
+    input_path = tmp_path / "products.jsonl"
+    output_dir = tmp_path / "output"
+    write_jsonl(input_path, jsonl_records())
+
+    result = run_cli(input_path, output_dir, seed=1)
+
+    assert result.returncode != 0
+    assert "v2 seed must be 20260823" in result.stderr
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize(
+    "rule_versions",
+    [(), ("ingredient-map-v2", "ingredient-map-v1"), ("ingredient-map-v1",) * 2],
+)
+def test_product_review_manifest_rejects_invalid_rule_version_sets(
+    rule_versions: tuple[str, ...],
+) -> None:
+    with pytest.raises(ValidationError, match="mapping rule versions"):
+        ProductReviewManifest(
+            group_counts=ReviewGroupCounts(),
+            samples_sha256="A" * 64,
+            source_export_sha256="B" * 64,
+            mapping_rule_versions=rule_versions,
+        )
 
 
 @pytest.mark.parametrize("failure", ["duplicate", "secret", "malformed", "undersized"])
@@ -527,6 +648,25 @@ def test_review_label_fixture_declares_all_required_human_fields() -> None:
         "advertising_risk_score_1_to_5",
         "functional_diversity_score_1_to_5",
         "implementation_feasibility_score_1_to_5",
+        "reviewer",
+        "reviewed_at_iso8601",
+    ]
+
+
+def test_product_review_label_fixture_declares_the_v2_human_contract() -> None:
+    fixture = Path(__file__).parent / "fixtures" / "product_review_labels.csv"
+
+    with fixture.open(encoding="utf-8", newline="") as handle:
+        header = next(csv.reader(handle))
+
+    assert header == [
+        "group",
+        "report_no",
+        "mapping_verdict",
+        "mapping_reason_code",
+        "function_text_status",
+        "function_reason_code",
+        "review_note",
         "reviewer",
         "reviewed_at_iso8601",
     ]

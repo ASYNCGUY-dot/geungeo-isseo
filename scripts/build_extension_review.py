@@ -2,6 +2,7 @@ import argparse
 import csv
 import json
 import re
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,7 @@ from claimledger.extension_selection import (
     ReviewSample,
     select_review_sample,
 )
+from claimledger.product_review import build_product_review_manifest
 
 SAMPLE_FIELDS = (
     "seed",
@@ -28,12 +30,14 @@ SAMPLE_FIELDS = (
     "mapping_status",
     "mapping_rule_version",
 )
-REVIEW_LABEL_FIELDS = (
+PRODUCT_REVIEW_LABEL_FIELDS = (
     "group",
     "report_no",
-    "advertising_risk_score_1_to_5",
-    "functional_diversity_score_1_to_5",
-    "implementation_feasibility_score_1_to_5",
+    "mapping_verdict",
+    "mapping_reason_code",
+    "function_text_status",
+    "function_reason_code",
+    "review_note",
     "reviewer",
     "reviewed_at_iso8601",
 )
@@ -154,55 +158,98 @@ def _write_csv(path: Path, fields: tuple[str, ...], rows: list[dict[str, object]
         writer.writerows(rows)
 
 
-def write_review_pack(output_dir: Path, samples: tuple[ReviewSample, ...], seed: int) -> None:
-    output_dir.mkdir(parents=True, exist_ok=True)
-    _write_csv(
-        output_dir / "samples.csv",
-        SAMPLE_FIELDS,
-        [_sample_row(sample, seed) for sample in samples],
-    )
-    _write_csv(
-        output_dir / "review_labels.csv",
-        REVIEW_LABEL_FIELDS,
-        [
-            {
-                "group": sample.group.value,
-                "report_no": _spreadsheet_safe(sample.report_no),
-                "advertising_risk_score_1_to_5": "",
-                "functional_diversity_score_1_to_5": "",
-                "implementation_feasibility_score_1_to_5": "",
-                "reviewer": "",
-                "reviewed_at_iso8601": "",
-            }
-            for sample in samples
-        ],
-    )
+def write_review_pack(
+    output_dir: Path,
+    samples: tuple[ReviewSample, ...],
+    seed: int,
+    *,
+    source_export_path: Path,
+) -> None:
+    if output_dir.exists():
+        raise ReviewBuildError(f"output directory already exists: {output_dir}")
+    if seed != DEFAULT_REVIEW_SEED:
+        raise ReviewBuildError(f"v2 seed must be {DEFAULT_REVIEW_SEED}")
 
-    group_lines = "\n".join(
-        f"- `{group.value}`: {sum(sample.group is group for sample in samples)} unique samples"
-        for group in COMPARISON_GROUPS
-    )
-    readme = f"""# Extension Ingredient Review Pack
+    output_dir.mkdir(parents=True)
+    try:
+        samples_path = output_dir / "samples.csv"
+        _write_csv(
+            samples_path,
+            SAMPLE_FIELDS,
+            [_sample_row(sample, seed) for sample in samples],
+        )
+        _write_csv(
+            output_dir / "product_review_labels.csv",
+            PRODUCT_REVIEW_LABEL_FIELDS,
+            [
+                {
+                    "group": sample.group.value,
+                    "report_no": _spreadsheet_safe(sample.report_no),
+                    "mapping_verdict": "",
+                    "mapping_reason_code": "",
+                    "function_text_status": "",
+                    "function_reason_code": "",
+                    "review_note": "",
+                    "reviewer": "",
+                    "reviewed_at_iso8601": "",
+                }
+                for sample in samples
+            ],
+        )
+        manifest = build_product_review_manifest(
+            samples_path,
+            source_export_path,
+            samples,
+            seed,
+        )
+        (output_dir / "manifest.json").write_text(
+            json.dumps(
+                manifest.model_dump(mode="json"),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+
+        group_lines = "\n".join(
+            f"- `{group.value}`: "
+            f"{sum(sample.group is group for sample in samples)} unique samples"
+            for group in COMPARISON_GROUPS
+        )
+        readme = f"""# C003 Product Review Pack v2
 
 - Seed: `{seed}`
 - Sample size: `{DEFAULT_REVIEW_SIZE}` per comparison group
 - Total samples: `{len(samples)}`
-- Review status: pending human labels
-- Recommendation status: recommendation only
-- Finalized extension ingredients: none
+- Review status: PENDING
+- advertising evidence: NOT_MEASURED
+- recommendation: BLOCKED
+- finalized: false
 
 ## Sample counts
 
 {group_lines}
 
-## Review contract
+## Human review contract
 
-Enter integer scores from 1 through 5 for advertising risk, functional diversity,
-and implementation feasibility. Every scored row also requires a reviewer and an
-ISO 8601 reviewed-at timestamp. Recommendations may be produced only from reviewed
-scores; they never finalize either extension ingredient.
+Review each product's ingredient-group mapping and official function text. A complete
+row requires both decisions, their reason codes, a reviewer identifier, and a timezone-
+aware ISO 8601 timestamp. This pack does not measure advertising evidence and cannot
+select or finalize an extension ingredient.
 """
-    (output_dir / "README.md").write_text(readme, encoding="utf-8", newline="\n")
+        (output_dir / "README.md").write_text(
+            readme,
+            encoding="utf-8",
+            newline="\n",
+        )
+    except Exception as exc:
+        shutil.rmtree(output_dir)
+        if isinstance(exc, ReviewBuildError):
+            raise
+        raise ReviewBuildError(f"could not write review pack: {exc}") from exc
 
 
 def parse_args() -> argparse.Namespace:
@@ -218,7 +265,12 @@ def main() -> int:
     try:
         products = load_products(args.input)
         samples = build_samples(products, args.seed)
-        write_review_pack(args.output_dir, samples, args.seed)
+        write_review_pack(
+            args.output_dir,
+            samples,
+            args.seed,
+            source_export_path=args.input,
+        )
     except ReviewBuildError as exc:
         raise SystemExit(f"error: {exc}") from exc
     return 0

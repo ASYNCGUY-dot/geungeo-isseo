@@ -1,9 +1,13 @@
+import hashlib
+from collections import Counter
 from enum import StrEnum
+from pathlib import Path
+from typing import Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 from claimledger.domain import IngredientGroup, NonBlankText
-from claimledger.extension_selection import COMPARISON_GROUPS
+from claimledger.extension_selection import COMPARISON_GROUPS, ReviewSample
 
 _SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
 
@@ -83,3 +87,68 @@ class ProductReviewLabel(BaseModel):
         _reject_formula_prefix(self.reviewer, "reviewer")
         _reject_formula_prefix(self.review_note, "review_note")
         return self
+
+
+class ReviewGroupCounts(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    milk_thistle: Literal[20] = 20
+    vitamin_d: Literal[20] = 20
+    red_ginseng: Literal[20] = 20
+    coenzyme_q10: Literal[20] = 20
+    magnesium: Literal[20] = 20
+
+
+class ProductReviewManifest(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    contract_version: Literal["c003-product-review-v2"] = "c003-product-review-v2"
+    seed: Literal[20260823] = 20260823
+    sample_count: Literal[100] = 100
+    group_counts: ReviewGroupCounts
+    samples_sha256: str = Field(pattern=r"^[0-9A-F]{64}$")
+    source_export_sha256: str = Field(pattern=r"^[0-9A-F]{64}$")
+    mapping_rule_versions: tuple[NonBlankText, ...]
+
+    @model_validator(mode="after")
+    def _require_sorted_unique_rule_versions(self) -> "ProductReviewManifest":
+        if not self.mapping_rule_versions:
+            raise ValueError("mapping rule versions must not be empty")
+        if self.mapping_rule_versions != tuple(sorted(set(self.mapping_rule_versions))):
+            raise ValueError("mapping rule versions must be sorted and unique")
+        return self
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def build_product_review_manifest(
+    samples_path: Path,
+    source_export_path: Path,
+    samples: tuple[ReviewSample, ...],
+    seed: int,
+) -> ProductReviewManifest:
+    if seed != 20260823:
+        raise ValueError("v2 seed must be 20260823")
+    if len(samples) != 100:
+        raise ValueError("v2 review pack requires exactly 100 samples")
+
+    counts = Counter(sample.group for sample in samples)
+    expected_counts = Counter({group: 20 for group in COMPARISON_GROUPS})
+    if counts != expected_counts:
+        raise ValueError("v2 review pack requires exactly 20 samples per comparison group")
+
+    rule_versions = tuple(sorted({sample.mapping_rule_version for sample in samples}))
+    return ProductReviewManifest(
+        group_counts=ReviewGroupCounts(
+            **{group.value: counts[group] for group in COMPARISON_GROUPS}
+        ),
+        samples_sha256=sha256_file(samples_path),
+        source_export_sha256=sha256_file(source_export_path),
+        mapping_rule_versions=rule_versions,
+    )
