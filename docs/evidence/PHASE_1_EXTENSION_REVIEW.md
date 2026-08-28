@@ -1,11 +1,13 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-08-27 21:46 Asia/Seoul`
+- Status date: `2026-08-28 Asia/Seoul`
 - Live export status: `PASS`
-- Live review-pack generation status: `GENERATED_AND_VERIFIED`
+- Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
 - Planned sample size: `20` per comparison group, `100` total
 - Human review status: `PENDING`; valid human labels are `0 / 100`.
+- Advertising evidence status: `NOT_MEASURED`
+- Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
 
 ## Data boundary
@@ -18,6 +20,11 @@ the same project volume and already ignored by that rule, before `os.replace`
 atomically replaces the final ignored JSONL path. Normal failures remove their
 temporary file and clean the staging directory when it is empty; crash remnants
 remain ignored under `build/`.
+
+The historical v1 pack remains at `build/extension-review/`. The current v2
+pack is `build/extension-review-v2/`. Both are ignored generated artifacts; v1
+is retained for audit history and must not be treated as the current review
+contract.
 
 Each exported JSONL object is limited to these six fields:
 
@@ -72,7 +79,12 @@ clinical equivalence or product efficacy.
 only when an explicit reviewed alias assigns that group. The full-dataset table
 above retains the one globally unverifiable record.
 
-## Deterministic sample measurements
+## Historical v1 deterministic sample measurements
+
+This section records the preserved v1 artifact. Its 1-through-5 advertising
+risk, functional diversity, implementation feasibility, and recommendation-only
+contract is superseded by v2 and is not an authorized input to the current
+review.
 
 All sample rows use seed `20260823`, all 100 group/report pairs are unique, and
 the 100 sampled report numbers are globally unique. Every sampled row has all six
@@ -86,7 +98,7 @@ fields populated and matches the exported source row and recomputed mapping.
 | `coenzyme_q10` | 20 | 20 | 9 | 11 | 20 |
 | `magnesium` | 20 | 20 | 4 | 16 | 20 |
 
-Generated-file hashes:
+Historical v1 generated-file hashes:
 
 | File | Bytes | SHA-256 |
 |---|---:|---|
@@ -99,32 +111,89 @@ contracts, all 100 label rows correspond to the 100 sample rows, every human
 label field is blank, and no actual key value, URL, C003 envelope, or prohibited
 metadata was detected.
 
+## Product review v2 evidence — 2026-08-28
+
+The current v2 pack was generated offline from the verified local six-field
+export with seed `20260823`. No API or network call was used. It contains
+exactly four files:
+
+| File | Bytes | SHA-256 |
+|---|---:|---|
+| `README.md` | 743 | `4F5F610A64A7E90DDED10E3C468D9E330CE2D18092315A0DB0BABBEAB5BC4238` |
+| `manifest.json` | 471 | `0E3086DF9F2A8895D7845E8B24D00DBE18A43CEEE9C6DC92CBE9095FD873D442` |
+| `product_review_labels.csv` | 3,499 | `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8` |
+| `samples.csv` | 119,375 | `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C` |
+
+The manifest was parsed and revalidated with these observed values:
+
+- contract version: `c003-product-review-v2`
+- seed: `20260823`
+- sample count: `100`
+- group counts: `milk_thistle=20`, `vitamin_d=20`, `red_ginseng=20`,
+  `coenzyme_q10=20`, `magnesium=20`
+- mapping rule versions: `ingredient-map-v1`
+- source export SHA-256:
+  `CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E`
+- samples SHA-256:
+  `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C`
+
+The v2 samples hash is byte-for-byte identical to the preserved v1 samples
+hash. The v1 files remain present with their recorded hashes unchanged.
+
+The real v2 validator returned process exit `2` with:
+
+- status `PENDING`
+- valid labels `0 / 100`
+- pending labels `100 / 100`
+- summary `null`
+- advertising evidence `NOT_MEASURED`
+- extension recommendation `BLOCKED`
+- `finalized=false`
+
+The labels file has exactly 100 rows and zero nonblank human-review fields.
+Count-only scans found zero high-confidence key/token patterns, URLs, C003
+envelope fields, and prohibited metadata. One actual local key value from the
+main checkout `.env` was compared in memory without printing it; occurrences
+inside the four v2 files were `0`. Neither v1 nor v2 appears in `git status`, and
+`git ls-files -- data build` remains empty.
+
+The v2 validator checks the manifest, hashes, exact headers, five-by-twenty
+composition, composite keys, source row identity, recomputed deterministic
+mapping, complete human rows, spreadsheet formula prefixes, timezone-aware
+timestamps, and a 24-hour future tolerance. `COMPLETE` produces only review
+quality metrics and 95% Wilson intervals. It does not call legacy extension
+scoring or produce an extension candidate.
+
 ## Pending human review
 
-The data and pack gates are complete. The following still require a person:
+The export and v2 pack integrity gates are complete. The following still
+require a person for every row in `product_review_labels.csv`:
 
-- advertising-risk score from 1 through 5 for every row;
-- functional-diversity score from 1 through 5 for every row;
-- implementation-feasibility score from 1 through 5 for every row;
-- nonblank reviewer and ISO 8601 reviewed-at value for every row;
-- review of ambiguous mappings before trusting any aggregate recommendation.
+- ingredient-group mapping verdict and matching reason code;
+- official function-text status and matching reason code;
+- a review note whenever `needs_expert` or `other` is selected;
+- a nonblank reviewer identifier;
+- a timezone-aware ISO 8601 review timestamp.
 
 No extension choice may be finalized before all 100 samples receive valid human
-labels. The seed and mapping rules make sampling reproducible; they do not replace
-human review or prove clinical equivalence.
+labels and a separate official advertising-evidence gate is complete. The seed
+and mapping rules make sampling reproducible; they do not replace human review
+or prove clinical equivalence. Even a v2 `COMPLETE` result keeps recommendation
+`BLOCKED` while advertising evidence is `NOT_MEASURED`.
 
 ## Reproduction commands
 
-Run these commands in **CMD** only when reproducing the local artifacts. Do not
-paste the key into a tracked file or command output. The canonical variable name
-is `FOOD_SAFETY_API_KEY`.
+The verified export already exists locally, so rebuilding and validating the v2
+pack requires no API key or network call:
 
 ```cmd
-set FOOD_SAFETY_API_KEY=your-local-key
-.venv\Scripts\python.exe scripts\audit_c003.py --export-products data\c003-products.jsonl
-.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review --seed 20260823
+.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
+.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
 ```
 
-The current next action is to fill `build/extension-review/review_labels.csv`
-using `build/extension-review/samples.csv` as the source sheet. Collect all 100
-human labels before making any extension recommendation or final choice.
+The current next action is to fill
+`build/extension-review-v2/product_review_labels.csv` using
+`build/extension-review-v2/samples.csv` as the evidence sheet, then rerun the
+validator. Do not fill the historical v1 numeric score file. Collect and
+validate all 100 v2 human labels before proceeding; do not make an extension
+recommendation or final choice while advertising evidence remains unmeasured.

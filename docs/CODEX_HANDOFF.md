@@ -1,8 +1,8 @@
 # Codex 인수인계 — 근거영수증 / ClaimLedger
 
-- 기준일: `2026-08-27 Asia/Seoul`
+- 기준일: `2026-08-28 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **Phase 1 라이브 C003 export·review-pack 검증 완료, 사람 라벨 100건 검토 대기**
+- 상태: **C003 사람 검토 v2 pack·검증 CLI 준비 완료, 사람 라벨 100건 검토 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
@@ -17,22 +17,25 @@ git diff --check
 git status --short --branch
 ```
 
-- 전체 테스트: `204 passed`
-- 전체 커버리지: `96%` (`840` statements, `34` missed)
+- 전체 테스트: `280 passed`
+- 전체 커버리지: `96.83%` (`1,260` statements, `40` missed)
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
-- 핵심 불변식 묶음: `106 passed`
-- 라이브 export와 review-pack 경로: 둘 다 로컬 ignored 경로에 존재
-- 변경 diff와 최신 시도 보고서의 키·키 포함 URL 패턴 검사: 매치 없음
+- 핵심 불변식 묶음: `175 passed`
+- 라이브 export, 보존된 v1 pack, 현재 v2 pack: 모두 로컬 ignored 경로에 존재
+- v2 네 파일의 고신뢰 key/token, URL, C003 envelope, 금지 메타데이터 패턴: 각 `0`
+- 메인 checkout의 로컬 `.env`에서 실제 키 값 `1`개를 값 비노출 방식으로 대조한 결과,
+  v2 네 파일 내 동일 문자열: `0`
 
 핵심 불변식 묶음도 별도로 실행했다.
 
 ```cmd
-.venv\Scripts\python.exe -m pytest tests\test_identity.py tests\test_ingredients.py tests\test_official.py tests\test_product_evidence.py tests\test_safety.py tests\test_evaluation_dataset.py -q
+.venv\Scripts\python.exe -m pytest tests\test_identity.py tests\test_ingredients.py tests\test_official.py tests\test_product_evidence.py tests\test_safety.py tests\test_evaluation_dataset.py tests\test_product_review.py -q
 ```
 
-결과는 `106 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
-안전 승인 금지, 제품 근거 준비 상태, 평가 데이터 계약을 포함한다.
+결과는 `175 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
+안전 승인 금지, 제품 근거 준비 상태, 평가 데이터 계약, v2 사람 라벨·pack 무결성·완료
+통계·CLI 경계를 포함한다.
 
 ## Phase 1에서 구현된 범위
 
@@ -47,8 +50,14 @@ git status --short --branch
   준비 게이트
 - `confirmed` 양성 경로에서 버전이 지정된 claim fingerprint, 확인 제품 신고번호,
   literal matched evidence, source id/URL, 조회 시각을 묶는 불변 support record 경계
-- 다섯 비교 원료군의 결정적 표본 추출, 균등 가중 점수, 사람 검토 입력 검증,
-  recommendation-only 결과
+- 다섯 비교 원료군의 결정적 표본 추출과 기존 v1 숫자 점수 pack. v1의 광고 위험·기능
+  다양성·구현 가능성 1~5점 및 recommendation-only 계약은 역사적 산출물로만 보존하며
+  현재 검토에는 사용하지 않음
+- v2 원료군 매핑·공식 기능성 원문 사람 라벨 계약, manifest·해시·원본·키 집합 무결성
+  검증, `PENDING/INVALID/COMPLETE` 상태, 결정 가능 정밀도와 95% Wilson 구간,
+  그룹·검토자·검토기간 비추천 통계
+- v2 운영자 CLI의 `COMPLETE=0`, `PENDING=2`, `INVALID=3` 종료코드와 완료 상태에서만
+  원자적으로 저장하는 비식별 summary
 - C003 제품 6개 필드만 내보내는 redacted JSONL export, 동일 6필드 불변 review DTO,
   exporter-to-loader-to-sampler 오프라인 review-pack 생성기
 - 라이브 JSONL, export staging, review-pack 산출물의 Git ignore 경계
@@ -59,6 +68,10 @@ git status --short --branch
 `git log`로 확인한다. Coverage 정의를 실제 출력 중 `UNVERIFIABLE`이 아닌 비율로
 바로잡은 계획 수정은 별도 커밋 `1da369e`다.
 
+사람 검토 v2 설계·계획은 `bdf95af`, `f0bb219`이며, 구현 범위는
+`15c40b4^..3512e8d`의 5개 커밋이다. 순서대로 라벨 계약, v2 pack 생성, pack 신원
+검증, 완료 통계, 운영자 CLI를 추가했다. 이 문서 커밋은 해당 범위 뒤에 별도로 기록한다.
+
 ## 라이브 측정과 사람 검토 상태
 
 - 조회 시각: `2026-08-27T12:42:29.050550+00:00` (`21:42:29 KST`)
@@ -68,12 +81,23 @@ git status --short --branch
 - 결측: 제품명 `0`, 업체명 `0`, 기능성 `100`, 원재료 `1`, 섭취방법 `409`
 - export 보안 검사: 실제 키 값·URL·응답 envelope·금지 메타데이터 검출 `0`
 - export SHA-256: `CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E`
-- 라이브 review-pack: `GENERATED_AND_VERIFIED`, 다섯 비교군 각 `20`, 총 `100`
+- v1 review-pack: 역사적 산출물로 로컬 보존, 다섯 비교군 각 `20`, 총 `100`
+- v2 review-pack: `GENERATED_AND_VERIFIED`, 다섯 비교군 각 `20`, 총 `100`, 계약
+  `c003-product-review-v2`, seed `20260823`, 규칙 `ingredient-map-v1`
 - 표본 신고번호: 그룹별 고유 `20`, 전체 고유 `100`
 - 표본 6필드 완전성: `100 / 100`
 - 계획 표본: 다섯 비교군별 `20`, 총 `100`, seed `20260823`
-- 100건 사람 라벨 검토: `PENDING`, 유효 라벨 `0 / 100`
-- 선택된 확장 원료: 없음. 검토 전에는 추천 또는 최종 선택을 만들지 않는다.
+- v1/v2 `samples.csv` 바이트 동일성: 확인됨, SHA-256
+  `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C`
+- v2 파일 SHA-256:
+  - `README.md`: `4F5F610A64A7E90DDED10E3C468D9E330CE2D18092315A0DB0BABBEAB5BC4238`
+  - `manifest.json`: `0E3086DF9F2A8895D7845E8B24D00DBE18A43CEEE9C6DC92CBE9095FD873D442`
+  - `product_review_labels.csv`: `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8`
+  - `samples.csv`: `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C`
+- 실제 v2 검증: 프로세스 종료코드 `2`, `PENDING`, 유효 `0 / 100`, 대기 `100 / 100`
+- 광고 근거 `NOT_MEASURED`, 확장 추천 `BLOCKED`, `finalized=false`
+- 선택된 확장 원료: 없음. 공식 광고 근거와 100개 유효 사람 라벨 전에는 추천 또는
+  최종 선택을 만들지 않는다.
 
 현재 성공 상태는
 [`docs/evidence/C003_LIVE_ATTEMPT.md`](evidence/C003_LIVE_ATTEMPT.md)에 별도로
@@ -83,20 +107,23 @@ git status --short --branch
 
 ## 다음 검토 작업
 
-동일 데이터셋과 review-pack을 재생성해야 할 때만 승인된 운영자가 키를 로컬 CMD
-환경에 설정한 뒤 다음을 실행한다. 키 값을 문서, 로그, 명령 출력에 복사하지 않는다.
+기존 검증 export에서 v2 pack만 재생성하고 검증할 때는 API 키가 필요하지 않다.
 
 ```cmd
-set FOOD_SAFETY_API_KEY=your-local-key
-.venv\Scripts\python.exe scripts\audit_c003.py --export-products data\c003-products.jsonl
-.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review --seed 20260823
+.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
+.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
 ```
 
-현재 다음 작업은 `build/extension-review/samples.csv`를 참고해
-`build/extension-review/review_labels.csv`의 광고 위험·기능 다양성·구현 가능성 점수,
-검토자, 검토 시각을 100건 모두 사람이 입력하는 것이다. 모든 라벨이 유효할 때만
-recommendation-only 결과를 검토하며, 최종 확장 원료 선택은 별도 사용자 결정으로
-남긴다.
+현재 빈 v2 템플릿은 두 번째 명령에서 종료코드 `2`를 반환한다. 라이브 C003 export
+자체를 다시 받아야 할 때만 승인된 운영자가 `FOOD_SAFETY_API_KEY`를 로컬 환경에
+설정하고 `scripts/audit_c003.py`를 별도로 실행한다. 키 값을 문서·로그·명령 출력에
+복사하지 않는다.
+
+현재 다음 작업은 `build/extension-review-v2/samples.csv`를 근거로
+`build/extension-review-v2/product_review_labels.csv`의 매핑 판정·이유, 기능성 원문
+상태·이유, 필요한 note, 검토자, timezone-aware 검토 시각을 100건 모두 사람이 입력한
+뒤 validator를 다시 실행하는 것이다. 기존 v1 숫자 점수 파일은 채우지 않는다. 100개
+라벨이 유효해도 공식 광고 근거가 `NOT_MEASURED`인 동안 추천과 최종 선택은 `BLOCKED`다.
 
 상세 상태는
 [`docs/evidence/PHASE_1_EXTENSION_REVIEW.md`](evidence/PHASE_1_EXTENSION_REVIEW.md)를
@@ -111,6 +138,7 @@ recommendation-only 결과를 검토하며, 최종 확장 원료 선택은 별�
 - LLM 원자 주장 추출 및 사용자 주장 확인
 - 과학 논문 RAG와 근거 적용 가능성 분류
 - 전체 광고 주장 verdict 규칙과 동결 100건 정답 평가세트
+- 공식 광고 사례 코퍼스와 광고 근거 측정 게이트
 - FastAPI, 영속화, 감사 이벤트, SSE
 - React 사용자 확인 흐름과 접근성·이해도 검증
 - 인증·권한 관리
@@ -126,8 +154,9 @@ recommendation-only 결과를 검토하며, 최종 확장 원료 선택은 별�
 ## Git·보안 경계 확인
 
 - 라이브 경로 `data/c003-products.jsonl`은 `.gitignore`의 정확한 경로 규칙으로 보호된다.
-- `build/c003-export/`와 `build/extension-review/`은 `build/` 규칙으로 보호된다.
-- 현재 두 생성 경로는 로컬에 존재하지만 `git status`에서 제외되며,
+- `build/c003-export/`, `build/extension-review/`, `build/extension-review-v2/`는
+  `build/` 규칙으로 보호된다.
+- 현재 생성 경로는 로컬에 존재하지만 `git status`에서 제외되며,
   `git ls-files -- data build` 및 `git ls-files '*.jsonl'` 결과는 비어 있다.
 - tracked/staged 내용의 key-like assignment와 고신뢰 토큰 형식을 검사하고, fixture 및
   evidence 문서의 건강 상세정보·후기·Q&A 구조 필드를 별도로 검사한다. 허용된 빈 환경
@@ -157,7 +186,8 @@ recommendation-only 결과를 검토하며, 최종 확장 원료 선택은 별�
 
 ## 다음 코덱스에 전달할 한 문장
 
-> Phase 1 오프라인 제품 근거 기반은 204개 테스트와 핵심 불변식 106개로 검증됐다.
-> 2026-08-27 21:42 KST 라이브 C003 `45,907 / 45,907`건과 5×20 review-pack도
-> 검증됐지만 사람 라벨은 `0 / 100`이다. 100건을 모두 사람이 검토하기 전에는 확장
-> 원료를 선택하거나 Phase 2를 시작하지 말라.
+> ClaimLedger 오프라인 기반과 v2 사람 검토 계약은 280개 테스트, 96.83% 커버리지,
+> 핵심 불변식 175개로 검증됐다. 2026-08-27 라이브 C003 `45,907 / 45,907`건과
+> 2026-08-28 v2 5×20 pack도 검증됐지만 사람 라벨은 `PENDING 0 / 100`, 광고 근거는
+> `NOT_MEASURED`, 추천은 `BLOCKED`다. 100건 검토와 별도 광고 근거 게이트 전에는
+> 확장 원료를 선택하거나 Phase 2를 시작하지 말라.

@@ -83,4 +83,16 @@
 
 ## 현재 첫 작업
 
-`docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md`를 실행하여 C003의 실제 접근 가능 여부, 전체 건수, 핵심 필드 결측률, 제품 식별 가능성을 측정합니다. 이 데이터 게이트 전에는 프론트엔드나 개인화 기능을 구현하지 않습니다.
+`build/extension-review-v2/samples.csv`를 근거로
+`build/extension-review-v2/product_review_labels.csv`의 100행을 사람이 검토합니다. 각 행에
+원료군 매핑 판정·이유, 공식 기능성 원문 상태·이유, 필요한 검토 메모, 검토자 식별자와
+timezone-aware 검토 시각을 입력한 뒤 다음 명령으로 검증합니다.
+
+```cmd
+.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+```
+
+현재 상태는 `PENDING`, 유효 라벨 `0 / 100`이다. 정확히 100행이 모두 유효해
+`COMPLETE`가 되더라도 광고 근거는 `NOT_MEASURED`, 확장 원료 추천은 `BLOCKED`,
+`finalized=false`다. 공식 광고 근거 게이트가 별도로 끝나기 전에는 확장 원료를 선택하거나
+Phase 2, 프론트엔드, 개인화 기능을 시작하지 않습니다.

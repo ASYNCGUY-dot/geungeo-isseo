@@ -14,10 +14,14 @@
 - 2026-08-27 21:42 KST: C003 재시도에서 `INFO-000`을 받아 `45,907 / 45,907`건을
   redacted 6필드 JSONL로 생성했습니다. 신고번호 중복은 `0`이며, seed `20260823`으로
   다섯 비교군 각 `20`건·총 `100`건의 review-pack도 생성·검증했습니다.
-- 최신 오프라인 검증은 `204 passed`, 전체 커버리지 `96%`이며 Ruff와
+- 2026-08-28: 기존 v1의 광고 위험·기능 다양성·구현 가능성 1~5점 계약을 역사적
+  산출물로 보존하고 사용 중단했습니다. v2는 제품 매핑과 공식 기능성 원문의 사람 검토,
+  pack 무결성 검증, Wilson 구간이 포함된 비추천 통계, 상태별 CLI 종료코드만 제공합니다.
+- 최신 오프라인 검증은 `280 passed`, 전체 커버리지 `96.83%`이며 Ruff와
   `git diff --check`도 통과했습니다.
-- 라이브 export와 review-pack은 로컬 ignored 경로에 존재하지만 사람 라벨은 `0 / 100`,
-  `PENDING`입니다. 확장 원료 추천·최종 선택은 아직 만들지 않았습니다.
+- 라이브 export, 보존된 v1 pack, 현재 v2 pack은 로컬 ignored 경로에 존재합니다.
+  v2 검증 결과는 `PENDING`, 유효 라벨 `0 / 100`, 광고 근거 `NOT_MEASURED`, 추천
+  `BLOCKED`, `finalized=false`입니다. 확장 원료 추천·최종 선택은 만들지 않았습니다.
 - OCR, URL crawler, LLM, RAG, 전체 판정 규칙, FastAPI, React, 인증은 아직 구현하지
   않았습니다. 따라서 현재 코드는 완성된 애플리케이션이나 배포 서비스가 아닙니다.
 - 복습 코드는 별도 저장소 `C:\WORK\WORK\donga-review`에 유지합니다.
@@ -33,8 +37,20 @@
 4. [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록된
    운영 명령과 사람 검토 절차를 따릅니다.
 
-현재 다음 작업은 화면 제작이나 Phase 2 구현이 아니라 **생성된 다섯 비교군 100건을
-사람이 검토하고 모든 라벨의 유효성을 확인하는 것**입니다.
+현재 다음 작업은 화면 제작이나 Phase 2 구현이 아니라 **v2의 다섯 비교군 100건을
+사람이 검토하고 모든 라벨의 유효성을 검증하는 것**입니다. 입력 파일은
+`build/extension-review-v2/product_review_labels.csv`이며, 기존
+`build/extension-review/review_labels.csv`의 숫자 점수는 더 이상 사용하지 않습니다.
+
+검증된 로컬 export에서 v2 pack을 재생성하고 상태를 확인하는 명령은 다음과 같습니다.
+
+```cmd
+.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
+.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+```
+
+현재 빈 템플릿에서 두 번째 명령의 출력 상태는 `PENDING 0 / 100`이고 종료코드는 `2`다.
+`COMPLETE`가 되더라도 공식 광고 근거가 별도 검증되기 전에는 추천이 계속 차단됩니다.
 
 오프라인 검증 명령은 다음과 같습니다.
 
@@ -74,6 +90,10 @@ MVP가 하지 않는 일:
 - [Phase 0 구현 계획](docs/superpowers/plans/2026-08-22-phase-0-data-confidence-gate.md): 첫 구현 체크리스트
 - [Phase 1 구현 계획](docs/superpowers/plans/2026-08-23-phase-1-product-evidence-foundation.md):
   제품 근거 기반 구현·검증 체크리스트
+- [C003 사람 검토 v2 설계](docs/superpowers/specs/2026-08-28-c003-human-review-contract-v2-design.md):
+  사람 라벨, 무결성, 통계, 비추천 경계의 정본
+- [C003 사람 검토 v2 실행 계획](docs/superpowers/plans/2026-08-28-c003-human-review-contract-v2.md):
+  v2 구현·생성·검증 체크리스트
 - [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md): 라이브 측정과
   사람 검토의 현재 상태
 - [최신 C003 라이브 시도](docs/evidence/C003_LIVE_ATTEMPT.md): 최신 성공 측정을 덮어쓰지
