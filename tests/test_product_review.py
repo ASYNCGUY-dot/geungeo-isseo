@@ -1,6 +1,6 @@
 import csv
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -17,6 +17,7 @@ from claimledger.product_review import (
     ReviewValidationResult,
     sha256_file,
     validate_product_review_pack,
+    wilson_interval,
 )
 
 NOW = datetime(2026, 8, 28, 9, 0, tzinfo=UTC)
@@ -233,6 +234,36 @@ def write_valid_blank_pack(tmp_path: Path) -> tuple[Path, Path]:
 def _read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+def write_completed_pack(
+    tmp_path: Path,
+    *,
+    mapping_verdict: str = "correct",
+    mapping_reason_code: str = "none",
+    function_text_status: str = "usable",
+    function_reason_code: str = "none",
+    review_note: str = "",
+    reviewer: str = "reviewer-01",
+    reviewed_at: datetime = NOW,
+) -> tuple[Path, Path]:
+    pack_dir, source_export = write_valid_blank_pack(tmp_path)
+    labels_path = pack_dir / "product_review_labels.csv"
+    rows = _read_csv(labels_path)
+    for row in rows:
+        row.update(
+            {
+                "mapping_verdict": mapping_verdict,
+                "mapping_reason_code": mapping_reason_code,
+                "function_text_status": function_text_status,
+                "function_reason_code": function_reason_code,
+                "review_note": review_note,
+                "reviewer": reviewer,
+                "reviewed_at_iso8601": reviewed_at.isoformat(),
+            }
+        )
+    _write_csv(labels_path, LABEL_FIELDS, rows)
+    return pack_dir, source_export
 
 
 def _replace_manifest_hash(pack_dir: Path, field: str, value: str) -> None:
@@ -658,31 +689,163 @@ def test_label_contract_mutations_are_invalid(
     assert result.pending_label_count is None
 
 
-def test_fully_filled_template_is_not_complete_before_summary_calculation(
-    tmp_path: Path,
-) -> None:
-    pack_dir, source_export = write_valid_blank_pack(tmp_path)
+def test_complete_labels_produce_metrics_but_no_recommendation(tmp_path: Path) -> None:
+    pack_dir, source_export = write_completed_pack(tmp_path)
+
+    result = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert result.valid_label_count == 100
+    assert result.pending_label_count == 0
+    assert result.summary is not None
+    assert result.summary.overall.sample_count == 100
+    assert result.summary.overall.mapping_correct_count == 100
+    assert result.summary.overall.mapping_precision_decidable == 1.0
+    assert len(result.summary.groups) == 5
+    assert tuple(group.group for group in result.summary.groups) == REVIEW_GROUPS
+    assert {group.sample_count for group in result.summary.groups} == {20}
+    assert result.advertising_evidence_status == "NOT_MEASURED"
+    assert result.extension_recommendation_status == "BLOCKED"
+    assert result.finalized is False
+
+
+def test_wilson_interval_and_not_measured_denominator_are_explicit() -> None:
+    assert wilson_interval(0, 0) is None
+
+    perfect = wilson_interval(20, 20)
+    assert perfect is not None
+    assert perfect.lower == pytest.approx(0.838874841947, abs=1e-12)
+    assert perfect.upper == pytest.approx(1.0, abs=1e-12)
+
+    half = wilson_interval(10, 20)
+    assert half is not None
+    assert half.lower == pytest.approx(0.299298008198, abs=1e-12)
+    assert half.upper == pytest.approx(0.700701991802, abs=1e-12)
+
+
+@pytest.mark.parametrize(("successes", "total"), [(-1, 20), (21, 20), (1, -1)])
+def test_wilson_interval_rejects_impossible_counts(successes: int, total: int) -> None:
+    with pytest.raises(ValueError, match="0 <= successes <= total"):
+        wilson_interval(successes, total)
+
+
+def test_all_uncertain_mappings_do_not_become_zero_precision(tmp_path: Path) -> None:
+    pack_dir, source_export = write_completed_pack(
+        tmp_path,
+        mapping_verdict="uncertain",
+        mapping_reason_code="needs_expert",
+        review_note="expert review required",
+    )
+
+    result = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert result.summary is not None
+    assert result.summary.overall.mapping_precision_decidable is None
+    assert result.summary.overall.mapping_precision_wilson_95 is None
+    assert result.summary.overall.mapping_uncertainty_rate == 1.0
+
+
+def test_complete_summary_counts_mixed_labels_and_review_window(tmp_path: Path) -> None:
+    pack_dir, source_export = write_completed_pack(tmp_path)
     labels_path = pack_dir / "product_review_labels.csv"
     rows = _read_csv(labels_path)
-    for row in rows:
-        row.update(
+    for index, row in enumerate(rows):
+        if 70 <= index < 80:
+            row["mapping_verdict"] = "incorrect"
+            row["mapping_reason_code"] = "wrong_group"
+        elif index >= 80:
+            row["mapping_verdict"] = "uncertain"
+            row["mapping_reason_code"] = "needs_expert"
+
+        if 60 <= index < 85:
+            row["function_text_status"] = "incomplete"
+            row["function_reason_code"] = "missing_text"
+        elif index >= 85:
+            row["function_text_status"] = "uncertain"
+            row["function_reason_code"] = "needs_expert"
+
+        if index >= 80:
+            row["review_note"] = "expert review required"
+        row["reviewer"] = "reviewer-a" if index < 25 else "reviewer-b"
+        row["reviewed_at_iso8601"] = (
+            NOW - timedelta(days=2) if index < 50 else NOW - timedelta(hours=1)
+        ).isoformat()
+    _write_csv(labels_path, LABEL_FIELDS, rows)
+
+    result = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert result.summary is not None
+    metrics = result.summary.overall
+    assert metrics.mapping_correct_count == 70
+    assert metrics.mapping_incorrect_count == 10
+    assert metrics.mapping_uncertain_count == 20
+    assert metrics.mapping_precision_decidable == pytest.approx(0.875)
+    assert metrics.mapping_precision_wilson_95 is not None
+    assert metrics.mapping_uncertainty_rate == pytest.approx(0.2)
+    assert metrics.function_usable_rate == pytest.approx(0.6)
+    assert metrics.function_incomplete_rate == pytest.approx(0.25)
+    assert metrics.function_uncertainty_rate == pytest.approx(0.15)
+    assert [count.model_dump() for count in result.summary.reviewer_counts] == [
+        {"reviewer": "reviewer-a", "row_count": 25},
+        {"reviewer": "reviewer-b", "row_count": 75},
+    ]
+    assert result.summary.review_started_at == NOW - timedelta(days=2)
+    assert result.summary.review_completed_at == NOW - timedelta(hours=1)
+
+
+@pytest.mark.parametrize(
+    ("changes", "expected_code"),
+    [
+        ({"mapping_verdict": "not-a-verdict"}, "LABEL_VALUE_INVALID"),
+        (
+            {"mapping_verdict": "correct", "mapping_reason_code": "wrong_group"},
+            "LABEL_VALUE_INVALID",
+        ),
+        (
             {
-                "mapping_verdict": "correct",
-                "mapping_reason_code": "none",
-                "function_text_status": "usable",
-                "function_reason_code": "none",
-                "reviewer": "reviewer-01",
-                "reviewed_at_iso8601": NOW.isoformat(),
-            }
-        )
+                "mapping_verdict": "uncertain",
+                "mapping_reason_code": "needs_expert",
+                "review_note": "",
+            },
+            "LABEL_VALUE_INVALID",
+        ),
+        ({"reviewer": '=HYPERLINK("bad")'}, "LABEL_VALUE_INVALID"),
+        (
+            {
+                "mapping_verdict": "uncertain",
+                "mapping_reason_code": "other",
+                "review_note": "+SUM(1,1)",
+            },
+            "LABEL_VALUE_INVALID",
+        ),
+        ({"reviewer": ""}, "PARTIAL_LABEL"),
+        ({"reviewed_at_iso8601": "2026-08-28T09:00:00"}, "LABEL_VALUE_INVALID"),
+        (
+            {"reviewed_at_iso8601": (NOW + timedelta(hours=24, seconds=1)).isoformat()},
+            "LABEL_REVIEWED_AT_FUTURE",
+        ),
+    ],
+)
+def test_invalid_completed_label_returns_invalid_without_summary(
+    tmp_path: Path,
+    changes: dict[str, str],
+    expected_code: str,
+) -> None:
+    pack_dir, source_export = write_completed_pack(tmp_path)
+    labels_path = pack_dir / "product_review_labels.csv"
+    rows = _read_csv(labels_path)
+    rows[0].update(changes)
     _write_csv(labels_path, LABEL_FIELDS, rows)
 
     result = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
 
     assert result.status is ReviewGateStatus.INVALID
-    assert {issue.code for issue in result.issues} == {"COMPLETE_SUMMARY_UNAVAILABLE"}
+    assert expected_code in {issue.code for issue in result.issues}
     assert result.valid_label_count is None
     assert result.pending_label_count is None
+    assert result.summary is None
 
 
 def test_hash_read_failure_returns_invalid_instead_of_raising(

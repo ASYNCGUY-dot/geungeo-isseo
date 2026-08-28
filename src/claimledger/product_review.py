@@ -1,9 +1,10 @@
 import csv
 import hashlib
 import json
+import math
 import re
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum
 from io import StringIO
 from pathlib import Path
@@ -273,6 +274,34 @@ class WilsonInterval(BaseModel):
         return self
 
 
+def wilson_interval(
+    successes: int,
+    total: int,
+    *,
+    z: float = 1.959963984540054,
+) -> WilsonInterval | None:
+    if successes < 0 or total < 0 or successes > total:
+        raise ValueError("Wilson inputs require 0 <= successes <= total")
+    if total == 0:
+        return None
+    proportion = successes / total
+    z_squared = z * z
+    denominator = 1 + z_squared / total
+    center = (proportion + z_squared / (2 * total)) / denominator
+    margin = (
+        z
+        * math.sqrt(
+            proportion * (1 - proportion) / total
+            + z_squared / (4 * total * total)
+        )
+        / denominator
+    )
+    return WilsonInterval(
+        lower=max(0.0, center - margin),
+        upper=min(1.0, center + margin),
+    )
+
+
 class ReviewMetrics(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -350,6 +379,62 @@ class ReviewValidationResult(BaseModel):
         ):
             raise ValueError("INVALID requires issues and unreported progress counts")
         return self
+
+
+def _review_metrics(labels: list[ProductReviewLabel]) -> ReviewMetrics:
+    sample_count = len(labels)
+    mapping_counts = Counter(label.mapping_verdict for label in labels)
+    function_counts = Counter(label.function_text_status for label in labels)
+    mapping_correct_count = mapping_counts[MappingVerdict.CORRECT]
+    mapping_incorrect_count = mapping_counts[MappingVerdict.INCORRECT]
+    mapping_uncertain_count = mapping_counts[MappingVerdict.UNCERTAIN]
+    decidable_count = mapping_correct_count + mapping_incorrect_count
+    return ReviewMetrics(
+        sample_count=sample_count,
+        mapping_correct_count=mapping_correct_count,
+        mapping_incorrect_count=mapping_incorrect_count,
+        mapping_uncertain_count=mapping_uncertain_count,
+        mapping_precision_decidable=(
+            mapping_correct_count / decidable_count if decidable_count else None
+        ),
+        mapping_precision_wilson_95=wilson_interval(
+            mapping_correct_count,
+            decidable_count,
+        ),
+        mapping_uncertainty_rate=mapping_uncertain_count / sample_count,
+        function_usable_rate=(
+            function_counts[FunctionTextStatus.USABLE] / sample_count
+        ),
+        function_incomplete_rate=(
+            function_counts[FunctionTextStatus.INCOMPLETE] / sample_count
+        ),
+        function_uncertainty_rate=(
+            function_counts[FunctionTextStatus.UNCERTAIN] / sample_count
+        ),
+    )
+
+
+def _review_summary(labels: list[ProductReviewLabel]) -> ProductReviewSummary:
+    reviewer_counts = Counter(label.reviewer for label in labels)
+    review_times = [label.reviewed_at_iso8601 for label in labels]
+    return ProductReviewSummary(
+        overall=_review_metrics(labels),
+        groups=tuple(
+            GroupReviewMetrics(
+                group=group,
+                **_review_metrics(
+                    [label for label in labels if label.group is group]
+                ).model_dump(),
+            )
+            for group in COMPARISON_GROUPS
+        ),
+        reviewer_counts=tuple(
+            ReviewerCount(reviewer=reviewer, row_count=reviewer_counts[reviewer])
+            for reviewer in sorted(reviewer_counts)
+        ),
+        review_started_at=min(review_times),
+        review_completed_at=max(review_times),
+    )
 
 
 def _issue_sort_key(issue: ReviewIssue) -> tuple[int, str, str, str]:
@@ -769,6 +854,7 @@ def validate_product_review_pack(
             )
 
     label_keys: set[tuple[str, str]] = set()
+    labels: list[ProductReviewLabel] = []
     valid_label_count = 0
     pending_label_count = 0
     for line_number, row in label_rows:
@@ -823,7 +909,7 @@ def validate_product_review_pack(
             )
             continue
         try:
-            ProductReviewLabel.model_validate(row)
+            label = ProductReviewLabel.model_validate(row)
         except ValidationError:
             issues.append(
                 _issue(
@@ -835,6 +921,18 @@ def validate_product_review_pack(
                 )
             )
             continue
+        if label.reviewed_at_iso8601 > validated_at + timedelta(hours=24):
+            issues.append(
+                _issue(
+                    "LABEL_REVIEWED_AT_FUTURE",
+                    "label review time exceeds the 24-hour future tolerance",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+            continue
+        labels.append(label)
         valid_label_count += 1
 
     if label_keys != sample_keys:
@@ -853,11 +951,10 @@ def validate_product_review_pack(
             pending_label_count=pending_label_count,
             issues=(),
         )
-    return _invalid_result(
-        [
-            _issue(
-                "COMPLETE_SUMMARY_UNAVAILABLE",
-                "complete review summary calculation is not available",
-            )
-        ]
+    return ReviewValidationResult(
+        status=ReviewGateStatus.COMPLETE,
+        valid_label_count=valid_label_count,
+        pending_label_count=0,
+        issues=(),
+        summary=_review_summary(labels),
     )
