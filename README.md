@@ -1,6 +1,11 @@
-# 근거영수증 / ClaimLedger
+# 근거있어
 
-건강기능식품 광고가 한 주장을 **공식 제품 정보와 선별된 과학적 근거에 대조하여, 확인된 범위와 확인할 수 없는 범위를 함께 보여주는 정확도 우선 검수 서비스**입니다.
+**건강광고, 말보다 근거부터.**
+
+근거있어는 건강기능식품 광고가 한 주장을 **공식 제품 정보와 선별된 과학적 근거에
+대조하여, 확인된 범위와 확인할 수 없는 범위를 주장별 근거영수증으로 보여주는 정확도
+우선 검수 서비스**입니다. 결정적 검증 로직과 파이썬 패키지는 내부 엔진명
+`ClaimLedger`와 `claimledger`를 유지합니다.
 
 ## 현재 상태
 
@@ -17,6 +22,8 @@
 - 2026-08-28: 기존 v1의 광고 위험·기능 다양성·구현 가능성 1~5점 계약을 역사적
   산출물로 보존하고 사용 중단했습니다. v2는 제품 매핑과 공식 기능성 원문의 사람 검토,
   pack 무결성 검증, Wilson 구간이 포함된 비추천 통계, 상태별 CLI 종료코드만 제공합니다.
+- 2026-08-28: 소비자 서비스·프로젝트명을 **근거있어**로 확정했습니다. 대표 결과물은
+  **근거영수증**, 내부 검증엔진은 **ClaimLedger**, 저장소 슬러그는 `geungeo-isseo`입니다.
 - 최신 오프라인 검증은 `280 passed`, 전체 커버리지 `96.83%`이며 Ruff와
   `git diff --check`도 통과했습니다.
 - 라이브 export, 보존된 v1 pack, 현재 v2 pack은 로컬 ignored 경로에 존재합니다.
@@ -29,7 +36,7 @@
 ## 코덱스에서 이어가기
 
 1. 병합 전에는 코덱스에서
-   `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1\.worktrees\phase-0-c003-data-gate`
+   `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
    worktree를 엽니다.
 2. [AGENTS.md](AGENTS.md)를 먼저 읽습니다.
 3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 구현 범위, 검증 결과, 미구현 경계를
@@ -94,6 +101,10 @@ MVP가 하지 않는 일:
   사람 라벨, 무결성, 통계, 비추천 경계의 정본
 - [C003 사람 검토 v2 실행 계획](docs/superpowers/plans/2026-08-28-c003-human-review-contract-v2.md):
   v2 구현·생성·검증 체크리스트
+- [근거있어 브랜드·명명 설계](docs/superpowers/specs/2026-08-28-geungeo-isseo-brand-design.md):
+  서비스·결과물·엔진·저장소 이름의 역할 경계
+- [근거있어 프로젝트 이름 변경 계획](docs/superpowers/plans/2026-08-28-geungeo-isseo-project-rename.md):
+  저장소·위키·linked worktree 이동과 검증 절차
 - [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md): 라이브 측정과
   사람 검토의 현재 상태
 - [최신 C003 라이브 시도](docs/evidence/C003_LIVE_ATTEMPT.md): 최신 성공 측정을 덮어쓰지

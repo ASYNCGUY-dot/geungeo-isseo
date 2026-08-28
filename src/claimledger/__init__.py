@@ -1,1 +1,1 @@
-"""ClaimLedger accuracy-first domain package."""
+"""ClaimLedger evidence engine for the Geungeo Isseo service."""

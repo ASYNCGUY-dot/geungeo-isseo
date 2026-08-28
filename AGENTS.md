@@ -1,6 +1,7 @@
 # AGENTS.md
 
-이 파일은 Codex가 `근거영수증 / ClaimLedger` 프로젝트에서 작업할 때 지켜야 하는 프로젝트 규칙입니다.
+이 파일은 Codex가 `근거있어` 프로젝트에서 작업할 때 지켜야 하는 프로젝트 규칙입니다.
+`근거영수증`은 주장별 결과물, `ClaimLedger`는 내부 검증엔진 이름입니다.
 
 ## 작업 시작 순서
 
@@ -76,8 +77,8 @@
 의미 있는 결정, 검증 결과, 실패와 복구 방법은 다음 정본에 반영합니다.
 
 - Vault: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
-- Project page: `AI-Sessions/wiki/projects/근거영수증-claimledger.md`
-- Continuity handoff: `AI-Sessions/conversations/2026-08-22-근거영수증-코덱스-핸드오프.md`
+- Project page: `AI-Sessions/wiki/projects/근거있어.md`
+- Continuity handoff: `AI-Sessions/conversations/2026-08-22-근거있어-코덱스-핸드오프.md`
 
 `JISOO.DOC`은 개인 참고 vault이므로 사용자가 별도로 요청하지 않으면 수정하지 않습니다. 위키 수정 시 기존 파일을 먼저 읽고, `index.md`와 `log.md`를 함께 갱신하며, 위키 자체 Git에 별도 커밋합니다.
 

@@ -1,4 +1,4 @@
-# Codex 인수인계 — 근거영수증 / ClaimLedger
+# Codex 인수인계 — 근거있어
 
 - 기준일: `2026-08-28 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
@@ -170,7 +170,10 @@ git status --short --branch
 
 ## 확정된 제품 원칙
 
-- 제품 작업명은 **근거영수증**, 영문·저장소명은 **ClaimLedger**다.
+- 소비자 서비스·프로젝트명은 **근거있어**다.
+- 주장별 대표 결과물은 **근거영수증**, 내부 검증엔진과 파이썬 패키지는
+  **ClaimLedger**와 `claimledger`다.
+- 로컬 폴더와 향후 원격 저장소 슬러그는 `geungeo-isseo`다.
 - MVP는 건강기능식품 광고 주장과 공식·과학적 근거의 일치 여부만 다룬다.
 - 개인 맞춤 효능·안전·상호작용·진단 기능은 범위에서 제외한다.
 - LLM은 이후 단계에서 주장을 추출하지만 최종 판정은 결정적 규칙이 수행한다.
@@ -179,14 +182,14 @@ git status --short --branch
 
 ## 관련 경로
 
-- 현재 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1\.worktrees\phase-0-c003-data-gate`
-- 기본 프로젝트 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
+- 현재 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
+- 기본 프로젝트 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 - 복습 저장소: `C:\WORK\WORK\donga-review`
 - AI Agent Wiki: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
 
 ## 다음 코덱스에 전달할 한 문장
 
-> ClaimLedger 오프라인 기반과 v2 사람 검토 계약은 280개 테스트, 96.83% 커버리지,
+> 근거있어의 ClaimLedger 엔진과 v2 사람 검토 계약은 280개 테스트, 96.83% 커버리지,
 > 핵심 불변식 175개로 검증됐다. 2026-08-27 라이브 C003 `45,907 / 45,907`건과
 > 2026-08-28 v2 5×20 pack도 검증됐지만 사람 라벨은 `PENDING 0 / 100`, 광고 근거는
 > `NOT_MEASURED`, 추천은 `BLOCKED`다. 100건 검토와 별도 광고 근거 게이트 전에는
