@@ -147,13 +147,13 @@ hash. The v1 files remain present with their recorded hashes unchanged.
 2026-08-28 당시 빈 템플릿의 v2 validator는 process exit `2`를 반환했고, 다음은 그 과거
 결과다:
 
-- status `PENDING`
-- valid labels `0 / 100`
-- pending labels `100 / 100`
-- summary `null`
-- advertising evidence `NOT_MEASURED`
-- extension recommendation `BLOCKED`
-- `finalized=false`
+- 2026-08-28 당시 status `PENDING`
+- 2026-08-28 당시 valid labels `0 / 100`
+- 2026-08-28 당시 pending labels `100 / 100`
+- 2026-08-28 당시 summary `null`
+- 2026-08-28 당시 advertising evidence `NOT_MEASURED`
+- 2026-08-28 당시 extension recommendation `BLOCKED`
+- 2026-08-28 당시 `finalized=false`
 
 2026-08-28 당시 빈 템플릿의 labels file은 정확히 100행이고 nonblank human-review field가
 0개였다.
