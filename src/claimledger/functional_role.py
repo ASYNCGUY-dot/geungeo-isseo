@@ -123,7 +123,7 @@ def _is_official_source_url(source_url: str) -> bool:
 
 
 class FunctionalRoleRule(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    model_config = ConfigDict(frozen=True, extra="forbid", hide_input_in_errors=True)
 
     group: IngredientGroup
     canonical_ingredient: NonBlankText
@@ -185,7 +185,7 @@ class FunctionalRoleRule(BaseModel):
 
 
 class FunctionalRoleRuleRegistry(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    model_config = ConfigDict(frozen=True, extra="forbid", hide_input_in_errors=True)
 
     contract_version: Literal["functional-role-rules-v1"]
     rules: tuple[FunctionalRoleRule, ...]

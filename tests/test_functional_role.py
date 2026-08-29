@@ -195,6 +195,20 @@ def test_registry_rejects_formula_prefixes_and_secret_patterns(
         _load(tmp_path, data)
 
 
+def test_loader_redacts_rejected_registry_input_from_validation_errors(tmp_path: Path) -> None:
+    sentinel = "api_key=SHOULD_NOT_ECHO_12345"
+    data = _fixture_data()
+    rules = data["rules"]
+    assert isinstance(rules, list)
+    rules[0]["source_locator"] = sentinel
+
+    with pytest.raises(ValidationError) as error:
+        _load(tmp_path, data)
+
+    leaked = sentinel in str(error.value)
+    assert not leaked, "validation error echoed rejected source locator"
+
+
 @pytest.mark.parametrize(
     ("mutation", "field"),
     [
