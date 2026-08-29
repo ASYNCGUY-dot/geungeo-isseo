@@ -84,16 +84,22 @@
 
 ## 현재 첫 작업
 
-`build/extension-review-v2/samples.csv`를 근거로
-`build/extension-review-v2/product_review_labels.csv`의 100행을 사람이 검토합니다. 각 행에
-원료군 매핑 판정·이유, 공식 기능성 원문 상태·이유, 필요한 검토 메모, 검토자 식별자와
-timezone-aware 검토 시각을 입력한 뒤 다음 명령으로 검증합니다.
+완료된 v2 제품 매핑·공식 기능성 원문 검토 결과를 전제로 기능적 역할 검토 A를 구축합니다.
+v2는 유효 라벨 `100건 전부`다.
+대기 라벨은 `0 / 100`이며, 매핑은 `99 correct / 1 incorrect / 0 uncertain`,
+기능성 원문 `usable 100 / 100`으로 `COMPLETE`다. 유일한 오류는 `red_ginseng`의
+`alias_collision`이며, 라벨 SHA-256은
+`A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`이다.
+`function_text_status=usable`은 행의 공식 기능성 원문을 검토에 사용할 수 있다는 상태일
+뿐 원료가 그 기능을 유발함을 증명하지 않는다.
+
+다음 명령으로 현재 로컬 pack과 source export를 재검증한다.
 
 ```cmd
 .venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
 ```
 
-현재 상태는 `PENDING`, 유효 라벨 `0 / 100`이다. 정확히 100행이 모두 유효해
-`COMPLETE`가 되더라도 광고 근거는 `NOT_MEASURED`, 확장 원료 추천은 `BLOCKED`,
-`finalized=false`다. 공식 광고 근거 게이트가 별도로 끝나기 전에는 확장 원료를 선택하거나
-Phase 2, 프론트엔드, 개인화 기능을 시작하지 않습니다.
+현재 v2 상태는 `COMPLETE`다. 기능적 역할 검토 A는 아직 구축하지 않았으며, 광고 근거는
+`NOT_MEASURED`, 확장 원료 추천은 `BLOCKED`, `finalized=false`다. 기능적 역할 및 공식
+광고 근거 게이트가 별도로 끝나기 전에는 확장 원료를 선택하거나 Phase 2, 프론트엔드,
+개인화 기능을 시작하지 않습니다.

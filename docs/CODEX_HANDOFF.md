@@ -1,8 +1,8 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-08-29 Asia/Seoul`
+- 기준일: `2026-08-30 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **C003 사람 검토 v2 pack·검증 CLI 준비 완료, 사람 라벨 100건 검토 대기**
+- 상태: **C003 v2 제품 매핑·공식 기능성 원문 사람 검토 완료; 기능적 역할 검토 A는 미구축**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
@@ -98,11 +98,18 @@ git status --short --branch
 - v2 파일 SHA-256:
   - `README.md`: `4F5F610A64A7E90DDED10E3C468D9E330CE2D18092315A0DB0BABBEAB5BC4238`
   - `manifest.json`: `0E3086DF9F2A8895D7845E8B24D00DBE18A43CEEE9C6DC92CBE9095FD873D442`
-  - `product_review_labels.csv`: `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8`
+  - `product_review_labels.csv`의 2026-08-28 당시 빈 템플릿 해시:
+    `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8`
   - `samples.csv`: `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C`
-- 실제 v2 검증: 프로세스 종료코드 `2`, `PENDING`, 유효 `0 / 100`, 대기 `100 / 100`
+- 실제 v2 재검증: 프로세스 종료코드 `0`, `COMPLETE`, 유효 라벨 `100건 전부`
+- 대기 라벨: `0 / 100`; 매핑 `99 correct / 1 incorrect / 0 uncertain`, 기능성 원문 `usable 100 / 100`
+- 유일한 매핑 오류: `red_ginseng`, 신고번호 `20160012278100`, 사유 `alias_collision`
+- 완료 라벨 SHA-256:
+  `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`
+- `function_text_status=usable`은 공식 기능성 원문이 행 단위 검토에 사용 가능하다는 뜻이며,
+  원료가 그 기능을 유발한다는 인과 근거가 아니다.
 - 광고 근거 `NOT_MEASURED`, 확장 추천 `BLOCKED`, `finalized=false`
-- 선택된 확장 원료: 없음. 공식 광고 근거와 100개 유효 사람 라벨 전에는 추천 또는
+- 선택된 확장 원료: 없음. 기능적 역할 검토 A와 공식 광고 근거 게이트 전에는 추천 또는
   최종 선택을 만들지 않는다.
 
 현재 성공 상태는
@@ -120,16 +127,16 @@ git status --short --branch
 .venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
 ```
 
-현재 빈 v2 템플릿은 두 번째 명령에서 종료코드 `2`를 반환한다. 라이브 C003 export
-자체를 다시 받아야 할 때만 승인된 운영자가 `FOOD_SAFETY_API_KEY`를 로컬 환경에
+2026-08-28 당시 빈 v2 템플릿은 두 번째 명령에서 종료코드 `2`를 반환했다. 현재 완료된
+v2는 같은 validator에서 종료코드 `0`을 반환한다. 라이브 C003 export 자체를 다시 받아야
+할 때만 승인된 운영자가 `FOOD_SAFETY_API_KEY`를 로컬 환경에
 설정하고 `scripts/audit_c003.py`를 별도로 실행한다. 키 값을 문서·로그·명령 출력에
 복사하지 않는다.
 
-현재 다음 작업은 `build/extension-review-v2/samples.csv`를 근거로
-`build/extension-review-v2/product_review_labels.csv`의 매핑 판정·이유, 기능성 원문
-상태·이유, 필요한 note, 검토자, timezone-aware 검토 시각을 100건 모두 사람이 입력한
-뒤 validator를 다시 실행하는 것이다. 기존 v1 숫자 점수 파일은 채우지 않는다. 100개
-라벨이 유효해도 공식 광고 근거가 `NOT_MEASURED`인 동안 추천과 최종 선택은 `BLOCKED`다.
+현재 다음 작업은 완료된 `build/extension-review-v2/product_review_labels.csv`를 입력
+근거로 기능적 역할 검토 A를 구축하는 것이다. 기존 v1 숫자 점수 파일은 채우지 않는다.
+v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 추천과 최종 선택은
+`BLOCKED`다.
 
 상세 상태는
 [`docs/evidence/PHASE_1_EXTENSION_REVIEW.md`](evidence/PHASE_1_EXTENSION_REVIEW.md)를
@@ -197,6 +204,7 @@ git status --short --branch
 
 > 근거있어의 ClaimLedger 엔진과 v2 사람 검토 계약은 280개 테스트, 96.83% 커버리지,
 > 핵심 불변식 175개로 검증됐다. 2026-08-27 라이브 C003 `45,907 / 45,907`건과
-> 2026-08-28 v2 5×20 pack도 검증됐지만 사람 라벨은 `PENDING 0 / 100`, 광고 근거는
-> `NOT_MEASURED`, 추천은 `BLOCKED`다. 100건 검토와 별도 광고 근거 게이트 전에는
-> 확장 원료를 선택하거나 Phase 2를 시작하지 말라.
+> 2026-08-30 v2 5×20 사람 검토는 `COMPLETE 100 / 100`, 매핑 `99 correct / 1 incorrect`,
+> 기능성 원문 `usable 100 / 100`이다. 기능적 역할 검토 A는 아직 없고 광고 근거는
+> `NOT_MEASURED`, 추천은 `BLOCKED`, `finalized=false`다. 두 별도 게이트 전에는 확장
+> 원료를 선택하거나 Phase 2를 시작하지 말라.

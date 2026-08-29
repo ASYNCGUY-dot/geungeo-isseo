@@ -1,11 +1,15 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-08-28 Asia/Seoul`
+- Status date: `2026-08-30 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
 - Planned sample size: `20` per comparison group, `100` total
-- Human review status: `PENDING`; valid human labels are `0 / 100`.
+- Product mapping/function-text human review status: `COMPLETE`; valid human labels are `100 / 100`, pending labels are `0 / 100`.
+- Mapping review: `99 correct / 1 incorrect / 0 uncertain`; the one error is `red_ginseng` report `20160012278100` with reason `alias_collision`.
+- Function-text review: `usable 100 / 100`. This records usable official function text for row-level review; it does not prove an ingredient caused the function.
+- Completed labels SHA-256: `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`
+- Functional-role review A: not yet built.
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
@@ -121,7 +125,7 @@ exactly four files:
 |---|---:|---|
 | `README.md` | 743 | `4F5F610A64A7E90DDED10E3C468D9E330CE2D18092315A0DB0BABBEAB5BC4238` |
 | `manifest.json` | 471 | `0E3086DF9F2A8895D7845E8B24D00DBE18A43CEEE9C6DC92CBE9095FD873D442` |
-| `product_review_labels.csv` | 3,499 | `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8` |
+| `product_review_labels.csv` (2026-08-28 당시 빈 템플릿) | 3,499 | `DC65DBC164CDB135C8C0B0FF7688CEB6F3766E92B6D47BBC0C55CB9FEA350CC8` |
 | `samples.csv` | 119,375 | `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C` |
 
 The manifest was parsed and revalidated with these observed values:
@@ -140,7 +144,8 @@ The manifest was parsed and revalidated with these observed values:
 The v2 samples hash is byte-for-byte identical to the preserved v1 samples
 hash. The v1 files remain present with their recorded hashes unchanged.
 
-The real v2 validator returned process exit `2` with:
+2026-08-28 당시 빈 템플릿의 v2 validator는 process exit `2`를 반환했고, 다음은 그 과거
+결과다:
 
 - status `PENDING`
 - valid labels `0 / 100`
@@ -150,7 +155,8 @@ The real v2 validator returned process exit `2` with:
 - extension recommendation `BLOCKED`
 - `finalized=false`
 
-The labels file has exactly 100 rows and zero nonblank human-review fields.
+2026-08-28 당시 빈 템플릿의 labels file은 정확히 100행이고 nonblank human-review field가
+0개였다.
 Count-only scans found zero high-confidence key/token patterns, URLs, C003
 envelope fields, and prohibited metadata. One actual local key value from the
 main checkout `.env` was compared in memory without printing it; occurrences
@@ -164,22 +170,27 @@ timestamps, and a 24-hour future tolerance. `COMPLETE` produces only review
 quality metrics and 95% Wilson intervals. It does not call legacy extension
 scoring or produce an extension candidate.
 
-## Pending human review
+## Completed v2 human review and remaining gates
 
-The export and v2 pack integrity gates are complete. The following still
-require a person for every row in `product_review_labels.csv`:
+The export and v2 pack integrity gates are complete, and all 100 rows now have
+valid human review fields. The current validator returned process exit `0` with
+`COMPLETE`, valid labels `100 / 100`, pending labels `0 / 100`, mapping `99
+correct / 1 incorrect / 0 uncertain`, and function-text `usable 100 / 100`.
+The single incorrect mapping is `red_ginseng` report `20160012278100`, marked
+`alias_collision`; it is preserved as an observed review error, not rewritten
+as a correct mapping.
 
-- ingredient-group mapping verdict and matching reason code;
-- official function-text status and matching reason code;
-- a review note whenever `needs_expert` or `other` is selected;
-- a nonblank reviewer identifier;
-- a timezone-aware ISO 8601 review timestamp.
+The completed label file SHA-256 is
+`A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`.
+`function_text_status=usable` means only that the row's official function text
+is usable for this review. It does not establish that an ingredient caused the
+function, clinical equivalence, product efficacy, or advertising compliance.
 
-No extension choice may be finalized before all 100 samples receive valid human
-labels and a separate official advertising-evidence gate is complete. The seed
-and mapping rules make sampling reproducible; they do not replace human review
-or prove clinical equivalence. Even a v2 `COMPLETE` result keeps recommendation
-`BLOCKED` while advertising evidence is `NOT_MEASURED`.
+Functional-role review A is not yet built. No extension choice may be finalized
+before that separate gate and a separate official advertising-evidence gate are
+complete. Advertising evidence remains `NOT_MEASURED`; extension recommendation
+remains `BLOCKED`; `finalized=false`. The seed and mapping rules make sampling
+reproducible; they do not replace the remaining gates.
 
 ## Reproduction commands
 
@@ -191,9 +202,8 @@ pack requires no API key or network call:
 .venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
 ```
 
-The current next action is to fill
-`build/extension-review-v2/product_review_labels.csv` using
-`build/extension-review-v2/samples.csv` as the evidence sheet, then rerun the
-validator. Do not fill the historical v1 numeric score file. Collect and
-validate all 100 v2 human labels before proceeding; do not make an extension
-recommendation or final choice while advertising evidence remains unmeasured.
+The current next action is to build functional-role review A using the completed
+`build/extension-review-v2/product_review_labels.csv` and its evidence sheet.
+Do not fill the historical v1 numeric score file. Do not make an extension
+recommendation or final choice while advertising evidence remains unmeasured,
+functional-role review A remains unbuilt, and the status remains `BLOCKED`.
