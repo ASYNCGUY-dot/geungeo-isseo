@@ -114,6 +114,7 @@ def test_registry_rejects_stale_or_future_verification_times(
         "https://mfds.go.kr.attacker.example/synthetic-fixture/rule",
         "https://user:password@www.mfds.go.kr/synthetic-fixture/rule",
         "https://www.mfds.go.kr/synthetic-fixture/rule#fragment",
+        "https://www.mfds.go.kr:not-a-port/synthetic-fixture/rule",
         "https://example.test/synthetic-fixture/rule",
     ],
 )
@@ -150,7 +151,9 @@ def test_registry_rejects_lowercase_or_non_sha256_content_hashes(
         ("accepted_functional_forms", []),
         ("recognized_function_texts", []),
         ("accepted_functional_forms", ["홍삼농축액", "  가  "]),
+        ("accepted_functional_forms", ["홍삼농축액", "가"]),
         ("recognized_function_texts", ["간 건강", "간   건강"]),
+        ("recognized_function_texts", ["간 건강", "간 건강"]),
     ],
 )
 def test_registry_rejects_empty_unsorted_or_duplicate_phrase_lists(
@@ -171,8 +174,10 @@ def test_registry_rejects_empty_unsorted_or_duplicate_phrase_lists(
     ("field", "value"),
     [
         ("source_id", "=HYPERLINK(\"bad\")"),
+        ("source_id", "  =HYPERLINK(bad)"),
         ("canonical_ingredient", "+SUM(1,1)"),
         ("source_locator", "api_key=live-secret-value-123456"),
+        ("source_locator", "FOOD_SAFETY_API_KEY"),
         ("extracted_by", "sk-proj-abcdefghijklmnop"),
     ],
 )
@@ -196,6 +201,7 @@ def test_registry_rejects_formula_prefixes_and_secret_patterns(
         ("extra_rule", "unused"),
         ("extra_registry", "unused"),
         ("naive_datetime", "retrieved_at"),
+        ("naive_evaluated_at", ""),
     ],
 )
 def test_registry_rejects_extra_fields_and_naive_datetimes(
@@ -210,8 +216,15 @@ def test_registry_rejects_extra_fields_and_naive_datetimes(
         rules[0][field] = "not allowed"
     elif mutation == "extra_registry":
         data[field] = "not allowed"
-    else:
+    elif mutation == "naive_datetime":
         rules[0][field] = "2026-08-30T00:00:00"
+    else:
+        with pytest.raises(ValueError):
+            load_functional_role_registry(
+                _write_registry(tmp_path, data),
+                evaluated_at=datetime(2026, 8, 30),  # noqa: DTZ001
+            )
+        return
 
     with pytest.raises(ValidationError):
         _load(tmp_path, data)

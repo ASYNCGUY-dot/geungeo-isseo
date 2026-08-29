@@ -30,7 +30,7 @@ _OFFICIAL_SOURCE_HOSTS = (
     "law.go.kr",
 )
 _SECRET_PATTERNS = (
-    re.compile(r"\b(?:OPENAI|FOODSAFETY|TAVILY|ANTHROPIC)_API_KEY\b", re.IGNORECASE),
+    re.compile(r"\b(?:OPENAI|FOOD_?SAFETY|TAVILY|ANTHROPIC)_API_KEY\b", re.IGNORECASE),
     re.compile(r"\bsk-(?:proj-)?[A-Za-z0-9_-]{12,}\b"),
     re.compile(r"\bAIza[0-9A-Za-z_-]{20,}\b"),
     re.compile(
@@ -79,7 +79,8 @@ def _normalize_text(value: str) -> str:
 def _reject_unsafe_text(value: object, field_name: str) -> str:
     if not isinstance(value, str):
         raise TypeError(f"{field_name} must be text")
-    if value.startswith(_SPREADSHEET_FORMULA_PREFIXES):
+    retained_value = value.strip()
+    if retained_value.startswith(_SPREADSHEET_FORMULA_PREFIXES):
         raise ValueError(f"{field_name} starts with a spreadsheet formula prefix")
     if any(pattern.search(value) for pattern in _SECRET_PATTERNS):
         raise ValueError(f"{field_name} contains a possible secret")
@@ -106,6 +107,7 @@ def _is_official_source_url(source_url: str) -> bool:
     try:
         parsed = urlsplit(source_url)
         hostname = parsed.hostname
+        _ = parsed.port
     except ValueError:
         return False
     if (
