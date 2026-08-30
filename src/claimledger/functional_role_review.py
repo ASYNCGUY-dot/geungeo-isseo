@@ -1,5 +1,9 @@
+import csv
+import hashlib
 import json
+from collections import Counter
 from enum import StrEnum
+from pathlib import Path
 from typing import Literal
 
 from pydantic import (
@@ -7,19 +11,38 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    ValidationError,
     field_validator,
     model_validator,
 )
 
-from claimledger.domain import IngredientGroup, MappingStatus, NonBlankText
+from claimledger.domain import (
+    ExtensionReviewProduct,
+    IngredientGroup,
+    MappingStatus,
+    NonBlankText,
+)
 from claimledger.extension_selection import COMPARISON_GROUPS
 from claimledger.functional_role import (
+    FunctionalRoleRuleRegistry,
+    MachineRoleDecision,
     MachineRoleReasonCode,
     MachineRoleVerdict,
     RoleEvidenceField,
     _reject_unsafe_text,
+    classify_functional_role,
 )
-from claimledger.product_review import ReviewGateStatus, ReviewIssue, WilsonInterval
+from claimledger.ingredients import map_ingredients
+from claimledger.product_review import (
+    MappingVerdict,
+    ProductReviewLabel,
+    ProductReviewManifest,
+    ProductReviewSample,
+    ReviewGateStatus,
+    ReviewIssue,
+    WilsonInterval,
+    sha256_file,
+)
 
 FUNCTIONAL_ROLE_CONTRACT_VERSION = "c003-functional-role-v1"
 DEFAULT_GENERAL_AUDIT_SIZE = 20
@@ -28,6 +51,17 @@ POSITIVE_WILSON_LOWER_THRESHOLD = 0.90
 
 _SHA256_PATTERN = r"^[0-9A-F]{64}$"
 _BOTH_EVIDENCE_KEYS = ("raw_materials", "primary_function")
+_HASH_ENCODING = "utf-8"
+_PRODUCT_REVIEW_PACK_FILES = {
+    "README.md",
+    "manifest.json",
+    "product_review_labels.csv",
+    "samples.csv",
+}
+_SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+_PRODUCT_SOURCE_FIELDS = tuple(ExtensionReviewProduct.model_fields)
+
+SamplingScope = Literal["general-replacement", "positive"]
 
 
 class HumanRoleVerdict(StrEnum):
@@ -536,3 +570,401 @@ class FunctionalRoleValidationResult(_ImmutableContractModel):
         ):
             raise ValueError("INVALID requires issues and unreported progress counts")
         return self
+
+
+def derive_sample_seed(
+    base_seed: int,
+    group: IngredientGroup,
+    scope: SamplingScope,
+) -> int:
+    if group not in COMPARISON_GROUPS:
+        raise ValueError("sampling requires a comparison ingredient group")
+    if scope not in {"general-replacement", "positive"}:
+        raise ValueError("sampling scope is invalid")
+    material = (f"c003-functional-role-v1|{base_seed}|{group.value}|{scope}").encode(_HASH_ENCODING)
+    return int.from_bytes(hashlib.sha256(material).digest()[:8], "big")
+
+
+def _candidate_rank(
+    product: ExtensionReviewProduct,
+    *,
+    base_seed: int,
+    group: IngredientGroup,
+    scope: SamplingScope,
+) -> bytes:
+    derived_seed = derive_sample_seed(base_seed, group, scope)
+    rank_material = (f"{derived_seed}|{group.value}|{scope}|{product.report_no}").encode(
+        _HASH_ENCODING
+    )
+    return hashlib.sha256(rank_material).digest()
+
+
+def _candidate_sort_key(
+    product: ExtensionReviewProduct,
+    *,
+    base_seed: int,
+    group: IngredientGroup,
+    scope: SamplingScope,
+) -> tuple[bytes, str, str, str]:
+    return (
+        _candidate_rank(
+            product,
+            base_seed=base_seed,
+            group=group,
+            scope=scope,
+        ),
+        product.report_no,
+        product.name,
+        product.company,
+    )
+
+
+def _restore_spreadsheet_literal(value: str) -> str:
+    if len(value) >= 2 and value[0] == "'" and value[1] in _SPREADSHEET_FORMULA_PREFIXES:
+        return value[1:]
+    return value
+
+
+def _spreadsheet_safe_literal(value: str) -> str:
+    if value.startswith(_SPREADSHEET_FORMULA_PREFIXES):
+        return f"'{value}"
+    return value
+
+
+def _read_csv_contract(
+    path: Path,
+    expected_fields: tuple[str, ...],
+) -> tuple[dict[str, str], ...]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != expected_fields:
+            raise ValueError("CSV header does not match its contract")
+        rows: list[dict[str, str]] = []
+        for row in reader:
+            if None in row or any(value is None for value in row.values()):
+                raise ValueError("CSV row is malformed")
+            rows.append({key: value for key, value in row.items() if key is not None})
+    return tuple(rows)
+
+
+def _load_completed_product_review_pack(
+    pack_dir: Path,
+    products: tuple[ExtensionReviewProduct, ...],
+) -> tuple[
+    tuple[ProductReviewSample, ...],
+    dict[tuple[IngredientGroup, str], ProductReviewLabel],
+    dict[str, ExtensionReviewProduct],
+]:
+    try:
+        if not pack_dir.is_dir():
+            raise ValueError("product review pack directory is missing")
+        if {path.name for path in pack_dir.iterdir()} != _PRODUCT_REVIEW_PACK_FILES:
+            raise ValueError("product review pack file set is invalid")
+        manifest = ProductReviewManifest.model_validate_json(
+            (pack_dir / "manifest.json").read_text(encoding="utf-8")
+        )
+        if sha256_file(pack_dir / "samples.csv") != manifest.samples_sha256:
+            raise ValueError("product review sample hash is invalid")
+
+        sample_rows = _read_csv_contract(
+            pack_dir / "samples.csv",
+            tuple(ProductReviewSample.model_fields),
+        )
+        label_rows = _read_csv_contract(
+            pack_dir / "product_review_labels.csv",
+            tuple(ProductReviewLabel.model_fields),
+        )
+        samples = tuple(ProductReviewSample.model_validate(row) for row in sample_rows)
+        labels = tuple(ProductReviewLabel.model_validate(row) for row in label_rows)
+        if len(samples) != 100 or len(labels) != 100:
+            raise ValueError("product review pack must have 100 complete rows")
+
+        product_by_report: dict[str, ExtensionReviewProduct] = {}
+        for product in products:
+            if product.report_no in product_by_report:
+                raise ValueError("source products contain duplicate report numbers")
+            product_by_report[product.report_no] = product
+
+        sample_keys: list[tuple[IngredientGroup, str]] = []
+        sample_counts: Counter[IngredientGroup] = Counter()
+        for sample in samples:
+            key = (sample.group, sample.report_no)
+            if key in sample_keys:
+                raise ValueError("product review samples contain duplicate keys")
+            sample_keys.append(key)
+            sample_counts[sample.group] += 1
+            source_report_no = _restore_spreadsheet_literal(sample.report_no)
+            source = product_by_report.get(source_report_no)
+            if source is None or any(
+                _restore_spreadsheet_literal(getattr(sample, field)) != getattr(source, field)
+                for field in _PRODUCT_SOURCE_FIELDS
+            ):
+                raise ValueError("product review sample does not match source products")
+            mapping = map_ingredients(source)
+            if (
+                sample.group not in mapping.groups
+                or sample.mapping_status is not mapping.status
+                or sample.mapping_rule_version != mapping.rule_version
+            ):
+                raise ValueError("product review sample mapping is stale")
+
+        expected_counts = Counter({group: 20 for group in COMPARISON_GROUPS})
+        if sample_counts != expected_counts:
+            raise ValueError("product review sample group counts are invalid")
+        manifest_counts = Counter(
+            {
+                IngredientGroup(group): count
+                for group, count in manifest.group_counts.model_dump().items()
+            }
+        )
+        if sample_counts != manifest_counts:
+            raise ValueError("product review manifest counts are stale")
+        if tuple(sorted({sample.mapping_rule_version for sample in samples})) != (
+            manifest.mapping_rule_versions
+        ):
+            raise ValueError("product review mapping versions are stale")
+
+        labels_by_key: dict[tuple[IngredientGroup, str], ProductReviewLabel] = {}
+        for label in labels:
+            key = (label.group, label.report_no)
+            if key in labels_by_key:
+                raise ValueError("product review labels contain duplicate keys")
+            labels_by_key[key] = label
+        if set(labels_by_key) != set(sample_keys):
+            raise ValueError("product review labels do not match sample keys")
+        return samples, labels_by_key, product_by_report
+    except (OSError, csv.Error, ValidationError, ValueError, KeyError, TypeError) as exc:
+        raise ValueError("product review pack must be COMPLETE") from exc
+
+
+def _machine_evidence_excerpt(decision: MachineRoleDecision) -> str:
+    if decision.evidence_field is RoleEvidenceField.BOTH:
+        return json.dumps(
+            {
+                "raw_materials": decision.raw_materials_excerpt,
+                "primary_function": decision.primary_function_excerpt,
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+    if decision.evidence_field is RoleEvidenceField.RAW_MATERIALS:
+        return decision.raw_materials_excerpt
+    if decision.evidence_field is RoleEvidenceField.PRIMARY_FUNCTION:
+        return decision.primary_function_excerpt
+    return ""
+
+
+def _target_rule_version(
+    registry: FunctionalRoleRuleRegistry,
+    group: IngredientGroup,
+) -> str:
+    matching = tuple(rule for rule in registry.rules if rule.group is group)
+    if len(matching) != 1:
+        raise ValueError("functional-role registry must contain one target rule")
+    return matching[0].rule_version
+
+
+def _functional_sample(
+    *,
+    source_values: ProductReviewSample | ExtensionReviewProduct,
+    decision_product: ExtensionReviewProduct,
+    group: IngredientGroup,
+    mapping_status: MappingStatus,
+    mapping_rule_version: str,
+    audit_round: Literal[1, 2],
+    sample_origin: SampleOrigin,
+    is_general_audit: bool,
+    is_positive_audit: bool,
+    registry: FunctionalRoleRuleRegistry,
+    inherited_mapping_error: bool = False,
+) -> FunctionalRoleSample:
+    report_no = source_values.report_no
+    if isinstance(source_values, ExtensionReviewProduct):
+        report_no = _spreadsheet_safe_literal(report_no)
+    if inherited_mapping_error:
+        machine_verdict = MachineRoleVerdict.UNVERIFIABLE
+        machine_reason_code = MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+        machine_evidence_field = RoleEvidenceField.NONE
+        machine_evidence_excerpt = ""
+    else:
+        decision = classify_functional_role(decision_product, group, registry)
+        machine_verdict = decision.verdict
+        machine_reason_code = decision.reason_code
+        machine_evidence_field = decision.evidence_field
+        machine_evidence_excerpt = _machine_evidence_excerpt(decision)
+    return FunctionalRoleSample(
+        seed=20260823,
+        group=group,
+        report_no=report_no,
+        name=source_values.name,
+        company=source_values.company,
+        primary_function=source_values.primary_function,
+        raw_materials=source_values.raw_materials,
+        intake_method=source_values.intake_method,
+        mapping_status=mapping_status,
+        mapping_rule_version=mapping_rule_version,
+        audit_round=audit_round,
+        sample_origin=sample_origin,
+        is_general_audit=is_general_audit,
+        is_positive_audit=is_positive_audit,
+        machine_verdict=machine_verdict,
+        machine_reason_code=machine_reason_code,
+        machine_evidence_field=machine_evidence_field,
+        machine_evidence_excerpt=machine_evidence_excerpt,
+        functional_role_rule_version=_target_rule_version(registry, group),
+    )
+
+
+def _mark_positive_audit(sample: FunctionalRoleSample) -> FunctionalRoleSample:
+    values = sample.model_dump()
+    values["is_positive_audit"] = True
+    return FunctionalRoleSample.model_validate(values)
+
+
+def build_functional_role_samples(
+    products: tuple[ExtensionReviewProduct, ...],
+    *,
+    product_review_pack_dir: Path,
+    registry: FunctionalRoleRuleRegistry,
+    base_seed: int = 20260823,
+    general_size: int = 20,
+    positive_size: int = 35,
+) -> tuple[FunctionalRoleSample, ...]:
+    if (
+        base_seed != 20260823
+        or general_size != DEFAULT_GENERAL_AUDIT_SIZE
+        or positive_size != DEFAULT_POSITIVE_AUDIT_SIZE
+    ):
+        raise ValueError("functional-role sampling requires the locked seed and sample sizes")
+    v2_samples, labels_by_key, product_by_report = _load_completed_product_review_pack(
+        product_review_pack_dir,
+        products,
+    )
+    mapping_by_report = {
+        report_no: map_ingredients(product) for report_no, product in product_by_report.items()
+    }
+
+    samples_by_key: dict[tuple[IngredientGroup, str], FunctionalRoleSample] = {}
+    original_keys: list[tuple[IngredientGroup, str]] = []
+    inherited_keys_by_group: dict[IngredientGroup, list[tuple[IngredientGroup, str]]] = {
+        group: [] for group in COMPARISON_GROUPS
+    }
+    inherited_source_keys: set[tuple[IngredientGroup, str]] = set()
+    for v2_sample in v2_samples:
+        key = (v2_sample.group, v2_sample.report_no)
+        label = labels_by_key[key]
+        source_report_no = _restore_spreadsheet_literal(v2_sample.report_no)
+        source = product_by_report[source_report_no]
+        inherited_mapping_error = label.mapping_verdict is not MappingVerdict.CORRECT
+        sample = _functional_sample(
+            source_values=v2_sample,
+            decision_product=source,
+            group=v2_sample.group,
+            mapping_status=v2_sample.mapping_status,
+            mapping_rule_version=v2_sample.mapping_rule_version,
+            audit_round=1,
+            sample_origin=SampleOrigin.V2_ORIGINAL,
+            is_general_audit=True,
+            is_positive_audit=False,
+            registry=registry,
+            inherited_mapping_error=inherited_mapping_error,
+        )
+        samples_by_key[key] = sample
+        original_keys.append(key)
+        if inherited_mapping_error:
+            inherited_keys_by_group[v2_sample.group].append(key)
+            inherited_source_keys.add((v2_sample.group, source_report_no))
+
+    replacement_keys_by_group: dict[IngredientGroup, list[tuple[IngredientGroup, str]]] = {
+        group: [] for group in COMPARISON_GROUPS
+    }
+    for group in COMPARISON_GROUPS:
+        replacement_count = len(inherited_keys_by_group[group])
+        if not replacement_count:
+            continue
+        candidates = [
+            product
+            for product in products
+            if mapping_by_report[product.report_no].status is MappingStatus.VERIFIED
+            and mapping_by_report[product.report_no].groups == (group,)
+            and (group, _spreadsheet_safe_literal(product.report_no)) not in samples_by_key
+        ]
+        ranked_candidates = sorted(
+            candidates,
+            key=lambda product: _candidate_sort_key(
+                product,
+                base_seed=base_seed,
+                group=group,
+                scope="general-replacement",
+            ),
+        )
+        if len(ranked_candidates) < replacement_count:
+            raise ValueError("insufficient same-group general replacement candidates")
+        for product in ranked_candidates[:replacement_count]:
+            mapping = mapping_by_report[product.report_no]
+            sample = _functional_sample(
+                source_values=product,
+                decision_product=product,
+                group=group,
+                mapping_status=mapping.status,
+                mapping_rule_version=mapping.rule_version,
+                audit_round=1,
+                sample_origin=SampleOrigin.GENERAL_REPLACEMENT,
+                is_general_audit=True,
+                is_positive_audit=False,
+                registry=registry,
+            )
+            key = (group, sample.report_no)
+            samples_by_key[key] = sample
+            replacement_keys_by_group[group].append(key)
+
+    positive_only_keys_by_group: dict[IngredientGroup, list[tuple[IngredientGroup, str]]] = {
+        group: [] for group in COMPARISON_GROUPS
+    }
+    for group in COMPARISON_GROUPS:
+        positive_pool: list[ExtensionReviewProduct] = []
+        for product in products:
+            mapping = mapping_by_report[product.report_no]
+            if group not in mapping.groups or (group, product.report_no) in inherited_source_keys:
+                continue
+            decision = classify_functional_role(product, group, registry)
+            if decision.verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED:
+                positive_pool.append(product)
+        ranked_positive_pool = sorted(
+            positive_pool,
+            key=lambda product: _candidate_sort_key(
+                product,
+                base_seed=base_seed,
+                group=group,
+                scope="positive",
+            ),
+        )
+        for product in ranked_positive_pool[:positive_size]:
+            output_key = (group, _spreadsheet_safe_literal(product.report_no))
+            if output_key in samples_by_key:
+                samples_by_key[output_key] = _mark_positive_audit(samples_by_key[output_key])
+                continue
+            mapping = mapping_by_report[product.report_no]
+            sample = _functional_sample(
+                source_values=product,
+                decision_product=product,
+                group=group,
+                mapping_status=mapping.status,
+                mapping_rule_version=mapping.rule_version,
+                audit_round=2,
+                sample_origin=SampleOrigin.POSITIVE_PRECISION,
+                is_general_audit=False,
+                is_positive_audit=True,
+                registry=registry,
+            )
+            samples_by_key[output_key] = sample
+            positive_only_keys_by_group[group].append(output_key)
+
+    ordered_keys = [*original_keys]
+    for group in COMPARISON_GROUPS:
+        ordered_keys.extend(replacement_keys_by_group[group])
+    for group in COMPARISON_GROUPS:
+        ordered_keys.extend(positive_only_keys_by_group[group])
+    if len(ordered_keys) != len(set(ordered_keys)):
+        raise ValueError("functional-role samples contain duplicate composite keys")
+    return tuple(samples_by_key[key] for key in ordered_keys)

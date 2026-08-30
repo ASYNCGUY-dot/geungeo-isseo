@@ -1,16 +1,21 @@
 import copy
+import csv
+import hashlib
 import json
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from claimledger.domain import IngredientGroup, MappingStatus
+from claimledger.domain import ExtensionReviewProduct, IngredientGroup, MappingStatus
 from claimledger.extension_selection import COMPARISON_GROUPS
 from claimledger.functional_role import (
+    FunctionalRoleRuleRegistry,
     MachineRoleReasonCode,
     MachineRoleVerdict,
     RoleEvidenceField,
+    load_functional_role_registry,
 )
 from claimledger.functional_role_review import (
     DEFAULT_GENERAL_AUDIT_SIZE,
@@ -30,11 +35,45 @@ from claimledger.functional_role_review import (
     RoleConfusionCell,
     RoleEligibility,
     SampleOrigin,
+    build_functional_role_samples,
+    derive_sample_seed,
 )
-from claimledger.product_review import ReviewGateStatus, ReviewIssue
+from claimledger.ingredients import map_ingredients
+from claimledger.product_review import (
+    FunctionReasonCode,
+    FunctionTextStatus,
+    MappingReasonCode,
+    MappingVerdict,
+    ProductReviewLabel,
+    ProductReviewManifest,
+    ProductReviewSample,
+    ReviewGateStatus,
+    ReviewGroupCounts,
+    ReviewIssue,
+    sha256_file,
+    validate_product_review_pack,
+)
 
 NOW = datetime(2026, 8, 30, 9, 0, tzinfo=UTC)
 HASH = "A" * 64
+RULE_FIXTURE_PATH = Path(__file__).parent / "fixtures" / "functional_role_rules.json"
+PRODUCT_REVIEW_SAMPLE_FIELDS = tuple(ProductReviewSample.model_fields)
+PRODUCT_REVIEW_LABEL_FIELDS = tuple(ProductReviewLabel.model_fields)
+
+FUNCTIONAL_FORMS = {
+    IngredientGroup.MILK_THISTLE: "밀크씨슬추출물",
+    IngredientGroup.VITAMIN_D: "비타민 D",
+    IngredientGroup.RED_GINSENG: "홍삼농축액",
+    IngredientGroup.COENZYME_Q10: "코엔자임 Q10",
+    IngredientGroup.MAGNESIUM: "산화마그네슘",
+}
+FUNCTION_TEXTS = {
+    IngredientGroup.MILK_THISTLE: "간 건강",
+    IngredientGroup.VITAMIN_D: "칼슘과 인의 흡수",
+    IngredientGroup.RED_GINSENG: "면역력 증진",
+    IngredientGroup.COENZYME_Q10: "항산화",
+    IngredientGroup.MAGNESIUM: "에너지 이용",
+}
 
 
 def _both_evidence(
@@ -892,3 +931,443 @@ def test_validation_result_rejects_inconsistent_status_payloads() -> None:
         summary=None,
     )
     assert result.status is ReviewGateStatus.INVALID
+
+
+def _registry() -> FunctionalRoleRuleRegistry:
+    return load_functional_role_registry(RULE_FIXTURE_PATH, evaluated_at=NOW)
+
+
+def _report_no(group: IngredientGroup, scope: str, index: int) -> str:
+    return f"{group.value.upper()}-{scope}-{index:03d}"
+
+
+def _synthetic_product(
+    group: IngredientGroup,
+    *,
+    report_no: str,
+    machine_positive: bool,
+    inherited_red_ginseng_error: bool = False,
+) -> ExtensionReviewProduct:
+    if inherited_red_ginseng_error:
+        return ExtensionReviewProduct(
+            report_no=report_no,
+            name="홍삼 원료 합성 향 제품",
+            company="합성 제조사",
+            primary_function="일반적인 영양 보충",
+            raw_materials="홍삼향분말",
+            intake_method="하루 한 번 섭취",
+        )
+    return ExtensionReviewProduct(
+        report_no=report_no,
+        name=f"합성 감사 제품 {report_no}",
+        company="합성 제조사",
+        primary_function=(
+            f"{FUNCTION_TEXTS[group]}에 도움을 줄 수 있음"
+            if machine_positive
+            else "일반적인 영양 보충"
+        ),
+        raw_materials=FUNCTIONAL_FORMS[group],
+        intake_method="하루 한 번 섭취",
+    )
+
+
+def _synthetic_source_products(
+    *,
+    magnesium_positive_count: int = 40,
+) -> tuple[ExtensionReviewProduct, ...]:
+    products: list[ExtensionReviewProduct] = []
+    for group in COMPARISON_GROUPS:
+        target_positive_count = (
+            magnesium_positive_count if group is IngredientGroup.MAGNESIUM else 40
+        )
+        v2_positive_count = 0
+        for index in range(20):
+            inherited_error = group is IngredientGroup.RED_GINSENG and index == 0
+            product = _synthetic_product(
+                group,
+                report_no=_report_no(group, "V2", index),
+                machine_positive=not inherited_error,
+                inherited_red_ginseng_error=inherited_error,
+            )
+            products.append(product)
+            if not inherited_error:
+                v2_positive_count += 1
+        for index in range(target_positive_count - v2_positive_count):
+            products.append(
+                _synthetic_product(
+                    group,
+                    report_no=_report_no(group, "POS", index),
+                    machine_positive=True,
+                )
+            )
+        for index in range(21):
+            products.append(
+                _synthetic_product(
+                    group,
+                    report_no=_report_no(group, "NEG", index),
+                    machine_positive=False,
+                )
+            )
+
+    for product in products:
+        mapping = map_ingredients(product)
+        assert mapping.status is MappingStatus.VERIFIED
+        assert len(mapping.groups) == 1
+    return tuple(products)
+
+
+def _write_csv_models(
+    path: Path,
+    fields: tuple[str, ...],
+    models: tuple[ProductReviewSample | ProductReviewLabel, ...],
+) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(model.model_dump(mode="json") for model in models)
+
+
+def _write_completed_v2_pack(
+    root: Path,
+    products: tuple[ExtensionReviewProduct, ...],
+) -> tuple[Path, Path, tuple[ProductReviewSample, ...]]:
+    root.mkdir(parents=True)
+    pack_dir = root / "v2-pack"
+    pack_dir.mkdir()
+    source_export = root / "source-products.jsonl"
+    source_export.write_text(
+        "".join(
+            json.dumps(product.model_dump(mode="json"), ensure_ascii=False) + "\n"
+            for product in products
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    products_by_report = {product.report_no: product for product in products}
+
+    samples: list[ProductReviewSample] = []
+    labels: list[ProductReviewLabel] = []
+    for group in COMPARISON_GROUPS:
+        for index in range(20):
+            report_no = _report_no(group, "V2", index)
+            product = products_by_report[report_no]
+            mapping = map_ingredients(product)
+            assert mapping.groups == (group,)
+            sample = ProductReviewSample(
+                seed=20260823,
+                group=group,
+                **product.model_dump(),
+                mapping_status=mapping.status,
+                mapping_rule_version=mapping.rule_version,
+            )
+            samples.append(sample)
+            inherited_error = group is IngredientGroup.RED_GINSENG and index == 0
+            labels.append(
+                ProductReviewLabel(
+                    group=group,
+                    report_no=report_no,
+                    mapping_verdict=(
+                        MappingVerdict.INCORRECT if inherited_error else MappingVerdict.CORRECT
+                    ),
+                    mapping_reason_code=(
+                        MappingReasonCode.ALIAS_COLLISION
+                        if inherited_error
+                        else MappingReasonCode.NONE
+                    ),
+                    function_text_status=FunctionTextStatus.USABLE,
+                    function_reason_code=FunctionReasonCode.NONE,
+                    review_note=("합성 홍삼향 원료 alias collision" if inherited_error else ""),
+                    reviewer="synthetic-reviewer",
+                    reviewed_at_iso8601=NOW,
+                )
+            )
+
+    sample_tuple = tuple(samples)
+    label_tuple = tuple(labels)
+    _write_csv_models(
+        pack_dir / "samples.csv",
+        PRODUCT_REVIEW_SAMPLE_FIELDS,
+        sample_tuple,
+    )
+    _write_csv_models(
+        pack_dir / "product_review_labels.csv",
+        PRODUCT_REVIEW_LABEL_FIELDS,
+        label_tuple,
+    )
+    (pack_dir / "README.md").write_text(
+        "# Synthetic completed c003-product-review-v2 pack\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    manifest = ProductReviewManifest(
+        group_counts=ReviewGroupCounts(),
+        samples_sha256=sha256_file(pack_dir / "samples.csv"),
+        source_export_sha256=sha256_file(source_export),
+        mapping_rule_versions=("ingredient-map-v1",),
+    )
+    (pack_dir / "manifest.json").write_text(
+        json.dumps(
+            manifest.model_dump(mode="json"),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    validation = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
+    assert validation.status is ReviewGateStatus.COMPLETE, validation.model_dump_json()
+    return pack_dir, source_export, sample_tuple
+
+
+def _build_synthetic_samples(
+    tmp_path: Path,
+    *,
+    magnesium_positive_count: int = 40,
+    reverse_source: bool = False,
+    root_name: str = "sampling",
+) -> tuple[
+    tuple[FunctionalRoleSample, ...],
+    tuple[ExtensionReviewProduct, ...],
+    Path,
+    Path,
+    tuple[ProductReviewSample, ...],
+]:
+    products = _synthetic_source_products(magnesium_positive_count=magnesium_positive_count)
+    if reverse_source:
+        products = tuple(reversed(products))
+    pack_dir, source_export, v2_samples = _write_completed_v2_pack(
+        tmp_path / root_name,
+        products,
+    )
+    samples = build_functional_role_samples(
+        products,
+        product_review_pack_dir=pack_dir,
+        registry=_registry(),
+    )
+    return samples, products, pack_dir, source_export, v2_samples
+
+
+def _hash_rank(
+    base_seed: int,
+    group: IngredientGroup,
+    scope: str,
+    report_no: str,
+) -> bytes:
+    derived_seed = derive_sample_seed(base_seed, group, scope)
+    material = f"{derived_seed}|{group.value}|{scope}|{report_no}".encode()
+    return hashlib.sha256(material).digest()
+
+
+def test_sampling_refuses_a_non_complete_v2_pack(tmp_path: Path) -> None:
+    products = _synthetic_source_products()
+    pack_dir, source_export, _ = _write_completed_v2_pack(tmp_path / "pending", products)
+    labels_path = pack_dir / "product_review_labels.csv"
+    with labels_path.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    for field in PRODUCT_REVIEW_LABEL_FIELDS[2:]:
+        rows[0][field] = ""
+    with labels_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=PRODUCT_REVIEW_LABEL_FIELDS,
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+    validation = validate_product_review_pack(pack_dir, source_export, validated_at=NOW)
+    assert validation.status is ReviewGateStatus.PENDING
+
+    with pytest.raises(ValueError, match="COMPLETE"):
+        build_functional_role_samples(
+            products,
+            product_review_pack_dir=pack_dir,
+            registry=_registry(),
+        )
+
+
+def test_first_100_rows_preserve_v2_order_keys_and_product_fields(tmp_path: Path) -> None:
+    samples, _, _, _, v2_samples = _build_synthetic_samples(tmp_path)
+    source_fields = tuple(ExtensionReviewProduct.model_fields)
+
+    assert len(samples) >= 100
+    for functional_sample, v2_sample in zip(samples[:100], v2_samples, strict=True):
+        assert (functional_sample.group, functional_sample.report_no) == (
+            v2_sample.group,
+            v2_sample.report_no,
+        )
+        assert tuple(getattr(functional_sample, field) for field in source_fields) == tuple(
+            getattr(v2_sample, field) for field in source_fields
+        )
+
+
+def test_inherited_mapping_error_is_preserved_and_replaced_deterministically(
+    tmp_path: Path,
+) -> None:
+    samples, products, _, _, v2_samples = _build_synthetic_samples(tmp_path)
+    inherited_key = (
+        IngredientGroup.RED_GINSENG,
+        _report_no(IngredientGroup.RED_GINSENG, "V2", 0),
+    )
+    inherited = next(
+        sample for sample in samples if (sample.group, sample.report_no) == inherited_key
+    )
+    assert inherited.machine_verdict is MachineRoleVerdict.UNVERIFIABLE
+    assert inherited.machine_reason_code is MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+    assert inherited.sample_origin is SampleOrigin.V2_ORIGINAL
+    assert inherited.is_general_audit is True
+
+    replacements = [
+        sample
+        for sample in samples
+        if sample.group is IngredientGroup.RED_GINSENG
+        and sample.sample_origin is SampleOrigin.GENERAL_REPLACEMENT
+    ]
+    assert len(replacements) == 1
+    existing_keys = {(sample.group, sample.report_no) for sample in v2_samples}
+    candidates = [
+        product
+        for product in products
+        if map_ingredients(product).groups == (IngredientGroup.RED_GINSENG,)
+        and (IngredientGroup.RED_GINSENG, product.report_no) not in existing_keys
+    ]
+    expected = min(
+        candidates,
+        key=lambda product: (
+            _hash_rank(
+                20260823,
+                IngredientGroup.RED_GINSENG,
+                "general-replacement",
+                product.report_no,
+            ),
+            product.report_no,
+            product.name,
+            product.company,
+        ),
+    )
+    assert replacements[0].report_no == expected.report_no
+
+
+def test_each_group_has_exactly_20_evaluable_general_rows(tmp_path: Path) -> None:
+    samples, *_ = _build_synthetic_samples(tmp_path)
+
+    for group in COMPARISON_GROUPS:
+        evaluable = [
+            sample
+            for sample in samples
+            if sample.group is group
+            and sample.is_general_audit
+            and sample.machine_reason_code is not MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+        ]
+        assert len(evaluable) == 20
+
+
+def test_positive_audit_selects_at_most_35_machine_positive_unique_products(
+    tmp_path: Path,
+) -> None:
+    samples, *_ = _build_synthetic_samples(tmp_path)
+
+    for group in COMPARISON_GROUPS:
+        positives = [
+            sample for sample in samples if sample.group is group and sample.is_positive_audit
+        ]
+        assert len(positives) == 35
+        assert len({sample.report_no for sample in positives}) == len(positives)
+        assert all(
+            sample.machine_verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
+            for sample in positives
+        )
+
+
+def test_existing_general_positive_is_marked_without_a_duplicate_row(
+    tmp_path: Path,
+) -> None:
+    samples, *_ = _build_synthetic_samples(tmp_path)
+    keys = [(sample.group, sample.report_no) for sample in samples]
+
+    assert len(keys) == len(set(keys))
+    for group in COMPARISON_GROUPS:
+        assert any(
+            sample.group is group and sample.is_general_audit and sample.is_positive_audit
+            for sample in samples
+        )
+
+
+def test_positive_pool_below_35_keeps_all_rows_for_insufficient_status(
+    tmp_path: Path,
+) -> None:
+    samples, *_ = _build_synthetic_samples(
+        tmp_path,
+        magnesium_positive_count=34,
+    )
+    magnesium_positive = [
+        sample
+        for sample in samples
+        if sample.group is IngredientGroup.MAGNESIUM and sample.is_positive_audit
+    ]
+
+    assert len(magnesium_positive) == 34
+    assert all(
+        sample.machine_verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
+        for sample in magnesium_positive
+    )
+
+
+def test_group_and_report_number_are_unique_across_the_pack(tmp_path: Path) -> None:
+    samples, *_ = _build_synthetic_samples(tmp_path)
+    keys = tuple((sample.group, sample.report_no) for sample in samples)
+
+    assert len(keys) == len(set(keys))
+
+
+def test_sampling_is_invariant_to_source_order(tmp_path: Path) -> None:
+    baseline, *_ = _build_synthetic_samples(tmp_path, root_name="baseline")
+    reversed_samples, *_ = _build_synthetic_samples(
+        tmp_path,
+        reverse_source=True,
+        root_name="reversed",
+    )
+
+    assert [sample.model_dump(mode="json") for sample in baseline] == [
+        sample.model_dump(mode="json") for sample in reversed_samples
+    ]
+
+
+def test_sampling_changes_when_the_seed_changes() -> None:
+    group = IngredientGroup.MAGNESIUM
+    reports = tuple(f"SEED-CANDIDATE-{index:03d}" for index in range(40))
+
+    first_order = tuple(
+        sorted(reports, key=lambda report: (_hash_rank(1, group, "positive", report), report))
+    )
+    second_order = tuple(
+        sorted(reports, key=lambda report: (_hash_rank(2, group, "positive", report), report))
+    )
+    assert first_order != second_order
+
+
+def test_every_group_uses_the_same_scope_specific_hash_rule() -> None:
+    observed: set[int] = set()
+    for group in COMPARISON_GROUPS:
+        for scope in ("general-replacement", "positive"):
+            expected_material = (f"c003-functional-role-v1|20260823|{group.value}|{scope}").encode()
+            expected = int.from_bytes(hashlib.sha256(expected_material).digest()[:8], "big")
+            actual = derive_sample_seed(20260823, group, scope)
+            assert actual == expected
+            observed.add(actual)
+    assert len(observed) == len(COMPARISON_GROUPS) * 2
+
+
+def test_non_machine_positive_products_never_enter_positive_audit_only_rows(
+    tmp_path: Path,
+) -> None:
+    samples, *_ = _build_synthetic_samples(tmp_path)
+
+    assert all(
+        sample.machine_verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
+        for sample in samples
+        if sample.sample_origin is SampleOrigin.POSITIVE_PRECISION
+    )
+    assert all(not sample.is_positive_audit for sample in samples if "-NEG-" in sample.report_no)
