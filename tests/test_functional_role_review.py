@@ -2,6 +2,8 @@ import copy
 import csv
 import hashlib
 import json
+import subprocess
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -23,6 +25,7 @@ from claimledger.functional_role_review import (
     FUNCTIONAL_ROLE_CONTRACT_VERSION,
     POSITIVE_WILSON_LOWER_THRESHOLD,
     EligibilityReasonCode,
+    FunctionalRoleBuildError,
     FunctionalRoleGroupCounts,
     FunctionalRoleGroupSummary,
     FunctionalRoleLabel,
@@ -37,6 +40,7 @@ from claimledger.functional_role_review import (
     SampleOrigin,
     build_functional_role_samples,
     derive_sample_seed,
+    write_functional_role_review_pack,
 )
 from claimledger.ingredients import map_ingredients
 from claimledger.product_review import (
@@ -1371,3 +1375,369 @@ def test_non_machine_positive_products_never_enter_positive_audit_only_rows(
         if sample.sample_origin is SampleOrigin.POSITIVE_PRECISION
     )
     assert all(not sample.is_positive_audit for sample in samples if "-NEG-" in sample.report_no)
+
+
+def _write_functional_pack(
+    tmp_path: Path,
+    *,
+    root_name: str = "functional-pack",
+    magnesium_positive_count: int = 40,
+) -> tuple[Path, Path, Path, tuple[ExtensionReviewProduct, ...], FunctionalRoleManifest]:
+    root = tmp_path / root_name
+    products = _synthetic_source_products(
+        magnesium_positive_count=magnesium_positive_count,
+    )
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+    manifest = write_functional_role_review_pack(
+        output_dir,
+        products=products,
+        source_export_path=source_export,
+        product_review_pack_dir=product_review_pack,
+        rules_path=RULE_FIXTURE_PATH,
+        registry=_registry(),
+        generated_at=NOW,
+    )
+    return output_dir, product_review_pack, source_export, products, manifest
+
+
+def _read_csv(path: Path) -> tuple[dict[str, str], ...]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return tuple(csv.DictReader(handle))
+
+
+def test_writer_creates_exactly_four_files_with_lf_utf8(tmp_path: Path) -> None:
+    output_dir, *_ = _write_functional_pack(tmp_path)
+
+    assert {path.name for path in output_dir.iterdir()} == {
+        "README.md",
+        "manifest.json",
+        "samples.csv",
+        "functional_role_labels.csv",
+    }
+    for path in output_dir.iterdir():
+        raw = path.read_bytes()
+        assert raw.decode("utf-8")
+        assert b"\r\n" not in raw
+        assert raw.endswith(b"\n")
+
+
+def test_writer_refuses_an_existing_output_directory(tmp_path: Path) -> None:
+    root = tmp_path / "existing-output"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+    output_dir.mkdir()
+    sentinel = output_dir / "keep.txt"
+    sentinel.write_text("preserve me\n", encoding="utf-8", newline="\n")
+
+    with pytest.raises(FunctionalRoleBuildError, match="already exists"):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=product_review_pack,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+        )
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve me\n"
+    assert {path.name for path in output_dir.iterdir()} == {"keep.txt"}
+
+
+def test_writer_refuses_products_not_identical_to_the_bound_source_export(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "source-binding"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    target_report_no = _report_no(IngredientGroup.MAGNESIUM, "NEG", 20)
+    altered_products = tuple(
+        product.model_copy(update={"company": "원본과 다른 제조사"})
+        if product.report_no == target_report_no
+        else product
+        for product in products
+    )
+    output_dir = root / "functional-role-review-v1"
+
+    with pytest.raises(FunctionalRoleBuildError, match="source export"):
+        write_functional_role_review_pack(
+            output_dir,
+            products=altered_products,
+            source_export_path=source_export,
+            product_review_pack_dir=product_review_pack,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+        )
+
+    assert not output_dir.exists()
+
+
+def test_writer_refuses_output_nested_inside_the_product_review_pack(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "nested-output"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = product_review_pack / "functional-role-review-v1"
+    original_files = {path.name for path in product_review_pack.iterdir()}
+
+    with pytest.raises(FunctionalRoleBuildError, match="inside the product review pack"):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=product_review_pack,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+        )
+
+    assert not output_dir.exists()
+    assert {path.name for path in product_review_pack.iterdir()} == original_files
+
+
+def test_writer_removes_a_partially_created_directory_after_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "partial-output"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+    original_open = Path.open
+
+    def fail_manifest_write(path: Path, *args: object, **kwargs: object) -> object:
+        mode = str(args[0]) if args else str(kwargs.get("mode", "r"))
+        if path == output_dir / "manifest.json" and "w" in mode:
+            raise OSError("synthetic write failure")
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_manifest_write)
+    with pytest.raises(FunctionalRoleBuildError, match="could not write"):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=product_review_pack,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+        )
+
+    assert not output_dir.exists()
+
+
+def test_manifest_binds_source_v2_rules_and_samples_hashes(tmp_path: Path) -> None:
+    output_dir, product_review_pack, source_export, _, manifest = _write_functional_pack(tmp_path)
+
+    assert manifest.source_export_sha256 == sha256_file(source_export)
+    assert manifest.product_review_manifest_sha256 == sha256_file(
+        product_review_pack / "manifest.json"
+    )
+    assert manifest.product_review_samples_sha256 == sha256_file(
+        product_review_pack / "samples.csv"
+    )
+    assert manifest.product_review_labels_sha256 == sha256_file(
+        product_review_pack / "product_review_labels.csv"
+    )
+    assert manifest.rules_sha256 == sha256_file(RULE_FIXTURE_PATH)
+    assert manifest.samples_sha256 == sha256_file(output_dir / "samples.csv")
+    on_disk = FunctionalRoleManifest.model_validate_json(
+        (output_dir / "manifest.json").read_text(encoding="utf-8")
+    )
+    assert on_disk == manifest
+
+
+def test_manifest_records_exact_per_group_pool_and_sample_counts(tmp_path: Path) -> None:
+    output_dir, _, _, _, manifest = _write_functional_pack(tmp_path)
+    sample_rows = _read_csv(output_dir / "samples.csv")
+
+    assert tuple(count.group for count in manifest.group_counts) == COMPARISON_GROUPS
+    for count in manifest.group_counts:
+        inherited_count = 1 if count.group is IngredientGroup.RED_GINSENG else 0
+        assert count.original_v2_count == 20
+        assert count.inherited_mapping_error_count == inherited_count
+        assert count.general_replacement_count == inherited_count
+        assert count.general_evaluable_count == 20
+        assert count.positive_pool_count == 40
+        assert count.positive_sample_count == 35
+        assert count.total_unique_rows == sum(
+            row["group"] == count.group.value for row in sample_rows
+        )
+
+
+def test_label_template_has_one_row_for_every_sample_key(tmp_path: Path) -> None:
+    output_dir, *_ = _write_functional_pack(tmp_path)
+    sample_rows = _read_csv(output_dir / "samples.csv")
+    label_rows = _read_csv(output_dir / "functional_role_labels.csv")
+
+    sample_keys = [(row["group"], row["report_no"]) for row in sample_rows]
+    label_keys = [(row["group"], row["report_no"]) for row in label_rows]
+    assert label_keys == sample_keys
+    assert len(label_keys) == len(set(label_keys))
+
+
+def test_inherited_mapping_error_label_copies_v2_reviewer_and_time(tmp_path: Path) -> None:
+    output_dir, product_review_pack, _, _, _ = _write_functional_pack(tmp_path)
+    inherited_report_no = _report_no(IngredientGroup.RED_GINSENG, "V2", 0)
+    v2_label = next(
+        row
+        for row in _read_csv(product_review_pack / "product_review_labels.csv")
+        if row["group"] == IngredientGroup.RED_GINSENG.value
+        and row["report_no"] == inherited_report_no
+    )
+    role_label = next(
+        row
+        for row in _read_csv(output_dir / "functional_role_labels.csv")
+        if row["group"] == IngredientGroup.RED_GINSENG.value
+        and row["report_no"] == inherited_report_no
+    )
+
+    assert role_label["human_verdict"] == "excluded_mapping_error"
+    assert role_label["reason_code"] == "inherited_mapping_error"
+    assert role_label["evidence_field"] == "none"
+    assert role_label["evidence_excerpt"] == ""
+    assert role_label["reviewer"] == v2_label["reviewer"]
+    assert role_label["reviewed_at_iso8601"] == v2_label["reviewed_at_iso8601"]
+    assert role_label["review_note"] == (
+        "Inherited c003-product-review-v2 mapping verdict: "
+        f"{v2_label['mapping_verdict']}/{v2_label['mapping_reason_code']}."
+    )
+
+
+def test_all_non_inherited_label_rows_are_completely_blank_human_inputs(
+    tmp_path: Path,
+) -> None:
+    output_dir, *_ = _write_functional_pack(tmp_path)
+    inherited_report_no = _report_no(IngredientGroup.RED_GINSENG, "V2", 0)
+    human_fields = (
+        "human_verdict",
+        "reason_code",
+        "evidence_field",
+        "evidence_excerpt",
+        "rule_version",
+        "review_note",
+        "reviewer",
+        "reviewed_at_iso8601",
+    )
+
+    for row in _read_csv(output_dir / "functional_role_labels.csv"):
+        if row["report_no"] == inherited_report_no:
+            continue
+        assert all(row[field] == "" for field in human_fields)
+        assert row["machine_verdict"] in {verdict.value for verdict in MachineRoleVerdict}
+
+
+def test_pack_readme_states_pending_not_measured_blocked_and_not_finalized(
+    tmp_path: Path,
+) -> None:
+    output_dir, *_ = _write_functional_pack(tmp_path)
+    readme = (output_dir / "README.md").read_text(encoding="utf-8")
+
+    assert "Review status: PENDING" in readme
+    assert "advertising evidence: NOT_MEASURED" in readme
+    assert "extension recommendation: BLOCKED" in readme
+    assert "finalized: false" in readme
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    (
+        {"base_seed": 1},
+        {"general_size": 19},
+        {"positive_size": 34},
+    ),
+)
+def test_builder_refuses_nondefault_general_or_positive_sizes(
+    tmp_path: Path,
+    overrides: dict[str, int],
+) -> None:
+    root = tmp_path / f"locked-{next(iter(overrides))}"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+
+    with pytest.raises(FunctionalRoleBuildError, match="locked"):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=product_review_pack,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+            **overrides,
+        )
+
+    assert not output_dir.exists()
+
+
+def test_build_cli_returns_zero_only_after_a_complete_write(tmp_path: Path) -> None:
+    root = tmp_path / "cli-success"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+    script = Path(__file__).parents[1] / "scripts" / "build_functional_role_review.py"
+
+    completed = subprocess.run(
+        (
+            sys.executable,
+            str(script),
+            "--source-export",
+            str(source_export),
+            "--product-review-pack",
+            str(product_review_pack),
+            "--rules",
+            str(RULE_FIXTURE_PATH),
+            "--output-dir",
+            str(output_dir),
+        ),
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert {path.name for path in output_dir.iterdir()} == {
+        "README.md",
+        "manifest.json",
+        "samples.csv",
+        "functional_role_labels.csv",
+    }
+
+
+def test_build_cli_returns_a_nonzero_error_without_a_partial_pack(tmp_path: Path) -> None:
+    root = tmp_path / "cli-failure"
+    products = _synthetic_source_products()
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    output_dir = root / "functional-role-review-v1"
+    script = Path(__file__).parents[1] / "scripts" / "build_functional_role_review.py"
+
+    completed = subprocess.run(
+        (
+            sys.executable,
+            str(script),
+            "--source-export",
+            str(source_export),
+            "--product-review-pack",
+            str(product_review_pack),
+            "--rules",
+            str(RULE_FIXTURE_PATH),
+            "--output-dir",
+            str(output_dir),
+            "--positive-size",
+            "34",
+        ),
+        cwd=Path(__file__).parents[1],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode != 0
+    assert "error:" in completed.stderr
+    assert not output_dir.exists()

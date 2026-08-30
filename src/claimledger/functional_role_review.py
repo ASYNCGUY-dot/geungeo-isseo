@@ -1,8 +1,10 @@
 import csv
 import hashlib
 import json
+import shutil
 from collections import Counter
 from enum import StrEnum
+from io import StringIO
 from pathlib import Path
 from typing import Literal
 
@@ -31,6 +33,7 @@ from claimledger.functional_role import (
     RoleEvidenceField,
     _reject_unsafe_text,
     classify_functional_role,
+    load_functional_role_registry,
 )
 from claimledger.ingredients import map_ingredients
 from claimledger.product_review import (
@@ -42,6 +45,7 @@ from claimledger.product_review import (
     ReviewIssue,
     WilsonInterval,
     sha256_file,
+    validate_product_review_pack,
 )
 
 FUNCTIONAL_ROLE_CONTRACT_VERSION = "c003-functional-role-v1"
@@ -58,10 +62,20 @@ _PRODUCT_REVIEW_PACK_FILES = {
     "product_review_labels.csv",
     "samples.csv",
 }
+_FUNCTIONAL_ROLE_PACK_FILES = {
+    "README.md",
+    "manifest.json",
+    "samples.csv",
+    "functional_role_labels.csv",
+}
 _SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
 _PRODUCT_SOURCE_FIELDS = tuple(ExtensionReviewProduct.model_fields)
 
 SamplingScope = Literal["general-replacement", "positive"]
+
+
+class FunctionalRoleBuildError(ValueError):
+    pass
 
 
 class HumanRoleVerdict(StrEnum):
@@ -968,3 +982,306 @@ def build_functional_role_samples(
     if len(ordered_keys) != len(set(ordered_keys)):
         raise ValueError("functional-role samples contain duplicate composite keys")
     return tuple(samples_by_key[key] for key in ordered_keys)
+
+
+def _serialize_csv(
+    fields: tuple[str, ...],
+    rows: tuple[dict[str, object], ...],
+) -> str:
+    handle = StringIO(newline="")
+    writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    return handle.getvalue()
+
+
+def _sample_csv_row(sample: FunctionalRoleSample) -> dict[str, object]:
+    row = sample.model_dump(mode="json")
+    for field in _PRODUCT_SOURCE_FIELDS:
+        row[field] = _spreadsheet_safe_literal(str(row[field]))
+    return row
+
+
+def _functional_role_label_rows(
+    samples: tuple[FunctionalRoleSample, ...],
+    v2_labels_by_key: dict[tuple[IngredientGroup, str], ProductReviewLabel],
+) -> tuple[dict[str, object], ...]:
+    rows: list[dict[str, object]] = []
+    for sample in samples:
+        row: dict[str, object] = {
+            "group": sample.group.value,
+            "report_no": sample.report_no,
+            "audit_round": sample.audit_round,
+            "machine_verdict": sample.machine_verdict.value,
+            "human_verdict": "",
+            "reason_code": "",
+            "evidence_field": "",
+            "evidence_excerpt": "",
+            "rule_version": "",
+            "review_note": "",
+            "reviewer": "",
+            "reviewed_at_iso8601": "",
+        }
+        if sample.machine_reason_code is MachineRoleReasonCode.INHERITED_MAPPING_ERROR:
+            v2_label = v2_labels_by_key[(sample.group, sample.report_no)]
+            row.update(
+                {
+                    "human_verdict": HumanRoleVerdict.EXCLUDED_MAPPING_ERROR.value,
+                    "reason_code": FunctionalRoleReasonCode.INHERITED_MAPPING_ERROR.value,
+                    "evidence_field": RoleEvidenceField.NONE.value,
+                    "rule_version": sample.functional_role_rule_version,
+                    "review_note": (
+                        "Inherited c003-product-review-v2 mapping verdict: "
+                        f"{v2_label.mapping_verdict.value}/"
+                        f"{v2_label.mapping_reason_code.value}."
+                    ),
+                    "reviewer": v2_label.reviewer,
+                    "reviewed_at_iso8601": v2_label.model_dump(mode="json")["reviewed_at_iso8601"],
+                }
+            )
+        rows.append(row)
+    return tuple(rows)
+
+
+def _functional_role_group_counts(
+    products: tuple[ExtensionReviewProduct, ...],
+    samples: tuple[FunctionalRoleSample, ...],
+    v2_samples: tuple[ProductReviewSample, ...],
+    v2_labels_by_key: dict[tuple[IngredientGroup, str], ProductReviewLabel],
+    registry: FunctionalRoleRuleRegistry,
+) -> tuple[FunctionalRoleGroupCounts, ...]:
+    inherited_source_keys = {
+        (sample.group, _restore_spreadsheet_literal(sample.report_no))
+        for sample in v2_samples
+        if v2_labels_by_key[(sample.group, sample.report_no)].mapping_verdict
+        is not MappingVerdict.CORRECT
+    }
+    counts: list[FunctionalRoleGroupCounts] = []
+    for group in COMPARISON_GROUPS:
+        group_samples = tuple(sample for sample in samples if sample.group is group)
+        positive_pool_count = sum(
+            group in map_ingredients(product).groups
+            and (group, product.report_no) not in inherited_source_keys
+            and classify_functional_role(product, group, registry).verdict
+            is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
+            for product in products
+        )
+        counts.append(
+            FunctionalRoleGroupCounts(
+                group=group,
+                original_v2_count=sum(
+                    sample.sample_origin is SampleOrigin.V2_ORIGINAL for sample in group_samples
+                ),
+                inherited_mapping_error_count=sum(
+                    sample.machine_reason_code is MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+                    for sample in group_samples
+                ),
+                general_replacement_count=sum(
+                    sample.sample_origin is SampleOrigin.GENERAL_REPLACEMENT
+                    for sample in group_samples
+                ),
+                general_evaluable_count=sum(
+                    sample.is_general_audit
+                    and sample.machine_reason_code
+                    is not MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+                    for sample in group_samples
+                ),
+                positive_pool_count=positive_pool_count,
+                positive_sample_count=sum(sample.is_positive_audit for sample in group_samples),
+                total_unique_rows=len(group_samples),
+            )
+        )
+    return tuple(counts)
+
+
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode(_HASH_ENCODING)).hexdigest().upper()
+
+
+def _functional_role_readme(
+    samples: tuple[FunctionalRoleSample, ...],
+    group_counts: tuple[FunctionalRoleGroupCounts, ...],
+) -> str:
+    group_lines = "\n".join(
+        f"- `{count.group.value}`: {count.total_unique_rows} unique audit rows"
+        for count in group_counts
+    )
+    return f"""# C003 Functional-Role Review Pack v1
+
+- Seed: `20260823`
+- General audit size: `20` evaluable rows per comparison group
+- Positive audit target: up to `35` machine-positive rows per comparison group
+- Total unique rows: `{len(samples)}`
+- Review status: PENDING
+- advertising evidence: NOT_MEASURED
+- extension recommendation: BLOCKED
+- finalized: false
+
+## Sample counts
+
+{group_lines}
+
+## Human review contract
+
+Review each machine decision against the literal product fields and the bound functional-role
+rule. Rows inherited from a non-correct v2 mapping remain excluded. Every other row stays blank
+until a human reviewer records a compatible verdict, reason, literal evidence, rule version,
+reviewer identifier, and timezone-aware timestamp. This pack cannot measure advertising evidence,
+select an extension ingredient, or finalize a recommendation.
+"""
+
+
+def _write_utf8_lf(path: Path, text: str) -> None:
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
+def _products_match_source_export(
+    products: tuple[ExtensionReviewProduct, ...],
+    source_export_path: Path,
+) -> bool:
+    source_products = tuple(
+        ExtensionReviewProduct.model_validate_json(line)
+        for line in source_export_path.read_text(encoding="utf-8").splitlines()
+    )
+    source_by_report = {product.report_no: product for product in source_products}
+    provided_by_report = {product.report_no: product for product in products}
+    return (
+        len(source_by_report) == len(source_products)
+        and len(provided_by_report) == len(products)
+        and provided_by_report == source_by_report
+    )
+
+
+def write_functional_role_review_pack(
+    output_dir: Path,
+    *,
+    products: tuple[ExtensionReviewProduct, ...],
+    source_export_path: Path,
+    product_review_pack_dir: Path,
+    rules_path: Path,
+    registry: FunctionalRoleRuleRegistry,
+    generated_at: AwareDatetime,
+    base_seed: int = 20260823,
+    general_size: int = DEFAULT_GENERAL_AUDIT_SIZE,
+    positive_size: int = DEFAULT_POSITIVE_AUDIT_SIZE,
+) -> FunctionalRoleManifest:
+    if output_dir.exists():
+        raise FunctionalRoleBuildError("output directory already exists")
+    try:
+        output_inside_product_review_pack = output_dir.resolve().is_relative_to(
+            product_review_pack_dir.resolve()
+        )
+    except OSError as exc:
+        raise FunctionalRoleBuildError("functional-role output path is invalid") from exc
+    if output_inside_product_review_pack:
+        raise FunctionalRoleBuildError(
+            "output directory must not be inside the product review pack"
+        )
+    if (
+        base_seed != 20260823
+        or general_size != DEFAULT_GENERAL_AUDIT_SIZE
+        or positive_size != DEFAULT_POSITIVE_AUDIT_SIZE
+    ):
+        raise FunctionalRoleBuildError("functional-role build requires locked sampling settings")
+
+    try:
+        v2_validation = validate_product_review_pack(
+            product_review_pack_dir,
+            source_export_path,
+            validated_at=generated_at,
+        )
+        if v2_validation.status is not ReviewGateStatus.COMPLETE:
+            raise FunctionalRoleBuildError("product review pack must be COMPLETE")
+        if not _products_match_source_export(products, source_export_path):
+            raise FunctionalRoleBuildError("products do not match the bound source export")
+        loaded_registry = load_functional_role_registry(
+            rules_path,
+            evaluated_at=generated_at,
+        )
+        if loaded_registry != registry:
+            raise FunctionalRoleBuildError("registry input does not match the validated rules file")
+        samples = build_functional_role_samples(
+            products,
+            product_review_pack_dir=product_review_pack_dir,
+            registry=loaded_registry,
+            base_seed=base_seed,
+            general_size=general_size,
+            positive_size=positive_size,
+        )
+        v2_samples, v2_labels_by_key, _ = _load_completed_product_review_pack(
+            product_review_pack_dir,
+            products,
+        )
+        group_counts = _functional_role_group_counts(
+            products,
+            samples,
+            v2_samples,
+            v2_labels_by_key,
+            loaded_registry,
+        )
+        samples_text = _serialize_csv(
+            tuple(FunctionalRoleSample.model_fields),
+            tuple(_sample_csv_row(sample) for sample in samples),
+        )
+        labels_text = _serialize_csv(
+            tuple(FunctionalRoleLabel.model_fields),
+            _functional_role_label_rows(samples, v2_labels_by_key),
+        )
+        manifest = FunctionalRoleManifest(
+            seed=base_seed,
+            general_size_per_group=general_size,
+            positive_size_per_group=positive_size,
+            generated_at=generated_at,
+            source_export_sha256=sha256_file(source_export_path),
+            product_review_manifest_sha256=sha256_file(product_review_pack_dir / "manifest.json"),
+            product_review_samples_sha256=sha256_file(product_review_pack_dir / "samples.csv"),
+            product_review_labels_sha256=sha256_file(
+                product_review_pack_dir / "product_review_labels.csv"
+            ),
+            rules_sha256=sha256_file(rules_path),
+            samples_sha256=_sha256_text(samples_text),
+            mapping_rule_versions=tuple(
+                sorted({sample.mapping_rule_version for sample in samples})
+            ),
+            functional_role_rule_versions=tuple(
+                sorted({sample.functional_role_rule_version for sample in samples})
+            ),
+            group_counts=group_counts,
+        )
+        manifest_text = (
+            json.dumps(
+                manifest.model_dump(mode="json"),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+        readme_text = _functional_role_readme(samples, group_counts)
+    except FunctionalRoleBuildError:
+        raise
+    except Exception as exc:
+        raise FunctionalRoleBuildError("could not build functional-role review pack") from exc
+
+    try:
+        output_dir.mkdir(parents=True)
+    except Exception as exc:
+        raise FunctionalRoleBuildError("could not create functional-role review pack") from exc
+    try:
+        _write_utf8_lf(output_dir / "README.md", readme_text)
+        _write_utf8_lf(output_dir / "manifest.json", manifest_text)
+        _write_utf8_lf(output_dir / "samples.csv", samples_text)
+        _write_utf8_lf(output_dir / "functional_role_labels.csv", labels_text)
+        if {path.name for path in output_dir.iterdir()} != _FUNCTIONAL_ROLE_PACK_FILES:
+            raise OSError("functional-role pack file set is incomplete")
+        if sha256_file(output_dir / "samples.csv") != manifest.samples_sha256:
+            raise OSError("functional-role sample write is inconsistent")
+    except Exception as exc:
+        try:
+            shutil.rmtree(output_dir)
+        except OSError as cleanup_exc:
+            raise FunctionalRoleBuildError(
+                "could not clean a partial functional-role review pack"
+            ) from cleanup_exc
+        raise FunctionalRoleBuildError("could not write functional-role review pack") from exc
+    return manifest
