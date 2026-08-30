@@ -3,6 +3,7 @@ import hashlib
 import json
 import shutil
 from collections import Counter
+from datetime import datetime
 from enum import StrEnum
 from io import StringIO
 from pathlib import Path
@@ -26,6 +27,7 @@ from claimledger.domain import (
 )
 from claimledger.extension_selection import COMPARISON_GROUPS
 from claimledger.functional_role import (
+    _SECRET_PATTERNS,
     FunctionalRoleRuleRegistry,
     MachineRoleDecision,
     MachineRoleReasonCode,
@@ -70,6 +72,25 @@ _FUNCTIONAL_ROLE_PACK_FILES = {
 }
 _SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
 _PRODUCT_SOURCE_FIELDS = tuple(ExtensionReviewProduct.model_fields)
+_MAX_VALIDATION_DOCUMENT_BYTES = 256 * 1024 * 1024
+_HUMAN_ROLE_INPUT_FIELDS = (
+    "human_verdict",
+    "reason_code",
+    "evidence_field",
+    "evidence_excerpt",
+    "rule_version",
+    "review_note",
+    "reviewer",
+    "reviewed_at_iso8601",
+)
+_REQUIRED_COMPLETED_ROLE_FIELDS = (
+    "human_verdict",
+    "reason_code",
+    "evidence_field",
+    "rule_version",
+    "reviewer",
+    "reviewed_at_iso8601",
+)
 
 SamplingScope = Literal["general-replacement", "positive"]
 
@@ -1135,21 +1156,24 @@ def _write_utf8_lf(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
+def _load_source_products(source_export_path: Path) -> tuple[ExtensionReviewProduct, ...]:
+    products = tuple(
+        ExtensionReviewProduct.model_validate_json(line)
+        for line in source_export_path.read_text(encoding="utf-8").splitlines()
+    )
+    if len({product.report_no for product in products}) != len(products):
+        raise ValueError("source export contains duplicate report numbers")
+    return products
+
+
 def _products_match_source_export(
     products: tuple[ExtensionReviewProduct, ...],
     source_export_path: Path,
 ) -> bool:
-    source_products = tuple(
-        ExtensionReviewProduct.model_validate_json(line)
-        for line in source_export_path.read_text(encoding="utf-8").splitlines()
-    )
+    source_products = _load_source_products(source_export_path)
     source_by_report = {product.report_no: product for product in source_products}
     provided_by_report = {product.report_no: product for product in products}
-    return (
-        len(source_by_report) == len(source_products)
-        and len(provided_by_report) == len(products)
-        and provided_by_report == source_by_report
-    )
+    return len(provided_by_report) == len(products) and provided_by_report == source_by_report
 
 
 def write_functional_role_review_pack(
@@ -1285,3 +1309,763 @@ def write_functional_role_review_pack(
             ) from cleanup_exc
         raise FunctionalRoleBuildError("could not write functional-role review pack") from exc
     return manifest
+
+
+def _role_issue(
+    code: str,
+    message: str,
+    *,
+    line_number: int | None = None,
+    group: str | None = None,
+    report_no: str | None = None,
+) -> ReviewIssue:
+    return ReviewIssue(
+        code=code,
+        message=message,
+        line_number=line_number,
+        group=group,
+        report_no=report_no,
+    )
+
+
+def _role_issue_sort_key(issue: ReviewIssue) -> tuple[int, str, str, str, str]:
+    return (
+        issue.line_number if issue.line_number is not None else -1,
+        issue.code,
+        issue.group or "",
+        issue.report_no or "",
+        issue.message,
+    )
+
+
+def _invalid_role_result(
+    issues: list[ReviewIssue],
+    *,
+    expected_label_count: int | None = None,
+) -> FunctionalRoleValidationResult:
+    return FunctionalRoleValidationResult(
+        status=ReviewGateStatus.INVALID,
+        expected_label_count=expected_label_count,
+        valid_label_count=None,
+        pending_label_count=None,
+        issues=tuple(sorted(issues, key=_role_issue_sort_key)),
+        summary=None,
+    )
+
+
+def _read_bounded_utf8(
+    path: Path,
+    *,
+    document_name: str,
+    read_issue_code: str,
+    issues: list[ReviewIssue],
+) -> str | None:
+    try:
+        with path.open("rb") as handle:
+            raw = handle.read(_MAX_VALIDATION_DOCUMENT_BYTES + 1)
+    except OSError:
+        issues.append(_role_issue(read_issue_code, f"{document_name} is unreadable"))
+        return None
+    if len(raw) > _MAX_VALIDATION_DOCUMENT_BYTES:
+        issues.append(
+            _role_issue(
+                "DOCUMENT_TOO_LARGE",
+                f"{document_name} exceeds the validation size limit",
+            )
+        )
+        return None
+    if b"\x00" in raw:
+        issues.append(_role_issue("NUL_BYTE", f"{document_name} contains a NUL byte"))
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        issues.append(_role_issue(read_issue_code, f"{document_name} is not UTF-8"))
+        return None
+    if any(pattern.search(text) for pattern in _SECRET_PATTERNS):
+        issues.append(_role_issue("POSSIBLE_SECRET", f"{document_name} contains a possible secret"))
+    return text
+
+
+def _parse_validation_csv(
+    text: str,
+    expected_fields: tuple[str, ...],
+    *,
+    header_issue_code: str,
+    row_issue_code: str,
+    document_name: str,
+    issues: list[ReviewIssue],
+) -> list[tuple[int, dict[str, str]]]:
+    try:
+        reader = csv.DictReader(StringIO(text, newline=""), strict=True)
+        if tuple(reader.fieldnames or ()) != expected_fields:
+            issues.append(
+                _role_issue(
+                    header_issue_code,
+                    f"{document_name} header does not match the contract",
+                )
+            )
+            return []
+        rows: list[tuple[int, dict[str, str]]] = []
+        for line_number, row in enumerate(reader, start=2):
+            if None in row or any(value is None for value in row.values()):
+                issues.append(
+                    _role_issue(
+                        row_issue_code,
+                        f"{document_name} row is malformed",
+                        line_number=line_number,
+                    )
+                )
+                continue
+            rows.append(
+                (
+                    line_number,
+                    {key: value for key, value in row.items() if key is not None},
+                )
+            )
+        return rows
+    except csv.Error:
+        issues.append(_role_issue(row_issue_code, f"{document_name} is malformed"))
+        return []
+
+
+def _hash_matches(
+    expected: str,
+    path: Path,
+    *,
+    mismatch_code: str,
+    document_name: str,
+    issues: list[ReviewIssue],
+) -> None:
+    try:
+        actual = sha256_file(path)
+    except OSError:
+        issues.append(_role_issue("HASH_READ_FAILED", f"{document_name} hash is unreadable"))
+        return
+    if actual != expected:
+        issues.append(_role_issue(mismatch_code, f"{document_name} hash does not match manifest"))
+
+
+def _csv_rows_from_serialized(text: str) -> tuple[dict[str, str], ...]:
+    return tuple(csv.DictReader(StringIO(text, newline="")))
+
+
+def _compare_expected_samples(
+    actual_rows: list[tuple[int, dict[str, str]]],
+    expected_samples: tuple[FunctionalRoleSample, ...],
+    issues: list[ReviewIssue],
+) -> None:
+    expected_text = _serialize_csv(
+        tuple(FunctionalRoleSample.model_fields),
+        tuple(_sample_csv_row(sample) for sample in expected_samples),
+    )
+    expected_rows = _csv_rows_from_serialized(expected_text)
+    if len(actual_rows) != len(expected_rows):
+        issues.append(
+            _role_issue(
+                "SAMPLE_COUNT_MISMATCH",
+                "sample row count does not match deterministic reconstruction",
+            )
+        )
+    for index, ((line_number, actual), expected) in enumerate(
+        zip(actual_rows, expected_rows, strict=False)
+    ):
+        if actual != expected:
+            expected_sample = expected_samples[index]
+            issues.append(
+                _role_issue(
+                    "SAMPLE_MISMATCH",
+                    "sample row does not match deterministic reconstruction",
+                    line_number=line_number,
+                    group=expected_sample.group.value,
+                    report_no=expected_sample.report_no,
+                )
+            )
+
+
+def _validate_manifest_derived_values(
+    manifest: FunctionalRoleManifest,
+    *,
+    products: tuple[ExtensionReviewProduct, ...],
+    expected_samples: tuple[FunctionalRoleSample, ...],
+    product_review_pack_dir: Path,
+    registry: FunctionalRoleRuleRegistry,
+    validated_at: datetime,
+    issues: list[ReviewIssue],
+) -> dict[tuple[IngredientGroup, str], ProductReviewLabel] | None:
+    if manifest.generated_at > validated_at:
+        issues.append(
+            _role_issue(
+                "MANIFEST_GENERATED_AT_FUTURE",
+                "manifest generation time is later than validation time",
+            )
+        )
+    expected_mapping_versions = tuple(
+        sorted({sample.mapping_rule_version for sample in expected_samples})
+    )
+    if manifest.mapping_rule_versions != expected_mapping_versions:
+        issues.append(
+            _role_issue(
+                "MANIFEST_MAPPING_VERSIONS_MISMATCH",
+                "manifest mapping versions do not match reconstructed samples",
+            )
+        )
+    expected_role_versions = tuple(
+        sorted({sample.functional_role_rule_version for sample in expected_samples})
+    )
+    if manifest.functional_role_rule_versions != expected_role_versions:
+        issues.append(
+            _role_issue(
+                "MANIFEST_ROLE_VERSIONS_MISMATCH",
+                "manifest functional-role versions do not match reconstructed samples",
+            )
+        )
+    try:
+        v2_samples, v2_labels_by_key, _ = _load_completed_product_review_pack(
+            product_review_pack_dir,
+            products,
+        )
+        expected_counts = _functional_role_group_counts(
+            products,
+            expected_samples,
+            v2_samples,
+            v2_labels_by_key,
+            registry,
+        )
+    except (OSError, ValidationError, ValueError, csv.Error):
+        issues.append(
+            _role_issue(
+                "MANIFEST_RECOMPUTE_FAILED",
+                "manifest counts could not be independently reconstructed",
+            )
+        )
+        return None
+    if manifest.group_counts != expected_counts:
+        issues.append(
+            _role_issue(
+                "MANIFEST_GROUP_COUNTS_MISMATCH",
+                "manifest group counts do not match reconstructed samples",
+            )
+        )
+    return v2_labels_by_key
+
+
+def _sample_models_by_key(
+    sample_rows: list[tuple[int, dict[str, str]]],
+    issues: list[ReviewIssue],
+) -> dict[tuple[IngredientGroup, str], FunctionalRoleSample]:
+    samples_by_key: dict[tuple[IngredientGroup, str], FunctionalRoleSample] = {}
+    for line_number, row in sample_rows:
+        try:
+            sample = FunctionalRoleSample.model_validate(row)
+        except ValidationError:
+            issues.append(
+                _role_issue(
+                    "SAMPLE_ROW_INVALID",
+                    "sample row violates the functional-role contract",
+                    line_number=line_number,
+                )
+            )
+            continue
+        key = (sample.group, sample.report_no)
+        if key in samples_by_key:
+            issues.append(
+                _role_issue(
+                    "DUPLICATE_SAMPLE_KEY",
+                    "samples contain a duplicate composite key",
+                    line_number=line_number,
+                    group=sample.group.value,
+                    report_no=sample.report_no,
+                )
+            )
+            continue
+        samples_by_key[key] = sample
+    return samples_by_key
+
+
+def _evidence_is_literal(
+    label: FunctionalRoleLabel,
+    source: ExtensionReviewProduct,
+) -> bool:
+    if label.evidence_field is RoleEvidenceField.NONE:
+        return True
+    if label.evidence_field is RoleEvidenceField.RAW_MATERIALS:
+        return label.evidence_excerpt in source.raw_materials
+    if label.evidence_field is RoleEvidenceField.PRIMARY_FUNCTION:
+        return label.evidence_excerpt in source.primary_function
+    try:
+        evidence = json.loads(label.evidence_excerpt)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    return (
+        isinstance(evidence, dict)
+        and evidence.get("raw_materials") in source.raw_materials
+        and evidence.get("primary_function") in source.primary_function
+    )
+
+
+def _validate_role_labels(
+    label_rows: list[tuple[int, dict[str, str]]],
+    *,
+    expected_samples: tuple[FunctionalRoleSample, ...],
+    products: tuple[ExtensionReviewProduct, ...],
+    v2_labels_by_key: dict[tuple[IngredientGroup, str], ProductReviewLabel],
+    validated_at: datetime,
+    issues: list[ReviewIssue],
+) -> tuple[int, int]:
+    expected_by_key = {(sample.group, sample.report_no): sample for sample in expected_samples}
+    source_by_report = {product.report_no: product for product in products}
+    inherited_expected_by_key: dict[tuple[IngredientGroup, str], dict[str, str]] = {}
+    for sample in expected_samples:
+        if sample.machine_reason_code is not MachineRoleReasonCode.INHERITED_MAPPING_ERROR:
+            continue
+        key = (sample.group, sample.report_no)
+        v2_label = v2_labels_by_key[key]
+        inherited_expected_by_key[key] = {
+            "group": sample.group.value,
+            "report_no": sample.report_no,
+            "audit_round": str(sample.audit_round),
+            "machine_verdict": sample.machine_verdict.value,
+            "human_verdict": HumanRoleVerdict.EXCLUDED_MAPPING_ERROR.value,
+            "reason_code": FunctionalRoleReasonCode.INHERITED_MAPPING_ERROR.value,
+            "evidence_field": RoleEvidenceField.NONE.value,
+            "evidence_excerpt": "",
+            "rule_version": sample.functional_role_rule_version,
+            "review_note": (
+                "Inherited c003-product-review-v2 mapping verdict: "
+                f"{v2_label.mapping_verdict.value}/{v2_label.mapping_reason_code.value}."
+            ),
+            "reviewer": v2_label.reviewer,
+            "reviewed_at_iso8601": v2_label.model_dump(mode="json")["reviewed_at_iso8601"],
+        }
+    seen_keys: set[tuple[IngredientGroup, str]] = set()
+    valid_count = 0
+    pending_count = 0
+    for line_number, row in label_rows:
+        try:
+            group = IngredientGroup(row["group"])
+        except (KeyError, ValueError):
+            issues.append(
+                _role_issue(
+                    "INVALID_LABEL_KEY",
+                    "label row has an invalid group",
+                    line_number=line_number,
+                )
+            )
+            continue
+        report_no = row.get("report_no", "")
+        key = (group, report_no)
+        if key in seen_keys:
+            issues.append(
+                _role_issue(
+                    "DUPLICATE_LABEL_KEY",
+                    "labels contain a duplicate composite key",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no or None,
+                )
+            )
+            continue
+        seen_keys.add(key)
+        sample = expected_by_key.get(key)
+        if sample is None:
+            issues.append(
+                _role_issue(
+                    "UNKNOWN_LABEL_KEY",
+                    "label key is absent from reconstructed samples",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no or None,
+                )
+            )
+            continue
+        row_issue_count = len(issues)
+        if (
+            row.get("audit_round") != str(sample.audit_round)
+            or row.get("machine_verdict") != sample.machine_verdict.value
+        ):
+            issues.append(
+                _role_issue(
+                    "LABEL_MACHINE_MISMATCH",
+                    "label audit round or machine verdict does not match its sample",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        inherited_expected = inherited_expected_by_key.get(key)
+        if inherited_expected is not None:
+            if row != inherited_expected:
+                issues.append(
+                    _role_issue(
+                        "INHERITED_LABEL_MISMATCH",
+                        "inherited mapping label does not match deterministic values",
+                        line_number=line_number,
+                        group=group.value,
+                        report_no=report_no,
+                    )
+                )
+            if v2_labels_by_key[key].reviewed_at_iso8601 > validated_at:
+                issues.append(
+                    _role_issue(
+                        "LABEL_REVIEWED_AT_FUTURE",
+                        "inherited label review time is later than validation time",
+                        line_number=line_number,
+                        group=group.value,
+                        report_no=report_no,
+                    )
+                )
+            if len(issues) == row_issue_count:
+                valid_count += 1
+            continue
+
+        human_values = [row.get(field, "") for field in _HUMAN_ROLE_INPUT_FIELDS]
+        if all(value == "" for value in human_values):
+            if len(issues) == row_issue_count:
+                pending_count += 1
+            continue
+        if any(not row.get(field, "").strip() for field in _REQUIRED_COMPLETED_ROLE_FIELDS):
+            issues.append(
+                _role_issue(
+                    "PARTIAL_LABEL",
+                    "label row contains only part of a human review",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+            continue
+        try:
+            label = FunctionalRoleLabel.model_validate(row)
+        except ValidationError:
+            issues.append(
+                _role_issue(
+                    "LABEL_VALUE_INVALID",
+                    "label row violates the human review contract",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+            continue
+        if label.machine_verdict is not sample.machine_verdict:
+            issues.append(
+                _role_issue(
+                    "LABEL_MACHINE_MISMATCH",
+                    "label machine verdict does not match reconstructed sample",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        if (
+            label.human_verdict is HumanRoleVerdict.EXCLUDED_MAPPING_ERROR
+            and sample.machine_reason_code is not MachineRoleReasonCode.INHERITED_MAPPING_ERROR
+        ):
+            issues.append(
+                _role_issue(
+                    "NON_INHERITED_MAPPING_EXCLUSION",
+                    "mapping exclusion is allowed only for an inherited v2 mapping error",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        if label.rule_version != sample.functional_role_rule_version:
+            issues.append(
+                _role_issue(
+                    "LABEL_RULE_VERSION_MISMATCH",
+                    "label rule version does not match reconstructed sample",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        if label.reviewed_at_iso8601 > validated_at:
+            issues.append(
+                _role_issue(
+                    "LABEL_REVIEWED_AT_FUTURE",
+                    "label review time is later than validation time",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        source_report_no = _restore_spreadsheet_literal(report_no)
+        source = source_by_report.get(source_report_no)
+        if source is None or not _evidence_is_literal(label, source):
+            issues.append(
+                _role_issue(
+                    "EVIDENCE_NOT_LITERAL",
+                    "label evidence is not a literal substring of its declared source field",
+                    line_number=line_number,
+                    group=group.value,
+                    report_no=report_no,
+                )
+            )
+        if len(issues) == row_issue_count:
+            valid_count += 1
+    if seen_keys != set(expected_by_key):
+        issues.append(
+            _role_issue(
+                "LABEL_KEY_SET_MISMATCH",
+                "label and reconstructed sample key sets do not match",
+            )
+        )
+    return valid_count, pending_count
+
+
+def validate_functional_role_review_pack(
+    pack_dir: Path,
+    source_export_path: Path,
+    product_review_pack_dir: Path,
+    rules_path: Path,
+    *,
+    validated_at: AwareDatetime,
+) -> FunctionalRoleValidationResult:
+    issues: list[ReviewIssue] = []
+    if not isinstance(validated_at, datetime) or validated_at.utcoffset() is None:
+        return _invalid_role_result(
+            [_role_issue("VALIDATED_AT_INVALID", "validated_at must be timezone-aware")]
+        )
+    if not pack_dir.is_dir():
+        return _invalid_role_result(
+            [_role_issue("PACK_DIRECTORY_MISSING", "functional-role pack is missing")]
+        )
+    try:
+        actual_files = {path.name for path in pack_dir.iterdir()}
+    except OSError:
+        return _invalid_role_result(
+            [_role_issue("PACK_DIRECTORY_INVALID", "functional-role pack is unreadable")]
+        )
+    if actual_files != _FUNCTIONAL_ROLE_PACK_FILES:
+        return _invalid_role_result(
+            [_role_issue("PACK_FILE_SET", "functional-role pack file set is invalid")]
+        )
+
+    document_specs = {
+        "pack README": (pack_dir / "README.md", "PACK_README_UNREADABLE"),
+        "pack manifest": (pack_dir / "manifest.json", "PACK_MANIFEST_UNREADABLE"),
+        "pack samples": (pack_dir / "samples.csv", "PACK_SAMPLES_UNREADABLE"),
+        "pack labels": (
+            pack_dir / "functional_role_labels.csv",
+            "PACK_LABELS_UNREADABLE",
+        ),
+        "source export": (source_export_path, "SOURCE_EXPORT_UNREADABLE"),
+        "v2 README": (product_review_pack_dir / "README.md", "V2_README_UNREADABLE"),
+        "v2 manifest": (
+            product_review_pack_dir / "manifest.json",
+            "V2_MANIFEST_UNREADABLE",
+        ),
+        "v2 samples": (
+            product_review_pack_dir / "samples.csv",
+            "V2_SAMPLES_UNREADABLE",
+        ),
+        "v2 labels": (
+            product_review_pack_dir / "product_review_labels.csv",
+            "V2_LABELS_UNREADABLE",
+        ),
+        "functional-role rules": (rules_path, "RULES_UNREADABLE"),
+    }
+    documents = {
+        name: _read_bounded_utf8(
+            path,
+            document_name=name,
+            read_issue_code=code,
+            issues=issues,
+        )
+        for name, (path, code) in document_specs.items()
+    }
+
+    manifest: FunctionalRoleManifest | None = None
+    manifest_text = documents["pack manifest"]
+    if manifest_text is not None:
+        try:
+            manifest = FunctionalRoleManifest.model_validate_json(manifest_text)
+        except (ValidationError, ValueError):
+            issues.append(
+                _role_issue("MANIFEST_INVALID", "manifest violates the functional-role contract")
+            )
+    if manifest is not None:
+        _hash_matches(
+            manifest.source_export_sha256,
+            source_export_path,
+            mismatch_code="SOURCE_EXPORT_HASH_MISMATCH",
+            document_name="source export",
+            issues=issues,
+        )
+        _hash_matches(
+            manifest.product_review_manifest_sha256,
+            product_review_pack_dir / "manifest.json",
+            mismatch_code="PRODUCT_REVIEW_MANIFEST_HASH_MISMATCH",
+            document_name="v2 manifest",
+            issues=issues,
+        )
+        _hash_matches(
+            manifest.product_review_samples_sha256,
+            product_review_pack_dir / "samples.csv",
+            mismatch_code="PRODUCT_REVIEW_SAMPLES_HASH_MISMATCH",
+            document_name="v2 samples",
+            issues=issues,
+        )
+        _hash_matches(
+            manifest.product_review_labels_sha256,
+            product_review_pack_dir / "product_review_labels.csv",
+            mismatch_code="PRODUCT_REVIEW_LABELS_HASH_MISMATCH",
+            document_name="v2 labels",
+            issues=issues,
+        )
+        _hash_matches(
+            manifest.rules_sha256,
+            rules_path,
+            mismatch_code="RULES_HASH_MISMATCH",
+            document_name="functional-role rules",
+            issues=issues,
+        )
+        _hash_matches(
+            manifest.samples_sha256,
+            pack_dir / "samples.csv",
+            mismatch_code="SAMPLES_HASH_MISMATCH",
+            document_name="functional-role samples",
+            issues=issues,
+        )
+
+    v2_document_names = (
+        "source export",
+        "v2 README",
+        "v2 manifest",
+        "v2 samples",
+        "v2 labels",
+    )
+    if all(documents[name] is not None for name in v2_document_names):
+        v2_validation = validate_product_review_pack(
+            product_review_pack_dir,
+            source_export_path,
+            validated_at=validated_at,
+        )
+        if v2_validation.status is not ReviewGateStatus.COMPLETE:
+            issues.append(
+                _role_issue(
+                    "PRODUCT_REVIEW_INVALID",
+                    "product review prerequisite is not COMPLETE",
+                )
+            )
+
+    products: tuple[ExtensionReviewProduct, ...] = ()
+    if documents["source export"] is not None:
+        try:
+            products = _load_source_products(source_export_path)
+        except (OSError, ValidationError, ValueError):
+            issues.append(
+                _role_issue("SOURCE_EXPORT_INVALID", "source export cannot be parsed safely")
+            )
+
+    registry: FunctionalRoleRuleRegistry | None = None
+    if documents["functional-role rules"] is not None:
+        try:
+            registry = load_functional_role_registry(rules_path, evaluated_at=validated_at)
+        except (OSError, ValidationError, ValueError):
+            issues.append(
+                _role_issue("RULES_INVALID", "functional-role rules are not current and valid")
+            )
+
+    expected_samples: tuple[FunctionalRoleSample, ...] = ()
+    if products and registry is not None:
+        try:
+            expected_samples = build_functional_role_samples(
+                products,
+                product_review_pack_dir=product_review_pack_dir,
+                registry=registry,
+            )
+        except (OSError, ValidationError, ValueError, csv.Error):
+            issues.append(
+                _role_issue(
+                    "EXPECTED_SAMPLES_UNAVAILABLE",
+                    "deterministic samples could not be reconstructed",
+                )
+            )
+
+    sample_rows: list[tuple[int, dict[str, str]]] = []
+    samples_text = documents["pack samples"]
+    if samples_text is not None:
+        sample_rows = _parse_validation_csv(
+            samples_text,
+            tuple(FunctionalRoleSample.model_fields),
+            header_issue_code="SAMPLE_HEADER_MISMATCH",
+            row_issue_code="SAMPLE_ROW_INVALID",
+            document_name="samples CSV",
+            issues=issues,
+        )
+    _sample_models_by_key(sample_rows, issues)
+    if expected_samples:
+        _compare_expected_samples(sample_rows, expected_samples, issues)
+
+    v2_labels_by_key: dict[tuple[IngredientGroup, str], ProductReviewLabel] | None = None
+    if manifest is not None and expected_samples and products and registry is not None:
+        v2_labels_by_key = _validate_manifest_derived_values(
+            manifest,
+            products=products,
+            expected_samples=expected_samples,
+            product_review_pack_dir=product_review_pack_dir,
+            registry=registry,
+            validated_at=validated_at,
+            issues=issues,
+        )
+
+    label_rows: list[tuple[int, dict[str, str]]] = []
+    labels_text = documents["pack labels"]
+    if labels_text is not None:
+        label_rows = _parse_validation_csv(
+            labels_text,
+            tuple(FunctionalRoleLabel.model_fields),
+            header_issue_code="LABEL_HEADER_MISMATCH",
+            row_issue_code="LABEL_ROW_INVALID",
+            document_name="labels CSV",
+            issues=issues,
+        )
+    expected_label_count = len(expected_samples) if expected_samples else len(sample_rows) or None
+    valid_count = 0
+    pending_count = 0
+    if expected_samples and products and v2_labels_by_key is not None:
+        valid_count, pending_count = _validate_role_labels(
+            label_rows,
+            expected_samples=expected_samples,
+            products=products,
+            v2_labels_by_key=v2_labels_by_key,
+            validated_at=validated_at,
+            issues=issues,
+        )
+    elif label_rows:
+        issues.append(
+            _role_issue(
+                "LABEL_VALIDATION_UNAVAILABLE",
+                "labels cannot be validated without reconstructed authoritative inputs",
+            )
+        )
+
+    if issues:
+        return _invalid_role_result(
+            issues,
+            expected_label_count=expected_label_count,
+        )
+    if expected_label_count is None:
+        return _invalid_role_result(
+            [_role_issue("EXPECTED_LABEL_COUNT_UNKNOWN", "expected label count is unavailable")]
+        )
+    if pending_count:
+        return FunctionalRoleValidationResult(
+            status=ReviewGateStatus.PENDING,
+            expected_label_count=expected_label_count,
+            valid_label_count=valid_count,
+            pending_label_count=pending_count,
+            issues=(),
+            summary=None,
+        )
+    return _invalid_role_result(
+        [
+            _role_issue(
+                "METRICS_NOT_COMPUTED",
+                "completed labels require Task 8 metric computation before COMPLETE",
+            )
+        ],
+        expected_label_count=expected_label_count,
+    )

@@ -4,7 +4,7 @@ import hashlib
 import json
 import subprocess
 import sys
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -40,6 +40,7 @@ from claimledger.functional_role_review import (
     SampleOrigin,
     build_functional_role_samples,
     derive_sample_seed,
+    validate_functional_role_review_pack,
     write_functional_role_review_pack,
 )
 from claimledger.ingredients import map_ingredients
@@ -1741,3 +1742,548 @@ def test_build_cli_returns_a_nonzero_error_without_a_partial_pack(tmp_path: Path
     assert completed.returncode != 0
     assert "error:" in completed.stderr
     assert not output_dir.exists()
+
+
+def _write_validation_pack(
+    tmp_path: Path,
+    *,
+    root_name: str,
+    non_inherited_unverifiable: bool = False,
+) -> tuple[Path, Path, Path, Path]:
+    root = tmp_path / root_name
+    products = _synthetic_source_products()
+    if non_inherited_unverifiable:
+        target_report_no = _report_no(IngredientGroup.MAGNESIUM, "V2", 0)
+        products = tuple(
+            product.model_copy(update={"primary_function": "일반적인 영양 보충"})
+            if product.report_no == target_report_no
+            else product
+            for product in products
+        )
+    product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
+    rules_path = root / "functional-role-rules.json"
+    rules_path.write_bytes(RULE_FIXTURE_PATH.read_bytes())
+    registry = load_functional_role_registry(rules_path, evaluated_at=NOW)
+    pack_dir = root / "functional-role-review-v1"
+    write_functional_role_review_pack(
+        pack_dir,
+        products=products,
+        source_export_path=source_export,
+        product_review_pack_dir=product_review_pack,
+        rules_path=rules_path,
+        registry=registry,
+        generated_at=NOW,
+    )
+    return pack_dir, source_export, product_review_pack, rules_path
+
+
+def _validate_generated_pack(
+    paths: tuple[Path, Path, Path, Path],
+    *,
+    validated_at: datetime = NOW,
+) -> FunctionalRoleValidationResult:
+    pack_dir, source_export, product_review_pack, rules_path = paths
+    return validate_functional_role_review_pack(
+        pack_dir,
+        source_export,
+        product_review_pack,
+        rules_path,
+        validated_at=validated_at,
+    )
+
+
+def _read_csv_fields_and_rows(path: Path) -> tuple[tuple[str, ...], list[dict[str, str]]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        return tuple(reader.fieldnames or ()), list(reader)
+
+
+def _write_csv_rows(
+    path: Path,
+    fields: tuple[str, ...],
+    rows: list[dict[str, str]],
+) -> None:
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _complete_one_functional_label(pack_dir: Path) -> tuple[dict[str, str], dict[str, str]]:
+    _, sample_rows = _read_csv_fields_and_rows(pack_dir / "samples.csv")
+    label_fields, label_rows = _read_csv_fields_and_rows(pack_dir / "functional_role_labels.csv")
+    samples_by_key = {(row["group"], row["report_no"]): row for row in sample_rows}
+    for label_row in label_rows:
+        sample_row = samples_by_key[(label_row["group"], label_row["report_no"])]
+        if (
+            not label_row["human_verdict"]
+            and sample_row["machine_verdict"] == MachineRoleVerdict.FUNCTIONAL_CONFIRMED.value
+        ):
+            label_row.update(
+                {
+                    "human_verdict": HumanRoleVerdict.FUNCTIONAL_CONFIRMED.value,
+                    "reason_code": FunctionalRoleReasonCode.EXPLICIT_TARGET_FUNCTION.value,
+                    "evidence_field": RoleEvidenceField.BOTH.value,
+                    "evidence_excerpt": sample_row["machine_evidence_excerpt"],
+                    "rule_version": sample_row["functional_role_rule_version"],
+                    "review_note": "",
+                    "reviewer": "synthetic-role-reviewer",
+                    "reviewed_at_iso8601": "2026-08-30T09:00:00Z",
+                }
+            )
+            _write_csv_rows(
+                pack_dir / "functional_role_labels.csv",
+                label_fields,
+                label_rows,
+            )
+            return sample_row, label_row
+    raise AssertionError("synthetic pack has no pending machine-positive row")
+
+
+def test_validator_returns_pending_for_a_clean_incomplete_pack(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="clean-pending")
+    pack_dir = paths[0]
+    label_rows = _read_csv(pack_dir / "functional_role_labels.csv")
+    prefilled_count = sum(bool(row["human_verdict"]) for row in label_rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.PENDING
+    assert result.expected_label_count == len(label_rows)
+    assert result.valid_label_count == prefilled_count == 1
+    assert result.pending_label_count == len(label_rows) - prefilled_count
+    assert result.issues == ()
+    assert result.summary is None
+    assert result.advertising_evidence_status == "NOT_MEASURED"
+    assert result.extension_recommendation_status == "BLOCKED"
+    assert result.finalized is False
+
+
+@pytest.mark.parametrize("mutation", ("missing", "extra", "renamed"))
+def test_validator_rejects_missing_extra_or_renamed_pack_files(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"file-set-{mutation}")
+    pack_dir = paths[0]
+    if mutation == "missing":
+        (pack_dir / "README.md").unlink()
+    elif mutation == "extra":
+        (pack_dir / "unexpected.txt").write_text(
+            "unexpected\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    else:
+        (pack_dir / "manifest.json").rename(pack_dir / "renamed-manifest.json")
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert {issue.code for issue in result.issues} == {"PACK_FILE_SET"}
+
+
+@pytest.mark.parametrize("mutation", ("reorder", "product_text"))
+def test_validator_rejects_source_export_hash_or_product_text_changes(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"source-{mutation}")
+    source_export = paths[1]
+    lines = source_export.read_text(encoding="utf-8").splitlines()
+    if mutation == "reorder":
+        lines.reverse()
+    else:
+        value = json.loads(lines[-1])
+        value["company"] = "원본 변조 제조사"
+        lines[-1] = json.dumps(value, ensure_ascii=False)
+    source_export.write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "SOURCE_EXPORT_HASH_MISMATCH" in {issue.code for issue in result.issues}
+
+
+@pytest.mark.parametrize("document", ("manifest.json", "samples.csv", "product_review_labels.csv"))
+def test_validator_rejects_any_v2_manifest_sample_or_label_hash_change(
+    tmp_path: Path,
+    document: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"v2-hash-{document}")
+    target = paths[2] / document
+    target.write_text(
+        target.read_text(encoding="utf-8") + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    expected_code = {
+        "manifest.json": "PRODUCT_REVIEW_MANIFEST_HASH_MISMATCH",
+        "samples.csv": "PRODUCT_REVIEW_SAMPLES_HASH_MISMATCH",
+        "product_review_labels.csv": "PRODUCT_REVIEW_LABELS_HASH_MISMATCH",
+    }[document]
+    assert expected_code in {issue.code for issue in result.issues}
+
+
+@pytest.mark.parametrize("mutation", ("hash", "rule_version", "freshness"))
+def test_validator_rejects_rules_hash_rule_version_or_freshness_change(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"rules-{mutation}")
+    rules_path = paths[3]
+    if mutation == "hash":
+        rules_path.write_text(
+            rules_path.read_text(encoding="utf-8") + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    else:
+        values = json.loads(rules_path.read_text(encoding="utf-8"))
+        if mutation == "rule_version":
+            values["rules"][0]["rule_version"] = "functional-role-rule-v2"
+        else:
+            for rule in values["rules"]:
+                rule["verified_current_at"] = "2026-08-20T09:00:00Z"
+        rules_path.write_text(
+            json.dumps(values, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    codes = {issue.code for issue in result.issues}
+    assert "RULES_HASH_MISMATCH" in codes
+    if mutation == "freshness":
+        assert "RULES_INVALID" in codes
+
+
+@pytest.mark.parametrize("mutation", ("add", "delete", "duplicate", "reorder"))
+def test_validator_rejects_sample_add_delete_duplicate_or_reordering(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"samples-{mutation}")
+    samples_path = paths[0] / "samples.csv"
+    fields, rows = _read_csv_fields_and_rows(samples_path)
+    if mutation == "add":
+        extra = dict(rows[-1])
+        extra["report_no"] = "SYNTHETIC-EXTRA-ROW"
+        rows.append(extra)
+    elif mutation == "delete":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows[-1] = dict(rows[0])
+    else:
+        rows[0], rows[1] = rows[1], rows[0]
+    _write_csv_rows(samples_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "SAMPLES_HASH_MISMATCH" in {issue.code for issue in result.issues}
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("audit_round", "2"),
+        ("sample_origin", SampleOrigin.GENERAL_REPLACEMENT.value),
+        ("is_general_audit", "False"),
+    ),
+)
+def test_validator_rejects_changed_audit_round_origin_or_scope_flags(
+    tmp_path: Path,
+    field: str,
+    value: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"audit-{field}")
+    samples_path = paths[0] / "samples.csv"
+    fields, rows = _read_csv_fields_and_rows(samples_path)
+    rows[0][field] = value
+    _write_csv_rows(samples_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert any(issue.code.startswith("SAMPLE") for issue in result.issues)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("machine_verdict", MachineRoleVerdict.UNVERIFIABLE.value),
+        ("machine_reason_code", MachineRoleReasonCode.NO_APPLICABLE_EVIDENCE.value),
+        (
+            "machine_evidence_excerpt",
+            '{"raw_materials":"없는 원료","primary_function":"없는 기능"}',
+        ),
+    ),
+)
+def test_validator_rejects_changed_machine_verdict_reason_or_evidence(
+    tmp_path: Path,
+    field: str,
+    value: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"machine-{field}")
+    samples_path = paths[0] / "samples.csv"
+    fields, rows = _read_csv_fields_and_rows(samples_path)
+    rows[0][field] = value
+    _write_csv_rows(samples_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert any(issue.code.startswith("SAMPLE") for issue in result.issues)
+
+
+def test_validator_rejects_label_keys_not_equal_to_sample_keys(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="label-keys")
+    labels_path = paths[0] / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    rows[0]["report_no"] = "UNKNOWN-LABEL-KEY"
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "LABEL_KEY_SET_MISMATCH" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_a_partial_human_label_row(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="partial-label")
+    labels_path = paths[0] / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    pending = next(row for row in rows if not row["human_verdict"])
+    pending["human_verdict"] = HumanRoleVerdict.FUNCTIONAL_CONFIRMED.value
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "PARTIAL_LABEL" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_mapping_exclusion_for_a_non_inherited_sample(
+    tmp_path: Path,
+) -> None:
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="false-mapping-exclusion",
+        non_inherited_unverifiable=True,
+    )
+    pack_dir = paths[0]
+    target_report_no = _report_no(IngredientGroup.MAGNESIUM, "V2", 0)
+    _, sample_rows = _read_csv_fields_and_rows(pack_dir / "samples.csv")
+    sample = next(row for row in sample_rows if row["report_no"] == target_report_no)
+    assert sample["machine_verdict"] == MachineRoleVerdict.UNVERIFIABLE.value
+    assert sample["machine_reason_code"] != MachineRoleReasonCode.INHERITED_MAPPING_ERROR.value
+    labels_path = pack_dir / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    target = next(row for row in rows if row["report_no"] == target_report_no)
+    target.update(
+        {
+            "human_verdict": HumanRoleVerdict.EXCLUDED_MAPPING_ERROR.value,
+            "reason_code": FunctionalRoleReasonCode.INHERITED_MAPPING_ERROR.value,
+            "evidence_field": RoleEvidenceField.NONE.value,
+            "evidence_excerpt": "",
+            "rule_version": sample["functional_role_rule_version"],
+            "review_note": "",
+            "reviewer": "synthetic-role-reviewer",
+            "reviewed_at_iso8601": "2026-08-30T09:00:00Z",
+        }
+    )
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "NON_INHERITED_MAPPING_EXCLUSION" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_evidence_not_literal_in_the_declared_source_field(
+    tmp_path: Path,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="nonliteral-evidence")
+    pack_dir = paths[0]
+    _, completed = _complete_one_functional_label(pack_dir)
+    labels_path = pack_dir / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    target = next(
+        row
+        for row in rows
+        if (row["group"], row["report_no"]) == (completed["group"], completed["report_no"])
+    )
+    target["evidence_excerpt"] = '{"raw_materials":"없는 원료","primary_function":"없는 기능"}'
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "EVIDENCE_NOT_LITERAL" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_noncanonical_both_evidence_json(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="noncanonical-evidence")
+    pack_dir = paths[0]
+    _, completed = _complete_one_functional_label(pack_dir)
+    labels_path = pack_dir / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    target = next(
+        row
+        for row in rows
+        if (row["group"], row["report_no"]) == (completed["group"], completed["report_no"])
+    )
+    evidence = json.loads(target["evidence_excerpt"])
+    target["evidence_excerpt"] = json.dumps(evidence, ensure_ascii=False)
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "LABEL_VALUE_INVALID" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_future_review_times(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="future-review")
+    pack_dir = paths[0]
+    _, completed = _complete_one_functional_label(pack_dir)
+    labels_path = pack_dir / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(labels_path)
+    target = next(
+        row
+        for row in rows
+        if (row["group"], row["report_no"]) == (completed["group"], completed["report_no"])
+    )
+    target["reviewed_at_iso8601"] = (NOW + timedelta(seconds=1)).isoformat()
+    _write_csv_rows(labels_path, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "LABEL_REVIEWED_AT_FUTURE" in {issue.code for issue in result.issues}
+
+
+def test_validator_rejects_a_future_inherited_v2_review_time(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="future-inherited-review")
+    pack_dir, _, product_review_pack, _ = paths
+    inherited_report_no = _report_no(IngredientGroup.RED_GINSENG, "V2", 0)
+    future_time = "2026-08-30T09:00:01Z"
+    v2_labels_path = product_review_pack / "product_review_labels.csv"
+    v2_fields, v2_rows = _read_csv_fields_and_rows(v2_labels_path)
+    v2_target = next(row for row in v2_rows if row["report_no"] == inherited_report_no)
+    v2_target["reviewed_at_iso8601"] = future_time
+    _write_csv_rows(v2_labels_path, v2_fields, v2_rows)
+    role_labels_path = pack_dir / "functional_role_labels.csv"
+    role_fields, role_rows = _read_csv_fields_and_rows(role_labels_path)
+    role_target = next(row for row in role_rows if row["report_no"] == inherited_report_no)
+    role_target["reviewed_at_iso8601"] = future_time
+    _write_csv_rows(role_labels_path, role_fields, role_rows)
+    manifest_path = pack_dir / "manifest.json"
+    manifest_values = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_values["product_review_labels_sha256"] = sha256_file(v2_labels_path)
+    manifest_path.write_text(
+        json.dumps(manifest_values, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert "LABEL_REVIEWED_AT_FUTURE" in {issue.code for issue in result.issues}
+
+
+@pytest.mark.parametrize("mutation", ("formula", "secret", "nul"))
+def test_validator_rejects_formula_prefixes_and_secret_patterns(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name=f"unsafe-{mutation}")
+    pack_dir = paths[0]
+    if mutation == "formula":
+        _, completed = _complete_one_functional_label(pack_dir)
+        labels_path = pack_dir / "functional_role_labels.csv"
+        fields, rows = _read_csv_fields_and_rows(labels_path)
+        target = next(
+            row
+            for row in rows
+            if (row["group"], row["report_no"]) == (completed["group"], completed["report_no"])
+        )
+        target["reviewer"] = "=SUM(1,1)"
+        _write_csv_rows(labels_path, fields, rows)
+    elif mutation == "secret":
+        readme = pack_dir / "README.md"
+        secret_marker = "api" + "_key=" + "livevalue123456"
+        readme.write_text(
+            readme.read_text(encoding="utf-8") + secret_marker + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
+    else:
+        readme = pack_dir / "README.md"
+        readme.write_bytes(readme.read_bytes() + b"\x00")
+
+    result = _validate_generated_pack(paths)
+
+    assert result.status is ReviewGateStatus.INVALID
+    expected = {
+        "formula": "LABEL_VALUE_INVALID",
+        "secret": "POSSIBLE_SECRET",
+        "nul": "NUL_BYTE",
+    }[mutation]
+    assert expected in {issue.code for issue in result.issues}
+
+
+def test_invalid_result_hides_progress_counts_and_has_sorted_issues(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="sorted-invalid")
+    pack_dir, source_export, _, _ = paths
+    source_lines = source_export.read_text(encoding="utf-8").splitlines()
+    source_lines.reverse()
+    source_export.write_text(
+        "\n".join(source_lines) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    samples_path = pack_dir / "samples.csv"
+    sample_fields, sample_rows = _read_csv_fields_and_rows(samples_path)
+    sample_rows[0], sample_rows[1] = sample_rows[1], sample_rows[0]
+    _write_csv_rows(samples_path, sample_fields, sample_rows)
+    labels_path = pack_dir / "functional_role_labels.csv"
+    label_fields, label_rows = _read_csv_fields_and_rows(labels_path)
+    pending = next(row for row in label_rows if not row["human_verdict"])
+    pending["human_verdict"] = HumanRoleVerdict.FUNCTIONAL_CONFIRMED.value
+    _write_csv_rows(labels_path, label_fields, label_rows)
+
+    result = _validate_generated_pack(paths)
+    sort_keys = [
+        (
+            issue.line_number if issue.line_number is not None else -1,
+            issue.code,
+            issue.group or "",
+            issue.report_no or "",
+            issue.message,
+        )
+        for issue in result.issues
+    ]
+
+    assert result.status is ReviewGateStatus.INVALID
+    assert len(result.issues) >= 3
+    assert sort_keys == sorted(sort_keys)
+    assert result.expected_label_count is not None
+    assert result.valid_label_count is None
+    assert result.pending_label_count is None
+    assert result.summary is None
+    assert result.advertising_evidence_status == "NOT_MEASURED"
+    assert result.extension_recommendation_status == "BLOCKED"
+    assert result.finalized is False
