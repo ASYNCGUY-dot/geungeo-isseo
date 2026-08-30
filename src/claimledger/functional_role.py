@@ -450,9 +450,7 @@ def classify_functional_role(
 
     if matched_functional_form and matched_nonfunctional_form:
         evidence_field = (
-            RoleEvidenceField.BOTH
-            if matched_function_text or explicit_target_wording
-            else RoleEvidenceField.RAW_MATERIALS
+            RoleEvidenceField.BOTH if matched_function_text else RoleEvidenceField.RAW_MATERIALS
         )
         return _machine_role_decision(
             **decision_arguments,

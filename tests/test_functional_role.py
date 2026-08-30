@@ -470,6 +470,23 @@ def test_classifier_returns_unverifiable_for_conflicting_functional_and_nonfunct
     assert decision.matched_nonfunctional_form == "홍삼향분말"
 
 
+def test_classifier_conflict_without_function_uses_only_raw_material_evidence() -> None:
+    decision = classify_functional_role(
+        _product(
+            report_no="ROLE-010-B",
+            raw_materials="홍삼농축액, 홍삼향분말",
+            primary_function="홍삼 함유 제품",
+        ),
+        IngredientGroup.RED_GINSENG,
+        _registry(),
+    )
+
+    assert decision.verdict is MachineRoleVerdict.UNVERIFIABLE
+    assert decision.reason_code is MachineRoleReasonCode.CONFLICTING_ROLE_EVIDENCE
+    assert decision.evidence_field is RoleEvidenceField.RAW_MATERIALS
+    assert decision.primary_function_excerpt == ""
+
+
 def test_classifier_preserves_literal_excerpts_and_rule_version() -> None:
     registry = _registry_with_rule_changes(
         IngredientGroup.COENZYME_Q10,
