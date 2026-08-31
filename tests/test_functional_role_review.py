@@ -57,6 +57,7 @@ from claimledger.product_review import (
     ReviewIssue,
     sha256_file,
     validate_product_review_pack,
+    wilson_interval,
 )
 
 NOW = datetime(2026, 8, 30, 9, 0, tzinfo=UTC)
@@ -1749,9 +1750,10 @@ def _write_validation_pack(
     *,
     root_name: str,
     non_inherited_unverifiable: bool = False,
+    source_products: tuple[ExtensionReviewProduct, ...] | None = None,
 ) -> tuple[Path, Path, Path, Path]:
     root = tmp_path / root_name
-    products = _synthetic_source_products()
+    products = source_products or _synthetic_source_products()
     if non_inherited_unverifiable:
         target_report_no = _report_no(IngredientGroup.MAGNESIUM, "V2", 0)
         products = tuple(
@@ -2287,3 +2289,498 @@ def test_invalid_result_hides_progress_counts_and_has_sorted_issues(tmp_path: Pa
     assert result.advertising_evidence_status == "NOT_MEASURED"
     assert result.extension_recommendation_status == "BLOCKED"
     assert result.finalized is False
+
+
+def _products_with_magnesium_general_verdict(
+    verdict: MachineRoleVerdict,
+) -> tuple[ExtensionReviewProduct, ...]:
+    if verdict not in {
+        MachineRoleVerdict.PRESENT_NONFUNCTIONAL,
+        MachineRoleVerdict.UNVERIFIABLE,
+    }:
+        raise ValueError("test helper supports only non-positive general verdicts")
+    target_report_no = _report_no(IngredientGroup.MAGNESIUM, "V2", 0)
+    products: list[ExtensionReviewProduct] = []
+    for product in _synthetic_source_products():
+        if product.report_no != target_report_no:
+            products.append(product)
+            continue
+        updates = {"primary_function": "일반적인 영양 보충"}
+        if verdict is MachineRoleVerdict.PRESENT_NONFUNCTIONAL:
+            updates["raw_materials"] = "스테아린산 마그네슘"
+        products.append(product.model_copy(update=updates))
+    return tuple(products)
+
+
+def _products_with_zero_magnesium_addressable() -> tuple[ExtensionReviewProduct, ...]:
+    return tuple(
+        product.model_copy(update={"primary_function": "일반적인 영양 보충"})
+        if map_ingredients(product).groups == (IngredientGroup.MAGNESIUM,)
+        else product
+        for product in _synthetic_source_products()
+    )
+
+
+def _label_values_for_human_verdict(
+    sample: dict[str, str],
+    verdict: HumanRoleVerdict,
+) -> dict[str, str]:
+    common = {
+        "human_verdict": verdict.value,
+        "rule_version": sample["functional_role_rule_version"],
+        "review_note": "",
+        "reviewer": "synthetic-role-reviewer",
+        "reviewed_at_iso8601": "2026-08-30T09:00:00Z",
+    }
+    if verdict is HumanRoleVerdict.FUNCTIONAL_CONFIRMED:
+        return {
+            **common,
+            "reason_code": FunctionalRoleReasonCode.EXPLICIT_TARGET_FUNCTION.value,
+            "evidence_field": RoleEvidenceField.BOTH.value,
+            "evidence_excerpt": _both_evidence(
+                sample["raw_materials"],
+                sample["primary_function"],
+            ),
+        }
+    if verdict is HumanRoleVerdict.PRESENT_NONFUNCTIONAL:
+        return {
+            **common,
+            "reason_code": FunctionalRoleReasonCode.EXPLICIT_NONFUNCTIONAL_ROLE.value,
+            "evidence_field": RoleEvidenceField.RAW_MATERIALS.value,
+            "evidence_excerpt": sample["raw_materials"],
+        }
+    if verdict is HumanRoleVerdict.UNCERTAIN:
+        return {
+            **common,
+            "reason_code": FunctionalRoleReasonCode.INSUFFICIENT_LINKAGE.value,
+            "evidence_field": RoleEvidenceField.NONE.value,
+            "evidence_excerpt": "",
+        }
+    raise ValueError("mapping exclusions are inherited, not synthetic human overrides")
+
+
+def _complete_metric_labels(
+    pack_dir: Path,
+    *,
+    overrides: dict[tuple[str, str], HumanRoleVerdict] | None = None,
+) -> None:
+    _, sample_rows = _read_csv_fields_and_rows(pack_dir / "samples.csv")
+    label_fields, label_rows = _read_csv_fields_and_rows(pack_dir / "functional_role_labels.csv")
+    samples_by_key = {(row["group"], row["report_no"]): row for row in sample_rows}
+    overrides = overrides or {}
+    default_human_verdict = {
+        MachineRoleVerdict.FUNCTIONAL_CONFIRMED.value: HumanRoleVerdict.FUNCTIONAL_CONFIRMED,
+        MachineRoleVerdict.PRESENT_NONFUNCTIONAL.value: HumanRoleVerdict.PRESENT_NONFUNCTIONAL,
+        MachineRoleVerdict.UNVERIFIABLE.value: HumanRoleVerdict.UNCERTAIN,
+    }
+    for label in label_rows:
+        if label["human_verdict"]:
+            continue
+        key = (label["group"], label["report_no"])
+        sample = samples_by_key[key]
+        verdict = overrides.get(
+            key,
+            default_human_verdict[sample["machine_verdict"]],
+        )
+        label.update(_label_values_for_human_verdict(sample, verdict))
+    _write_csv_rows(
+        pack_dir / "functional_role_labels.csv",
+        label_fields,
+        label_rows,
+    )
+
+
+def _complete_and_validate(
+    paths: tuple[Path, Path, Path, Path],
+    *,
+    overrides: dict[tuple[str, str], HumanRoleVerdict] | None = None,
+) -> FunctionalRoleValidationResult:
+    _complete_metric_labels(paths[0], overrides=overrides)
+    return _validate_generated_pack(paths)
+
+
+def _group_result(
+    result: FunctionalRoleValidationResult,
+    group: IngredientGroup,
+) -> FunctionalRoleGroupSummary:
+    assert result.summary is not None
+    return next(item for item in result.summary.groups if item.group is group)
+
+
+def _positive_only_sample(pack_dir: Path, group: IngredientGroup) -> dict[str, str]:
+    return next(
+        row
+        for row in _read_csv(pack_dir / "samples.csv")
+        if row["group"] == group.value
+        and row["is_positive_audit"] == "True"
+        and row["is_general_audit"] == "False"
+    )
+
+
+def test_wilson_35_of_35_lower_is_09010990076755959() -> None:
+    interval = wilson_interval(35, 35)
+
+    assert interval is not None
+    assert interval.lower == pytest.approx(0.9010990076755959)
+
+
+def test_all_clean_complete_groups_are_role_eligible(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-all-clean")
+
+    result = _complete_and_validate(paths)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert result.issues == ()
+    assert result.summary is not None
+    assert result.summary.audited_row_count == result.expected_label_count
+    for group in result.summary.groups:
+        assert group.eligibility is RoleEligibility.ROLE_ELIGIBLE
+        assert group.eligibility_reasons == ()
+        assert group.general_evaluable_count == 20
+        assert group.positive_pool_count == 40
+        assert group.positive_sample_count == 35
+        assert group.true_functional_confirmed_count == 35
+        assert group.positive_precision == 1.0
+        assert group.positive_precision_wilson_95 is not None
+        assert group.positive_precision_wilson_95.lower >= 0.90
+
+
+def test_pack_can_be_complete_with_a_role_insufficient_group(tmp_path: Path) -> None:
+    products = _synthetic_source_products(magnesium_positive_count=34)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-complete-insufficient",
+        source_products=products,
+    )
+
+    result = _complete_and_validate(paths)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+    assert all(
+        group.eligibility is RoleEligibility.ROLE_ELIGIBLE
+        for group in result.summary.groups
+        if group.group is not IngredientGroup.MAGNESIUM
+    )
+
+
+def test_positive_pool_or_sample_below_35_is_insufficient(tmp_path: Path) -> None:
+    products = _synthetic_source_products(magnesium_positive_count=34)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-small-positive-pool",
+        source_products=products,
+    )
+
+    result = _complete_and_validate(paths)
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.positive_pool_count == 34
+    assert magnesium.positive_sample_count == 34
+    assert magnesium.positive_precision == 1.0
+    assert magnesium.positive_precision_wilson_95 is not None
+    assert magnesium.positive_precision_wilson_95.lower < 0.90
+    assert {
+        EligibilityReasonCode.POSITIVE_POOL_TOO_SMALL,
+        EligibilityReasonCode.POSITIVE_SAMPLE_TOO_SMALL,
+        EligibilityReasonCode.POSITIVE_WILSON_BELOW_THRESHOLD,
+    }.issubset(magnesium.eligibility_reasons)
+
+
+def test_one_false_confirmation_is_insufficient(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-false-confirmation")
+    target = _positive_only_sample(paths[0], IngredientGroup.MAGNESIUM)
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.PRESENT_NONFUNCTIONAL},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.false_confirmation_count == 1
+    assert magnesium.true_functional_confirmed_count == 34
+    assert magnesium.positive_precision == pytest.approx(34 / 35)
+    assert EligibilityReasonCode.FALSE_CONFIRMATION in magnesium.eligibility_reasons
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_one_false_exclusion_is_insufficient(tmp_path: Path) -> None:
+    products = _products_with_magnesium_general_verdict(MachineRoleVerdict.PRESENT_NONFUNCTIONAL)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-false-exclusion",
+        source_products=products,
+    )
+    target = next(
+        row
+        for row in _read_csv(paths[0] / "samples.csv")
+        if row["group"] == IngredientGroup.MAGNESIUM.value
+        and row["machine_verdict"] == MachineRoleVerdict.PRESENT_NONFUNCTIONAL.value
+    )
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.FUNCTIONAL_CONFIRMED},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.false_exclusion_count == 1
+    assert EligibilityReasonCode.FALSE_EXCLUSION in magnesium.eligibility_reasons
+    assert EligibilityReasonCode.GENERAL_AUDIT_CONFLICT in magnesium.eligibility_reasons
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_one_unresolved_positive_is_insufficient(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-unresolved-positive")
+    target = _positive_only_sample(paths[0], IngredientGroup.MAGNESIUM)
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.UNCERTAIN},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.unresolved_positive_count == 1
+    assert magnesium.false_confirmation_count == 0
+    assert EligibilityReasonCode.UNRESOLVED_POSITIVE in magnesium.eligibility_reasons
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_one_overconfident_machine_decision_is_insufficient(tmp_path: Path) -> None:
+    products = _products_with_magnesium_general_verdict(MachineRoleVerdict.PRESENT_NONFUNCTIONAL)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-overconfident",
+        source_products=products,
+    )
+    target = next(
+        row
+        for row in _read_csv(paths[0] / "samples.csv")
+        if row["group"] == IngredientGroup.MAGNESIUM.value
+        and row["machine_verdict"] == MachineRoleVerdict.PRESENT_NONFUNCTIONAL.value
+    )
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.UNCERTAIN},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.overconfident_decision_count == 1
+    assert magnesium.unresolved_positive_count == 0
+    assert magnesium.false_exclusion_count == 0
+    assert EligibilityReasonCode.OVERCONFIDENT_DECISION in magnesium.eligibility_reasons
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_general_audit_conflict_is_insufficient_even_outside_positive_scope(
+    tmp_path: Path,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-general-conflict")
+    target = next(
+        row
+        for row in _read_csv(paths[0] / "samples.csv")
+        if row["group"] == IngredientGroup.MAGNESIUM.value
+        and row["is_general_audit"] == "True"
+        and row["is_positive_audit"] == "False"
+        and row["machine_verdict"] == MachineRoleVerdict.FUNCTIONAL_CONFIRMED.value
+    )
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.PRESENT_NONFUNCTIONAL},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.false_confirmation_count == 0
+    assert magnesium.positive_precision == 1.0
+    assert magnesium.positive_precision_wilson_95 is not None
+    assert magnesium.positive_precision_wilson_95.lower >= 0.90
+    assert magnesium.eligibility_reasons == (EligibilityReasonCode.GENERAL_AUDIT_CONFLICT,)
+
+
+def test_wilson_lower_below_point_nine_is_insufficient(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-wilson-below")
+    target = _positive_only_sample(paths[0], IngredientGroup.VITAMIN_D)
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.PRESENT_NONFUNCTIONAL},
+    )
+    vitamin_d = _group_result(result, IngredientGroup.VITAMIN_D)
+
+    assert vitamin_d.positive_precision_wilson_95 is not None
+    assert vitamin_d.positive_precision_wilson_95.lower < 0.90
+    assert EligibilityReasonCode.POSITIVE_WILSON_BELOW_THRESHOLD in vitamin_d.eligibility_reasons
+    assert vitamin_d.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_zero_addressable_products_is_insufficient(tmp_path: Path) -> None:
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-zero-addressable",
+        source_products=_products_with_zero_magnesium_addressable(),
+    )
+
+    result = _complete_and_validate(paths)
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert magnesium.addressable_product_count == 0
+    assert magnesium.positive_pool_count == 0
+    assert magnesium.positive_sample_count == 0
+    assert magnesium.positive_precision is None
+    assert magnesium.positive_precision_wilson_95 is None
+    assert magnesium.decidable_agreement_rate is None
+    assert magnesium.decision_coverage == 0.0
+    assert magnesium.unverifiable_rate == 1.0
+    assert magnesium.human_uncertainty_rate == 1.0
+    assert EligibilityReasonCode.NO_ADDRESSABLE_PRODUCTS in magnesium.eligibility_reasons
+    assert magnesium.eligibility is RoleEligibility.ROLE_INSUFFICIENT
+
+
+def test_avoidable_unverifiable_reduces_coverage_without_becoming_false_positive(
+    tmp_path: Path,
+) -> None:
+    products = _products_with_magnesium_general_verdict(MachineRoleVerdict.UNVERIFIABLE)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="metrics-avoidable-unverifiable",
+        source_products=products,
+    )
+    target = next(
+        row
+        for row in _read_csv(paths[0] / "samples.csv")
+        if row["group"] == IngredientGroup.MAGNESIUM.value
+        and row["machine_verdict"] == MachineRoleVerdict.UNVERIFIABLE.value
+    )
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.FUNCTIONAL_CONFIRMED},
+    )
+    magnesium = _group_result(result, IngredientGroup.MAGNESIUM)
+
+    assert magnesium.avoidable_unverifiable_count == 1
+    assert magnesium.false_confirmation_count == 0
+    assert magnesium.false_exclusion_count == 0
+    assert magnesium.decision_coverage == pytest.approx(
+        (magnesium.audited_row_count - 1) / magnesium.audited_row_count
+    )
+    assert magnesium.eligibility is RoleEligibility.ROLE_ELIGIBLE
+
+
+def test_uncertain_is_reported_separately_from_incorrect(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-uncertainty-separated")
+    target = _positive_only_sample(paths[0], IngredientGroup.COENZYME_Q10)
+    result = _complete_and_validate(
+        paths,
+        overrides={(target["group"], target["report_no"]): HumanRoleVerdict.UNCERTAIN},
+    )
+    group = _group_result(result, IngredientGroup.COENZYME_Q10)
+    uncertain_cell = next(
+        cell
+        for cell in group.confusion_matrix
+        if cell.machine_verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
+        and cell.human_verdict is HumanRoleVerdict.UNCERTAIN
+    )
+
+    assert uncertain_cell.row_count == 1
+    assert group.human_uncertainty_rate == pytest.approx(1 / group.audited_row_count)
+    assert group.unresolved_positive_count == 1
+    assert group.false_confirmation_count == 0
+
+
+def test_excluded_mapping_errors_are_not_metric_denominators(tmp_path: Path) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-excluded-denominator")
+
+    result = _complete_and_validate(paths)
+    red_ginseng = _group_result(result, IngredientGroup.RED_GINSENG)
+    group_label_count = sum(
+        row["group"] == IngredientGroup.RED_GINSENG.value
+        for row in _read_csv(paths[0] / "functional_role_labels.csv")
+    )
+
+    assert red_ginseng.audited_row_count == group_label_count
+    assert red_ginseng.general_evaluable_count == 20
+    assert (
+        sum(
+            cell.row_count
+            for cell in red_ginseng.confusion_matrix
+            if cell.human_verdict is HumanRoleVerdict.EXCLUDED_MAPPING_ERROR
+        )
+        == 1
+    )
+    assert sum(cell.row_count for cell in red_ginseng.confusion_matrix) == (
+        red_ginseng.audited_row_count
+    )
+    samples_by_key = {
+        (row["group"], row["report_no"]): row for row in _read_csv(paths[0] / "samples.csv")
+    }
+    evaluable_labels = [
+        row
+        for row in _read_csv(paths[0] / "functional_role_labels.csv")
+        if row["group"] == IngredientGroup.RED_GINSENG.value
+        and row["human_verdict"] != HumanRoleVerdict.EXCLUDED_MAPPING_ERROR.value
+    ]
+    decisive_count = sum(
+        samples_by_key[(row["group"], row["report_no"])]["machine_verdict"]
+        in {
+            MachineRoleVerdict.FUNCTIONAL_CONFIRMED.value,
+            MachineRoleVerdict.PRESENT_NONFUNCTIONAL.value,
+        }
+        for row in evaluable_labels
+    )
+    unverifiable_count = len(evaluable_labels) - decisive_count
+    uncertain_count = sum(
+        row["human_verdict"] == HumanRoleVerdict.UNCERTAIN.value for row in evaluable_labels
+    )
+    assert red_ginseng.decision_coverage == pytest.approx(decisive_count / len(evaluable_labels))
+    assert red_ginseng.unverifiable_rate == pytest.approx(
+        unverifiable_count / len(evaluable_labels)
+    )
+    assert red_ginseng.human_uncertainty_rate == pytest.approx(
+        uncertain_count / len(evaluable_labels)
+    )
+
+
+def test_summary_contains_no_product_names_raw_text_excerpts_notes_or_reviewer_ids(
+    tmp_path: Path,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="metrics-redacted-summary")
+
+    result = _complete_and_validate(paths)
+
+    assert result.status is ReviewGateStatus.COMPLETE
+    assert result.summary is not None
+    assert result.summary.functional_role_labels_sha256 == sha256_file(
+        paths[0] / "functional_role_labels.csv"
+    )
+    values = result.summary.model_dump(mode="json")
+    serialized = result.summary.model_dump_json()
+    forbidden_fields = {
+        "name",
+        "company",
+        "primary_function",
+        "raw_materials",
+        "intake_method",
+        "evidence_excerpt",
+        "review_note",
+        "reviewer",
+        "reviewed_at_iso8601",
+        "reason_code",
+        "report_no",
+    }
+
+    def all_keys(value: object) -> set[str]:
+        if isinstance(value, dict):
+            return set(value) | set().union(*(all_keys(item) for item in value.values()))
+        if isinstance(value, list):
+            return set().union(*(all_keys(item) for item in value))
+        return set()
+
+    assert forbidden_fields.isdisjoint(all_keys(values))
+    for forbidden_text in (
+        "합성 감사 제품",
+        "합성 제조사",
+        "밀크씨슬추출물",
+        "간 건강에 도움을 줄 수 있음",
+        "synthetic-role-reviewer",
+        "synthetic-reviewer",
+        "Inherited c003-product-review-v2 mapping verdict",
+    ):
+        assert forbidden_text not in serialized

@@ -48,6 +48,7 @@ from claimledger.product_review import (
     WilsonInterval,
     sha256_file,
     validate_product_review_pack,
+    wilson_interval,
 )
 
 FUNCTIONAL_ROLE_CONTRACT_VERSION = "c003-functional-role-v1"
@@ -1814,6 +1815,201 @@ def _validate_role_labels(
     return valid_count, pending_count
 
 
+def _rate(numerator: int, denominator: int) -> float | None:
+    return numerator / denominator if denominator else None
+
+
+def _group_accuracy_summary(
+    group: IngredientGroup,
+    *,
+    samples: tuple[FunctionalRoleSample, ...],
+    labels_by_key: dict[tuple[IngredientGroup, str], FunctionalRoleLabel],
+    group_counts: FunctionalRoleGroupCounts,
+) -> FunctionalRoleGroupSummary:
+    group_pairs = tuple(
+        (sample, labels_by_key[(sample.group, sample.report_no)])
+        for sample in samples
+        if sample.group is group
+    )
+    metric_pairs = tuple(
+        pair
+        for pair in group_pairs
+        if pair[1].human_verdict is not HumanRoleVerdict.EXCLUDED_MAPPING_ERROR
+    )
+    positive_pairs = tuple(pair for pair in metric_pairs if pair[0].is_positive_audit)
+    general_pairs = tuple(pair for pair in metric_pairs if pair[0].is_general_audit)
+
+    decisive_machine = {
+        MachineRoleVerdict.FUNCTIONAL_CONFIRMED,
+        MachineRoleVerdict.PRESENT_NONFUNCTIONAL,
+    }
+    decisive_human = {
+        HumanRoleVerdict.FUNCTIONAL_CONFIRMED,
+        HumanRoleVerdict.PRESENT_NONFUNCTIONAL,
+    }
+    true_functional_confirmed_count = sum(
+        label.human_verdict is HumanRoleVerdict.FUNCTIONAL_CONFIRMED for _, label in positive_pairs
+    )
+    false_confirmation_count = sum(
+        label.human_verdict is HumanRoleVerdict.PRESENT_NONFUNCTIONAL for _, label in positive_pairs
+    )
+    unresolved_positive_count = sum(
+        label.human_verdict is HumanRoleVerdict.UNCERTAIN for _, label in positive_pairs
+    )
+    false_exclusion_count = sum(
+        sample.machine_verdict is MachineRoleVerdict.PRESENT_NONFUNCTIONAL
+        and label.human_verdict is HumanRoleVerdict.FUNCTIONAL_CONFIRMED
+        for sample, label in metric_pairs
+    )
+    overconfident_decision_count = sum(
+        sample.machine_verdict in decisive_machine
+        and label.human_verdict is HumanRoleVerdict.UNCERTAIN
+        for sample, label in metric_pairs
+    )
+    avoidable_unverifiable_count = sum(
+        sample.machine_verdict is MachineRoleVerdict.UNVERIFIABLE
+        and label.human_verdict in decisive_human
+        for sample, label in metric_pairs
+    )
+    general_conflict_count = sum(
+        sample.machine_verdict in decisive_machine
+        and label.human_verdict in decisive_human
+        and sample.machine_verdict.value != label.human_verdict.value
+        for sample, label in general_pairs
+    )
+
+    confusion_counts = Counter(
+        (sample.machine_verdict, label.human_verdict) for sample, label in group_pairs
+    )
+    confusion_matrix = tuple(
+        RoleConfusionCell(
+            machine_verdict=machine_verdict,
+            human_verdict=human_verdict,
+            row_count=confusion_counts[(machine_verdict, human_verdict)],
+        )
+        for machine_verdict in MachineRoleVerdict
+        for human_verdict in HumanRoleVerdict
+    )
+
+    metric_row_count = len(metric_pairs)
+    decidable_pairs = tuple(
+        (sample, label)
+        for sample, label in metric_pairs
+        if sample.machine_verdict in decisive_machine and label.human_verdict in decisive_human
+    )
+    decidable_agreement_count = sum(
+        sample.machine_verdict.value == label.human_verdict.value
+        for sample, label in decidable_pairs
+    )
+    machine_decisive_count = sum(
+        sample.machine_verdict in decisive_machine for sample, _ in metric_pairs
+    )
+    machine_unverifiable_count = sum(
+        sample.machine_verdict is MachineRoleVerdict.UNVERIFIABLE for sample, _ in metric_pairs
+    )
+    human_uncertain_count = sum(
+        label.human_verdict is HumanRoleVerdict.UNCERTAIN for _, label in metric_pairs
+    )
+
+    positive_sample_count = len(positive_pairs)
+    positive_precision = _rate(
+        true_functional_confirmed_count,
+        positive_sample_count,
+    )
+    positive_wilson = wilson_interval(
+        true_functional_confirmed_count,
+        positive_sample_count,
+    )
+    addressable_product_count = group_counts.positive_pool_count
+
+    reasons: set[EligibilityReasonCode] = set()
+    if group_counts.positive_pool_count < DEFAULT_POSITIVE_AUDIT_SIZE:
+        reasons.add(EligibilityReasonCode.POSITIVE_POOL_TOO_SMALL)
+    if positive_sample_count < DEFAULT_POSITIVE_AUDIT_SIZE:
+        reasons.add(EligibilityReasonCode.POSITIVE_SAMPLE_TOO_SMALL)
+    if len(general_pairs) != DEFAULT_GENERAL_AUDIT_SIZE or general_conflict_count:
+        reasons.add(EligibilityReasonCode.GENERAL_AUDIT_CONFLICT)
+    if false_confirmation_count:
+        reasons.add(EligibilityReasonCode.FALSE_CONFIRMATION)
+    if false_exclusion_count:
+        reasons.add(EligibilityReasonCode.FALSE_EXCLUSION)
+    if unresolved_positive_count:
+        reasons.add(EligibilityReasonCode.UNRESOLVED_POSITIVE)
+    if overconfident_decision_count:
+        reasons.add(EligibilityReasonCode.OVERCONFIDENT_DECISION)
+    if positive_wilson is None or positive_wilson.lower < POSITIVE_WILSON_LOWER_THRESHOLD:
+        reasons.add(EligibilityReasonCode.POSITIVE_WILSON_BELOW_THRESHOLD)
+    if addressable_product_count == 0:
+        reasons.add(EligibilityReasonCode.NO_ADDRESSABLE_PRODUCTS)
+    eligibility_reasons = tuple(sorted(reasons, key=lambda reason: reason.value))
+
+    return FunctionalRoleGroupSummary(
+        group=group,
+        audited_row_count=len(group_pairs),
+        addressable_product_count=addressable_product_count,
+        general_evaluable_count=len(general_pairs),
+        positive_pool_count=group_counts.positive_pool_count,
+        positive_sample_count=positive_sample_count,
+        true_functional_confirmed_count=true_functional_confirmed_count,
+        false_confirmation_count=false_confirmation_count,
+        unresolved_positive_count=unresolved_positive_count,
+        false_exclusion_count=false_exclusion_count,
+        overconfident_decision_count=overconfident_decision_count,
+        avoidable_unverifiable_count=avoidable_unverifiable_count,
+        positive_precision=positive_precision,
+        positive_precision_wilson_95=positive_wilson,
+        decidable_agreement_rate=_rate(
+            decidable_agreement_count,
+            len(decidable_pairs),
+        ),
+        decision_coverage=_rate(machine_decisive_count, metric_row_count),
+        unverifiable_rate=_rate(machine_unverifiable_count, metric_row_count),
+        human_uncertainty_rate=_rate(human_uncertain_count, metric_row_count),
+        confusion_matrix=confusion_matrix,
+        eligibility=(
+            RoleEligibility.ROLE_INSUFFICIENT
+            if eligibility_reasons
+            else RoleEligibility.ROLE_ELIGIBLE
+        ),
+        eligibility_reasons=eligibility_reasons,
+    )
+
+
+def _functional_role_summary(
+    *,
+    manifest: FunctionalRoleManifest,
+    samples: tuple[FunctionalRoleSample, ...],
+    labels: tuple[FunctionalRoleLabel, ...],
+    functional_role_labels_sha256: str,
+    validated_at: datetime,
+) -> FunctionalRoleSummary:
+    labels_by_key = {(label.group, label.report_no): label for label in labels}
+    expected_keys = {(sample.group, sample.report_no) for sample in samples}
+    if len(labels_by_key) != len(labels) or set(labels_by_key) != expected_keys:
+        raise ValueError("metric labels must match every unique sample key")
+    group_counts_by_group = {counts.group: counts for counts in manifest.group_counts}
+    groups = tuple(
+        _group_accuracy_summary(
+            group,
+            samples=samples,
+            labels_by_key=labels_by_key,
+            group_counts=group_counts_by_group[group],
+        )
+        for group in COMPARISON_GROUPS
+    )
+    return FunctionalRoleSummary(
+        generated_at=manifest.generated_at,
+        validated_at=validated_at,
+        source_export_sha256=manifest.source_export_sha256,
+        product_review_labels_sha256=manifest.product_review_labels_sha256,
+        rules_sha256=manifest.rules_sha256,
+        samples_sha256=manifest.samples_sha256,
+        functional_role_labels_sha256=functional_role_labels_sha256,
+        audited_row_count=sum(group.audited_row_count for group in groups),
+        groups=groups,
+    )
+
+
 def validate_functional_role_review_pack(
     pack_dir: Path,
     source_export_path: Path,
@@ -2060,12 +2256,40 @@ def validate_functional_role_review_pack(
             issues=(),
             summary=None,
         )
-    return _invalid_role_result(
-        [
-            _role_issue(
-                "METRICS_NOT_COMPUTED",
-                "completed labels require Task 8 metric computation before COMPLETE",
-            )
-        ],
+    if manifest is None or not expected_samples or labels_text is None:
+        return _invalid_role_result(
+            [
+                _role_issue(
+                    "METRICS_INPUT_UNAVAILABLE",
+                    "completed labels lack authoritative metric inputs",
+                )
+            ],
+            expected_label_count=expected_label_count,
+        )
+    try:
+        labels = tuple(FunctionalRoleLabel.model_validate(row) for _, row in label_rows)
+        summary = _functional_role_summary(
+            manifest=manifest,
+            samples=expected_samples,
+            labels=labels,
+            functional_role_labels_sha256=_sha256_text(labels_text),
+            validated_at=validated_at,
+        )
+    except (KeyError, ValidationError, ValueError, OSError):
+        return _invalid_role_result(
+            [
+                _role_issue(
+                    "METRICS_INVALID",
+                    "completed labels could not produce a bound accuracy summary",
+                )
+            ],
+            expected_label_count=expected_label_count,
+        )
+    return FunctionalRoleValidationResult(
+        status=ReviewGateStatus.COMPLETE,
         expected_label_count=expected_label_count,
+        valid_label_count=valid_count,
+        pending_label_count=0,
+        issues=(),
+        summary=summary,
     )
