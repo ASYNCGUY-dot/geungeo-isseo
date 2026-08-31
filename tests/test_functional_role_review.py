@@ -59,6 +59,8 @@ from claimledger.product_review import (
     validate_product_review_pack,
     wilson_interval,
 )
+from scripts import validate_functional_role_review as validate_functional_review_module
+from scripts.validate_functional_role_review import main as validate_functional_review_main
 
 NOW = datetime(2026, 8, 30, 9, 0, tzinfo=UTC)
 HASH = "A" * 64
@@ -2784,3 +2786,366 @@ def test_summary_contains_no_product_names_raw_text_excerpts_notes_or_reviewer_i
         "Inherited c003-product-review-v2 mapping verdict",
     ):
         assert forbidden_text not in serialized
+
+
+def _functional_validate_cli_args(
+    paths: tuple[Path, Path, Path, Path],
+    *,
+    summary_output: Path | None = None,
+) -> list[str]:
+    pack_dir, source_export, product_review_pack, rules_path = paths
+    argv = [
+        "--pack-dir",
+        str(pack_dir),
+        "--source-export",
+        str(source_export),
+        "--product-review-pack",
+        str(product_review_pack),
+        "--rules",
+        str(rules_path),
+    ]
+    if summary_output is not None:
+        argv.extend(("--summary-output", str(summary_output)))
+    return argv
+
+
+def test_validate_cli_exit_codes_are_complete_zero_pending_two_invalid_three(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    complete_paths = _write_validation_pack(tmp_path, root_name="cli-exit-complete")
+    _complete_metric_labels(complete_paths[0])
+    pending_paths = _write_validation_pack(tmp_path, root_name="cli-exit-pending")
+    invalid_paths = _write_validation_pack(tmp_path, root_name="cli-exit-invalid")
+    (invalid_paths[0] / "unexpected.txt").write_text(
+        "unexpected\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    for paths, expected_exit, expected_status in (
+        (complete_paths, 0, ReviewGateStatus.COMPLETE),
+        (pending_paths, 2, ReviewGateStatus.PENDING),
+        (invalid_paths, 3, ReviewGateStatus.INVALID),
+    ):
+        exit_code = validate_functional_review_main(
+            _functional_validate_cli_args(paths),
+            validated_at=NOW,
+        )
+        payload = json.loads(capsys.readouterr().out)
+        assert exit_code == expected_exit
+        assert payload["status"] == expected_status.value
+
+
+def test_validate_cli_prints_the_exact_result_as_sorted_utf8_json(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-exact-json")
+    expected_result = _validate_generated_pack(paths)
+    expected = (
+        json.dumps(
+            expected_result.model_dump(mode="json"),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+
+    exit_code = validate_functional_review_main(
+        _functional_validate_cli_args(paths),
+        validated_at=NOW,
+    )
+    stdout = capsys.readouterr().out
+
+    assert exit_code == 2
+    assert stdout == expected
+    assert stdout.endswith("\n") and not stdout.endswith("\n\n")
+    assert stdout.encode("utf-8").decode("utf-8") == stdout
+
+
+def test_validate_cli_writes_summary_only_for_complete(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-write-complete")
+    _complete_metric_labels(paths[0])
+    output = tmp_path / "published" / "functional-role-summary.json"
+
+    exit_code = validate_functional_review_main(
+        _functional_validate_cli_args(paths, summary_output=output),
+        validated_at=NOW,
+    )
+    stdout = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert output.read_text(encoding="utf-8") == stdout
+    assert json.loads(stdout)["status"] == ReviewGateStatus.COMPLETE.value
+
+
+def test_pending_or_invalid_does_not_create_or_overwrite_summary_output(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pending_paths = _write_validation_pack(tmp_path, root_name="cli-preserve-pending")
+    invalid_paths = _write_validation_pack(tmp_path, root_name="cli-preserve-invalid")
+    (invalid_paths[0] / "unexpected.txt").write_text(
+        "unexpected\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    output = tmp_path / "existing-summary.json"
+    sentinel = b"PREEXISTING-SUMMARY-MUST-SURVIVE\r\n"
+    output.write_bytes(sentinel)
+
+    for paths, expected_exit in ((pending_paths, 2), (invalid_paths, 3)):
+        exit_code = validate_functional_review_main(
+            _functional_validate_cli_args(paths, summary_output=output),
+            validated_at=NOW,
+        )
+        capsys.readouterr()
+        assert exit_code == expected_exit
+        assert output.read_bytes() == sentinel
+        assert list(tmp_path.glob(".existing-summary.json.*.tmp")) == []
+
+
+def test_complete_summary_replaces_atomically_and_leaves_no_temp_file(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-atomic-complete")
+    _complete_metric_labels(paths[0])
+    output = tmp_path / "atomic-summary.json"
+    sentinel = b"OLD-SUMMARY\n"
+    output.write_bytes(sentinel)
+    observed: list[tuple[Path, Path]] = []
+    real_replace = validate_functional_review_module.os.replace
+
+    def record_replace(source: Path, destination: Path) -> None:
+        observed.append((Path(source), Path(destination)))
+        real_replace(source, destination)
+
+    monkeypatch.setattr(validate_functional_review_module.os, "replace", record_replace)
+
+    exit_code = validate_functional_review_main(
+        _functional_validate_cli_args(paths, summary_output=output),
+        validated_at=NOW,
+    )
+    stdout = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert output.read_bytes() != sentinel
+    assert output.read_text(encoding="utf-8") == stdout
+    assert len(observed) == 1
+    temporary, destination = observed[0]
+    assert destination == output
+    assert temporary.parent == output.parent
+    assert temporary.name.startswith(f".{output.name}.")
+    assert temporary.name.endswith(".tmp")
+    temporary_token = temporary.name.removeprefix(f".{output.name}.").removesuffix(".tmp")
+    assert len(temporary_token) == 32
+    assert all(character in "0123456789abcdef" for character in temporary_token)
+    assert not temporary.exists()
+    assert list(tmp_path.glob(".atomic-summary.json.*.tmp")) == []
+
+
+def test_write_failure_cleans_the_temp_file_and_preserves_previous_summary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-write-failure")
+    _complete_metric_labels(paths[0])
+    output = tmp_path / "preserved-summary.json"
+    sentinel = b"KEEP-THIS-EXACT-SUMMARY\r\n"
+    output.write_bytes(sentinel)
+    original_write_text = Path.write_text
+
+    def fail_temporary_write(
+        path: Path,
+        data: str,
+        *args: object,
+        **kwargs: object,
+    ) -> int:
+        if path.parent == output.parent and path.name.startswith(f".{output.name}."):
+            path.write_bytes(b"partial temporary data")
+            raise OSError("synthetic temporary write failure")
+        return original_write_text(path, data, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", fail_temporary_write)
+
+    with pytest.raises(OSError, match="synthetic temporary write failure"):
+        validate_functional_review_main(
+            _functional_validate_cli_args(paths, summary_output=output),
+            validated_at=NOW,
+        )
+
+    assert output.read_bytes() == sentinel
+    assert list(tmp_path.glob(".preserved-summary.json.*.tmp")) == []
+
+
+def test_replace_failure_cleans_the_temp_file_and_preserves_previous_summary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-replace-failure")
+    _complete_metric_labels(paths[0])
+    output = tmp_path / "replace-preserved-summary.json"
+    sentinel = b"KEEP-THIS-WHEN-REPLACE-FAILS\r\n"
+    output.write_bytes(sentinel)
+
+    def fail_replace(source: Path, destination: Path) -> None:
+        raise OSError(f"synthetic replace failure: {Path(source).name}")
+
+    monkeypatch.setattr(validate_functional_review_module.os, "replace", fail_replace)
+
+    with pytest.raises(OSError, match="synthetic replace failure"):
+        validate_functional_review_main(
+            _functional_validate_cli_args(paths, summary_output=output),
+            validated_at=NOW,
+        )
+
+    assert output.read_bytes() == sentinel
+    assert list(tmp_path.glob(".replace-preserved-summary.json.*.tmp")) == []
+
+
+def test_cli_summary_contains_no_product_text_excerpt_note_or_reviewer(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="cli-redacted-summary")
+    _complete_metric_labels(paths[0])
+    output = tmp_path / "redacted-summary.json"
+
+    exit_code = validate_functional_review_main(
+        _functional_validate_cli_args(paths, summary_output=output),
+        validated_at=NOW,
+    )
+    stdout = capsys.readouterr().out
+    payload = json.loads(output.read_text(encoding="utf-8"))
+
+    forbidden_fields = {
+        "name",
+        "company",
+        "primary_function",
+        "raw_materials",
+        "intake_method",
+        "evidence_excerpt",
+        "review_note",
+        "reviewer",
+        "reviewed_at_iso8601",
+        "reason_code",
+        "report_no",
+    }
+
+    def all_keys(value: object) -> set[str]:
+        if isinstance(value, dict):
+            return set(value) | set().union(*(all_keys(item) for item in value.values()))
+        if isinstance(value, list):
+            return set().union(*(all_keys(item) for item in value))
+        return set()
+
+    assert exit_code == 0
+    assert stdout == output.read_text(encoding="utf-8")
+    assert forbidden_fields.isdisjoint(all_keys(payload))
+    for forbidden_text in (
+        "합성 감사 제품",
+        "합성 제조사",
+        "밀크씨슬추출물",
+        "간 건강에 도움을 줄 수 있음",
+        "synthetic-role-reviewer",
+        "synthetic-reviewer",
+        "Inherited c003-product-review-v2 mapping verdict",
+    ):
+        assert forbidden_text not in stdout
+
+
+@pytest.mark.parametrize(
+    "protected_target",
+    ("functional-pack", "product-review-pack", "source-export", "rules"),
+)
+def test_cli_refuses_summary_output_that_overlaps_any_validation_input(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    protected_target: str,
+) -> None:
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name=f"cli-protected-{protected_target}",
+    )
+    _complete_metric_labels(paths[0])
+    pack_dir, source_export, product_review_pack, rules_path = paths
+    summary_output = {
+        "functional-pack": pack_dir / "published-summary.json",
+        "product-review-pack": product_review_pack / "published-summary.json",
+        "source-export": source_export,
+        "rules": rules_path,
+    }[protected_target]
+    pack_snapshot = {
+        path.relative_to(pack_dir): path.read_bytes()
+        for path in pack_dir.rglob("*")
+        if path.is_file()
+    }
+    product_review_snapshot = {
+        path.relative_to(product_review_pack): path.read_bytes()
+        for path in product_review_pack.rglob("*")
+        if path.is_file()
+    }
+    source_snapshot = source_export.read_bytes()
+    rules_snapshot = rules_path.read_bytes()
+
+    with pytest.raises(ValueError, match="must not overwrite validation inputs"):
+        validate_functional_review_main(
+            _functional_validate_cli_args(paths, summary_output=summary_output),
+            validated_at=NOW,
+        )
+
+    assert capsys.readouterr().out == ""
+    assert {
+        path.relative_to(pack_dir): path.read_bytes()
+        for path in pack_dir.rglob("*")
+        if path.is_file()
+    } == pack_snapshot
+    assert {
+        path.relative_to(product_review_pack): path.read_bytes()
+        for path in product_review_pack.rglob("*")
+        if path.is_file()
+    } == product_review_snapshot
+    assert source_export.read_bytes() == source_snapshot
+    assert rules_path.read_bytes() == rules_snapshot
+
+
+def test_noncomplete_status_never_enters_overlapping_summary_write_path(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pending_paths = _write_validation_pack(
+        tmp_path,
+        root_name="cli-overlap-pending",
+    )
+    invalid_paths = _write_validation_pack(
+        tmp_path,
+        root_name="cli-overlap-invalid",
+    )
+    (invalid_paths[0] / "unexpected.txt").write_text(
+        "unexpected\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    for paths, expected_exit, expected_status in (
+        (pending_paths, 2, ReviewGateStatus.PENDING),
+        (invalid_paths, 3, ReviewGateStatus.INVALID),
+    ):
+        protected_output = paths[0] / "must-not-be-created.json"
+        original_files = {path.name for path in paths[0].iterdir()}
+        exit_code = validate_functional_review_main(
+            _functional_validate_cli_args(paths, summary_output=protected_output),
+            validated_at=NOW,
+        )
+        payload = json.loads(capsys.readouterr().out)
+        assert exit_code == expected_exit
+        assert payload["status"] == expected_status.value
+        assert not protected_output.exists()
+        assert {path.name for path in paths[0].iterdir()} == original_files
