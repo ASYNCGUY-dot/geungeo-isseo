@@ -83,6 +83,27 @@ def test_load_functional_role_registry_accepts_exact_current_five_group_contract
         registry.rules[0].source_id = "mutated"
 
 
+def test_rule_accepts_explicit_target_wording_policy() -> None:
+    registry = _registry_with_rule_changes(
+        IngredientGroup.MAGNESIUM,
+        require_explicit_target_wording=True,
+    )
+
+    magnesium_rule = next(
+        rule for rule in registry.rules if rule.group is IngredientGroup.MAGNESIUM
+    )
+    assert magnesium_rule.require_explicit_target_wording is True
+
+
+@pytest.mark.parametrize("value", ["true", "false", 1, 0])
+def test_rule_rejects_coerced_explicit_target_wording_policy(value: object) -> None:
+    with pytest.raises(ValidationError):
+        _registry_with_rule_changes(
+            IngredientGroup.MAGNESIUM,
+            require_explicit_target_wording=value,
+        )
+
+
 @pytest.mark.parametrize("mutation", ["missing", "duplicate", "reordered"])
 def test_registry_rejects_a_missing_or_duplicate_comparison_group(
     tmp_path: Path,
@@ -391,6 +412,50 @@ def test_classifier_accepts_explicit_target_linkage_in_a_combination_product(
     assert decision.verdict is MachineRoleVerdict.FUNCTIONAL_CONFIRMED
     assert decision.reason_code is MachineRoleReasonCode.FUNCTION_AND_FORM_LINKED
     assert decision.evidence_field is RoleEvidenceField.BOTH
+
+
+@pytest.mark.parametrize(
+    ("primary_function", "expected_verdict", "expected_reason"),
+    [
+        (
+            "신경과 근육 기능 유지에 필요",
+            MachineRoleVerdict.UNVERIFIABLE,
+            MachineRoleReasonCode.COMBINATION_LINKAGE_AMBIGUOUS,
+        ),
+        (
+            "[마그네슘] 신경과 근육 기능 유지에 필요",
+            MachineRoleVerdict.FUNCTIONAL_CONFIRMED,
+            MachineRoleReasonCode.FUNCTION_AND_FORM_LINKED,
+        ),
+    ],
+)
+def test_classifier_requires_explicit_target_wording_when_rule_policy_is_enabled(
+    primary_function: str,
+    expected_verdict: MachineRoleVerdict,
+    expected_reason: MachineRoleReasonCode,
+) -> None:
+    registry = _registry_with_rule_changes(
+        IngredientGroup.MAGNESIUM,
+        accepted_functional_forms=["스테아린산마그네슘"],
+        recognized_function_texts=["신경과 근육 기능 유지에 필요"],
+        known_nonfunctional_forms=[],
+        require_explicit_target_wording=True,
+    )
+    decision = classify_functional_role(
+        _product(
+            report_no="ROLE-006-MAGNESIUM",
+            raw_materials="탄산칼슘, 스테아린산마그네슘, 결정셀룰로스",
+            primary_function=primary_function,
+        ),
+        IngredientGroup.MAGNESIUM,
+        registry,
+    )
+
+    assert decision.verdict is expected_verdict
+    assert decision.reason_code is expected_reason
+    assert decision.evidence_field is RoleEvidenceField.BOTH
+    assert decision.matched_functional_form == "스테아린산마그네슘"
+    assert decision.matched_function_text == "신경과 근육 기능 유지에 필요"
 
 
 def test_classifier_never_confirms_red_ginseng_flavor_powder() -> None:

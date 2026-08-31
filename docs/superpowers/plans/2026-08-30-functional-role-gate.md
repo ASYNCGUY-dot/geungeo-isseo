@@ -4,6 +4,10 @@
 
 **Goal:** 기존 C003 제품 검토 v2를 변경하지 않고, 다섯 비교 원료가 제품의 실제 기능성 역할을 하는지 결정론적으로 판정·감사하여 원료별 `ROLE_ELIGIBLE` 또는 `ROLE_INSUFFICIENT`를 재현 가능한 근거와 함께 산출한다.
 
+**Approved amendment (2026-08-31):** 공식 기능 문구가 다른 영양성분과 중복되는
+규칙은 `require_explicit_target_wording=true`로 두고 기능성 문자열의 목표 원료명
+직접 연결까지 요구한다.
+
 **Architecture:** 새 `claimledger.functional_role` 모듈이 현재 시행 중인 공식 원료·기능 규칙 레지스트리와 실패 폐쇄형 판정기를 담당한다. 새 `claimledger.functional_role_review` 모듈은 완료된 v2 pack을 입력으로 기존 100행 보존, 오매핑 보충, 그룹별 기계 긍정 최대 35행의 결정적 감사 표본, 사람 라벨 계약, pack 무결성, 지표와 자격 판정을 담당한다. 두 CLI는 생성과 검증만 감싸며, 공식 원문 획득·사람 검토 전에는 성공을 추정하지 않는다. 광고 근거와 최종 추천은 이 계획에서 구현하지 않고 계속 차단한다.
 
 **Tech Stack:** Python 3.12+, Pydantic 2.x, Python 표준 라이브러리 `csv`·`hashlib`·`json`·`math`·`urllib.parse`, pytest 8.x, pytest-cov, Ruff. 새 런타임 의존성, LLM 판정, RAG, LangGraph, FastAPI, React는 추가하지 않는다.
@@ -96,6 +100,7 @@ class FunctionalRoleRule(BaseModel):
     accepted_functional_forms: tuple[NonBlankText, ...]
     recognized_function_texts: tuple[NonBlankText, ...]
     known_nonfunctional_forms: tuple[NonBlankText, ...] = ()
+    require_explicit_target_wording: bool = False
     source_id: NonBlankText
     source_url: NonBlankText
     promulgated_at: date
@@ -566,6 +571,7 @@ Add these named cases:
 - `test_classifier_returns_unverifiable_for_function_without_form`
 - `test_classifier_returns_unverifiable_for_unlinked_combination_product`
 - `test_classifier_accepts_explicit_target_linkage_in_a_combination_product`
+- `test_classifier_requires_explicit_target_wording_when_rule_policy_is_enabled`
 - `test_classifier_never_confirms_red_ginseng_flavor_powder`
 - `test_classifier_marks_an_explicitly_registered_nonfunctional_form`
 - `test_classifier_does_not_infer_nonfunctional_role_from_missing_function_text`
@@ -593,7 +599,7 @@ Apply this precedence:
 1. Search only `raw_materials` for accepted functional forms and explicit nonfunctional forms.
 2. Search only `primary_function` for recognized target functions and explicit target ingredient wording.
 3. Scan all registry groups' accepted forms in `raw_materials` to detect combination products.
-4. Return `functional_confirmed` only when the target functional form and target function both match and either the target is the sole matched functional group or `primary_function` explicitly names the target ingredient/form.
+4. Return `functional_confirmed` only when the target functional form and target function both match and either the target is the sole matched functional group or `primary_function` explicitly names the target ingredient/form. When `require_explicit_target_wording=true`, the explicit target name is mandatory even if the target is the sole matched comparison group.
 5. If functional and nonfunctional evidence conflict, return `unverifiable/conflicting_role_evidence`.
 6. Return `present_nonfunctional` only for an explicit `known_nonfunctional_forms` match with no functional-role pair.
 7. All remaining cases return one of the documented `unverifiable` reasons.
@@ -1264,6 +1270,9 @@ For each comparison group, copy only:
 - accepted functional raw-material form expressions;
 - recognized function text expressions;
 - explicit nonfunctional forms only when the official source directly labels that role;
+- an explicit-target policy: set `require_explicit_target_wording=true` when official function
+  text overlaps another ingredient and target attribution otherwise produces an observed false
+  confirmation;
 - section/table/item locator sufficient for a second reader to find the same text.
 
 Populate every provenance field from the same official source. `content_sha256` is the downloaded attachment hash, not a hash of generated JSON. `extracted_by` identifies the person who performed the extraction. `reviewed_by` identifies the person who performed the deliberate second check, and `reviewed_at_iso8601` records that check time; neither is inferred from file metadata.

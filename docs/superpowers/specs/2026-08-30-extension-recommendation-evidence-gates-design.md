@@ -2,6 +2,8 @@
 
 - 작성일: `2026-08-30 Asia/Seoul`
 - 상태: 사용자 서면 명세 승인 완료 (`2026-08-30`)
+- 보완 결정: 원료 귀속 문구가 다른 영양성분과 중복되는 규칙은
+  `require_explicit_target_wording=true`로 차단 (`2026-08-31` 사용자 승인)
 - 대상 브랜치: `phase-0-c003-data-gate`
 - 선행 계약: `c003-product-review-v2`
 - 대상 비교군: 밀크씨슬, 비타민 D, 홍삼, 코엔자임 Q10, 마그네슘
@@ -199,10 +201,13 @@ v2의 `NOT_MEASURED`와 `BLOCKED`를 `MEASURED`와 `READY`로 바꾸는 방식�
 v2가 `COMPLETE`가 아니거나 입력 해시가 바뀌면 pack을 만들지 않는다.
 
 건강기능식품 원료·기능성 규칙 레코드는 최소 `group`, `canonical_ingredient`,
-`accepted_functional_forms`, `recognized_function_texts`, `source_id`, `source_url`,
-`effective_from`, `effective_to`, `source_locator`, `content_sha256`, `rule_version`을
-가진다. 규칙은 원재료 문자열과 기능성 문자열을 독립적으로 확인한 뒤 두 근거가 현재
-제품에 함께 적용될 때만 긍정 판정을 허용한다.
+`accepted_functional_forms`, `recognized_function_texts`,
+`require_explicit_target_wording`, `source_id`, `source_url`, `effective_from`,
+`effective_to`, `source_locator`, `content_sha256`, `rule_version`을 가진다. 규칙은
+원재료 문자열과 기능성 문자열을 독립적으로 확인한 뒤 두 근거가 현재 제품에 함께
+적용될 때만 긍정 판정을 허용한다. 공식 기능 문구가 다른 원료의 기능 문구와 중복되어
+원료 귀속을 단독 식별할 수 없는 규칙은 `require_explicit_target_wording=true`로 두고,
+기능성 문자열에 목표 원료명이 직접 연결될 때만 긍정 판정을 허용한다.
 
 ### 7.3 로컬 pack
 
@@ -234,6 +239,8 @@ v2가 `COMPLETE`가 아니거나 입력 해시가 바뀌면 pack을 만들지 �
 - 원재료 alias 일치만으로 `functional_confirmed`를 만들지 않는다.
 - 목표 기능 문구가 없다는 사실만으로 `present_nonfunctional`을 만들지 않는다.
 - 조합제품에서 원료와 기능의 연결이 명시되지 않으면 `unverifiable`이다.
+- `require_explicit_target_wording=true`인 규칙은 원료형과 기능 문구가 모두 있어도
+  기능성 문자열에 목표 원료명이 직접 연결되지 않으면 `unverifiable`이다.
 - `present_nonfunctional`은 제조용·첨가용 등 비기능 역할을 공식 원문이 직접 지지할
   때만 사용한다.
 - LLM은 증거 후보와 원문 위치를 제시할 수 있지만 이 세 상태를 확정하지 않는다.
@@ -562,17 +569,19 @@ SHA-256을 참조하며 최종 상태는 둘을 함께 검증해 계산한다.
 1. v2가 `COMPLETE`가 아니면 pack 생성을 거부한다.
 2. v2 label·sample·export 해시 변경을 거부한다.
 3. 원재료 alias만 일치하고 목표 기능 연결이 없으면 긍정 판정을 만들지 않는다.
-4. 스테아린산 마그네슘 표현만 있는 합성 fixture는 기능성 마그네슘으로 확정하지 않는다.
-5. 홍삼향분말 alias 충돌은 `excluded_mapping_error`를 상속한다.
-6. 조합제품의 원료·기능 연결이 불명확하면 `unverifiable` 또는 사람 `uncertain`이다.
-7. 긍정 표본 35/35의 Wilson 하한과 독립 계산이 일치한다.
-8. 관측 거짓 양성 1건이면 `ROLE_ELIGIBLE`이 될 수 없다.
-9. 해결되지 않은 기계 긍정 1건도 `ROLE_ELIGIBLE`이 될 수 없다.
-10. 거짓 제외와 과신한 비기능성 판정을 각각 거부한다.
-11. v2 오매핑 행은 보존하면서 결정적으로 보충해 일반 감사 20건을 유지한다.
-12. 모든 그룹이 같은 표본 규칙을 사용하고 추천 후 선택적 재표본을 금지한다.
-13. 표본 선택은 입력 순서와 무관하고 같은 seed·규칙 버전에서 동일하다.
-14. 잘못된 enum·이유·원문 위치·시각·formula 입력을 거부한다.
+4. 명시적 대상 연결 정책이 켜진 마그네슘 규칙은 칼슘과 중복되는 기능 문구만으로
+   기능성 마그네슘을 확정하지 않는다.
+5. 스테아린산 마그네슘 표현만 있는 합성 fixture는 기능성 마그네슘으로 확정하지 않는다.
+6. 홍삼향분말 alias 충돌은 `excluded_mapping_error`를 상속한다.
+7. 조합제품의 원료·기능 연결이 불명확하면 `unverifiable` 또는 사람 `uncertain`이다.
+8. 긍정 표본 35/35의 Wilson 하한과 독립 계산이 일치한다.
+9. 관측 거짓 양성 1건이면 `ROLE_ELIGIBLE`이 될 수 없다.
+10. 해결되지 않은 기계 긍정 1건도 `ROLE_ELIGIBLE`이 될 수 없다.
+11. 거짓 제외와 과신한 비기능성 판정을 각각 거부한다.
+12. v2 오매핑 행은 보존하면서 결정적으로 보충해 일반 감사 20건을 유지한다.
+13. 모든 그룹이 같은 표본 규칙을 사용하고 추천 후 선택적 재표본을 금지한다.
+14. 표본 선택은 입력 순서와 무관하고 같은 seed·규칙 버전에서 동일하다.
+15. 잘못된 enum·이유·원문 위치·시각·formula 입력을 거부한다.
 
 ### 12.2 공식 광고 근거 게이트
 

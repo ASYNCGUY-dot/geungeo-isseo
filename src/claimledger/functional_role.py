@@ -133,6 +133,7 @@ class FunctionalRoleRule(BaseModel):
     accepted_functional_forms: tuple[NonBlankText, ...]
     recognized_function_texts: tuple[NonBlankText, ...]
     known_nonfunctional_forms: tuple[NonBlankText, ...] = ()
+    require_explicit_target_wording: bool = Field(default=False, strict=True)
     source_id: NonBlankText
     source_url: NonBlankText
     promulgated_at: date
@@ -461,7 +462,9 @@ def classify_functional_role(
 
     functional_role_pair = bool(matched_functional_form and matched_function_text)
     if functional_role_pair:
-        if len(matched_functional_groups) > 1 and not explicit_target_wording:
+        if (
+            rule.require_explicit_target_wording or len(matched_functional_groups) > 1
+        ) and not explicit_target_wording:
             return _machine_role_decision(
                 **decision_arguments,
                 verdict=MachineRoleVerdict.UNVERIFIABLE,
