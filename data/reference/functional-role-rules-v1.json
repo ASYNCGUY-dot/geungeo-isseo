@@ -1,0 +1,150 @@
+{
+  "contract_version": "functional-role-rules-v1",
+  "rules": [
+    {
+      "group": "milk_thistle",
+      "canonical_ingredient": "밀크씨슬(카르두스 마리아누스) 추출물",
+      "accepted_functional_forms": [
+        "밀크씨슬",
+        "밀크씨슬 추출물",
+        "밀크씨슬(카르두스 마리아누스) 추출물"
+      ],
+      "recognized_function_texts": [
+        "간 건강에 도움을 줄 수 있음"
+      ],
+      "known_nonfunctional_forms": [],
+      "require_explicit_target_wording": false,
+      "source_id": "MFDS-NOTICE-2026-43-FULL-TEXT",
+      "source_url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14973",
+      "promulgated_at": "2026-06-11",
+      "effective_from": "2026-06-11",
+      "effective_to": null,
+      "retrieved_at": "2026-09-04T17:31:53+09:00",
+      "verified_current_at": "2026-09-04T17:31:53+09:00",
+      "status": "active",
+      "source_locator": "제3. 개별 기준 및 규격 > 2. 기능성 원료 > 2-14 밀크씨슬(카르두스 마리아누스) 추출물 > 1) 제조기준 (1) 원재료; 3) 최종제품의 요건 (1) 기능성 내용",
+      "content_sha256": "3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB",
+      "rule_version": "functional-role-rule-v1",
+      "extracted_by": "CHOI",
+      "reviewed_by": "DOHA",
+      "reviewed_at_iso8601": "2026-09-04T17:28:58+09:00"
+    },
+    {
+      "group": "vitamin_d",
+      "canonical_ingredient": "비타민 D",
+      "accepted_functional_forms": [
+        "비타민 D",
+        "비타민 D2",
+        "비타민 D3"
+      ],
+      "recognized_function_texts": [
+        "칼슘과 인이 흡수되고 이용되는데 필요"
+      ],
+      "known_nonfunctional_forms": [],
+      "require_explicit_target_wording": false,
+      "source_id": "MFDS-NOTICE-2026-43-FULL-TEXT",
+      "source_url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14973",
+      "promulgated_at": "2026-06-11",
+      "effective_from": "2026-06-11",
+      "effective_to": null,
+      "retrieved_at": "2026-09-04T17:31:53+09:00",
+      "verified_current_at": "2026-09-04T17:31:53+09:00",
+      "status": "active",
+      "source_locator": "제3. 개별 기준 및 규격 > 1. 영양성분 > 1-3 비타민 D > 1) 제조기준 (1) 원료; 3) 제품의 요건 (1) 기능성 내용 (가)",
+      "content_sha256": "3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB",
+      "rule_version": "functional-role-rule-v1",
+      "extracted_by": "CHOI",
+      "reviewed_by": "DOHA",
+      "reviewed_at_iso8601": "2026-09-04T17:28:58+09:00"
+    },
+    {
+      "group": "red_ginseng",
+      "canonical_ingredient": "홍삼",
+      "accepted_functional_forms": [
+        "홍삼"
+      ],
+      "recognized_function_texts": [
+        "갱년기 여성의 건강에 도움을 줄 수 있음",
+        "혈소판 응집억제를 통한 혈액흐름"
+      ],
+      "known_nonfunctional_forms": [],
+      "require_explicit_target_wording": false,
+      "source_id": "MFDS-NOTICE-2026-43-FULL-TEXT",
+      "source_url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14973",
+      "promulgated_at": "2026-06-11",
+      "effective_from": "2026-06-11",
+      "effective_to": null,
+      "retrieved_at": "2026-09-04T17:31:53+09:00",
+      "verified_current_at": "2026-09-04T17:31:53+09:00",
+      "status": "active",
+      "source_locator": "제3. 개별 기준 및 규격 > 2. 기능성 원료 > 2-2 홍삼 > 1) 제조기준 (1) 원재료; 3) 최종제품의 요건 (1) 기능성 내용 and (2) 일일섭취량 (나)~(다)",
+      "content_sha256": "3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB",
+      "rule_version": "functional-role-rule-v1",
+      "extracted_by": "CHOI",
+      "reviewed_by": "DOHA",
+      "reviewed_at_iso8601": "2026-09-04T17:28:58+09:00"
+    },
+    {
+      "group": "coenzyme_q10",
+      "canonical_ingredient": "코엔자임Q10",
+      "accepted_functional_forms": [
+        "코엔자임Q10"
+      ],
+      "recognized_function_texts": [
+        "높은 혈압 감소에 도움을 줄 수 있음"
+      ],
+      "known_nonfunctional_forms": [],
+      "require_explicit_target_wording": false,
+      "source_id": "MFDS-NOTICE-2026-43-FULL-TEXT",
+      "source_url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14973",
+      "promulgated_at": "2026-06-11",
+      "effective_from": "2026-06-11",
+      "effective_to": null,
+      "retrieved_at": "2026-09-04T17:31:53+09:00",
+      "verified_current_at": "2026-09-04T17:31:53+09:00",
+      "status": "active",
+      "source_locator": "제3. 개별 기준 및 규격 > 2. 기능성 원료 > 2-9 코엔자임Q10 > 1) 제조기준 (3) 기능성분의 함량; 3) 최종제품의 요건 (1) 기능성 내용",
+      "content_sha256": "3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB",
+      "rule_version": "functional-role-rule-v1",
+      "extracted_by": "CHOI",
+      "reviewed_by": "DOHA",
+      "reviewed_at_iso8601": "2026-09-04T17:28:58+09:00"
+    },
+    {
+      "group": "magnesium",
+      "canonical_ingredient": "마그네슘",
+      "accepted_functional_forms": [
+        "글루콘산마그네슘",
+        "산화마그네슘",
+        "수산화마그네슘",
+        "스테아린산마그네슘",
+        "염화마그네슘",
+        "젖산마그네슘",
+        "제삼인산마그네슘",
+        "제이인산마그네슘",
+        "탄산마그네슘",
+        "황산마그네슘"
+      ],
+      "recognized_function_texts": [
+        "신경과 근육 기능 유지에 필요",
+        "에너지 이용에 필요"
+      ],
+      "known_nonfunctional_forms": [],
+      "require_explicit_target_wording": true,
+      "source_id": "MFDS-NOTICE-2026-43-FULL-TEXT",
+      "source_url": "https://www.mfds.go.kr/brd/m_211/view.do?seq=14973",
+      "promulgated_at": "2026-06-11",
+      "effective_from": "2026-06-11",
+      "effective_to": null,
+      "retrieved_at": "2026-09-04T17:31:53+09:00",
+      "verified_current_at": "2026-09-04T17:31:53+09:00",
+      "status": "active",
+      "source_locator": "제3. 개별 기준 및 규격 > 1. 영양성분 > 1-16 마그네슘 > 1) 제조기준 (1) 원료; 3) 제품의 요건 (1) 기능성 내용",
+      "content_sha256": "3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB",
+      "rule_version": "functional-role-rule-v1",
+      "extracted_by": "CHOI",
+      "reviewed_by": "DOHA",
+      "reviewed_at_iso8601": "2026-09-04T17:28:58+09:00"
+    }
+  ]
+}
