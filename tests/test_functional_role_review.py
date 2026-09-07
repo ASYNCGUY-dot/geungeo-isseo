@@ -1679,12 +1679,28 @@ def test_builder_refuses_nondefault_general_or_positive_sizes(
     assert not output_dir.exists()
 
 
-def test_build_cli_returns_zero_only_after_a_complete_write(tmp_path: Path) -> None:
+def _write_cli_rule_fixture(root: Path, *, verification_age_days: int = 0) -> Path:
+    # The subprocess uses the real clock; only this temporary synthetic fixture is rebased.
+    data = json.loads(RULE_FIXTURE_PATH.read_text(encoding="utf-8"))
+    verified_at = datetime.now(UTC) - timedelta(days=verification_age_days)
+    for rule in data["rules"]:
+        rule["retrieved_at"] = verified_at.isoformat()
+        rule["verified_current_at"] = verified_at.isoformat()
+    rules_path = root / "cli-synthetic-rules.json"
+    rules_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    return rules_path
+
+
+@pytest.mark.parametrize("verification_age_days", [0, 8])
+def test_build_cli_returns_zero_only_after_a_complete_write(
+    tmp_path: Path, verification_age_days: int
+) -> None:
     root = tmp_path / "cli-success"
     products = _synthetic_source_products()
     product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
     output_dir = root / "functional-role-review-v1"
     script = Path(__file__).parents[1] / "scripts" / "build_functional_role_review.py"
+    rules_path = _write_cli_rule_fixture(root, verification_age_days=verification_age_days)
 
     completed = subprocess.run(
         (
@@ -1695,7 +1711,7 @@ def test_build_cli_returns_zero_only_after_a_complete_write(tmp_path: Path) -> N
             "--product-review-pack",
             str(product_review_pack),
             "--rules",
-            str(RULE_FIXTURE_PATH),
+            str(rules_path),
             "--output-dir",
             str(output_dir),
         ),
@@ -1704,6 +1720,12 @@ def test_build_cli_returns_zero_only_after_a_complete_write(tmp_path: Path) -> N
         text=True,
         check=False,
     )
+
+    if verification_age_days == 8:
+        assert completed.returncode != 0
+        assert "rule verification must be current" in completed.stderr
+        assert not output_dir.exists()
+        return
 
     assert completed.returncode == 0, completed.stderr
     assert {path.name for path in output_dir.iterdir()} == {
@@ -1720,6 +1742,7 @@ def test_build_cli_returns_a_nonzero_error_without_a_partial_pack(tmp_path: Path
     product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
     output_dir = root / "functional-role-review-v1"
     script = Path(__file__).parents[1] / "scripts" / "build_functional_role_review.py"
+    rules_path = _write_cli_rule_fixture(root)
 
     completed = subprocess.run(
         (
@@ -1730,7 +1753,7 @@ def test_build_cli_returns_a_nonzero_error_without_a_partial_pack(tmp_path: Path
             "--product-review-pack",
             str(product_review_pack),
             "--rules",
-            str(RULE_FIXTURE_PATH),
+            str(rules_path),
             "--output-dir",
             str(output_dir),
             "--positive-size",
@@ -1744,6 +1767,7 @@ def test_build_cli_returns_a_nonzero_error_without_a_partial_pack(tmp_path: Path
 
     assert completed.returncode != 0
     assert "error:" in completed.stderr
+    assert "locked sampling settings" in completed.stderr
     assert not output_dir.exists()
 
 
