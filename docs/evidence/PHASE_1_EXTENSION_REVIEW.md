@@ -1,6 +1,6 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-08-30 Asia/Seoul`
+- Status date: `2026-09-07 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
@@ -9,7 +9,7 @@
 - Mapping review: `99 correct / 1 incorrect / 0 uncertain`; the one error is `red_ginseng` report `20160012278100` with reason `alias_collision`.
 - Function-text review: `usable 100 / 100`. This records usable official function text for row-level review; it does not prove an ingredient caused the function.
 - Completed labels SHA-256: `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`
-- Functional-role review A: not yet built.
+- Functional-role review A: code, five reviewed rules, and four-file local pack generated; human labels `PENDING`, valid `1 / 275`, pending `274 / 275`, issues `0`, CLI exit `2`.
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
@@ -186,24 +186,119 @@ The completed label file SHA-256 is
 is usable for this review. It does not establish that an ingredient caused the
 function, clinical equivalence, product efficacy, or advertising compliance.
 
-Functional-role review A is not yet built. No extension choice may be finalized
+Functional-role review A is built and awaiting product-level human review. No extension choice may be finalized
 before that separate gate and a separate official advertising-evidence gate are
 complete. Advertising evidence remains `NOT_MEASURED`; extension recommendation
 remains `BLOCKED`; `finalized=false`. The seed and mapping rules make sampling
 reproducible; they do not replace the remaining gates.
 
-## Reproduction commands
+## Functional-role rule and pack evidence — 2026-09-04 / rechecked 2026-09-07
 
-The verified export already exists locally, so rebuilding and validating the v2
-pack requires no API key or network call:
+The rule registry was committed as `7678890`. Human source review was reported by
+the user with distinct aliases `extracted_by=CHOI`, `reviewed_by=DOHA`, and fresh
+confirmation time `2026-09-04T17:28:58+09:00`. This is provenance for the five rules;
+it does not certify the newly generated product-level role labels or professional credentials.
 
-```cmd
-.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
-.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+- Source ID: `MFDS-NOTICE-2026-43-FULL-TEXT`
+- Notice and generally effective date: `제2026-43호 / 2026-06-11`
+- [Official consolidated text](https://www.mfds.go.kr/brd/m_211/view.do?seq=14973)
+- [Official amendment](https://www.mfds.go.kr/brd/m_207/view.do?seq=15173)
+- Official retrieval / current-status verification: `2026-09-04T17:31:53+09:00`
+- Source ZIP: `3,524,589` bytes; ZIP signature `50-4B-03-04`; three HWPX entries
+- Source ZIP SHA-256: `3D25C54F8248204C75E02F889C1EE4ADC3BC3FA2188ED91DA06DA33402AFEBFB`
+- At the above retrieval time, a fresh official download and the preserved attachment had identical bytes.
+- Registry contract: `functional-role-rules-v1`; rule version: `functional-role-rule-v1`
+- Magnesium requires explicit target wording; the other four rules use conservative function phrases.
+  Real C003 row `200400151074` remains `unverifiable/combination_linkage_ambiguous` for magnesium.
+- The registry loader rejects verification older than seven days. The current timestamp reaches
+  that boundary at `2026-09-11T17:31:53+09:00`. A later run must perform an actual source recheck;
+  dates must not be silently rewritten inside hash-bound inputs.
+
+The pack was generated once at `2026-09-04T08:46:00.200585Z` (17:46 KST),
+using seed `20260823`, mapping rule `ingredient-map-v1`, and the completed v2 input.
+It has 275 sample rows, 275 label rows, and 275 distinct `(group, report_no)` keys.
+All first 100 keys, row order, and six source fields match the v2 samples exactly.
+The completed v2 label hash was checked unchanged before and after generation.
+
+| Group | Original v2 | Inherited error | Replacement | Evaluable general | Machine-positive pool | Positive sample | Unique rows |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| milk_thistle | 20 | 0 | 0 | 20 | 1,268 | 35 | 55 |
+| vitamin_d | 20 | 0 | 0 | 20 | 1,360 | 35 | 55 |
+| red_ginseng | 20 | 1 | 1 | 20 | 2,589 | 35 | 55 |
+| coenzyme_q10 | 20 | 0 | 0 | 20 | 667 | 35 | 55 |
+| magnesium | 20 | 0 | 0 | 20 | 2,316 | 35 | 55 |
+
+General and positive audit membership can overlap, so their sizes are not additive.
+The machine-positive pool is a sampling population, not a count of human-confirmed products.
+The red-ginseng mapping error stays excluded; its replacement does not erase the original.
+
+Bound input SHA-256 values:
+
+| Input | SHA-256 |
+|---|---|
+| Source export | `CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E` |
+| v2 manifest | `0E3086DF9F2A8895D7845E8B24D00DBE18A43CEEE9C6DC92CBE9095FD873D442` |
+| v2 samples | `BCF1702FD7C1D85B7B676FA66F752FC04853FAC3AB9C9A2DB48D4353534B774C` |
+| Completed v2 labels | `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1` |
+| Rule registry | `E8611F98A41885D65B79AA02ECBDB74A3937F95EB4BE2CCF3C2925D1A0966E7D` |
+
+The ignored `build/functional-role-review-v1/` directory contains exactly
+`README.md`, `manifest.json`, `samples.csv`, and `functional_role_labels.csv`.
+The following hashes were checked again on 2026-09-07:
+
+| File | Bytes | SHA-256 |
+|---|---:|---|
+| manifest.json | 2,369 | `FE6186AA2B0454BF24406A80B10198080800989D53BE2BFB794AA1337BEAA538` |
+| samples.csv | 384,153 | `2A5A2554C5B0A5C0FB289E902CC210274A3B99294E8C3779A9CB309B233EDF25` |
+| functional_role_labels.csv | 15,616 | `B98389AD79ED119B14FA5F1B42420239A56EEF24B757A775C07775F8E44CDFE8` |
+
+On 2026-09-07 the actual validator returned `PENDING`, expected labels `275`,
+valid `1`, pending `274`, issues `[]`, summary `null`, process exit `2`.
+The one valid row is the inherited mapping-error exclusion. No new human verdict was fabricated.
+Role eligibility and real accuracy are unmeasured. Advertising evidence is `NOT_MEASURED`,
+recommendation `BLOCKED`, and `finalized=false`.
+
+2026-09-04 verification: 506 full tests passed, 63 functional-rule tests passed,
+163 role-review tests passed; total coverage 94% (2,485 statements, 147 missed).
+The older plan's 97% coverage target is not met. This is an open engineering-quality
+item and must not be described as satisfied or confused with measured classification accuracy.
+
+On 2026-09-07 the first rerun found one test-only clock failure: the CLI subprocess
+used the actual clock while its synthetic rule fixture was fixed at 2026-08-30.
+The real seven-day freshness gate correctly rejected it. CLI tests now use a
+temporary synthetic registry relative to execution time and explicitly cover an eight-day-old
+registry rejection. The production gate and real registry were not changed.
+
+After that test-only fix, the 2026-09-07 full rerun returned `507 passed in 236.45s`,
+coverage `94%` (2,485 statements / 147 missed, 94.08%), Ruff clean, and
+`git diff --check` clean. The three CLI regression cases also passed.
+Pack revalidation, unchanged-label hashes, all 275 unique keys, the first 100 v2 rows,
+and verbatim source text for the first five reviewer-guide rows were checked directly.
+
+## Reproduction and human review
+
+Use existing files; do not regenerate a populated v2 or role pack. No API key is needed:
+
+```powershell
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+$roleValidatorExit = $LASTEXITCODE
+$roleValidatorExit
 ```
 
-The current next action is to build functional-role review A using the completed
-`build/extension-review-v2/product_review_labels.csv` and its evidence sheet.
-Do not fill the historical v1 numeric score file. Do not make an extension
-recommendation or final choice while advertising evidence remains unmeasured,
-functional-role review A remains unbuilt, and the status remains `BLOCKED`.
+Capture the Python exit code immediately: an outer PowerShell process can otherwise report
+generic failure `1` for native exit `2`. Expected state mappings are `0=COMPLETE`,
+`2=PENDING`, and `3=INVALID`.
+
+The first five pending rows, in existing sample order, are presented in
+`build/functional-role-review-guides/batch-001.md`, outside the protected four-file pack.
+It contains exact source text and a response format; it does not prefill human verdicts.
+
+Keep `group`, `report_no`, `audit_round`, `machine_verdict`, and `rule_version` fixed.
+Human input fields are the following seven fields (the plan prose says six but enumerates seven):
+`human_verdict`, `reason_code`, `evidence_field`, `evidence_excerpt`, `review_note`,
+`reviewer`, and `reviewed_at_iso8601`.
+The reviewer must check the literal material/function text and corresponding rule.
+Use `uncertain` when linkage cannot be established. Candidate excerpts are allowed;
+human confirmation is required before writing completed labels.
+Validate after each batch. Publish `docs/evidence/functional-role-summary-v1.json` only
+after the validator returns `COMPLETE`.

@@ -84,7 +84,8 @@
 
 ## 현재 첫 작업
 
-완료된 v2 제품 매핑·공식 기능성 원문 검토 결과를 전제로 기능적 역할 검토 A를 구축합니다.
+기능적 역할 검토 A의 기존 275행 pack을 보존하고 남은 274행을 사람 검토합니다.
+코드·규칙 등록·pack 생성은 완료했고, 제품별 역할 적격성은 아직 미측정입니다.
 v2는 유효 라벨 `100건 전부`다.
 대기 라벨은 `0 / 100`이며, 매핑은 `99 correct / 1 incorrect / 0 uncertain`,
 기능성 원문 `usable 100 / 100`으로 `COMPLETE`다. 유일한 오류는 `red_ginseng`의
@@ -93,13 +94,24 @@ v2는 유효 라벨 `100건 전부`다.
 `function_text_status=usable`은 행의 공식 기능성 원문을 검토에 사용할 수 있다는 상태일
 뿐 원료가 그 기능을 유발함을 증명하지 않는다.
 
-다음 명령으로 현재 로컬 pack과 source export를 재검증한다.
+규칙은 `data/reference/functional-role-rules-v1.json`에 추적합니다. CHOI(추출)·DOHA(독립
+검토)의 원료 규칙 재확인 시각은 `2026-09-04T17:28:58+09:00`입니다.
+이 확인을 새 제품별 사람 라벨에 일괄 전용하지 않습니다.
+첫 5개 제품의 검토 안내는 `build/functional-role-review-guides/batch-001.md`에 있습니다.
 
-```cmd
-.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+다음 명령으로 기존 pack을 검증합니다. 완료된 v2나 역할 pack에 생성기를 다시 실행하지 않습니다.
+
+```powershell
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+$roleValidatorExit = $LASTEXITCODE
+$roleValidatorExit
 ```
 
-현재 v2 상태는 `COMPLETE`다. 기능적 역할 검토 A는 아직 구축하지 않았으며, 광고 근거는
+2026-09-07 역할 validator는 `PENDING`, 유효 `1`, 대기 `274`, 이슈 `0`, 종료코드 `2`입니다.
+유효 1행은 상속된 매핑 오류 제외 행입니다. 사람 검토자가 확인한 행만 라벨에 기록합니다.
+공식 최신성 확인 시각 `2026-09-04T17:31:53+09:00`에서 7일이 지나면 규칙 재확인이
+필요하며, 현재 manifest에 묶인 규칙 해시를 날짜 수정만으로 무효화하지 않습니다.
+현재 v2 상태는 `COMPLETE`이며 광고 근거는
 `NOT_MEASURED`, 확장 원료 추천은 `BLOCKED`, `finalized=false`다. 기능적 역할 및 공식
 광고 근거 게이트가 별도로 끝나기 전에는 확장 원료를 선택하거나 Phase 2, 프론트엔드,
 개인화 기능을 시작하지 않습니다.

@@ -1,14 +1,14 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-08-30 Asia/Seoul`
+- 기준일: `2026-09-07 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **C003 v2 제품 매핑·공식 기능성 원문 사람 검토 완료; 기능적 역할 검토 A는 미구축**
+- 상태: **v2 검토 완료; 기능적 역할 규칙 등록·275행 pack 생성 완료; 역할 라벨 274행 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
 ## 현재 검증 결과
 
-현재 worktree 내용에 대해 다음 명령을 새로 실행했다.
+2026-09-07에 CLI 테스트의 날짜 의존성을 수정한 뒤 다음 명령을 실행했다.
 
 ```cmd
 .venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
@@ -17,15 +17,17 @@ git diff --check
 git status --short --branch
 ```
 
-- 전체 테스트: `280 passed`
-- 전체 커버리지: `96.83%` (`1,260` statements, `40` missed)
+- 전체 테스트: `507 passed` (236.45초)
+- 전체 커버리지: `94%` (`2,485` statements, `147` missed; 약 `94.08%`)
+- 계획의 `97%` 목표는 미달 상태다. 테스트 커버리지는 실제 판정 정확도와 별도다.
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
-- 핵심 불변식 묶음: `175 passed`
+- 2026-09-04 기능성 역할 규칙 집중 검증: `63 passed`; 검토팩 집중 검증: `163 passed`
+- 2026-09-07 CLI 날짜 회귀: `3 passed` (최신 규칙 성공, 8일 경과 거부, 잘못된 표본 수 거부)
 - 라이브 export, 보존된 v1 pack, 현재 v2 pack: 모두 로컬 ignored 경로에 존재
-- v2 네 파일의 고신뢰 key/token, URL, C003 envelope, 금지 메타데이터 패턴: 각 `0`
-- 메인 checkout의 로컬 `.env`에서 실제 키 값 `1`개를 값 비노출 방식으로 대조한 결과,
-  v2 네 파일 내 동일 문자열: `0`
+- 2026-08-28 당시 v2 네 파일의 고신뢰 key/token, URL, C003 envelope, 금지 메타데이터 패턴: 각 `0`
+- 2026-08-28 당시 실제 로컬 키 값과 v2 파일의 비노출 대조: 동일 문자열 `0`.
+  이번 재검증에서는 키 파일을 읽지 않고 변경 파일의 고신뢰 토큰 패턴을 검사했다.
 - 2026-08-29 저장소 루트를 `_persnal V1`에서 `geungeo-isseo`로 이동하고
   `git worktree repair`로 main·feature 양방향 절대경로를 복구했다.
 - 최초 이동 후 테스트는 `.venv`의 기존 `__editable__.claimledger-0.1.0.pth`가 이전
@@ -33,13 +35,13 @@ git status --short --branch
   `pip install --no-deps --no-build-isolation --editable .`로 재설치한 뒤 이전 경로 0건,
   `claimledger` 새 경로 import, 전체 `280 passed`, Ruff 통과를 새로 확인했다.
 
-핵심 불변식 묶음도 별도로 실행했다.
+다음 핵심 불변식 묶음은 2026-08-30의 역사적 실행 결과다.
 
 ```cmd
 .venv\Scripts\python.exe -m pytest tests\test_identity.py tests\test_ingredients.py tests\test_official.py tests\test_product_evidence.py tests\test_safety.py tests\test_evaluation_dataset.py tests\test_product_review.py -q
 ```
 
-결과는 `175 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
+당시 결과는 `175 passed`다. 제품 신원 확인, 원료 매핑, 공식 원문 보존,
 안전 승인 금지, 제품 근거 준비 상태, 평가 데이터 계약, v2 사람 라벨·pack 무결성·완료
 통계·CLI 경계를 포함한다.
 
@@ -67,6 +69,15 @@ git status --short --branch
 - C003 제품 6개 필드만 내보내는 redacted JSONL export, 동일 6필드 불변 review DTO,
   exporter-to-loader-to-sampler 오프라인 review-pack 생성기
 - 라이브 JSONL, export staging, review-pack 산출물의 Git ignore 경계
+- 다섯 원료의 공식 규칙 등록(`7678890`), 마그네슘 명시 연결 정책(`a45d6b6`)
+- 기능성 역할의 결정적 분류·일반/양성 감사 표본·해시 검증·사람 라벨·정확도 통계 CLI
+
+2026-09-07 기존 역할 pack 재검증은 `PENDING`, 유효 `1 / 275`, 대기 `274 / 275`,
+이슈 `0`, 종료코드 `2`다. 유효 1행은 v2 홍삼 alias 오류를 상속한 제외 행이다.
+원료별 적격성 summary는 `null`이며 아직 추적 summary 파일을 생성하지 않았다.
+다섯 규칙의 추출자는 CHOI, 독립 검토자는 DOHA, 재확인 시각은
+`2026-09-04T17:28:58+09:00`이다. 공식 출처·샘플 구성·모든 해시는
+[역할 검토 증거](evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록한다.
 
 원래 Task 1~8 구현 범위는 `37a8234^..b1f625a`의 `20`개이며, 초기 검증 인수인계
 커밋은 `48cd278`이다. 본 문서를 포함한 final-fix는 단일 커밋 subject
@@ -120,21 +131,23 @@ git status --short --branch
 
 ## 다음 검토 작업
 
-기존 검증 export에서 v2 pack만 재생성하고 검증할 때는 API 키가 필요하지 않다.
+기존 검토팩 검증에는 API 키가 필요하지 않다. 완료된 v2와 현재 역할 pack을 보존한다.
 
-```cmd
-.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
-.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+```powershell
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+$roleValidatorExit = $LASTEXITCODE
+$roleValidatorExit
 ```
 
-2026-08-28 당시 빈 v2 템플릿은 두 번째 명령에서 종료코드 `2`를 반환했다. 현재 완료된
-v2는 같은 validator에서 종료코드 `0`을 반환한다. 라이브 C003 export 자체를 다시 받아야
+현재 역할 pack은 종료코드 `2`, 완료된 v2는 v2 validator에서 `0`을 반환한다.
+라이브 C003 export 자체를 다시 받아야
 할 때만 승인된 운영자가 `FOOD_SAFETY_API_KEY`를 로컬 환경에
 설정하고 `scripts/audit_c003.py`를 별도로 실행한다. 키 값을 문서·로그·명령 출력에
 복사하지 않는다.
 
-현재 다음 작업은 완료된 `build/extension-review-v2/product_review_labels.csv`를 입력
-근거로 기능적 역할 검토 A를 구축하는 것이다. 기존 v1 숫자 점수 파일은 채우지 않는다.
+현재 다음 작업은 `build/functional-role-review-v1/functional_role_labels.csv`의
+274행 사람 검토다. 첫 5행은 `build/functional-role-review-guides/batch-001.md`에서
+원문을 읽고 판단할 수 있다. 기계 판정을 정답으로 복사하지 않는다.
 v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 추천과 최종 선택은
 `BLOCKED`다.
 
@@ -169,8 +182,9 @@ v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 �
 - 라이브 경로 `data/c003-products.jsonl`은 `.gitignore`의 정확한 경로 규칙으로 보호된다.
 - `build/c003-export/`, `build/extension-review/`, `build/extension-review-v2/`는
   `build/` 규칙으로 보호된다.
-- 현재 생성 경로는 로컬에 존재하지만 `git status`에서 제외되며,
-  `git ls-files -- data build` 및 `git ls-files '*.jsonl'` 결과는 비어 있다.
+- 역할 pack·공식 ZIP·사람 검토 안내도 `build/` 아래 로컬 ignored 경로에 있다.
+- `data/reference/functional-role-rules-v1.json`만 새로 추적하며, 원본 JSONL과
+  모든 `build/` 산출물은 추적하지 않는다.
 - tracked/staged 내용의 key-like assignment와 고신뢰 토큰 형식을 검사하고, fixture 및
   evidence 문서의 건강 상세정보·후기·Q&A 구조 필드를 별도로 검사한다. 허용된 빈 환경
   선언, 코드 변수, 합성 `test-key`, 문서 예시만 수동 확인 대상으로 남긴다.
@@ -202,9 +216,8 @@ v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 �
 
 ## 다음 코덱스에 전달할 한 문장
 
-> 근거있어의 ClaimLedger 엔진과 v2 사람 검토 계약은 280개 테스트, 96.83% 커버리지,
-> 핵심 불변식 175개로 검증됐다. 2026-08-27 라이브 C003 `45,907 / 45,907`건과
-> 2026-08-30 v2 5×20 사람 검토는 `COMPLETE 100 / 100`, 매핑 `99 correct / 1 incorrect`,
-> 기능성 원문 `usable 100 / 100`이다. 기능적 역할 검토 A는 아직 없고 광고 근거는
-> `NOT_MEASURED`, 추천은 `BLOCKED`, `finalized=false`다. 두 별도 게이트 전에는 확장
-> 원료를 선택하거나 Phase 2를 시작하지 말라.
+> 근거있어의 공식 원료 규칙은 CHOI·DOHA 재확인을 받아 `7678890`으로 등록됐고,
+> 기존 v2는 `COMPLETE 100 / 100`이다. 역할 검토팩은 275행이며 2026-09-07 재검증은
+> `PENDING`, 유효 1·대기 274·이슈 0·종료코드 2다. 다음은 첫 5행 안내지를 이용한
+> 제품별 사람 검토다. 광고 근거 `NOT_MEASURED`, 추천 `BLOCKED`,
+> `finalized=false`를 유지한다. 97% 코드 커버리지 목표는 아직 미달이다.

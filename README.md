@@ -24,8 +24,8 @@
   pack 무결성 검증, Wilson 구간이 포함된 비추천 통계, 상태별 CLI 종료코드만 제공합니다.
 - 2026-08-28: 소비자 서비스·프로젝트명을 **근거있어**로 확정했습니다. 대표 결과물은
   **근거영수증**, 내부 검증엔진은 **ClaimLedger**, 저장소 슬러그는 `geungeo-isseo`입니다.
-- 최신 오프라인 검증은 `280 passed`, 전체 커버리지 `96.83%`이며 Ruff와
-  `git diff --check`도 통과했습니다.
+- 2026-09-07 오프라인 재검증은 `507 passed`, 전체 커버리지 `94%`(94.08%)입니다.
+  기존 계획의 `97%` 목표에는 미달하며, 테스트 실행 커버리지는 서비스 판정 정확도가 아닙니다.
 - 라이브 export, 보존된 v1 pack, 현재 v2 pack은 로컬 ignored 경로에 존재합니다.
   2026-08-30에 재검증한 v2 제품 매핑·공식 기능성 원문 사람 검토는 `COMPLETE`: 유효 라벨
   `100건 전부`다. 대기 라벨은 `0 / 100`, 매핑은 `99 correct / 1 incorrect / 0 uncertain`, 기능성 원문은
@@ -33,8 +33,14 @@
   수 있다는 뜻일 뿐 원료가 그 기능을 유발한다는 인과 근거가 아닙니다. 유일한 매핑 오류는
   `red_ginseng`의 alias collision입니다. 라벨 SHA-256은
   `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`입니다.
-  기능적 역할 검토 A는 아직 구축하지 않았고, 광고 근거 `NOT_MEASURED`, 추천 `BLOCKED`,
+  기능적 역할 검토 A의 코드·규칙·275행 검토팩을 구축했고, 광고 근거 `NOT_MEASURED`, 추천 `BLOCKED`,
   `finalized=false`는 유지됩니다. 확장 원료 추천·최종 선택은 만들지 않았습니다.
+- 2026-09-04: CHOI(추출)·DOHA(독립 검토)의 재확인을
+  `2026-09-04T17:28:58+09:00`으로 기록하고, 공식 고시 제2026-43호에 근거한 다섯
+  원료 규칙을 `7678890`으로 커밋했습니다. 마그네슘은 명시적인 기능성 연결을 요구합니다.
+- 2026-09-07: 기존 검토팩 재검증은 `PENDING`, 유효 `1 / 275`, 대기 `274 / 275`,
+  이슈 `0`, CLI 종료코드 `2`입니다. 유효 1행은 v2 매핑 오류의 상속 제외 행이며
+  신규 제품별 사람 검토를 완료했다는 뜻은 아닙니다. 원료별 적격성·판정 정확도는 아직 미측정입니다.
 - OCR, URL crawler, LLM, RAG, 전체 판정 규칙, FastAPI, React, 인증은 아직 구현하지
   않았습니다. 따라서 현재 코드는 완성된 애플리케이션이나 배포 서비스가 아닙니다.
 - 복습 코드는 별도 저장소 `C:\WORK\WORK\donga-review`에 유지합니다.
@@ -50,22 +56,24 @@
 4. [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록된
    운영 명령과 사람 검토 절차를 따릅니다.
 
-현재 다음 작업은 화면 제작이나 Phase 2 구현이 아니라 **기능적 역할 검토 A를 구축하는
-것**입니다. v2의 다섯 비교군 100건 사람 라벨은 이미 유효성 검증을 마쳤으며, 입력·기록은
-`build/extension-review-v2/product_review_labels.csv`에 보존됩니다. 기존
-`build/extension-review/review_labels.csv`의 숫자 점수는 더 이상 사용하지 않습니다.
+현재 다음 작업은 **기능적 역할 검토 A의 남은 274행을 사람 검토하는 것**입니다.
+원료 규칙에 대한 CHOI·DOHA의 확인과 제품별 역할 라벨은 별도 검토입니다.
+입력은 `build/functional-role-review-v1/functional_role_labels.csv`에 기록하며,
+첫 5행 안내지는 `build/functional-role-review-guides/batch-001.md`에 있습니다.
+v2의 완료 라벨과 현재 검토팩은 보존합니다.
 
-검증된 로컬 export에서 v2 pack을 재생성하고 상태를 확인하는 명령은 다음과 같습니다.
+현재 검토팩의 상태를 확인하는 명령은 다음과 같습니다.
 
-```cmd
-.venv\Scripts\python.exe scripts\build_extension_review.py --input data\c003-products.jsonl --output-dir build\extension-review-v2 --seed 20260823
-.venv\Scripts\python.exe scripts\validate_product_review.py --pack-dir build\extension-review-v2 --source-export data\c003-products.jsonl
+```powershell
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+$roleValidatorExit = $LASTEXITCODE
+$roleValidatorExit
 ```
 
-2026-08-28 당시 빈 템플릿에서 두 번째 명령의 출력 상태는 `PENDING 0 / 100`이고
-종료코드는 `2`였다. 현재 완료된 v2 검증은 종료코드 `0`, `COMPLETE`, 유효 라벨 `100건 전부`다.
-대기 라벨은 `0 / 100`이다. 기능적 역할 검토 A와 공식 광고 근거가 별도로 끝나기 전에는 추천이
-계속 차단됩니다.
+종료코드는 `COMPLETE=0 / PENDING=2 / INVALID=3`입니다. 원료 규칙의 공식 최신성 확인일은
+`2026-09-04T17:31:53+09:00`이며, 이 시각에서 7일이 지나면 재확인이 필요합니다.
+해시가 묶인 입력의 날짜만 임의로 바꾸지 않습니다. 전체 해시와 검토 기준은
+[확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록했습니다.
 
 오프라인 검증 명령은 다음과 같습니다.
 
