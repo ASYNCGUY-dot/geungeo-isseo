@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from claimledger import functional_role_review as role_review_module
 from claimledger.domain import ExtensionReviewProduct, IngredientGroup, MappingStatus
 from claimledger.extension_selection import COMPARISON_GROUPS
 from claimledger.functional_role import (
@@ -237,6 +238,72 @@ def test_functional_role_label_accepts_confirmed_both_field_evidence() -> None:
     assert label.evidence_excerpt == _both_evidence()
     with pytest.raises(ValidationError):
         label.review_note = "mutated"
+
+
+@pytest.mark.parametrize("model_kind", ("label", "sample", "counts", "summary"))
+def test_review_models_reject_ingredients_outside_approved_comparison(model_kind: str) -> None:
+    model, values = {
+        "label": (FunctionalRoleLabel, _valid_label_values()),
+        "sample": (FunctionalRoleSample, _valid_sample_values()),
+        "counts": (FunctionalRoleGroupCounts, _valid_group_count(IngredientGroup.MAGNESIUM)),
+        "summary": (
+            FunctionalRoleGroupSummary,
+            _valid_group_summary(IngredientGroup.MAGNESIUM).model_dump(),
+        ),
+    }[model_kind]
+    values["group"] = IngredientGroup.OMEGA3
+
+    with pytest.raises(ValidationError, match="comparison ingredient group"):
+        model.model_validate(values)
+
+
+@pytest.mark.parametrize("versions", ((), ("",), (" padded-version ",)))
+def test_manifest_rejects_empty_or_unnormalized_version_provenance(
+    versions: tuple[str, ...],
+) -> None:
+    values = _valid_manifest_values()
+    values["mapping_rule_versions"] = versions
+
+    with pytest.raises(ValidationError, match="normalized and nonblank|must not be empty"):
+        FunctionalRoleManifest.model_validate(values)
+
+
+@pytest.mark.parametrize("excerpt", ("not-json", '{"raw_materials":'))
+def test_label_rejects_unparseable_both_field_evidence(excerpt: str) -> None:
+    values = _valid_label_values()
+    values["evidence_excerpt"] = excerpt
+
+    with pytest.raises(ValidationError, match="canonical both-field JSON"):
+        FunctionalRoleLabel.model_validate(values)
+
+
+def test_label_rejects_blank_single_field_evidence() -> None:
+    values = _valid_label_values()
+    values.update(
+        human_verdict=HumanRoleVerdict.UNCERTAIN,
+        reason_code=FunctionalRoleReasonCode.INSUFFICIENT_LINKAGE,
+        evidence_field=RoleEvidenceField.RAW_MATERIALS,
+        evidence_excerpt="   ",
+    )
+
+    with pytest.raises(ValidationError, match="must be nonblank"):
+        FunctionalRoleLabel.model_validate(values)
+
+
+@pytest.mark.parametrize(
+    ("group", "scope", "message"),
+    (
+        (IngredientGroup.OMEGA3, "positive", "comparison ingredient group"),
+        (IngredientGroup.MAGNESIUM, "unknown-scope", "scope is invalid"),
+    ),
+)
+def test_sampling_seed_rejects_out_of_scope_requests(
+    group: IngredientGroup,
+    scope: str,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        derive_sample_seed(20260823, group, scope)
 
 
 @pytest.mark.parametrize(
@@ -1196,6 +1263,101 @@ def test_sampling_refuses_a_non_complete_v2_pack(tmp_path: Path) -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("mutation", "cause"),
+    (
+        ("missing_directory", "directory is missing"),
+        ("extra_file", "file set is invalid"),
+        ("sample_hash", "sample hash is invalid"),
+        ("sample_header", "CSV header"),
+        ("sample_short_row", "CSV row is malformed"),
+        ("missing_sample", "100 complete rows"),
+        ("duplicate_source", "duplicate report numbers"),
+        ("duplicate_sample", "samples contain duplicate keys"),
+        ("changed_product", "does not match source products"),
+        ("stale_mapping", "mapping is stale"),
+        ("manifest_counts", "Input should be 20"),
+        ("manifest_versions", "mapping versions are stale"),
+        ("duplicate_label", "labels contain duplicate keys"),
+        ("unknown_label", "labels do not match sample keys"),
+    ),
+)
+def test_sampling_rejects_corrupted_prerequisites_even_with_recomputed_hash(
+    tmp_path: Path,
+    mutation: str,
+    cause: str,
+) -> None:
+    products = _synthetic_source_products()
+    pack_dir, _, _ = _write_completed_v2_pack(tmp_path / "corrupt-prerequisite", products)
+    samples_path = pack_dir / "samples.csv"
+    manifest_path = pack_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if mutation == "missing_directory":
+        pack_dir = pack_dir / "missing"
+    elif mutation == "extra_file":
+        (pack_dir / "unexpected.txt").write_text("unexpected", encoding="utf-8")
+    elif mutation == "duplicate_source":
+        products = (*products, products[0])
+    elif mutation in {"manifest_counts", "manifest_versions"}:
+        if mutation == "manifest_counts":
+            manifest["group_counts"]["milk_thistle"] -= 1
+            manifest["group_counts"]["vitamin_d"] += 1
+        else:
+            manifest["mapping_rule_versions"] = ["stale-map-v999"]
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    elif mutation in {"duplicate_label", "unknown_label"}:
+        labels_path = pack_dir / "product_review_labels.csv"
+        fields, rows = _read_csv_fields_and_rows(labels_path)
+        if mutation == "duplicate_label":
+            rows[-1] = dict(rows[0])
+        else:
+            rows[0]["report_no"] = "unknown-report"
+        _write_csv_rows(labels_path, fields, rows)
+    else:
+        fields, rows = _read_csv_fields_and_rows(samples_path)
+        if mutation == "sample_header":
+            fields = ("wrong_column", *fields[1:])
+            rows = []
+        elif mutation == "missing_sample":
+            rows.pop()
+        elif mutation == "duplicate_sample":
+            rows[-1] = dict(rows[0])
+        elif mutation == "stale_mapping":
+            rows[0]["mapping_rule_version"] = "stale-map-v999"
+        else:
+            rows[0]["company"] = "changed-source-company"
+        _write_csv_rows(samples_path, fields, rows)
+        if mutation == "sample_short_row":
+            samples_path.write_text(",".join(fields) + "\nshort-row\n", encoding="utf-8")
+        if mutation != "sample_hash":
+            # A matching hash is not sufficient proof of source or review integrity.
+            manifest["samples_sha256"] = sha256_file(samples_path)
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="must be COMPLETE") as error:
+        build_functional_role_samples(
+            products,
+            product_review_pack_dir=pack_dir,
+            registry=_registry(),
+        )
+
+    assert cause in str(error.value.__cause__)
+
+
+def test_sampling_rejects_insufficient_same_group_replacements(tmp_path: Path) -> None:
+    products = tuple(
+        product for product in _synthetic_source_products() if "-V2-" in product.report_no
+    )
+    pack_dir, _, _ = _write_completed_v2_pack(tmp_path / "no-replacements", products)
+
+    with pytest.raises(ValueError, match="insufficient same-group general replacement"):
+        build_functional_role_samples(
+            products,
+            product_review_pack_dir=pack_dir,
+            registry=_registry(),
+        )
+
+
 def test_first_100_rows_preserve_v2_order_keys_and_product_fields(tmp_path: Path) -> None:
     samples, _, _, _, v2_samples = _build_synthetic_samples(tmp_path)
     source_fields = tuple(ExtensionReviewProduct.model_fields)
@@ -1534,6 +1696,97 @@ def test_writer_removes_a_partially_created_directory_after_failure(
     assert not output_dir.exists()
 
 
+@pytest.mark.parametrize("failure", ("mkdir", "missing_rules", "registry_mismatch"))
+def test_writer_rejects_unavailable_storage_or_unbound_rules(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: str,
+) -> None:
+    products = _synthetic_source_products()
+    pack_dir, source_export, _ = _write_completed_v2_pack(tmp_path / "write-precondition", products)
+    output_dir = pack_dir.parent / "role-output"
+    registry = _registry()
+    rules_path = RULE_FIXTURE_PATH
+    if failure == "mkdir":
+        original_mkdir = Path.mkdir
+
+        def deny_output_creation(path: Path, *args: object, **kwargs: object):
+            if path == output_dir:
+                raise PermissionError("synthetic output access denied")
+            return original_mkdir(path, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "mkdir", deny_output_creation)
+        message = "could not create"
+    elif failure == "missing_rules":
+        rules_path = pack_dir.parent / "missing-rules.json"
+        message = "could not build"
+    else:
+        values = registry.model_dump()
+        values["rules"][0]["source_id"] = "different-source"
+        registry = FunctionalRoleRuleRegistry.model_validate(values)
+        message = "registry input does not match"
+
+    with pytest.raises(FunctionalRoleBuildError, match=message):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=pack_dir,
+            rules_path=rules_path,
+            registry=registry,
+            generated_at=NOW,
+        )
+
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize("failure", ("truncated_samples", "missing_labels", "cleanup_denied"))
+def test_writer_detects_silent_write_loss_and_reports_failed_cleanup(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: str,
+) -> None:
+    products = _synthetic_source_products()
+    pack_dir, source_export, _ = _write_completed_v2_pack(tmp_path / "write-loss", products)
+    output_dir = pack_dir.parent / "role-output"
+    original_write_text = Path.write_text
+
+    def lose_output_bytes(path: Path, data: str, *args: object, **kwargs: object):
+        if path == output_dir / "samples.csv" and failure != "missing_labels":
+            return original_write_text(path, data[:10], *args, **kwargs)
+        if path == output_dir / "functional_role_labels.csv" and failure == "missing_labels":
+            return len(data)
+        return original_write_text(path, data, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "write_text", lose_output_bytes)
+    if failure == "cleanup_denied":
+        original_rmtree = role_review_module.shutil.rmtree
+
+        def deny_output_cleanup(path: Path, *args: object, **kwargs: object):
+            if path == output_dir:
+                raise PermissionError("synthetic cleanup access denied")
+            return original_rmtree(path, *args, **kwargs)
+
+        monkeypatch.setattr(role_review_module.shutil, "rmtree", deny_output_cleanup)
+
+    message = "could not clean a partial" if failure == "cleanup_denied" else "could not write"
+    with pytest.raises(FunctionalRoleBuildError, match=message):
+        write_functional_role_review_pack(
+            output_dir,
+            products=products,
+            source_export_path=source_export,
+            product_review_pack_dir=pack_dir,
+            rules_path=RULE_FIXTURE_PATH,
+            registry=_registry(),
+            generated_at=NOW,
+        )
+
+    assert output_dir.exists() is (failure == "cleanup_denied")
+    if failure == "cleanup_denied":
+        result = _validate_generated_pack((output_dir, source_export, pack_dir, RULE_FIXTURE_PATH))
+        _assert_role_validation_is_blocked(result, "SAMPLES_HASH_MISMATCH")
+
+
 def test_manifest_binds_source_v2_rules_and_samples_hashes(tmp_path: Path) -> None:
     output_dir, product_review_pack, source_export, _, manifest = _write_functional_pack(tmp_path)
 
@@ -1777,6 +2030,8 @@ def _write_validation_pack(
     root_name: str,
     non_inherited_unverifiable: bool = False,
     source_products: tuple[ExtensionReviewProduct, ...] | None = None,
+    rule_fixture_path: Path = RULE_FIXTURE_PATH,
+    generated_at: datetime = NOW,
 ) -> tuple[Path, Path, Path, Path]:
     root = tmp_path / root_name
     products = source_products or _synthetic_source_products()
@@ -1790,8 +2045,8 @@ def _write_validation_pack(
         )
     product_review_pack, source_export, _ = _write_completed_v2_pack(root, products)
     rules_path = root / "functional-role-rules.json"
-    rules_path.write_bytes(RULE_FIXTURE_PATH.read_bytes())
-    registry = load_functional_role_registry(rules_path, evaluated_at=NOW)
+    rules_path.write_bytes(rule_fixture_path.read_bytes())
+    registry = load_functional_role_registry(rules_path, evaluated_at=generated_at)
     pack_dir = root / "functional-role-review-v1"
     write_functional_role_review_pack(
         pack_dir,
@@ -1800,7 +2055,7 @@ def _write_validation_pack(
         product_review_pack_dir=product_review_pack,
         rules_path=rules_path,
         registry=registry,
-        generated_at=NOW,
+        generated_at=generated_at,
     )
     return pack_dir, source_export, product_review_pack, rules_path
 
@@ -1885,6 +2140,329 @@ def test_validator_returns_pending_for_a_clean_incomplete_pack(tmp_path: Path) -
     assert result.advertising_evidence_status == "NOT_MEASURED"
     assert result.extension_recommendation_status == "BLOCKED"
     assert result.finalized is False
+
+
+def _assert_role_validation_is_blocked(
+    result: FunctionalRoleValidationResult,
+    expected_code: str,
+) -> None:
+    assert result.status is ReviewGateStatus.INVALID
+    assert expected_code in {issue.code for issue in result.issues}
+    assert result.valid_label_count is None
+    assert result.pending_label_count is None
+    assert result.summary is None
+    assert result.advertising_evidence_status == "NOT_MEASURED"
+    assert result.extension_recommendation_status == "BLOCKED"
+    assert result.finalized is False
+
+
+@pytest.mark.parametrize("validated_at", (None, "2026-08-30", NOW.replace(tzinfo=None)))
+def test_validator_blocks_invalid_validation_clock(tmp_path: Path, validated_at: object) -> None:
+    paths = tuple(tmp_path / name for name in ("pack", "source", "v2", "rules"))
+
+    result = _validate_generated_pack(paths, validated_at=validated_at)
+
+    _assert_role_validation_is_blocked(result, "VALIDATED_AT_INVALID")
+
+
+def test_validator_blocks_a_missing_pack_directory(tmp_path: Path) -> None:
+    paths = tuple(tmp_path / name for name in ("pack", "source", "v2", "rules"))
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, "PACK_DIRECTORY_MISSING")
+
+
+def test_validator_blocks_an_unreadable_pack_directory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="unreadable-directory")
+    original_iterdir = Path.iterdir
+
+    def deny_pack_listing(path: Path):
+        if path == paths[0]:
+            raise PermissionError("synthetic directory access denied")
+        return original_iterdir(path)
+
+    monkeypatch.setattr(Path, "iterdir", deny_pack_listing)
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, "PACK_DIRECTORY_INVALID")
+
+
+@pytest.mark.parametrize(
+    ("path_index", "document", "issue_code"),
+    (
+        (0, "README.md", "PACK_README_UNREADABLE"),
+        (0, "manifest.json", "PACK_MANIFEST_UNREADABLE"),
+        (0, "samples.csv", "PACK_SAMPLES_UNREADABLE"),
+        (0, "functional_role_labels.csv", "PACK_LABELS_UNREADABLE"),
+        (1, "", "SOURCE_EXPORT_UNREADABLE"),
+        (2, "README.md", "V2_README_UNREADABLE"),
+        (2, "manifest.json", "V2_MANIFEST_UNREADABLE"),
+        (2, "samples.csv", "V2_SAMPLES_UNREADABLE"),
+        (2, "product_review_labels.csv", "V2_LABELS_UNREADABLE"),
+        (3, "", "RULES_UNREADABLE"),
+    ),
+)
+def test_validator_blocks_each_unreadable_authoritative_document(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    path_index: int,
+    document: str,
+    issue_code: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="unreadable-document")
+    target = paths[path_index] / document if document else paths[path_index]
+    original_open = Path.open
+
+    def deny_target_read(path: Path, *args: object, **kwargs: object):
+        if path == target:
+            raise PermissionError("synthetic document access denied")
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", deny_target_read)
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, issue_code)
+    if target.name != "README.md" and path_index != 0:
+        assert "HASH_READ_FAILED" in {issue.code for issue in result.issues}
+
+
+@pytest.mark.parametrize(
+    ("content", "issue_code"),
+    ((b"\xff\xfe", "PACK_README_UNREADABLE"), (b"before\x00after", "NUL_BYTE")),
+)
+def test_validator_blocks_corrupt_document_encoding(
+    tmp_path: Path,
+    content: bytes,
+    issue_code: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="corrupt-encoding")
+    (paths[0] / "README.md").write_bytes(content)
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, issue_code)
+
+
+def test_validator_blocks_an_oversized_document(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="oversized-document")
+    # Lower only the I/O limit; keep the real decoder, validator and fixtures.
+    limit = max(path.stat().st_size for path in paths[0].parent.rglob("*") if path.is_file())
+    monkeypatch.setattr(role_review_module, "_MAX_VALIDATION_DOCUMENT_BYTES", limit)
+    (paths[0] / "README.md").write_bytes(b"x" * (limit + 1))
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, "DOCUMENT_TOO_LARGE")
+    assert {issue.code for issue in result.issues} == {"DOCUMENT_TOO_LARGE"}
+
+
+@pytest.mark.parametrize("document", ("samples.csv", "functional_role_labels.csv"))
+@pytest.mark.parametrize("corruption", ("header", "short_row", "extra_column", "unclosed_quote"))
+def test_validator_blocks_malformed_csv_documents(
+    tmp_path: Path,
+    document: str,
+    corruption: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="malformed-csv")
+    target = paths[0] / document
+    header = target.read_text(encoding="utf-8").splitlines()[0]
+    column_count = len(header.split(","))
+    if corruption == "header":
+        content = "wrong,header\n"
+    elif corruption == "short_row":
+        content = header + "\nonly-one-cell\n"
+    elif corruption == "extra_column":
+        content = header + "\n" + ",".join(["cell"] * (column_count + 1)) + "\n"
+    else:
+        content = header + '\n"unterminated\n'
+    target.write_text(content, encoding="utf-8", newline="\n")
+
+    result = _validate_generated_pack(paths)
+
+    prefix = "SAMPLE" if document == "samples.csv" else "LABEL"
+    suffix = "HEADER_MISMATCH" if corruption == "header" else "ROW_INVALID"
+    _assert_role_validation_is_blocked(result, f"{prefix}_{suffix}")
+
+
+@pytest.mark.parametrize(
+    ("mutation", "issue_code"),
+    (
+        ("invalid_json", "MANIFEST_INVALID"),
+        ("future_generation", "MANIFEST_GENERATED_AT_FUTURE"),
+        ("mapping_version", "MANIFEST_MAPPING_VERSIONS_MISMATCH"),
+        ("role_version", "MANIFEST_ROLE_VERSIONS_MISMATCH"),
+        ("group_counts", "MANIFEST_GROUP_COUNTS_MISMATCH"),
+    ),
+)
+def test_validator_blocks_unbound_manifest_metadata(
+    tmp_path: Path,
+    mutation: str,
+    issue_code: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="unbound-manifest")
+    target = paths[0] / "manifest.json"
+    values = json.loads(target.read_text(encoding="utf-8"))
+    if mutation == "future_generation":
+        values["generated_at"] = (NOW + timedelta(seconds=1)).isoformat()
+    elif mutation == "mapping_version":
+        values["mapping_rule_versions"] = ["unbound-map-v999"]
+    elif mutation == "role_version":
+        values["functional_role_rule_versions"] = ["unbound-role-v999"]
+    elif mutation == "group_counts":
+        values["group_counts"][0]["positive_pool_count"] += 1
+    content = "{invalid-json" if mutation == "invalid_json" else json.dumps(values)
+    target.write_text(content, encoding="utf-8", newline="\n")
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, issue_code)
+
+
+@pytest.mark.parametrize("corruption", ("invalid_json", "duplicate_report"))
+def test_validator_blocks_unparseable_or_duplicate_source_records(
+    tmp_path: Path,
+    corruption: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="corrupt-source")
+    source = paths[1]
+    content = source.read_text(encoding="utf-8")
+    addition = "{invalid-json" if corruption == "invalid_json" else content.splitlines()[0]
+    source.write_text(content + addition + "\n", encoding="utf-8", newline="\n")
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, "SOURCE_EXPORT_INVALID")
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("source_id", 12345),
+        ("reviewed_by", None),
+        ("accepted_functional_forms", None),
+        ("recognized_function_texts", [12345]),
+    ),
+)
+def test_validator_blocks_wrong_types_in_rule_evidence(
+    tmp_path: Path,
+    field: str,
+    value: object,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="wrong-rule-type")
+    values = json.loads(paths[3].read_text(encoding="utf-8"))
+    values["rules"][0][field] = value
+    paths[3].write_text(json.dumps(values), encoding="utf-8", newline="\n")
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, "RULES_INVALID")
+    assert "12345" not in result.model_dump_json()
+
+
+def test_validate_cli_returns_invalid_json_for_wrong_rule_types(tmp_path: Path) -> None:
+    current_rules = _write_cli_rule_fixture(tmp_path)
+    paths = _write_validation_pack(
+        tmp_path,
+        root_name="cli-wrong-rule-type",
+        rule_fixture_path=current_rules,
+        generated_at=datetime.now(UTC),
+    )
+    summary_path = paths[0].parent / "summary.json"
+    script = Path(__file__).parents[1] / "scripts" / "validate_functional_role_review.py"
+    command = (
+        sys.executable,
+        str(script),
+        "--pack-dir",
+        str(paths[0]),
+        "--source-export",
+        str(paths[1]),
+        "--product-review-pack",
+        str(paths[2]),
+        "--rules",
+        str(paths[3]),
+        "--summary-output",
+        str(summary_path),
+    )
+
+    def run_cli() -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            command,
+            cwd=Path(__file__).parents[1],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+            timeout=30,
+        )
+
+    baseline = run_cli()
+    assert baseline.returncode == 2, baseline.stdout + baseline.stderr
+    baseline_result = FunctionalRoleValidationResult.model_validate_json(baseline.stdout)
+    assert baseline_result.status is ReviewGateStatus.PENDING
+    assert baseline_result.issues == ()
+    assert not summary_path.exists()
+
+    values = json.loads(paths[3].read_text(encoding="utf-8"))
+    values["rules"][0]["source_id"] = 654321
+    paths[3].write_text(json.dumps(values), encoding="utf-8", newline="\n")
+    completed = run_cli()
+
+    assert completed.returncode == 3
+    result = FunctionalRoleValidationResult.model_validate_json(completed.stdout)
+    _assert_role_validation_is_blocked(result, "RULES_INVALID")
+    assert not summary_path.exists()
+    assert "Traceback" not in completed.stderr
+    assert "654321" not in completed.stdout + completed.stderr
+
+
+@pytest.mark.parametrize(
+    ("mutation", "issue_code"),
+    (
+        ("invalid_group", "INVALID_LABEL_KEY"),
+        ("duplicate_key", "DUPLICATE_LABEL_KEY"),
+        ("audit_round", "LABEL_MACHINE_MISMATCH"),
+        ("machine_verdict", "LABEL_MACHINE_MISMATCH"),
+        ("inherited_reviewer", "INHERITED_LABEL_MISMATCH"),
+        ("rule_version", "LABEL_RULE_VERSION_MISMATCH"),
+    ),
+)
+def test_validator_blocks_label_identity_and_provenance_changes(
+    tmp_path: Path,
+    mutation: str,
+    issue_code: str,
+) -> None:
+    paths = _write_validation_pack(tmp_path, root_name="label-provenance")
+    if mutation in {"rule_version", "machine_verdict"}:
+        _complete_one_functional_label(paths[0])
+    target = paths[0] / "functional_role_labels.csv"
+    fields, rows = _read_csv_fields_and_rows(target)
+    if mutation == "invalid_group":
+        rows[0]["group"] = "unknown_group"
+    elif mutation == "duplicate_key":
+        rows.append(dict(rows[0]))
+    elif mutation == "inherited_reviewer":
+        inherited = next(row for row in rows if row["human_verdict"] == "excluded_mapping_error")
+        inherited["reviewer"] = "unbound-reviewer"
+    elif mutation == "audit_round":
+        pending = next(row for row in rows if not row["human_verdict"])
+        pending["audit_round"] = "2" if pending["audit_round"] == "1" else "1"
+    else:
+        completed = next(row for row in rows if row["human_verdict"] == "functional_confirmed")
+        completed[mutation] = "unbound-role-v999" if mutation == "rule_version" else "unverifiable"
+    _write_csv_rows(target, fields, rows)
+
+    result = _validate_generated_pack(paths)
+
+    _assert_role_validation_is_blocked(result, issue_code)
 
 
 @pytest.mark.parametrize("mutation", ("missing", "extra", "renamed"))

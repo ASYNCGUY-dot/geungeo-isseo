@@ -1,6 +1,6 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-09-07 Asia/Seoul`
+- 기준일: `2026-09-09 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
 - 상태: **v2 검토 완료; 기능적 역할 규칙 등록·275행 pack 생성 완료; 역할 라벨 274행 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
@@ -8,18 +8,23 @@
 
 ## 현재 검증 결과
 
-2026-09-07에 CLI 테스트의 날짜 의존성을 수정한 뒤 다음 명령을 실행했다.
+2026-09-09에 규칙 자료형 오류의 예외 종료와 CLI 회귀 테스트의 만료 오인 통과를
+수정한 뒤 다음 명령을 실행했다.
 
 ```cmd
-.venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing -q
+.venv\Scripts\python.exe -m pytest --cov=claimledger --cov-report=term-missing --cov-fail-under=97 --cov-report=json:build\coverage-2026-09-09.json --junitxml=build\test-results-2026-09-09.xml -q
 .venv\Scripts\ruff.exe check src tests scripts
 git diff --check
 git status --short --branch
 ```
 
-- 전체 테스트: `507 passed` (236.45초)
-- 전체 커버리지: `94%` (`2,485` statements, `147` missed; 약 `94.08%`)
-- 계획의 `97%` 목표는 미달 상태다. 테스트 커버리지는 실제 판정 정확도와 별도다.
+- 전체 테스트: `609 passed` (311.60초), 종료코드 `0`
+- 전체 코드 커버리지: `97.22%` (`2,485` statements, `69` missed, 제외 줄 `0`)
+- 계획의 `97%` 목표를 명령의 `--cov-fail-under=97`로 통과했다. 실제 판정 정확도와는 별도다.
+- 이전 507개에서 회귀 사례 102개를 추가했다. 실제 규칙·원본·검토 라벨은 변경하지 않았다.
+- 독립 코드 검토의 P2 1건(만료된 CLI fixture의 오인 통과)을 실패 재현 후 수정했다.
+  정상 입력의 `PENDING/exit 2`를 먼저 확인한 뒤 손상 입력의 `INVALID/exit 3`를 확인한다.
+  독립 재검토에서 해당 지적 해결과 추가로 발견된 변경 코드 문제 없음이 확인됐다.
 - Ruff: `All checks passed!`
 - `git diff --check`: exit `0`, 오류 없음
 - 2026-09-04 기능성 역할 규칙 집중 검증: `63 passed`; 검토팩 집중 검증: `163 passed`
@@ -72,7 +77,7 @@ git status --short --branch
 - 다섯 원료의 공식 규칙 등록(`7678890`), 마그네슘 명시 연결 정책(`a45d6b6`)
 - 기능성 역할의 결정적 분류·일반/양성 감사 표본·해시 검증·사람 라벨·정확도 통계 CLI
 
-2026-09-07 기존 역할 pack 재검증은 `PENDING`, 유효 `1 / 275`, 대기 `274 / 275`,
+2026-09-09 기존 역할 pack 재검증은 `PENDING`, 유효 `1 / 275`, 대기 `274 / 275`,
 이슈 `0`, 종료코드 `2`다. 유효 1행은 v2 홍삼 alias 오류를 상속한 제외 행이다.
 원료별 적격성 summary는 `null`이며 아직 추적 summary 파일을 생성하지 않았다.
 다섯 규칙의 추출자는 CHOI, 독립 검토자는 DOHA, 재확인 시각은
@@ -217,7 +222,8 @@ v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 �
 ## 다음 코덱스에 전달할 한 문장
 
 > 근거있어의 공식 원료 규칙은 CHOI·DOHA 재확인을 받아 `7678890`으로 등록됐고,
-> 기존 v2는 `COMPLETE 100 / 100`이다. 역할 검토팩은 275행이며 2026-09-07 재검증은
+> 기존 v2는 `COMPLETE 100 / 100`이다. 역할 검토팩은 275행이며 2026-09-09 재검증은
 > `PENDING`, 유효 1·대기 274·이슈 0·종료코드 2다. 다음은 첫 5행 안내지를 이용한
 > 제품별 사람 검토다. 광고 근거 `NOT_MEASURED`, 추천 `BLOCKED`,
-> `finalized=false`를 유지한다. 97% 코드 커버리지 목표는 아직 미달이다.
+> `finalized=false`를 유지한다. 코드 검증은 609 passed·97.22%로 목표를 통과했지만
+> 제품별 사람 검토와 실제 판정 정확도 측정이 완료된 것은 아니다.

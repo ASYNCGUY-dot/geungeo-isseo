@@ -95,6 +95,45 @@ def test_rule_accepts_explicit_target_wording_policy() -> None:
     assert magnesium_rule.require_explicit_target_wording is True
 
 
+@pytest.mark.parametrize(
+    "field",
+    (
+        "canonical_ingredient",
+        "source_id",
+        "source_url",
+        "source_locator",
+        "rule_version",
+        "extracted_by",
+        "reviewed_by",
+    ),
+)
+@pytest.mark.parametrize("value", (654321, None))
+def test_registry_rejects_non_text_provenance_as_redacted_validation_error(
+    field: str,
+    value: object,
+) -> None:
+    with pytest.raises(ValidationError, match="must be text") as error:
+        _registry_with_rule_changes(IngredientGroup.MILK_THISTLE, **{field: value})
+
+    assert "654321" not in str(error.value)
+
+
+@pytest.mark.parametrize(
+    "field",
+    ("accepted_functional_forms", "recognized_function_texts", "known_nonfunctional_forms"),
+)
+@pytest.mark.parametrize("value", (None, "not-a-list", [654321]))
+def test_registry_rejects_wrong_phrase_types_as_redacted_validation_error(
+    field: str,
+    value: object,
+) -> None:
+    with pytest.raises(ValidationError, match="must be") as error:
+        _registry_with_rule_changes(IngredientGroup.MILK_THISTLE, **{field: value})
+
+    assert "654321" not in str(error.value)
+    assert "not-a-list" not in str(error.value)
+
+
 @pytest.mark.parametrize("value", ["true", "false", 1, 0])
 def test_rule_rejects_coerced_explicit_target_wording_policy(value: object) -> None:
     with pytest.raises(ValidationError):
@@ -144,6 +183,18 @@ def test_registry_rejects_proposed_expired_or_not_yet_effective_rules(
 
     with pytest.raises(ValueError):
         _load(tmp_path, data)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    (
+        ("promulgated_at", "2026-01-02", "must not follow effective_from"),
+        ("effective_to", "2025-12-31", "must not precede effective_from"),
+    ),
+)
+def test_registry_rejects_inverted_effective_dates(field: str, value: str, message: str) -> None:
+    with pytest.raises(ValidationError, match=message):
+        _registry_with_rule_changes(IngredientGroup.MILK_THISTLE, **{field: value})
 
 
 @pytest.mark.parametrize(

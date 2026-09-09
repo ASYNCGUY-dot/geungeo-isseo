@@ -79,7 +79,8 @@ def _normalize_text(value: str) -> str:
 
 def _reject_unsafe_text(value: object, field_name: str) -> str:
     if not isinstance(value, str):
-        raise TypeError(f"{field_name} must be text")
+        # Pydantic v2 does not wrap TypeError raised by validators.
+        raise ValueError(f"{field_name} must be text")  # noqa: TRY004
     retained_value = value.strip()
     if retained_value.startswith(_SPREADSHEET_FORMULA_PREFIXES):
         raise ValueError(f"{field_name} starts with a spreadsheet formula prefix")
@@ -90,7 +91,8 @@ def _reject_unsafe_text(value: object, field_name: str) -> str:
 
 def _validate_normalized_phrase_list(value: object, field_name: str) -> tuple[str, ...]:
     if not isinstance(value, (list, tuple)):
-        raise TypeError(f"{field_name} must be a tuple-compatible list")
+        # Keep malformed rule inputs inside the redacted ValidationError contract.
+        raise ValueError(f"{field_name} must be a tuple-compatible list")  # noqa: TRY004
     values: list[str] = []
     for item in value:
         text = _reject_unsafe_text(item, field_name)
