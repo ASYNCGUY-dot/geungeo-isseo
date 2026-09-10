@@ -1,6 +1,6 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-09-07 Asia/Seoul`
+- Status date: `2026-09-10 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
@@ -13,6 +13,22 @@
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
+
+## 2026-09-10 human-review handoff checkpoint
+
+- Real validator rerun completed at `2026-09-10T23:34:01+09:00`: `PENDING`, expected 275,
+  valid 1, pending 274, issues 0, exit 2, summary null. The valid row is inherited mapping-error exclusion.
+- Added [user handoff](../USER_REVIEW_HANDOFF.md) and an ignored, unfilled first-batch response
+  sheet at `build/functional-role-review-guides/batch-001-response.md`, outside the four-file pack.
+- Per-group pending rows: milk_thistle 55, vitamin_d 55, red_ginseng 54, coenzyme_q10 55,
+  magnesium 55. No product verdict, evidence excerpt, reviewer or review time was filled.
+- Rules, role manifest/samples/labels and v2 labels retain the previously recorded SHA-256 values.
+  No source, rule, protected pack, code, test or COMPLETE summary was changed/generated.
+- The existing 609-test/97.22% result is the 2026-09-09 run, not a new full-suite run for these docs.
+- Last recorded official-source check remains `2026-09-04T17:31:53+09:00`; no official website
+  recheck was performed in this checkpoint. More than seven days requires actual re-verification,
+  not a date/hash edit. This is an internal freshness rule, not a legal expiry or a human-review deadline.
+- A awaits product-level human input. B is `NOT_MEASURED`, C is `BLOCKED`, finalized is false.
 
 ## Data boundary
 
