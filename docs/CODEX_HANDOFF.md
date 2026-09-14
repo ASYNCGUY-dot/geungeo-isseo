@@ -1,12 +1,32 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-09-10 Asia/Seoul`
+- 기준일: `2026-09-14 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **v2 검토 완료; 기능적 역할 규칙 등록·275행 pack 생성 완료; 역할 라벨 274행 대기**
+- 상태: **v2 검토 완료; 역할 최신성 복구; 승인 AI 5 + 상속 제외 1 유효, 역할 라벨 269행 대기**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 사용자 검토 시작
+## 이번 인계 — 최신성 복구와 승인 AI 라벨 이관
+
+- 정본 증거: [2026-09-14 복구 기록](evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-14.md).
+- 공식 고시 전문·후속 개정 목록을 실제 대조하고 첨부 ZIP의 기존 해시 일치를 확인했다.
+  다섯 규칙의 최신성 시각만 `2026-09-14T15:13:50+09:00`으로 재확인했다.
+- 새 규칙은 `data/reference/functional-role-rules-v1-reverified-2026-09-14.json`,
+  현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-14/`다.
+  기존 규칙과 pack은 역사적 증거로 보존한다. 새 samples 전체와 이관 labels는 기존과 바이트 동일하다.
+- 실제 validator: `PENDING`, 전체 275, 유효 6, 대기 269, 이슈 0, exit 2, summary null.
+  유효 6은 사용자 승인 AI 5와 상속 매핑 오류 제외 1이다. 사람 검토 6건이 아니다.
+- 사용자 승인에 따라 첫 5개 AI 결과를 `CLAUDE-OPUS-5-AI` 출처 그대로 수용했다.
+  사람·전문가 정답 또는 독립 인간 평가로 사용하지 않는다. 남은 269건 AI 자동 라벨링 승인은 아니다.
+- 1번·5번의 복합원료 연결은 코드 보류와 AI 추론이 다르다. 신고번호가 연결되는 보충 원문 없이는
+  어느 쪽을 확정 정답으로 바꾸지 않는다. 코드·규칙 의미를 완화하지 않았다.
+- A 적격성 미측정, B `NOT_MEASURED`, C `BLOCKED`, `finalized=false`다.
+  아래 날짜가 표시된 이전 검증·인계는 당시의 이력이다.
+- 9월 14일 새 전체 검증: `609 passed in 328.52s`, 코드 커버리지 `97.22%`,
+  `--cov-fail-under=97` 통과, Ruff·diff 검사 통과. 코드·테스트 변경은 없다.
+  코드 건강 지표이며 사람 기준 판정 정확도는 미측정이다.
+
+## 2026-09-10 이전 인계 — 사용자 검토 시작
 
 - [사용자 작업 핸드오프](USER_REVIEW_HANDOFF.md)에 첫 5건 시작 방법, 세 판정의 기준,
   제품별 응답 양식, 사용자/에이전트 책임, 최신성·Git 경계를 정리했다.
@@ -24,7 +44,7 @@
 - 다음 입력은 실제 제품별 검토 결과다. 원문 질문만 도착하면 설명을 제공하고 판정으로 저장하지 않는다.
   최신성 기한을 넘기면 실제 출처 재확인과 규칙/pack 버전 영향을 먼저 처리한다.
 
-## 현재 검증 결과
+## 이전 코드 검증 결과 — 2026-09-09
 
 2026-09-09에 규칙 자료형 오류의 예외 종료와 CLI 회귀 테스트의 만료 오인 통과를
 수정한 뒤 다음 명령을 실행했다.
@@ -157,7 +177,7 @@ git status --short --branch
 기존 검토팩 검증에는 API 키가 필요하지 않다. 완료된 v2와 현재 역할 pack을 보존한다.
 
 ```powershell
-.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-14 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-14.json
 $roleValidatorExit = $LASTEXITCODE
 $roleValidatorExit
 ```
@@ -168,9 +188,10 @@ $roleValidatorExit
 설정하고 `scripts/audit_c003.py`를 별도로 실행한다. 키 값을 문서·로그·명령 출력에
 복사하지 않는다.
 
-현재 다음 작업은 `build/functional-role-review-v1/functional_role_labels.csv`의
-274행 사람 검토다. 첫 5행은 `build/functional-role-review-guides/batch-001.md`에서
-원문을 읽고 판단할 수 있다. 기계 판정을 정답으로 복사하지 않는다.
+현재 다음 작업은 새 운영 pack의 남은 269행 검토와 첫 배치 1번·5번의 신고번호 결합 근거 보강이다.
+이미 승인된 첫 5행은 재제출·재승인을 요구하지 않는다. AI 출처를 사람 검토로 바꾸지 않으며,
+남은 행의 검토 주체를 새로 정할 때에는 사용자에게 필요한 선택만 질문한다.
+기계 판정이나 AI 추론을 독립 정답으로 복사하지 않는다.
 v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 추천과 최종 선택은
 `BLOCKED`다.
 
@@ -239,9 +260,8 @@ v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 �
 
 ## 다음 코덱스에 전달할 한 문장
 
-> 근거있어의 공식 원료 규칙은 CHOI·DOHA 재확인을 받아 `7678890`으로 등록됐고,
-> 기존 v2는 `COMPLETE 100 / 100`이다. 역할 검토팩은 275행이며 2026-09-09 재검증은
-> `PENDING`, 유효 1·대기 274·이슈 0·종료코드 2다. 다음은 첫 5행 안내지를 이용한
-> 제품별 사람 검토다. 광고 근거 `NOT_MEASURED`, 추천 `BLOCKED`,
-> `finalized=false`를 유지한다. 코드 검증은 609 passed·97.22%로 목표를 통과했지만
-> 제품별 사람 검토와 실제 판정 정확도 측정이 완료된 것은 아니다.
+> 근거있어는 2026-09-14 공식 원본 재확인 후 별도 규칙·pack으로 최신성을 복구했다.
+> 새 pack은 `PENDING`, 유효 6(AI 승인 5 + 상속 제외 1)·대기 269·이슈 0·exit 2다.
+> 기존 자료를 보존하고 AI를 사람 정답으로 표시하지 않는다. 1번·5번의 코드/AI 차이는
+> 제품 식별자에 묶인 근거가 더 필요하다. 광고 `NOT_MEASURED`, 추천 `BLOCKED`,
+> `finalized=false`다. 먼저 `docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-14.md`를 읽는다.

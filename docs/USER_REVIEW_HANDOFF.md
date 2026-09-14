@@ -1,5 +1,29 @@
 # 사용자 작업 핸드오프 — 근거있어 제품별 기능성 역할 검토
 
+## 2026-09-14 갱신 — 지금 먼저 읽을 내용
+
+**첫 5건 AI 검토 수용 승인은 반영되었습니다. 다시 승인하거나 같은 답을 재작성할 필요 없습니다.**
+
+- 공식 원본을 실제 다시 확인한 뒤 새 검토팩으로 복구했습니다. 실제 검증은 `PENDING`,
+  유효 6(승인 AI 5 + 기존 제외 1), 대기 269, 이슈 0입니다.
+- 승인된 5건의 검토자는 `CLAUDE-OPUS-5-AI`로 유지합니다. 사람·약사·영양사 검토로 표시하지 않습니다.
+- 1번 `200400150831113`, 5번 `2004001702936`은 AI가 기능성을 추론했지만 코드가
+  복합원료의 명시적 연결 부족으로 보류했습니다. 기존 판정과 답은 둘 다 보존했습니다.
+- **이 두 건을 확정하려면** 해당 신고번호와 연결되는 공식 제품 상세 자료 또는 제조사 표시사항이
+  더 필요합니다. 가지고 계신 PDF·링크·라벨 사진을 보내주시면 에이전트가 식별자와 문구를 대조합니다.
+  제품명만 같은 쇼핑몰 화면은 충분하지 않습니다. 자료가 없으면 두 건의 코드 보류를 유지할 수 있습니다.
+- 남은 269건을 검토할 때 기존 사람용 작성 기준은 아래와 같습니다. 이번 승인만으로 남은 행을
+  AI가 자동 판정하지 않습니다. 별도로 AI 검토를 진행하더라도 독립 사람 평가와 구분해야 합니다.
+- 새 작업 파일은 `build/functional-role-review-v1-reverified-2026-09-14/functional_role_labels.csv`입니다.
+  기존 `functional-role-review-v1`과 AI 답변 파일은 보존본입니다. 사용자님이 CSV를 수정할 필요 없습니다.
+- 새 공식 최신성 확인은 `2026-09-14T15:13:50+09:00`입니다. 내부 7일 경계는 9월 21일 같은 시각이며
+  제출 마감이 아닙니다. [복구 근거·해시·운영 명령](evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-14.md)에 기록했습니다.
+
+아래 9월 10일 문서는 기존 사람 검토 절차와 당시 수량의 이력입니다.
+현재 상태·파일 경로·첫 배치 승인 여부는 위 갱신 사항을 우선합니다.
+
+## 2026-09-10 기존 사람 검토 안내
+
 - 작성일: 2026-09-10 (Asia/Seoul)
 - 대상: 사용자 또는 사용자가 지정한 실제 검토자
 - 현재 단계: 승인된 기능적 역할 검토 A / 제품별 사람 라벨 수집
@@ -151,10 +175,10 @@ A가 완료되어도 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOC
 `없음`은 사람 응답 표기이지 원문 인용 문자열이 아니므로 근거 존재 여부에 맞게 계약을 적용합니다.
 양쪽 근거는 검증기가 요구하는 canonical JSON 형식으로 저장합니다.
 
-작업공간에서 실행하는 검증 명령(사용자 실행 불필요):
+작업공간에서 실행하는 검증 명령(2026-09-14 운영 경로로 갱신, 사용자 실행 불필요):
 
 ```powershell
-.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1.json
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-14 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-14.json
 $roleValidatorExit = $LASTEXITCODE
 Write-Output "ROLE_VALIDATOR_EXIT=$roleValidatorExit"
 ```

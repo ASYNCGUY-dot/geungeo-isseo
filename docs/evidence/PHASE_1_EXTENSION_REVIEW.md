@@ -1,6 +1,6 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-09-10 Asia/Seoul`
+- Status date: `2026-09-14 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
@@ -9,10 +9,26 @@
 - Mapping review: `99 correct / 1 incorrect / 0 uncertain`; the one error is `red_ginseng` report `20160012278100` with reason `alias_collision`.
 - Function-text review: `usable 100 / 100`. This records usable official function text for row-level review; it does not prove an ingredient caused the function.
 - Completed labels SHA-256: `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`
-- Functional-role review A: code, five reviewed rules, and four-file local pack generated; human labels `PENDING`, valid `1 / 275`, pending `274 / 275`, issues `0`, CLI exit `2`.
+- Functional-role review A: source freshness reverified; separate four-file pack `PENDING`, valid `6 / 275` (five user-approved AI labels + one inherited exclusion), pending `269 / 275`, issues `0`, CLI exit `2`. This is not six human reviews.
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
+
+## 2026-09-14 source renewal and approved AI-label checkpoint
+
+- See [renewal evidence and current operating command](FUNCTIONAL_ROLE_RECHECK_2026-09-14.md)
+  and [AI provenance record](functional-role-ai-review-provenance-2026-09-14.json).
+- Official source checked at `2026-09-14T15:13:50+09:00`; downloaded official ZIP matches prior
+  SHA-256. Only five `verified_current_at` values changed in a separate registry copy.
+- New current pack: `build/functional-role-review-v1-reverified-2026-09-14/`.
+  Original pack, rule registry, AI response and v2 labels remain unchanged.
+  All 275 samples and migrated labels are byte-identical to the originals.
+- Real validator: PENDING, valid 6, pending 269, no issues, exit 2, summary null.
+  Pending by group: milk_thistle 50, vitamin_d 55, red_ginseng 54, coenzyme_q10 55, magnesium 55.
+- AI provenance remains `CLAUDE-OPUS-5-AI`. User approval is not independent human/expert
+  ground truth. Mixed-source metrics must not be reported as human accuracy.
+- Cases 1 and 5 remain unresolved code/AI disagreements; no decision-rule relaxation.
+  A eligibility remains unmeasured; B NOT_MEASURED, C BLOCKED, finalized false.
 
 ## 2026-09-10 human-review handoff checkpoint
 

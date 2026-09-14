@@ -1,0 +1,66 @@
+{
+  "record_type": "approved_ai_review_provenance",
+  "recorded_on": "2026-09-14",
+  "batch": "batch-001",
+  "approval": {
+    "source": "current_user_conversation",
+    "confirmation_quote": "ㅇㅇ 내가 승인한 내용이 맞아",
+    "scope": "accept_existing_five_ai_labels",
+    "human_product_review_attested": false,
+    "exact_confirmation_timestamp": null
+  },
+  "reviewer": {
+    "id": "CLAUDE-OPUS-5-AI",
+    "type": "ai",
+    "reported_model": "claude-opus-5",
+    "model_independently_verified": false,
+    "blind_review_independently_verified": false,
+    "reviewed_at_iso8601": "2026-09-14T11:50:30+09:00"
+  },
+  "response_file": "build/functional-role-review-guides/batch-001-response-choi.md",
+  "response_sha256": "354BA2EFF537CDD6AEC9FE1E1187B8E671BCA1945E36BD888EAA37753DFD34B7",
+  "original_rules_sha256": "E8611F98A41885D65B79AA02ECBDB74A3937F95EB4BE2CCF3C2925D1A0966E7D",
+  "reverified_rules_sha256": "5484018E6100566783684FF58D0F9739C3D8CBAED3A09B0D64DE84B9FC90B76D",
+  "samples_sha256": "2A5A2554C5B0A5C0FB289E902CC210274A3B99294E8C3779A9CB309B233EDF25",
+  "labels_sha256": "1DF8FB5A37DF9C4F2370B9E8F691118C625601F8FDFB89A0DBAAEB4E53EFD2CB",
+  "records": [
+    {
+      "group": "milk_thistle",
+      "report_no": "200400150831113",
+      "reference_verdict": "functional_confirmed",
+      "adjudication_status": "NEEDS_PRODUCT_BOUND_EVIDENCE"
+    },
+    {
+      "group": "milk_thistle",
+      "report_no": "200400150831561",
+      "reference_verdict": "functional_confirmed",
+      "adjudication_status": "NOT_INDEPENDENTLY_ADJUDICATED"
+    },
+    {
+      "group": "milk_thistle",
+      "report_no": "20040015107716",
+      "reference_verdict": "uncertain",
+      "adjudication_status": "NOT_INDEPENDENTLY_ADJUDICATED"
+    },
+    {
+      "group": "milk_thistle",
+      "report_no": "20040017021839",
+      "reference_verdict": "functional_confirmed",
+      "adjudication_status": "NOT_INDEPENDENTLY_ADJUDICATED"
+    },
+    {
+      "group": "milk_thistle",
+      "report_no": "2004001702936",
+      "reference_verdict": "functional_confirmed",
+      "adjudication_status": "NEEDS_PRODUCT_BOUND_EVIDENCE"
+    }
+  ],
+  "use_boundary": {
+    "reference_source": "user_approved_ai",
+    "human_ground_truth": false,
+    "expert_review": false,
+    "downstream_clearance_authorized": false,
+    "validator_enforces_this_sidecar": false,
+    "remaining_rows_auto_label_authorized": false
+  }
+}
