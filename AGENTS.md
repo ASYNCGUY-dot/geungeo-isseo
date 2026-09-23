@@ -84,6 +84,25 @@
 
 ## 현재 첫 작업
 
+2026-09-23 정본은 `docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-23.md`와
+`docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md`입니다.
+AI 초안 269행의 구조·원문 대조는 통과했습니다. 마그네슘 55행의 재검토 기록은 있지만,
+나머지 네 그룹 214행의 의미 재검토 완료·완료 시각 및 후속 표본 감사는 사용량 제한으로 미완료입니다.
+표본 감사 지적 두 행은 원문과 직접 대조해 수정했습니다. AI를 사람 정답으로 취급하지 않습니다.
+269건 AI 선행 검토는 이미 승인되었습니다. 반복 승인 요청 없이 미완료 재검토부터 재개합니다.
+현재 운영 규칙/pack은 `reverified-2026-09-23` 사본이며, 실제 검증은 PENDING/유효6/대기269/이슈0/exit2입니다.
+유효6은 기존 승인 AI5 + 상속 제외1이며 사람 검토 수가 아닙니다. 새 AI 초안은 human_verdict에 자동 이관하지 않습니다.
+기존 1번·5번 보충 근거, A 적격성 미측정, B NOT_MEASURED, C BLOCKED, finalized=false를 유지합니다.
+
+현재 운영 명령:
+
+```powershell
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-23 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-23.json
+$LASTEXITCODE
+```
+
+## 2026-09-14 및 이전 작업 이력 (현재 상태 아님)
+
 2026-09-14 최신 상태는 `docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-14.md`를 우선합니다.
 공식 원본 재확인 후 별도 규칙 `functional-role-rules-v1-reverified-2026-09-14.json`과
 별도 pack `build/functional-role-review-v1-reverified-2026-09-14/`으로 복구했습니다.

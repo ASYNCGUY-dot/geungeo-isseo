@@ -9,6 +9,13 @@
 
 ## 현재 상태
 
+- 2026-09-23: AI 초안 269행의 키·1,614개 원문 필드·490개 인용을 전수 검사했습니다.
+  감사 지적 2건을 수정했지만 네 그룹 214행의 의미 재검토는 미완료입니다.
+  실제 공식 출처 재확인 후 별도 9/23 규칙·pack 복구: `PENDING / 유효6 / 대기269 / 이슈0 / exit2`.
+  오늘 전체 `609 passed`(293.72초), 코드 커버리지 97.22%, Ruff 통과입니다. 판정 정확도가 아닙니다.
+  [현재 AI 중간 인계](docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-23.md) ·
+  [최신성 복구](docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md)를 우선합니다.
+
 - 2026-09-14: 공식 고시 ZIP 재다운로드·후속 개정 목록 대조 후 기존 원본과 같은 해시를
   확인했습니다. 최신성 시각만 갱신한 별도 규칙·pack으로 승인된 AI 라벨 5건을 보존 이관했습니다.
   실제 검증은 `PENDING`, 유효 6(승인 AI 5 + 상속 제외 1), 대기 269, 이슈 0, exit 2입니다.
@@ -64,14 +71,13 @@
 4. [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록된
    운영 명령과 사람 검토 절차를 따릅니다.
 
-현재 다음 작업은 **기능적 역할 검토 A의 남은 269행 검토와 첫 배치 1번·5번의 근거 보강**입니다.
-사용자님은 [사용자 작업 핸드오프](docs/USER_REVIEW_HANDOFF.md)의 9월 14일 갱신 사항을
-먼저 확인하세요. 승인한 첫 5건을 다시 제출할 필요는 없습니다. CSV·검증·Git은 에이전트가 처리합니다.
-원료 규칙에 대한 CHOI·DOHA의 확인과 제품별 역할 라벨은 별도 검토입니다.
-새 입력은 `build/functional-role-review-v1-reverified-2026-09-14/functional_role_labels.csv`에 기록하며,
-첫 5행 안내지는 `build/functional-role-review-guides/batch-001.md`에 있습니다.
-v2의 완료 라벨과 기존 역할 검토팩은 보존합니다. AI 라벨 수용은 현재 첫 5건에 한정되며,
-남은 행을 AI가 일괄 판정하도록 승인받은 것으로 확대하지 않습니다.
+현재 다음 작업은 **AI 초안 네 그룹 214행의 의미 재검토·실제 완료 시각 정리와 후속 표본 감사**입니다.
+269건 AI 선행 검토 승인은 이미 받았으며 반복 승인 요청을 하지 않습니다. 결과는 별도 AI 자료로
+남기고 사람용 CSV에 자동 이관하지 않습니다. 사람 검토·광고 근거·확장 원료 추천은 미완료입니다.
+[사용자 작업 핸드오프](docs/USER_REVIEW_HANDOFF.md)의 9월 23일 안내를 우선하세요.
+첫 5건 재제출은 불필요하며, 새 사람 검토 시작용 자료는 `build/functional-role-review-guides/pilot-002.md`입니다.
+현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-23/`입니다.
+기존 1번·5번의 제품 식별자 결합 근거 보강과 CHOI·DOHA의 규칙 검토는 각각 별도 작업입니다.
 
 2026-09-10 23:34 KST 재검증도 `PENDING`, 유효 `1`, 대기 `274`, 이슈 `0`, 종료코드 `2`입니다.
 이번에는 사용자 핸드오프·빈 답변지만 추가했으며 실제 사람 라벨·규칙·표본은 변경하지 않았습니다.
@@ -79,13 +85,13 @@ v2의 완료 라벨과 기존 역할 검토팩은 보존합니다. AI 라벨 수
 현재 검토팩의 상태를 확인하는 명령은 다음과 같습니다.
 
 ```powershell
-.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-14 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-14.json
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-23 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-23.json
 $roleValidatorExit = $LASTEXITCODE
 $roleValidatorExit
 ```
 
 종료코드는 `COMPLETE=0 / PENDING=2 / INVALID=3`입니다. 원료 규칙의 공식 최신성 확인일은
-`2026-09-14T15:13:50+09:00`이며, 이 시각에서 7일이 지나면 재확인이 필요합니다.
+`2026-09-23T15:02:04.1815514+09:00`이며, 이 시각에서 7일이 지나면 재확인이 필요합니다.
 해시가 묶인 입력의 날짜만 임의로 바꾸지 않습니다. 전체 해시와 검토 기준은
 [확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록했습니다.
 

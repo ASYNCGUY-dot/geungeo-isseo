@@ -1,6 +1,40 @@
 # 사용자 작업 핸드오프 — 근거있어 제품별 기능성 역할 검토
 
-## 2026-09-14 갱신 — 지금 먼저 읽을 내용
+## 2026-09-23 갱신 — 지금 먼저 읽을 내용
+
+**AI 선행 검토 승인은 이미 반영했습니다. 같은 승인이나 첫 5건 답을 다시 보내실 필요 없습니다.**
+
+AI 초안 269행의 구조·원문 대조는 통과했습니다. 마그네슘 55행의 재검토 기록은 있지만,
+나머지 네 그룹 214행의 의미 재검토 완료·완료 시각 및 후속 표본 감사는 사용량 제한으로 미완료입니다.
+표본 감사 지적 두 행은 원문과 직접 대조해 수정했습니다. AI를 사람 정답으로 취급하지 않습니다.
+
+### 사용자님이 하실 일
+
+1. **독립 사람 검토를 진행하려면:** [새 5건 원문](../build/functional-role-review-guides/pilot-002.md)과
+   [빈 답변지](../build/functional-role-review-guides/pilot-002-response.md)만 먼저 열어 실제로 대조합니다.
+   AI 답을 보지 않은 상태에서 판정·원문 근거·이유·검토자·실제 시각을 적습니다.
+   AI나 기계 답을 먼저 봤다면 답변지에 그 사실과 범위를 밝혀 주세요. 모르면 불확실과 이유로 남깁니다.
+   한 건부터 보내도 됩니다. 이 5건은 검토 시작용이며 전체 정확도 측정 표본이 아닙니다.
+2. **기존 1번·5번 자료가 있다면:** 신고번호 `200400150831113`, `2004001702936`과 연결되는
+   공식 제품 자료·제조사 표시사항을 보내 주세요. 이름만 같은 쇼핑몰 자료는 충분하지 않습니다.
+   자료가 없으면 보류를 유지할 수 있습니다. 해결됐다고 임의 승인할 필요 없습니다.
+3. **GitHub에도 올릴 때:** 원격 저장소 URL과 push 의사를 알려 주세요. 현재 원격은 미연결이며,
+   로컬 커밋과 원격 업로드는 다릅니다. 원문·답변 전문은 Git 제외를 유지합니다.
+
+CSV 편집, 개발환경 재설치, API 키 재전달, 이미 승인한 AI 검토의 재승인은 필요 없습니다.
+현재 사용량 제한으로 미완료인 AI 재검토는 에이전트 작업이며 사용자에게 대신 완료했다고 쓰도록 요구하지 않습니다.
+
+### 현재 운영 상태
+
+- 공식 원본 재확인 후 별도 9월23일 규칙·pack으로 복구했습니다. PENDING/유효6/대기269/이슈0/exit2입니다.
+- 유효6은 이전 승인AI5+상속제외1입니다. 새 AI초안269행은 사람용 라벨에 넣지 않았습니다.
+- 실제 최신성 확인: `2026-09-23T15:02:04.1815514+09:00`. 내부7일 기준은 제출 마감이 아닙니다.
+- 현재 pack: `build/functional-role-review-v1-reverified-2026-09-23/`.
+- [AI 중간 인계](evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-23.md) · [최신성 복구](evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md).
+
+아래 9월14일·9월10일 내용은 당시 안내와 사람 검토 절차의 이력입니다. 현재 수량·승인·운영 경로는 위를 우선합니다.
+
+## 2026-09-14 이전 갱신
 
 **첫 5건 AI 검토 수용 승인은 반영되었습니다. 다시 승인하거나 같은 답을 재작성할 필요 없습니다.**
 
@@ -175,10 +209,10 @@ A가 완료되어도 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOC
 `없음`은 사람 응답 표기이지 원문 인용 문자열이 아니므로 근거 존재 여부에 맞게 계약을 적용합니다.
 양쪽 근거는 검증기가 요구하는 canonical JSON 형식으로 저장합니다.
 
-작업공간에서 실행하는 검증 명령(2026-09-14 운영 경로로 갱신, 사용자 실행 불필요):
+작업공간에서 실행하는 검증 명령(2026-09-23 운영 경로로 갱신, 사용자 실행 불필요):
 
 ```powershell
-.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-14 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-14.json
+.venv\Scripts\python.exe scripts\validate_functional_role_review.py --pack-dir build\functional-role-review-v1-reverified-2026-09-23 --source-export data\c003-products.jsonl --product-review-pack build\extension-review-v2 --rules data\reference\functional-role-rules-v1-reverified-2026-09-23.json
 $roleValidatorExit = $LASTEXITCODE
 Write-Output "ROLE_VALIDATOR_EXIT=$roleValidatorExit"
 ```

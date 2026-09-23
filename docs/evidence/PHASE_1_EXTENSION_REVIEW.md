@@ -1,6 +1,6 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-09-14 Asia/Seoul`
+- Status date: `2026-09-23 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
@@ -13,6 +13,19 @@
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
+
+## 2026-09-23 AI draft and source-renewal checkpoint
+
+- [Current AI handoff](FUNCTIONAL_ROLE_AI_REVIEW_2026-09-23.md): 269 stored draft rows, 1,614 exact
+  source fields, 490 literal excerpts, 13 protected hashes preserved; two targeted corrections.
+  Magnesium has a saved complete55-row revision record; four groups/214rows remain unfinalized after
+  usage-limit interruption. Structure checks do not establish semantic or human accuracy.
+- [Renewal evidence](FUNCTIONAL_ROLE_RECHECK_2026-09-23.md): official ZIP unchanged; separate
+  `reverified-2026-09-23` rules/pack; actual PENDING valid6/pending269/issues0/exit2/summary null.
+  Old rules/packs remain intact. No new AI draft was copied into human_verdict.
+- Today full suite609passed/293.72s, coverage97.22%, Ruff clean. No production code/test changes.
+- Approval already covers269 separate AI references. Human evaluation and A eligibility remain
+  unmeasured; B NOT_MEASURED, C BLOCKED, finalized=false.
 
 ## 2026-09-14 source renewal and approved AI-label checkpoint
 
