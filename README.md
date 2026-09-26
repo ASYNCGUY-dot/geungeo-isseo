@@ -9,6 +9,10 @@
 
 ## 현재 상태
 
+- 2026-09-27 (A 종료): 사용자 결정으로 사람 검토 대신 AI 대리 라벨을 반영해 기능성 역할 게이트 A를
+  `COMPLETE`로 닫았습니다. 비타민D·코엔자임Q10·마그네슘 `ROLE_ELIGIBLE`, 밀크씨슬·홍삼 `ROLE_INSUFFICIENT`이며
+  사람 기준 정확도는 미측정입니다. 확장 원료 선정(B·C)은 미루고 핵심 원료 3종 MVP를 먼저 만듭니다.
+  [A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선합니다.
 - 2026-09-27: AI 초안의 남은 네 그룹 214행 의미 재검토를 마쳤습니다. 마그네슘 55행도 다른 모델(Claude)로
   교차 확인해 269행 전체의 재검토 기록을 갖췄습니다. 수정 행은 0입니다. 블라인드 실험이나 사람 검토가 아니며,
   사람용 라벨은 바뀌지 않았습니다(운영 검증 `PENDING / 유효6 / 대기269 / 이슈0 / exit2`).
@@ -75,9 +79,9 @@
 4. [Phase 1 확장 원료 검토 상태](docs/evidence/PHASE_1_EXTENSION_REVIEW.md)에 기록된
    운영 명령과 사람 검토 절차를 따릅니다.
 
-AI 초안 269행의 재검토는 2026-09-27에 끝났습니다. 현재 다음 작업은 **사람만 할 수 있는 독립 검토**입니다.
-AI 결과는 별도 AI 자료로 남기고 사람용 CSV에 자동 이관하지 않습니다. 사람 검토·광고 근거·확장 원료 추천은 미완료입니다.
-[사용자 작업 핸드오프](docs/USER_REVIEW_HANDOFF.md)의 9월 27일 안내를 우선하세요.
+기능성 역할 게이트 A는 2026-09-27 사용자 결정으로 AI 대리 라벨을 써서 `COMPLETE`가 됐습니다(사람 정확도 미측정).
+현재 다음 작업은 **핵심 원료 3종의 MVP 수직 슬라이스**입니다. 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOCKED`이며
+확장 원료는 선정하지 않았습니다. [A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선하세요.
 첫 5건 재제출은 불필요하며, 새 사람 검토 시작용 자료는 `build/functional-role-review-guides/pilot-002.md`입니다.
 현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-23/`입니다.
 기존 1번·5번의 제품 식별자 결합 근거 보강과 CHOI·DOHA의 규칙 검토는 각각 별도 작업입니다.

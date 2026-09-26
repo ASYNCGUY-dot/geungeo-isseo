@@ -1,0 +1,469 @@
+{
+  "advertising_evidence_status": "NOT_MEASURED",
+  "expected_label_count": 275,
+  "extension_recommendation_status": "BLOCKED",
+  "finalized": false,
+  "issues": [],
+  "pending_label_count": 0,
+  "status": "COMPLETE",
+  "summary": {
+    "advertising_evidence_status": "NOT_MEASURED",
+    "audited_row_count": 275,
+    "contract_version": "c003-functional-role-v1",
+    "extension_recommendation_status": "BLOCKED",
+    "finalized": false,
+    "functional_role_labels_sha256": "21E6673B555F48ABB2B6DB6CFA3CB813A201B5073CDEDC886E392BFE53F12E48",
+    "generated_at": "2026-09-23T06:02:50.664516Z",
+    "groups": [
+      {
+        "addressable_product_count": 1268,
+        "audited_row_count": 55,
+        "avoidable_unverifiable_count": 2,
+        "confusion_matrix": [
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 37
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 5
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "unverifiable",
+            "row_count": 2
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "unverifiable",
+            "row_count": 11
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          }
+        ],
+        "decidable_agreement_rate": 1.0,
+        "decision_coverage": 0.7636363636363637,
+        "eligibility": "ROLE_INSUFFICIENT",
+        "eligibility_reasons": [
+          "OVERCONFIDENT_DECISION",
+          "POSITIVE_WILSON_BELOW_THRESHOLD",
+          "UNRESOLVED_POSITIVE"
+        ],
+        "false_confirmation_count": 0,
+        "false_exclusion_count": 0,
+        "general_evaluable_count": 20,
+        "group": "milk_thistle",
+        "human_uncertainty_rate": 0.2909090909090909,
+        "overconfident_decision_count": 5,
+        "positive_pool_count": 1268,
+        "positive_precision": 0.8857142857142857,
+        "positive_precision_wilson_95": {
+          "lower": 0.7404853135378618,
+          "upper": 0.9546482066690264
+        },
+        "positive_sample_count": 35,
+        "true_functional_confirmed_count": 31,
+        "unresolved_positive_count": 4,
+        "unverifiable_rate": 0.23636363636363636
+      },
+      {
+        "addressable_product_count": 1360,
+        "audited_row_count": 55,
+        "avoidable_unverifiable_count": 12,
+        "confusion_matrix": [
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 41
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "unverifiable",
+            "row_count": 12
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "unverifiable",
+            "row_count": 2
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          }
+        ],
+        "decidable_agreement_rate": 1.0,
+        "decision_coverage": 0.7454545454545455,
+        "eligibility": "ROLE_ELIGIBLE",
+        "eligibility_reasons": [],
+        "false_confirmation_count": 0,
+        "false_exclusion_count": 0,
+        "general_evaluable_count": 20,
+        "group": "vitamin_d",
+        "human_uncertainty_rate": 0.03636363636363636,
+        "overconfident_decision_count": 0,
+        "positive_pool_count": 1360,
+        "positive_precision": 1.0,
+        "positive_precision_wilson_95": {
+          "lower": 0.9010990076755959,
+          "upper": 0.9999999999999999
+        },
+        "positive_sample_count": 35,
+        "true_functional_confirmed_count": 35,
+        "unresolved_positive_count": 0,
+        "unverifiable_rate": 0.2545454545454545
+      },
+      {
+        "addressable_product_count": 2589,
+        "audited_row_count": 55,
+        "avoidable_unverifiable_count": 3,
+        "confusion_matrix": [
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 20
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 18
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "unverifiable",
+            "row_count": 3
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "unverifiable",
+            "row_count": 13
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "unverifiable",
+            "row_count": 1
+          }
+        ],
+        "decidable_agreement_rate": 1.0,
+        "decision_coverage": 0.7037037037037037,
+        "eligibility": "ROLE_INSUFFICIENT",
+        "eligibility_reasons": [
+          "OVERCONFIDENT_DECISION",
+          "POSITIVE_WILSON_BELOW_THRESHOLD",
+          "UNRESOLVED_POSITIVE"
+        ],
+        "false_confirmation_count": 0,
+        "false_exclusion_count": 0,
+        "general_evaluable_count": 20,
+        "group": "red_ginseng",
+        "human_uncertainty_rate": 0.5740740740740741,
+        "overconfident_decision_count": 18,
+        "positive_pool_count": 2589,
+        "positive_precision": 0.5142857142857142,
+        "positive_precision_wilson_95": {
+          "lower": 0.35568804595868564,
+          "upper": 0.6700576399749026
+        },
+        "positive_sample_count": 35,
+        "true_functional_confirmed_count": 18,
+        "unresolved_positive_count": 17,
+        "unverifiable_rate": 0.2962962962962963
+      },
+      {
+        "addressable_product_count": 667,
+        "audited_row_count": 55,
+        "avoidable_unverifiable_count": 3,
+        "confusion_matrix": [
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 41
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "unverifiable",
+            "row_count": 3
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "unverifiable",
+            "row_count": 11
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          }
+        ],
+        "decidable_agreement_rate": 1.0,
+        "decision_coverage": 0.7454545454545455,
+        "eligibility": "ROLE_ELIGIBLE",
+        "eligibility_reasons": [],
+        "false_confirmation_count": 0,
+        "false_exclusion_count": 0,
+        "general_evaluable_count": 20,
+        "group": "coenzyme_q10",
+        "human_uncertainty_rate": 0.2,
+        "overconfident_decision_count": 0,
+        "positive_pool_count": 667,
+        "positive_precision": 1.0,
+        "positive_precision_wilson_95": {
+          "lower": 0.9010990076755959,
+          "upper": 0.9999999999999999
+        },
+        "positive_sample_count": 35,
+        "true_functional_confirmed_count": 35,
+        "unresolved_positive_count": 0,
+        "unverifiable_rate": 0.2545454545454545
+      },
+      {
+        "addressable_product_count": 2316,
+        "audited_row_count": 55,
+        "avoidable_unverifiable_count": 0,
+        "confusion_matrix": [
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 35
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "functional_confirmed",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "present_nonfunctional",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "functional_confirmed",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "present_nonfunctional",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          },
+          {
+            "human_verdict": "uncertain",
+            "machine_verdict": "unverifiable",
+            "row_count": 20
+          },
+          {
+            "human_verdict": "excluded_mapping_error",
+            "machine_verdict": "unverifiable",
+            "row_count": 0
+          }
+        ],
+        "decidable_agreement_rate": 1.0,
+        "decision_coverage": 0.6363636363636364,
+        "eligibility": "ROLE_ELIGIBLE",
+        "eligibility_reasons": [],
+        "false_confirmation_count": 0,
+        "false_exclusion_count": 0,
+        "general_evaluable_count": 20,
+        "group": "magnesium",
+        "human_uncertainty_rate": 0.36363636363636365,
+        "overconfident_decision_count": 0,
+        "positive_pool_count": 2316,
+        "positive_precision": 1.0,
+        "positive_precision_wilson_95": {
+          "lower": 0.9010990076755959,
+          "upper": 0.9999999999999999
+        },
+        "positive_sample_count": 35,
+        "true_functional_confirmed_count": 35,
+        "unresolved_positive_count": 0,
+        "unverifiable_rate": 0.36363636363636365
+      }
+    ],
+    "product_review_labels_sha256": "A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1",
+    "rules_sha256": "CC7752DBAFF491A60CBBC490FF3AA4AF322E8A9E47BB4690CEFD3A63EA78CD2F",
+    "samples_sha256": "2A5A2554C5B0A5C0FB289E902CC210274A3B99294E8C3779A9CB309B233EDF25",
+    "source_export_sha256": "CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E",
+    "validated_at": "2026-09-26T18:57:49.753517Z"
+  },
+  "valid_label_count": 275
+}

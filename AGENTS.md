@@ -84,11 +84,17 @@
 
 ## 현재 첫 작업
 
-2026-09-27 정본은 `docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-27.md`입니다.
+2026-09-27 최신 정본은 `docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md`입니다.
+사용자 결정("사람 검토는 넘어가고 다음 단계로")에 따라 A를 AI 대리 라벨로 `COMPLETE` 처리했습니다.
+비타민D·코엔자임Q10·마그네슘 `ROLE_ELIGIBLE`, 밀크씨슬·홍삼 `ROLE_INSUFFICIENT`, 사람 정확도 미측정입니다.
+사용자가 "핵심 MVP 먼저"를 골랐으므로 B·C(확장 원료 선정)는 미루고 핵심 원료 3종 MVP 수직 슬라이스를 진행합니다.
+확장 원료를 선정하거나 A 결과를 사람 검증으로 표현하지 않습니다. 아래는 같은 날 앞선 AI 재검토 단계의 기록입니다.
+
+AI 재검토 기록은 `docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-27.md`입니다.
 최신성 복구는 `docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md`를 따릅니다.
 AI 초안 269행의 전체 재검토가 끝났습니다(네 그룹 214행은 9/27 Claude 재검토, 마그네슘 55행은 9/20 재검토 + 9/27 교차 확인).
 수정 행은 0이며, 완료 여부는 `build/functional-role-ai-review-2026-09-14/audit/revision-completion-2026-09-27.json`의 해시 결합으로 판단합니다.
-AI를 사람 정답으로 취급하지 않습니다. 다음 단계는 사람만 할 수 있는 독립 검토(pilot-002)이며 AI가 대신 채우지 않습니다.
+AI를 사람 정답으로 취급하지 않습니다. pilot-002 사람 검토는 사용자 결정으로 생략했으며 AI가 대신 채우지 않았습니다.
 9/23 규칙의 내부 7일 경계(`2026-09-30T15:02:04+09:00`) 이후 라벨을 반영하려면 실제 공식 출처 재확인이 먼저입니다.
 현재 운영 규칙/pack은 `reverified-2026-09-23` 사본이며, 실제 검증은 PENDING/유효6/대기269/이슈0/exit2입니다.
 유효6은 기존 승인 AI5 + 상속 제외1이며 사람 검토 수가 아닙니다. 새 AI 초안은 human_verdict에 자동 이관하지 않습니다.

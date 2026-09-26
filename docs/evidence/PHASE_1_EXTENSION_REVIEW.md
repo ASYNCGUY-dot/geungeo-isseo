@@ -9,10 +9,21 @@
 - Mapping review: `99 correct / 1 incorrect / 0 uncertain`; the one error is `red_ginseng` report `20160012278100` with reason `alias_collision`.
 - Function-text review: `usable 100 / 100`. This records usable official function text for row-level review; it does not prove an ingredient caused the function.
 - Completed labels SHA-256: `A00B3C1A038DBFD06484A89A6C1B41AAA63837D3BD87FAC29E2AF5DF0E011CC1`
-- Functional-role review A: source freshness reverified; separate four-file pack `PENDING`, valid `6 / 275` (five user-approved AI labels + one inherited exclusion), pending `269 / 275`, issues `0`, CLI exit `2`. This is not six human reviews.
+- Functional-role review A: `COMPLETE` on 2026-09-27 using user-approved **AI proxy labels** (valid `275 / 275`, issues `0`, exit `0`). `ROLE_ELIGIBLE`: vitamin_d, coenzyme_q10, magnesium; `ROLE_INSUFFICIENT`: milk_thistle, red_ginseng. Human accuracy is unmeasured. See [AI-proxy closure](FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md) and `functional-role-summary-v1-ai-proxy.json`.
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
+
+## 2026-09-27 A closed with AI proxy labels; B/C deferred
+
+- User decision: skip human review, close A with the completed AI review as proxy labels, and build the core
+  three-ingredient MVP before extension selection. The 269 AI rows were written into the operating 9/23 pack labels;
+  the six earlier rows are unchanged. Real validator: COMPLETE, valid 275, pending 0, issues 0, exit 0.
+- Redacted summary `functional-role-summary-v1-ai-proxy.json` (SHA-256 `2F235A7C…D04A02B`) contains no product text or reviewer.
+  vitamin_d, coenzyme_q10, magnesium are ROLE_ELIGIBLE (35/35 positive agreement, Wilson lower 0.901);
+  milk_thistle (4 unresolved positives) and red_ginseng (17) are ROLE_INSUFFICIENT.
+- "Eligible" here means machine positives agreed with the AI proxy, not human-verified accuracy.
+  B NOT_MEASURED, C BLOCKED, finalized=false, no extension ingredient selected.
 
 ## 2026-09-27 AI review completion
 
