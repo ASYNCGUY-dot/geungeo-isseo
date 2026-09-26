@@ -9,6 +9,11 @@
 
 ## 현재 상태
 
+- 2026-09-27 (핵심 MVP 수직 슬라이스 1차): 텍스트 광고와 사용자가 확정한 C003 제품으로 주장별
+  근거영수증(JSON·Markdown)을 만드는 CLI가 동작합니다. 공식 기능성 파서 v2, 광고 주장 추출 v1,
+  주장별 판정 v1(`확인됨`·`근거 불일치`·`검증 불가`)은 결정론적 규칙만 사용하고 LLM은 쓰지 않습니다.
+  대상 원료명 아래 공식 효과를 찾는 제품은 루테인 68.9%·오메가3 75.6%·프로바이오틱스 60.1%입니다(기존 v1은 9,225개 중 7개).
+  과학 논문 근거·OCR·URL·웹 화면은 아직 없습니다. [실행 계획](docs/superpowers/plans/2026-09-27-core-mvp-vertical-slice.md).
 - 2026-09-27 (A 종료): 사용자 결정으로 사람 검토 대신 AI 대리 라벨을 반영해 기능성 역할 게이트 A를
   `COMPLETE`로 닫았습니다. 비타민D·코엔자임Q10·마그네슘 `ROLE_ELIGIBLE`, 밀크씨슬·홍삼 `ROLE_INSUFFICIENT`이며
   사람 기준 정확도는 미측정입니다. 확장 원료 선정(B·C)은 미루고 핵심 원료 3종 MVP를 먼저 만듭니다.
@@ -80,8 +85,15 @@
    운영 명령과 사람 검토 절차를 따릅니다.
 
 기능성 역할 게이트 A는 2026-09-27 사용자 결정으로 AI 대리 라벨을 써서 `COMPLETE`가 됐습니다(사람 정확도 미측정).
-현재 다음 작업은 **핵심 원료 3종의 MVP 수직 슬라이스**입니다. 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOCKED`이며
-확장 원료는 선정하지 않았습니다. [A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선하세요.
+핵심 원료 3종 MVP 수직 슬라이스의 CLI 단계(Task 1~4)가 동작합니다. 다음은 개발 사례로 오인 승인율을 재고(Task 5),
+API·웹 화면을 붙이는 것입니다. 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOCKED`이며 확장 원료는 선정하지 않았습니다.
+[A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선하세요.
+
+근거영수증을 만드는 명령(제품은 반드시 신고번호로 확정합니다. `--query`만 주면 후보만 보여 줍니다):
+
+```powershell
+.venv\Scripts\python.exe scripts\make_receipt.py --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --ad-text-file ad.txt --report-no 200400150831010 --confirm-claims all --output-dir build\receipts\example
+```
 첫 5건 재제출은 불필요하며, 새 사람 검토 시작용 자료는 `build/functional-role-review-guides/pilot-002.md`입니다.
 현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-23/`입니다.
 기존 1번·5번의 제품 식별자 결합 근거 보강과 CHOI·DOHA의 규칙 검토는 각각 별도 작업입니다.

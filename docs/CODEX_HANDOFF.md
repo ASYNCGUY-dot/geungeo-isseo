@@ -2,11 +2,25 @@
 
 - 기준일: `2026-09-27 Asia/Seoul`
 - 작업 브랜치: `phase-0-c003-data-gate`
-- 상태: **A COMPLETE(AI 대리 라벨, 사람 정확도 미측정); 적격 비타민D·코엔자임Q10·마그네슘; B·C 보류; 다음은 핵심 MVP**
+- 상태: **핵심 MVP 슬라이스 CLI 동작(Task 1~4); A COMPLETE(AI 대리 라벨); B·C 보류; 다음은 Task 5 오인 승인율**
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-09-27 A 종료와 방향 전환
+## 이번 인계 — 2026-09-27 핵심 MVP 수직 슬라이스 1차
+
+- 계획: [핵심 MVP 수직 슬라이스](superpowers/plans/2026-09-27-core-mvp-vertical-slice.md). Task 1~4 완료, 다음은 Task 5.
+- 출발점 실측: 핵심 3종 제품 9,225개 중 기존 Phase 1 `READY`는 7개였다. v1 파서가 정확한 6문구만 인식했기 때문이다.
+- 새 모듈:
+  - `official_v2.py`: 원료명 표시 블록과 공식 효과를 원문 범위와 함께 추출한다.
+  - `claims_v1.py`: 광고 문장별 효과·표현 강도를 분류한다.
+  - `verdict_v1.py`: fail-closed 판정.
+  - `receipt.py`: 영수증 JSON·Markdown.
+  - `scripts/make_receipt.py`: CLI.
+- 대상 원료명 아래 공식 효과를 찾는 비율은 루테인 68.9%, 오메가3 75.6%, 프로바이오틱스 60.1%다.
+  원료명 없는 나열은 같은 문구를 다른 원료도 쓰므로 `검증 불가`로 둔다.
+- 이 슬라이스는 `insufficient`·`contradicted`를 만들지 않는다(과학 근거 층 없음). LLM·OCR·URL·웹 화면은 아직 없다.
+
+## 2026-09-27 A 종료와 방향 전환
 
 - 먼저 [A 종료 기록](evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 읽는다.
 - 사용자가 "사람 검토는 넘어가고 다음 단계로 넘어가줘"라고 한 뒤, 선택 질문에서 "AI 대리 라벨로 닫기"와 "핵심 MVP 먼저"를 골랐다.

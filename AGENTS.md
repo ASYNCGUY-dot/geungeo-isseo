@@ -84,7 +84,12 @@
 
 ## 현재 첫 작업
 
-2026-09-27 최신 정본은 `docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md`입니다.
+현재 작업 계획은 `docs/superpowers/plans/2026-09-27-core-mvp-vertical-slice.md`입니다. Task 1~4(공식 기능성 파서 v2,
+광고 주장 추출 v1, 주장별 판정 v1, 근거영수증·CLI)는 2026-09-27 완료했고, 다음은 Task 5(개발 사례와 오인 승인율)입니다.
+판정은 결정론적 규칙만 내리고, `확인됨`은 대상 원료명에 붙은 공식 문구와 공식 강도('도움을 줄 수 있음') 이내일 때만 허용합니다.
+FastAPI 등 새 패키지 설치는 사용자 확인 후 진행합니다.
+
+2026-09-27 A 게이트 정본은 `docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md`입니다.
 사용자 결정("사람 검토는 넘어가고 다음 단계로")에 따라 A를 AI 대리 라벨로 `COMPLETE` 처리했습니다.
 비타민D·코엔자임Q10·마그네슘 `ROLE_ELIGIBLE`, 밀크씨슬·홍삼 `ROLE_INSUFFICIENT`, 사람 정확도 미측정입니다.
 사용자가 "핵심 MVP 먼저"를 골랐으므로 B·C(확장 원료 선정)는 미루고 핵심 원료 3종 MVP 수직 슬라이스를 진행합니다.
