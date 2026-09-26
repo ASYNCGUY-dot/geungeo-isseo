@@ -1,6 +1,6 @@
 # Phase 1 Extension Review Status
 
-- Status date: `2026-09-23 Asia/Seoul`
+- Status date: `2026-09-27 Asia/Seoul`
 - Live export status: `PASS`
 - Product review v2 pack status: `GENERATED_AND_VERIFIED`
 - Planned deterministic seed: `20260823`
@@ -13,6 +13,15 @@
 - Advertising evidence status: `NOT_MEASURED`
 - Extension recommendation status: `BLOCKED`; `finalized=false`
 - Finalized extension ingredients: `none`
+
+## 2026-09-27 AI review completion
+
+- [Completion record](FUNCTIONAL_ROLE_AI_REVIEW_2026-09-27.md): the four remaining groups (214 rows) were fully
+  re-reviewed by Claude Code (`claude-opus-5-5`), and all 55 magnesium rows were cross-checked by the same model.
+  Content changes: 0 of 269. Review files keep their 9/23 hashes. This is a non-blind AI revision audit, not human review.
+- Python structure check `validate-2026-09-27.py`: PASS_STRUCTURE_ONLY, 5 groups completion-confirmed, 0 warnings, exit 0.
+- Operating validator unchanged: PENDING, valid 6, pending 269, issues 0, exit 2. The 9/23 rule freshness boundary is
+  `2026-09-30T15:02:04+09:00`. Human accuracy and A eligibility remain unmeasured; B NOT_MEASURED, C BLOCKED, finalized=false.
 
 ## 2026-09-23 AI draft and source-renewal checkpoint
 

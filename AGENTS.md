@@ -84,12 +84,12 @@
 
 ## 현재 첫 작업
 
-2026-09-23 정본은 `docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-23.md`와
-`docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md`입니다.
-AI 초안 269행의 구조·원문 대조는 통과했습니다. 마그네슘 55행의 재검토 기록은 있지만,
-나머지 네 그룹 214행의 의미 재검토 완료·완료 시각 및 후속 표본 감사는 사용량 제한으로 미완료입니다.
-표본 감사 지적 두 행은 원문과 직접 대조해 수정했습니다. AI를 사람 정답으로 취급하지 않습니다.
-269건 AI 선행 검토는 이미 승인되었습니다. 반복 승인 요청 없이 미완료 재검토부터 재개합니다.
+2026-09-27 정본은 `docs/evidence/FUNCTIONAL_ROLE_AI_REVIEW_2026-09-27.md`입니다.
+최신성 복구는 `docs/evidence/FUNCTIONAL_ROLE_RECHECK_2026-09-23.md`를 따릅니다.
+AI 초안 269행의 전체 재검토가 끝났습니다(네 그룹 214행은 9/27 Claude 재검토, 마그네슘 55행은 9/20 재검토 + 9/27 교차 확인).
+수정 행은 0이며, 완료 여부는 `build/functional-role-ai-review-2026-09-14/audit/revision-completion-2026-09-27.json`의 해시 결합으로 판단합니다.
+AI를 사람 정답으로 취급하지 않습니다. 다음 단계는 사람만 할 수 있는 독립 검토(pilot-002)이며 AI가 대신 채우지 않습니다.
+9/23 규칙의 내부 7일 경계(`2026-09-30T15:02:04+09:00`) 이후 라벨을 반영하려면 실제 공식 출처 재확인이 먼저입니다.
 현재 운영 규칙/pack은 `reverified-2026-09-23` 사본이며, 실제 검증은 PENDING/유효6/대기269/이슈0/exit2입니다.
 유효6은 기존 승인 AI5 + 상속 제외1이며 사람 검토 수가 아닙니다. 새 AI 초안은 human_verdict에 자동 이관하지 않습니다.
 기존 1번·5번 보충 근거, A 적격성 미측정, B NOT_MEASURED, C BLOCKED, finalized=false를 유지합니다.
