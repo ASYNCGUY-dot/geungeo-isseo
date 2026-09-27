@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>근거있어 — 근거영수증</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #5f5f5a; --line: #deddd8;
+    --accent: #2d5b8a; --ok: #2f6b3a; --bad: #a33b2b; --unk: #6b5e2f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --panel: #20201e; --text: #ecebe6; --muted: #a8a7a0; --line: #3a3936;
+      --accent: #8db7e3; --ok: #7cc48a; --bad: #ef8e7e; --unk: #d9c27c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  h2 { font-size: 1.1rem; margin: 0 0 10px; }
+  .step { color: var(--muted); font-weight: 600; margin-right: 6px; }
+  textarea, input[type=search] { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--text); font: inherit; }
+  textarea { min-height: 140px; resize: vertical; }
+  button { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent);
+    background: var(--accent); color: var(--panel); cursor: pointer; margin-top: 10px; }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+  .row input[type=search] { flex: 1 1 260px; }
+  .row button { margin-top: 0; }
+  ul.plain { list-style: none; padding: 0; margin: 10px 0 0; }
+  ul.plain li { border-top: 1px solid var(--line); padding: 10px 0; }
+  ul.plain li:first-child { border-top: none; }
+  label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  details { margin-top: 6px; } details pre { white-space: pre-wrap; font: .88rem/1.5 inherit; margin: 6px 0 0; color: var(--muted); }
+  .confirmed-product { margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--bg); }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-top: 12px; }
+  .badge { display: inline-block; font-weight: 700; padding: 2px 10px; border-radius: 999px; border: 2px solid currentColor; }
+  .v-confirmed { color: var(--ok); } .v-mismatch { color: var(--bad); } .v-unverifiable, .v-insufficient, .v-contradicted { color: var(--unk); }
+  blockquote { margin: 10px 0; padding: 6px 12px; border-left: 3px solid var(--line); }
+  .limits { color: var(--muted); font-size: .92rem; }
+  .status { min-height: 1.4em; color: var(--muted); margin-top: 8px; }
+  .error { color: var(--bad); }
+</style>
+</head>
+<body>
+<main>
+  <h1>근거있어</h1>
+  <p class="lead">건강기능식품 광고 문구를 공식 기능성 원문과 대조해 주장별 근거영수증을 만듭니다.
+    효과·안전·적법성을 판단하지 않고, 공식 인정 범위와 일치하는지만 확인합니다.</p>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1"><span class="step">1</span>광고 문구</h2>
+    <label for="ad-text" class="meta">광고에 쓰인 문구를 붙여 넣으세요. (현재 루테인·오메가3·프로바이오틱스 기능을 판정합니다)</label>
+    <textarea id="ad-text" maxlength="5000" placeholder="예: 눈 건강에 도움을 줄 수 있는 루테인!"></textarea>
+    <button id="extract">주장 찾기</button>
+    <div class="status" id="status-1" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="s2" id="claims-section" hidden>
+    <h2 id="s2"><span class="step">2</span>판정할 주장 확인</h2>
+    <p class="meta">체크한 주장만 판정합니다. 체크하지 않은 주장은 '검증 불가'로 표시됩니다.</p>
+    <button class="secondary" id="select-all">모두 선택</button>
+    <ul class="plain" id="claims"></ul>
+  </section>
+
+  <section aria-labelledby="s3" id="product-section" hidden>
+    <h2 id="s3"><span class="step">3</span>제품 확인</h2>
+    <p class="meta">제품명·업체명·신고번호로 찾은 뒤, 공식 정보를 보고 직접 선택하세요. 자동으로 확정하지 않습니다.</p>
+    <div class="row">
+      <input type="search" id="query" aria-label="제품 검색어" placeholder="제품명, 업체명 또는 신고번호">
+      <button id="search">검색</button>
+    </div>
+    <ul class="plain" id="candidates"></ul>
+    <div id="confirmed-product"></div>
+    <div class="status" id="status-3" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="s4" id="receipt-section" hidden>
+    <h2 id="s4"><span class="step">4</span>근거영수증</h2>
+    <button id="evaluate" disabled>영수증 만들기</button>
+    <div class="status" id="status-4" aria-live="polite"></div>
+    <div id="receipt"></div>
+  </section>
+</main>
+<script>
+const EFFECTS = {
+  macular_pigment_eye_health: "황반색소밀도 유지로 눈 건강", blood_triglyceride: "혈중 중성지질 개선",
+  blood_circulation: "혈행 개선", memory: "기억력 개선", dry_eye_eye_health: "건조한 눈 개선으로 눈 건강",
+  probiotic_growth_harmful_inhibition: "유산균 증식 및 유해균 억제", bowel_movement: "배변활동 원활", gut_health: "장 건강",
+};
+const STRENGTHS = { possibility: "가능성", support: "도움", improvement: "개선 단정", guarantee: "보장", treatment_prevention: "치료·예방" };
+let analysisId = null;
+let productConfirmed = false;
+
+const $ = (id) => document.getElementById(id);
+function el(tag, props = {}, children = []) {
+  const node = document.createElement(tag);
+  Object.assign(node, props);
+  for (const child of [].concat(children)) node.append(child);
+  return node;
+}
+function setStatus(id, message, isError = false) {
+  const node = $(id); node.textContent = message; node.classList.toggle("error", isError);
+}
+async function api(path, options = {}) {
+  const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(body?.error?.message || "요청을 처리하지 못했습니다.");
+  return body;
+}
+function effectText(claim) {
+  const effects = (claim.effect_candidates || []).map((key) => EFFECTS[key] || key).join(", ") || "규칙 밖";
+  const strength = claim.strength ? STRENGTHS[claim.strength] : "확인 안 됨";
+  return `읽은 기능: ${effects} / 표현 강도: ${strength}`;
+}
+
+$("extract").addEventListener("click", async () => {
+  setStatus("status-1", "주장을 찾는 중입니다…");
+  try {
+    const body = await api("/api/v1/analyses", { method: "POST", body: JSON.stringify({ ad_text: $("ad-text").value }) });
+    analysisId = body.analysis_id; productConfirmed = false;
+    const list = $("claims"); list.replaceChildren();
+    for (const claim of body.claims) {
+      const box = el("input", { type: "checkbox", value: claim.claim_id, id: `claim-${claim.claim_id}` });
+      list.append(el("li", {}, el("label", { htmlFor: box.id }, [box, el("span", {}, [
+        el("strong", { textContent: `${claim.claim_id} ` }), claim.text, el("br"), el("span", { className: "meta", textContent: effectText(claim) })])])));
+    }
+    if (!body.claims.length) list.append(el("li", { className: "meta", textContent: "판정할 주장을 찾지 못했습니다." }));
+    $("claims-section").hidden = false; $("product-section").hidden = false; $("receipt-section").hidden = false;
+    $("confirmed-product").replaceChildren(); $("receipt").replaceChildren(); $("evaluate").disabled = true;
+    setStatus("status-1", `주장 ${body.claims.length}개를 찾았습니다.`);
+  } catch (error) { setStatus("status-1", error.message, true); }
+});
+
+$("select-all").addEventListener("click", () => {
+  for (const box of document.querySelectorAll("#claims input[type=checkbox]")) box.checked = true;
+});
+
+$("search").addEventListener("click", async () => {
+  setStatus("status-3", "검색 중입니다…");
+  try {
+    const body = await api(`/api/v1/products/search?q=${encodeURIComponent($("query").value)}`);
+    const list = $("candidates"); list.replaceChildren();
+    for (const item of body.candidates) {
+      const button = el("button", { className: "secondary", textContent: "이 제품으로 확정" });
+      button.addEventListener("click", () => confirmProduct(item.report_no));
+      list.append(el("li", {}, [
+        el("strong", { textContent: item.name }), ` · ${item.company}`, el("br"),
+        el("span", { className: "meta", textContent: `신고번호 ${item.report_no}` }),
+        el("details", {}, [el("summary", { textContent: "공식 기능성 원문 보기" }), el("pre", { textContent: item.primary_function || "(비어 있음)" })]),
+        button]));
+    }
+    setStatus("status-3", body.candidates.length ? `후보 ${body.candidates.length}개` : "후보가 없습니다.");
+  } catch (error) { setStatus("status-3", error.message, true); }
+});
+
+async function confirmProduct(reportNo) {
+  try {
+    const body = await api(`/api/v1/analyses/${analysisId}/product-confirmation`, { method: "PUT", body: JSON.stringify({ report_no: reportNo }) });
+    productConfirmed = true; $("evaluate").disabled = false; $("receipt").replaceChildren();
+    $("confirmed-product").replaceChildren(el("div", { className: "confirmed-product" }, [
+      "확정한 제품: ", el("strong", { textContent: body.product.name }), ` (${body.product.company}, 신고번호 ${body.product.report_no})`]));
+    setStatus("status-3", "제품을 확정했습니다.");
+  } catch (error) { setStatus("status-3", error.message, true); }
+}
+
+$("evaluate").addEventListener("click", async () => {
+  setStatus("status-4", "판정 중입니다…");
+  try {
+    const selected = [...document.querySelectorAll("#claims input[type=checkbox]:checked")].map((box) => box.value);
+    await api(`/api/v1/analyses/${analysisId}/claims/confirmation`, { method: "PUT", body: JSON.stringify({ claim_ids: selected }) });
+    const receipt = await api(`/api/v1/analyses/${analysisId}/evaluate`, { method: "POST" });
+    renderReceipt(receipt); setStatus("status-4", "영수증을 만들었습니다.");
+  } catch (error) { setStatus("status-4", error.message, true); }
+});
+
+function renderReceipt(receipt) {
+  const root = $("receipt"); root.replaceChildren();
+  const p = receipt.product;
+  root.append(el("p", { className: "meta", textContent:
+    `${p.name} (${p.company}) · 신고번호 ${p.report_no} · 공식 정보 ${p.source_id} 조회 ${p.retrieved_at} · 규칙 ${receipt.rule_versions.join(", ")}` }));
+  for (const claim of receipt.claims) {
+    const parts = [
+      el("span", { className: `badge v-${claim.verdict}`, textContent: claim.verdict_label }),
+      el("blockquote", { textContent: claim.ad_text }),
+      el("div", { textContent: `이유: ${claim.reason_message}` }),
+      el("div", { className: "meta", textContent: effectText(claim) }),
+    ];
+    if (claim.official_quote) {
+      const header = claim.official_quote.header ? `[${claim.official_quote.header}] ` : "";
+      parts.push(el("div", { className: "meta", textContent: `공식 기능성 원문: ${header}"${claim.official_quote.statement_text}"` }));
+    }
+    root.append(el("article", { className: "card", ariaLabel: `${claim.claim_id} ${claim.verdict_label}` }, parts));
+  }
+  if (!receipt.claims.length) root.append(el("p", { textContent: "판정할 주장이 없습니다." }));
+  root.append(el("h3", { textContent: "이 영수증의 한계" }),
+    el("ul", { className: "limits" }, receipt.limitations.map((text) => el("li", { textContent: text }))),
+    el("a", { href: `/api/v1/analyses/${analysisId}/receipt?format=markdown`, target: "_blank", rel: "noopener", textContent: "Markdown으로 보기" }));
+}
+</script>
+</body>
+</html>
