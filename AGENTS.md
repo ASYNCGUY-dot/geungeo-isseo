@@ -84,10 +84,11 @@
 
 ## 현재 첫 작업
 
-현재 작업 계획은 `docs/superpowers/plans/2026-09-27-core-mvp-vertical-slice.md`입니다. Task 1~4(공식 기능성 파서 v2,
-광고 주장 추출 v1, 주장별 판정 v1, 근거영수증·CLI)는 2026-09-27 완료했고, 다음은 Task 5(개발 사례와 오인 승인율)입니다.
+현재 작업 계획은 `docs/superpowers/plans/2026-09-27-core-mvp-vertical-slice.md`입니다. Task 1~6(공식 기능성 파서 v2,
+광고 주장 추출 v1, 주장별 판정 v1, 근거영수증·CLI, 개발 사례 평가, FastAPI·웹 화면)은 2026-09-27 완료했습니다.
+개발 평가 기록은 `docs/evidence/CORE_MVP_DEV_EVAL_2026-09-27.md`이며, 개발 사례 수치(AI 개발자 라벨)를 서비스 정확도로 쓰지 않습니다.
 판정은 결정론적 규칙만 내리고, `확인됨`은 대상 원료명에 붙은 공식 문구와 공식 강도('도움을 줄 수 있음') 이내일 때만 허용합니다.
-FastAPI 등 새 패키지 설치는 사용자 확인 후 진행합니다.
+FastAPI·uvicorn 외의 새 패키지 설치는 사용자 확인 후 진행합니다. 다음 작업 범위(동결 평가세트, LLM·논문·OCR)는 사용자와 다시 정합니다.
 
 2026-09-27 A 게이트 정본은 `docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md`입니다.
 사용자 결정("사람 검토는 넘어가고 다음 단계로")에 따라 A를 AI 대리 라벨로 `COMPLETE` 처리했습니다.

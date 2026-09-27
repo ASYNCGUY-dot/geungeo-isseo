@@ -9,6 +9,10 @@
 
 ## 현재 상태
 
+- 2026-09-27 (핵심 MVP 개발 평가·웹 화면): 개발 사례 31건에서 `확인됨` 오인 승인 0건, 판정 일치 29/30입니다.
+  광고 문장은 직접 쓴 가상 문장이고 기대 판정은 AI 개발자 라벨이며, 개발 중 조정에 쓴 표본이라 서비스 정확도가 아닙니다.
+  FastAPI 로컬 API와 단일 웹 화면(주장 확인 → 제품 확정 → 영수증)을 붙여 실제 C003 스냅샷으로 브라우저 확인했습니다.
+  분석은 메모리에만 저장합니다. [개발 평가·화면 기록](docs/evidence/CORE_MVP_DEV_EVAL_2026-09-27.md).
 - 2026-09-27 (핵심 MVP 수직 슬라이스 1차): 텍스트 광고와 사용자가 확정한 C003 제품으로 주장별
   근거영수증(JSON·Markdown)을 만드는 CLI가 동작합니다. 공식 기능성 파서 v2, 광고 주장 추출 v1,
   주장별 판정 v1(`확인됨`·`근거 불일치`·`검증 불가`)은 결정론적 규칙만 사용하고 LLM은 쓰지 않습니다.
@@ -69,8 +73,8 @@
 - 2026-09-09: 기존 검토팩 재검증은 `PENDING`, 유효 `1 / 275`, 대기 `274 / 275`,
   이슈 `0`, CLI 종료코드 `2`입니다. 유효 1행은 v2 매핑 오류의 상속 제외 행이며
   신규 제품별 사람 검토를 완료했다는 뜻은 아닙니다. 원료별 적격성·판정 정확도는 아직 미측정입니다.
-- OCR, URL crawler, LLM, RAG, 전체 판정 규칙, FastAPI, React, 인증은 아직 구현하지
-  않았습니다. 따라서 현재 코드는 완성된 애플리케이션이나 배포 서비스가 아닙니다.
+- OCR, URL crawler, LLM, RAG, 과학 근거 판정, React, 인증, 영속 저장은 아직 구현하지 않았습니다.
+  FastAPI 로컬 API와 단일 웹 화면은 2026-09-27에 추가했습니다. 현재 코드는 배포 서비스가 아닙니다.
 - 복습 코드는 별도 저장소 `C:\WORK\WORK\donga-review`에 유지합니다.
 
 ## 코덱스에서 이어가기
@@ -85,14 +89,26 @@
    운영 명령과 사람 검토 절차를 따릅니다.
 
 기능성 역할 게이트 A는 2026-09-27 사용자 결정으로 AI 대리 라벨을 써서 `COMPLETE`가 됐습니다(사람 정확도 미측정).
-핵심 원료 3종 MVP 수직 슬라이스의 CLI 단계(Task 1~4)가 동작합니다. 다음은 개발 사례로 오인 승인율을 재고(Task 5),
-API·웹 화면을 붙이는 것입니다. 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOCKED`이며 확장 원료는 선정하지 않았습니다.
-[A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선하세요.
+핵심 원료 3종 MVP 수직 슬라이스는 Task 1~6(파서·주장 추출·판정·영수증 CLI·개발 평가·API/웹 화면)이 동작합니다.
+다음 후보는 사람 라벨의 동결 평가세트이며 범위는 다시 정합니다. 광고 근거 B는 `NOT_MEASURED`, 확장 추천 C는 `BLOCKED`이며
+확장 원료는 선정하지 않았습니다. [A 종료 기록](docs/evidence/FUNCTIONAL_ROLE_GATE_AI_PROXY_2026-09-27.md)을 우선하세요.
+
+로컬 웹 화면을 여는 명령(서버가 뜨면 브라우저에서 `http://127.0.0.1:8000/`을 엽니다. 끌 때는 Ctrl+C):
+
+```powershell
+.venv\Scripts\python.exe scripts\serve_api.py --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --port 8000
+```
 
 근거영수증을 만드는 명령(제품은 반드시 신고번호로 확정합니다. `--query`만 주면 후보만 보여 줍니다):
 
 ```powershell
 .venv\Scripts\python.exe scripts\make_receipt.py --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --ad-text-file ad.txt --report-no 200400150831010 --confirm-claims all --output-dir build\receipts\example
+```
+
+개발 사례 평가 명령(오인 승인이 1건이라도 있으면 종료코드 1):
+
+```powershell
+.venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\dev-cases\core-mvp-dev-v1.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
 첫 5건 재제출은 불필요하며, 새 사람 검토 시작용 자료는 `build/functional-role-review-guides/pilot-002.md`입니다.
 현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-23/`입니다.
