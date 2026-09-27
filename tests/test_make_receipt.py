@@ -96,6 +96,30 @@ def test_unknown_report_no_and_existing_output_are_errors(tmp_path: Path) -> Non
     assert (out / "receipt.json").read_text(encoding="utf-8") == "{}"
 
 
+def test_only_listed_claim_ids_are_confirmed(tmp_path: Path) -> None:
+    out = tmp_path / "receipt"
+    code = make_receipt.main(
+        _base_args(tmp_path)
+        + ["--report-no", "200400000000010", "--confirm-claims", "C1, ", "--output-dir", str(out)]
+    )
+
+    assert code == 0
+    payload = json.loads((out / "receipt.json").read_text(encoding="utf-8"))
+    assert payload["claims"][0]["verdict"] == "confirmed"
+    assert payload["claims"][1]["reason_code"] == "CLAIM_UNCONFIRMED"
+
+
+def test_unknown_claim_id_is_an_error_without_output(tmp_path: Path) -> None:
+    out = tmp_path / "receipt"
+    code = make_receipt.main(
+        _base_args(tmp_path)
+        + ["--report-no", "200400000000010", "--confirm-claims", "C9", "--output-dir", str(out)]
+    )
+
+    assert code == 3
+    assert not out.exists()
+
+
 def test_naive_source_time_is_rejected(tmp_path: Path) -> None:
     args = _base_args(tmp_path)
     args[args.index(RETRIEVED_AT)] = "2026-08-27T12:42:29"

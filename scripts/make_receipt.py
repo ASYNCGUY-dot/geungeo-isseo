@@ -5,7 +5,6 @@ Exit codes: 0 receipt written, 2 product confirmation still required (candidates
 """
 
 import argparse
-import json
 from collections import Counter
 from collections.abc import Sequence
 from datetime import UTC, datetime
@@ -22,6 +21,7 @@ from claimledger.receipt import (
     receipt_to_json,
     render_markdown,
 )
+from claimledger.snapshot import load_c003_snapshot, parse_aware_datetime
 from claimledger.verdict_v1 import decide_claim
 
 
@@ -44,25 +44,6 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--generated-at", help="timezone-aware ISO time for reproducible output")
     return parser.parse_args(argv)
-
-
-def _aware(value: str, label: str) -> datetime:
-    try:
-        parsed = datetime.fromisoformat(value)
-    except ValueError as exc:
-        raise ReceiptCliError(f"{label} is not an ISO datetime") from exc
-    if parsed.tzinfo is None or parsed.utcoffset() is None:
-        raise ReceiptCliError(f"{label} must include a timezone")
-    return parsed
-
-
-def load_products(path: Path, retrieved_at: datetime) -> list[ProductCandidate]:
-    products: list[ProductCandidate] = []
-    with path.open(encoding="utf-8") as handle:
-        for line in handle:
-            if line.strip():
-                products.append(ProductCandidate(**json.loads(line), source_id="C003", retrieved_at=retrieved_at))
-    return products
 
 
 def _confirm(products: list[ProductCandidate], report_no: str) -> ConfirmedProduct:
@@ -91,9 +72,11 @@ def _write_outputs(output_dir: Path, json_text: str, markdown: str) -> None:
 
 
 def run(args: argparse.Namespace) -> int:
-    retrieved_at = _aware(args.source_retrieved_at, "--source-retrieved-at")
-    generated_at = _aware(args.generated_at, "--generated-at") if args.generated_at else datetime.now(UTC)
-    products = load_products(args.source_export, retrieved_at)
+    retrieved_at = parse_aware_datetime(args.source_retrieved_at, "--source-retrieved-at")
+    generated_at = (
+        parse_aware_datetime(args.generated_at, "--generated-at") if args.generated_at else datetime.now(UTC)
+    )
+    products = load_c003_snapshot(args.source_export, retrieved_at)
 
     if args.report_no is None and args.query:
         results = search_products(products, args.query)

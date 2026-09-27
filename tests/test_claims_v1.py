@@ -39,6 +39,9 @@ def test_sentences_become_claims_with_literal_spans() -> None:
         ("유산균 증식과 유해균 억제에 도움", (EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION,), ExpressionStrength.SUPPORT),
         ("쾌변! 배변활동을 원활하게", (EffectKey.BOWEL_MOVEMENT,), None),
         ("장 건강에 도움을 줄 수 있음", (EffectKey.GUT_HEALTH,), ExpressionStrength.SUPPORT),
+        ("눈의 피로가 사라집니다", (), ExpressionStrength.IMPROVEMENT),
+        ("면역력을 높여줍니다", (), ExpressionStrength.IMPROVEMENT),
+        ("체지방을 없애줍니다", (), ExpressionStrength.IMPROVEMENT),
     ],
 )
 def test_effect_and_strength_classification(

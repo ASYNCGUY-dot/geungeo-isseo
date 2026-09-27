@@ -55,7 +55,10 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
     (ExpressionStrength.SUPPORT, re.compile(r"도움")),
     (
         ExpressionStrength.IMPROVEMENT,
-        re.compile(r"개선|향상|좋아|회복|되살|강화|튼튼|해결|해소|쑥쑥|낮춰|낮춥|낮아|떨어뜨|젊어"),
+        re.compile(
+            r"개선|향상|좋아|회복|되살|강화|튼튼|해결|해소|쑥쑥|낮춰|낮춥|낮아|떨어뜨|젊어"
+            r"|사라지|사라집|없애|높여|높이|높아"
+        ),
     ),
     (ExpressionStrength.POSSIBILITY, re.compile(r"수있")),
 )
