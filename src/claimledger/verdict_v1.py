@@ -8,6 +8,7 @@ from claimledger.claims_v1 import (
     STRENGTH_RANK,
     AdClaim,
     ExpressionStrength,
+    supports_confirmation,
 )
 from claimledger.domain import ConfirmedProduct, Verdict
 from claimledger.errors import IdentityRequiredError
@@ -21,7 +22,7 @@ from claimledger.official_v2 import (
     parse_official_function_v2,
 )
 
-CLAIM_VERDICT_VERSION = "claim-verdict-v1"
+CLAIM_VERDICT_VERSION = "claim-verdict-v1.1"
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 
 
@@ -31,6 +32,7 @@ class VerdictReason(StrEnum):
     DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE = "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
     CLAIM_OUTSIDE_RULE_SCOPE = "CLAIM_OUTSIDE_RULE_SCOPE"
     CLAIM_STRENGTH_UNCLEAR = "CLAIM_STRENGTH_UNCLEAR"
+    CLAIM_SCOPE_UNRESOLVED = "CLAIM_SCOPE_UNRESOLVED"
     OFFICIAL_FUNCTION_MISSING = "OFFICIAL_FUNCTION_MISSING"
     EFFECT_NOT_IN_OFFICIAL_FUNCTIONS = "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
     OFFICIAL_ATTRIBUTION_AMBIGUOUS = "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
@@ -45,9 +47,9 @@ class ClaimDecision(BaseModel):
     verdict: Verdict
     reason: VerdictReason
     official_effect: OfficialEffect | None = None
-    rule_version: Literal["claim-verdict-v1"] = CLAIM_VERDICT_VERSION
-    extraction_version: Literal["claim-extract-v1"] = CLAIM_EXTRACTION_VERSION
-    official_parser_version: Literal["official-function-v2"] = OFFICIAL_FUNCTION_V2_VERSION
+    rule_version: Literal["claim-verdict-v1.1"] = CLAIM_VERDICT_VERSION
+    extraction_version: Literal["claim-extract-v1.1"] = CLAIM_EXTRACTION_VERSION
+    official_parser_version: Literal["official-function-v2.1"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 def _decision(
@@ -104,6 +106,8 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
 
     if STRENGTH_RANK[claim.strength] > STRENGTH_RANK[_OFFICIAL_STRENGTH]:
         return _decision(claim, Verdict.MISMATCH, VerdictReason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL, official)
+    if not supports_confirmation(claim, official.effect):
+        return _decision(claim, Verdict.UNVERIFIABLE, VerdictReason.CLAIM_SCOPE_UNRESOLVED)
     return _decision(claim, Verdict.CONFIRMED, VerdictReason.MATCHES_OFFICIAL_FUNCTION, official)
 
 

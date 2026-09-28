@@ -30,6 +30,10 @@ REASON_MESSAGES: dict[VerdictReason, str] = {
     ),
     VerdictReason.CLAIM_OUTSIDE_RULE_SCOPE: "현재 규칙이 다루는 기능성(핵심 원료 3종의 공식 기능) 밖의 표현이라 판단하지 않았습니다.",
     VerdictReason.CLAIM_STRENGTH_UNCLEAR: "표현이 얼마나 강한지(도움인지, 개선 단정인지) 문장에서 확인되지 않았습니다.",
+    VerdictReason.CLAIM_SCOPE_UNRESOLVED: (
+        "일부 단어는 공식 문구와 맞지만 문장 전체의 기능·원료 주체·수식 범위를 확인할 수 없습니다. "
+        "복합 주장이나 부정·질문·추가 조건을 임의로 해석하지 않고 보류했습니다."
+    ),
     VerdictReason.OFFICIAL_FUNCTION_MISSING: "공식 기능성 원문이 비어 있어 대조할 수 없습니다.",
     VerdictReason.EFFECT_NOT_IN_OFFICIAL_FUNCTIONS: "이 제품의 공식 기능성 원문에 해당 기능이 없습니다.",
     VerdictReason.OFFICIAL_ATTRIBUTION_AMBIGUOUS: (

@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.1"
 
 
 class EffectKey(StrEnum):
@@ -58,13 +58,18 @@ _MENTION_PATTERNS: dict[EffectKey, re.Pattern[str]] = {
     EffectKey.GUT_HEALTH: re.compile(r"(?<![성신심간])장건강|장내"),
 }
 
-# Header names that identify a core ingredient source. Marigold flower extract is the notified
-# lutein source material, so its header attributes lutein statements.
-_HEADER_ALIASES: dict[IngredientGroup, tuple[str, ...]] = {
-    IngredientGroup.LUTEIN_ZEAXANTHIN: ("루테인", "지아잔틴", "마리골드", "lutein", "zeaxanthin", "marigold"),
-    IngredientGroup.OMEGA3: ("epa", "dha", "오메가", "omega"),
-    IngredientGroup.PROBIOTICS: ("프로바이오틱스", "probiotic"),
+# Full header matches only: a core name inside an unknown/composite name is not attribution.
+_HEADER_NAMES: dict[IngredientGroup, str] = {
+    IngredientGroup.LUTEIN_ZEAXANTHIN: (
+        r"(?:루테인|지아잔틴|루테인지아잔틴(?:복합추출물)?|마리골드꽃추출물|lutein|zeaxanthin)"
+    ),
+    IngredientGroup.OMEGA3: r"(?:epa및dha함유유지|epa/dha함유유지|오메가-?3|omega-?3)",
+    IngredientGroup.PROBIOTICS: r"(?:프로바이오틱스|probiotics?)",
 }
+_OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음|을줌)?[.。]*$")
+_NEGATIVE_STATEMENT = re.compile(
+    r"않|없|아님|아니|못|안됨|안됩니다|제외|대신|삭제|미인정"
+)
 _FUNCTION_WORDS = (
     "도움", "필요", "개선", "억제", "원활", "증진", "감소", "보호", "관여", "형성", "help", "necessary",
 )
@@ -105,7 +110,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.1"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass
@@ -132,8 +137,8 @@ def _header_groups(header: str) -> tuple[IngredientGroup, ...]:
     compact, _ = _compact(header)
     return tuple(
         group
-        for group in IngredientGroup
-        if any(alias in compact for alias in _HEADER_ALIASES.get(group, ()))
+        for group, pattern in _HEADER_NAMES.items()
+        if re.fullmatch(pattern + r"(?:제품)?(?:\(고시형\))?", compact)
     )
 
 
@@ -217,11 +222,8 @@ def _segment_blocks(text: str) -> list[_Block]:
             header_span=(header_start, header_end),
             body_spans=[],
         )
-        for line_start, line_end in _line_spans(text, match.end(), body_end):
-            span = _trimmed_span(text, line_start, line_end)
-            if span[0] < span[1]:
-                block.body_spans.append(span)
         blocks.append(block)
+        blocks.extend(_line_blocks(text, match.end(), body_end, block))
     return blocks
 
 
@@ -231,6 +233,13 @@ def _block_effects(text: str, block: _Block) -> list[OfficialEffect]:
     for span_start, span_end in block.body_spans:
         statement_start, statement_end = _trimmed_span(text, span_start, span_end)
         compact, positions = _compact(text[statement_start:statement_end])
+        # A remaining colon signals an unparsed inline header; do not inherit the old header.
+        if (
+            ":" in compact
+            or not _OFFICIAL_SUPPORT_END.search(compact)
+            or _NEGATIVE_STATEMENT.search(compact)
+        ):
+            continue
         for effect, pattern in _EFFECT_PATTERNS:
             for match in pattern.finditer(compact):
                 matched_start = statement_start + positions[match.start()]

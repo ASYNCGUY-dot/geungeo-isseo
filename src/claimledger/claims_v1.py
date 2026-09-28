@@ -5,9 +5,10 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from claimledger.official_v2 import EffectKey, _compact
+from claimledger.domain import IngredientGroup
+from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.1"
 
 
 class ExpressionStrength(StrEnum):
@@ -62,8 +63,36 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
     ),
     (ExpressionStrength.POSSIBILITY, re.compile(r"수있")),
 )
-_NEGATED_ENDING = re.compile(r"(아닙니다|아니에요|아니다|아님|않습니다|않아요|않음|없습니다|없어요|없음)[.!?…]*$")
+_DISCLAIMER = re.compile(
+    r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이"
+    r"(?:아닙니다|아니에요|아니다|아님)[.!。]*"
+)
 _SENTENCE = re.compile(r"[^\n]+?(?:[.!?。…]+(?=\s|$)|$)", re.MULTILINE)
+
+# Keyword extraction proposes candidates; only a fully consumed, single support statement
+# may be cleared. Unparsed subjects, modifiers, quantities and conjunctions remain unresolved.
+_SUPPORT_ENDING = r"에도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다))?[.!。]*"
+_SINGLE_EFFECT: dict[EffectKey, str] = {
+    EffectKey.MACULAR_PIGMENT_EYE_HEALTH: (
+        r"(?:눈(?:의)?건강|황반건강|(?:노화로인해감소될수있는)?"
+        r"황반색소밀도(?:를유지(?:하여|해)|유지로)눈건강)"
+    ),
+    EffectKey.BLOOD_TRIGLYCERIDE: r"(?:혈중중성지질|중성지질|중성지방)개선",
+    EffectKey.BLOOD_CIRCULATION: r"(?:혈행|혈액순환|혈액흐름)개선",
+    EffectKey.MEMORY: r"기억력개선",
+    EffectKey.DRY_EYE_EYE_HEALTH: (
+        r"(?:(?:건조한눈|안구건조|눈건조|눈의건조)개선|"
+        r"건조한눈을개선하여눈건강|눈(?:의)?건강)"
+    ),
+    EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: r"유산균증식(?:및|과)유해균억제",
+    EffectKey.BOWEL_MOVEMENT: r"배변활동(?:원활)?",
+    EffectKey.GUT_HEALTH: r"장건강",
+}
+_SINGLE_SUBJECT: dict[IngredientGroup, str] = {
+    IngredientGroup.LUTEIN_ZEAXANTHIN: r"(?:루테인|지아잔틴|마리골드꽃추출물)",
+    IngredientGroup.OMEGA3: r"(?:오메가-?3|omega-?3|epa및dha함유유지)",
+    IngredientGroup.PROBIOTICS: r"프로바이오틱스",
+}
 
 
 class AdClaim(BaseModel):
@@ -77,7 +106,15 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.1"] = CLAIM_EXTRACTION_VERSION
+
+
+def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
+    """Recognize a whole affirmative proposition, not just a matching effect keyword."""
+    compact, _ = _compact(claim.text)
+    subject = _SINGLE_SUBJECT[EFFECT_GROUP[effect]]
+    prefix = rf"(?:(?:본제품|이제품|{subject})(?:은|는|이|가))?"
+    return re.fullmatch(prefix + _SINGLE_EFFECT[effect] + _SUPPORT_ENDING, compact) is not None
 
 
 def _literal(text: str, positions: list[int], match: re.Match[str]) -> str:
@@ -130,7 +167,7 @@ def extract_claims(text: str) -> tuple[AdClaim, ...]:
     for start, end in _sentence_spans(text):
         sentence = text[start:end]
         compact, _ = _compact(sentence)
-        if _NEGATED_ENDING.search(compact):
+        if _DISCLAIMER.fullmatch(compact):
             continue
         effects, effect_cues, strength, strength_cues = _classify(sentence)
         strong = strength is not None and STRENGTH_RANK[strength] >= STRENGTH_RANK[
@@ -173,4 +210,5 @@ __all__ = [
     "ExpressionStrength",
     "confirm_claims",
     "extract_claims",
+    "supports_confirmation",
 ]
