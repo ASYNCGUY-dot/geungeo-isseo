@@ -110,7 +110,11 @@
 ```powershell
 .venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\dev-cases\core-mvp-dev-v1.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
-첫 5건 재제출은 불필요하며, 새 사람 검토 시작용 자료는 `build/functional-role-review-guides/pilot-002.md`입니다.
+
+사람 검토는 2026-09-27 사용자 결정으로 생략했습니다. 지금 사용자가 할 검토 작업은 없습니다.
+`build/functional-role-review-guides/pilot-002-response.md`는 2026-09-28 사용자 지시로 AI가 채웠습니다.
+운영 pack의 AI 대리 라벨을 원문과 대조해 옮긴 것이며 사람 독립 검토가 아닙니다.
+나중에 사람 기준 정확도를 재려면 AI 답을 보지 않은 새 pack을 따로 만듭니다.
 현재 운영 pack은 `build/functional-role-review-v1-reverified-2026-09-23/`입니다.
 기존 1번·5번의 제품 식별자 결합 근거 보강과 CHOI·DOHA의 규칙 검토는 각각 별도 작업입니다.
 
