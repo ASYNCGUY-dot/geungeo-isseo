@@ -1,14 +1,20 @@
+import json
 import re
 import unicodedata
 from dataclasses import dataclass
 from enum import StrEnum
+from functools import cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.2"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.3"
+_HEADER_VOCABULARY_PATH = (
+    Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
+)
 
 
 class EffectKey(StrEnum):
@@ -58,14 +64,23 @@ _MENTION_PATTERNS: dict[EffectKey, re.Pattern[str]] = {
     EffectKey.GUT_HEALTH: re.compile(r"(?<![성신심간])장건강|장내"),
 }
 
-# Full header matches only: a core name inside an unknown/composite name is not attribution.
+# Full matches on the normalized header only: a core name inside an unknown/composite name is
+# not attribution.
 _HEADER_NAMES: dict[IngredientGroup, str] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: (
-        r"(?:루테인|지아잔틴|루테인지아잔틴(?:복합추출물)?|마리골드꽃추출물|lutein|zeaxanthin)"
+        r"(?:루테인|지아잔틴|루테인지아잔틴(?:복합추출물|추출복합물)?|마리골드꽃(?:주정)?추출물"
+        r"|lutein|zeaxanthin)"
     ),
-    IngredientGroup.OMEGA3: r"(?:epa및dha함유유지|epa/dha함유유지|오메가-?3|omega-?3)",
+    IngredientGroup.OMEGA3: r"(?:epa(?:및|와|/)dha함유유지|오메가-?3(?:지방산함유유지)?|omega-?3)",
     IngredientGroup.PROBIOTICS: r"(?:프로바이오틱스|probiotics?)",
 }
+_HEADER_LIST_MARKER = re.compile(r"(?:[*\-•·◦▪]+|\d{1,2}[).]|\(\d{1,2}\)|[①-⑳]|\([가-하]\))")
+# Only decorations that keep naming the same ingredient are removed: approval numbers, the
+# notification type and the zeaxanthin note. Any other parenthetical stays part of the name.
+_HEADER_DECORATION = re.compile(
+    r"\((?:(?:기능성원료)?인정(?:번호)?[:：]?)?제?\d{4}-\d{1,3}호?\)"
+    r"|\((?:고시형|개별인정형(?:원료)?|지아잔틴함유)\)"
+)
 _OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음|을줌)?[.。]*$")
 # Attribute only a fully consumed list of supported effects sharing an explicit predicate.
 # Detection below can still retain an unattributed keyword for review; it is not evidence.
@@ -93,7 +108,8 @@ _FUNCTION_WORDS = (
 _NON_HEADER_NAMES = ("기능성내용", "기능성", "국문", "영문")
 
 _BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\]")
-_LINE_PREFIX = re.compile(r"^(?:[*\-•·◦▪]|\d{1,2}\s*[).]|\(\d{1,2}\)|[①-⑳]|\([가-하]\))\s*")
+# Used with match(text, pos): no "^", which would only match at the start of the whole field.
+_LINE_PREFIX = re.compile(r"(?:[*\-•·◦▪]|\d{1,2}\s*[).]|\(\d{1,2}\)|[①-⑳]|\([가-하]\))\s*")
 _COLON_HEADER = re.compile(r"^(?P<name>[^:：\n]{1,60}?)\s*[:：]\s*(?P<rest>.*)$")
 _DASH_HEADER = re.compile(r"^(?P<name>[^\-–\n]{1,40}?)\s*[-–]\s*(?P<rest>.+)$")
 
@@ -127,7 +143,18 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.2"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.3"] = OFFICIAL_FUNCTION_V2_VERSION
+
+
+@dataclass(frozen=True)
+class HeaderVocabulary:
+    version: str
+    source_id: str
+    source_sha256: str
+    source_retrieved_at: str
+    min_companies: int
+    names: frozenset[str]
+    excluded: dict[str, str]
 
 
 @dataclass
@@ -150,12 +177,39 @@ def _compact(text: str) -> tuple[str, list[int]]:
     return "".join(characters), positions
 
 
+def normalize_header_name(header: str) -> str:
+    """Compact a header and drop list markers and allowlisted same-ingredient decorations."""
+    compact = _compact(header)[0].strip("[]")
+    marker = _HEADER_LIST_MARKER.match(compact)
+    if marker:
+        compact = compact[marker.end():]
+    return _HEADER_DECORATION.sub("", compact).removesuffix("제품")
+
+
+@cache
+def known_header_vocabulary() -> HeaderVocabulary:
+    """Reviewed ingredient header names; any other header next to evidence is unresolved."""
+    payload = json.loads(_HEADER_VOCABULARY_PATH.read_text(encoding="utf-8"))
+    return HeaderVocabulary(
+        version=payload["vocabulary_version"],
+        source_id=payload["source"]["source_id"],
+        source_sha256=payload["source"]["sha256"],
+        source_retrieved_at=payload["source"]["retrieved_at"],
+        min_companies=payload["min_companies"],
+        names=frozenset(payload["names"]),
+        excluded=dict(payload["excluded"]),
+    )
+
+
+def segment_header_names(text: str) -> tuple[str, ...]:
+    """Raw header names in the order the parser segments them (no vocabulary needed)."""
+    return tuple(block.header for block in _segment_blocks(text) if block.header is not None)
+
+
 def _header_groups(header: str) -> tuple[IngredientGroup, ...]:
-    compact, _ = _compact(header)
+    normalized = normalize_header_name(header)
     return tuple(
-        group
-        for group, pattern in _HEADER_NAMES.items()
-        if re.fullmatch(pattern + r"(?:제품)?(?:\(고시형\))?", compact)
+        group for group, pattern in _HEADER_NAMES.items() if re.fullmatch(pattern, normalized)
     )
 
 
@@ -295,9 +349,14 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
         return OfficialFunctionParse(source_text=text, blocks=(), effects=())
     raw_blocks = _segment_blocks(text)
     # A flattened C003 field cannot prove the scope of a negative section/continuation.
-    # Do not let a subsequent ingredient header silently reset that uncertainty.
+    # Do not let a subsequent ingredient header silently reset that uncertainty. A header that is
+    # neither a target nor a reviewed ingredient name (e.g. "[검토 중]") may qualify neighbouring
+    # evidence even when it has a body, so it holds the whole field as well.
+    vocabulary = known_header_vocabulary().names
     unresolved_header = any(
-        block.header is not None and not block.body_spans and not _header_groups(block.header)
+        block.header is not None
+        and not _header_groups(block.header)
+        and (not block.body_spans or normalize_header_name(block.header) not in vocabulary)
         for block in raw_blocks
     )
     allow_attribution = (
@@ -331,9 +390,13 @@ __all__ = [
     "EFFECT_GROUP",
     "OFFICIAL_FUNCTION_V2_VERSION",
     "EffectKey",
+    "HeaderVocabulary",
     "OfficialEffect",
     "OfficialFunctionBlock",
     "OfficialFunctionParse",
     "effect_mentioned",
+    "known_header_vocabulary",
+    "normalize_header_name",
     "parse_official_function_v2",
+    "segment_header_names",
 ]

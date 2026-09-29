@@ -30,4 +30,4 @@ line-length = 100
 where = ["src"]
 
 [tool.setuptools.package-data]
-claimledger = ["web/*.html"]
+claimledger = ["web/*.html", "reference/*.json"]
