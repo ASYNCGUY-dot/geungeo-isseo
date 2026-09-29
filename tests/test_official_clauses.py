@@ -4,6 +4,7 @@ The P1-A cases reproduce the independent review of 688b9d4: annotations placed i
 ingredient's block, a headerless preface, a second target block) were never checked.
 """
 
+import time
 from datetime import UTC, datetime
 
 import pytest
@@ -137,6 +138,20 @@ def test_known_pieces_cannot_carry_unexplained_text(official: str) -> None:
     decision = _decide(MEM_AD, official)
     assert decision.verdict is not Verdict.CONFIRMED
     assert decision.official_effect is None
+
+
+def test_hyphenation_point_is_an_effect_list_separator() -> None:
+    official = "[EPA 및 DHA 함유 유지] 혈중 중성지질 개선‧혈행 개선에 도움을 줄 수 있음"
+    assert _decide("혈행 개선에 도움을 줄 수 있어요.", official).verdict is Verdict.CONFIRMED
+    assert segment_body_clauses(official) == ("혈중중성지질개선·혈행개선에도움을줄수있음",)
+
+
+def test_long_unexplained_clause_is_rejected_quickly() -> None:
+    official = MEM + "\n[아연] " + "필요" * 2000 + "X"
+    start = time.perf_counter()
+    decision = _decide(MEM_AD, official)
+    assert time.perf_counter() - start < 1.0
+    assert decision.verdict is Verdict.UNVERIFIABLE
 
 
 def test_clause_segmentation_covers_every_body_span() -> None:

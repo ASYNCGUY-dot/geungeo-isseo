@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.5"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.6"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -103,7 +103,7 @@ _LIST_MARKER = rf"(?:\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|\d{{1,2}}[).]?|[*•·�
 # predicate) may be joined by a period, list marker, comma or slash.
 _SUPPORT_CLAUSE = (
     _SUPPORT_FUNCTION
-    + r"(?:(?:[·・,•⋅ᆞ∙]|및)" + _SUPPORT_FUNCTION + r")*"
+    + r"(?:(?:[·・,•⋅ᆞ∙‧]|및)" + _SUPPORT_FUNCTION + r")*"
     + r"에도움(?:을줄수있음|을줌)?"
 )
 _SUPPORTED_STATEMENT = re.compile(
@@ -117,7 +117,7 @@ _CLAUSE_BREAK = re.compile(
     rf"\n|\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|(?:^|(?<=\s))\d{{1,2}}[.)](?!\d)|[.。](?=\s|$)"
 )
 _CLAUSE_LEAD = re.compile(r"^(?:[*\-•·◦▪]+|\((?:국문|영문)\))+")
-_DOT_VARIANTS = re.compile(r"[・•⋅ᆞ∙]")
+_DOT_VARIANTS = re.compile(r"[・•⋅ᆞ∙‧]")
 # Only complete known statements may be chained; fragments such as "가" or "기억력개선" may not.
 _CLAUSE_PREDICATE = re.compile(r"(?:도움을줄수있음|도움을줄수있습니다|도움을줌|도움이될수있음|필요|관여)$")
 _NEGATIVE_STATEMENT = re.compile(
@@ -166,7 +166,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.5"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.6"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -242,8 +242,8 @@ def segment_header_names(text: str) -> tuple[str, ...]:
 
 
 def _clause_key(piece: str) -> str:
-    key = _CLAUSE_LEAD.sub("", _compact(piece)[0])
-    return _DOT_VARIANTS.sub("·", key).rstrip(".,;/·")
+    key = _DOT_VARIANTS.sub("·", _compact(piece)[0])
+    return _CLAUSE_LEAD.sub("", key).rstrip(".,;/·")
 
 
 def segment_body_clauses(text: str) -> tuple[str, ...]:
@@ -258,17 +258,26 @@ def segment_body_clauses(text: str) -> tuple[str, ...]:
     return tuple(clauses)
 
 
+@cache
+def _chain_piece_lengths(vocabulary: frozenset[str]) -> tuple[int, ...]:
+    return tuple(sorted({len(piece) for piece in vocabulary if _CLAUSE_PREDICATE.search(piece)}))
+
+
 def _clause_accepted(clause: str, vocabulary: frozenset[str]) -> bool:
     """A reviewed clause, a fully supported target statement, or a chain of known statements."""
     if clause in vocabulary or _SUPPORTED_STATEMENT.fullmatch(clause):
         return True
     # Statements written back to back without list markers ("…필요피부와…필요"). Every
     # character must belong to a known complete statement or a single separator between two.
+    # Only lengths of known statements are tried, so long unknown text stays cheap to reject.
     reachable = [True] + [False] * len(clause)
     for start in range(len(clause)):
         if not reachable[start]:
             continue
-        for end in range(start + 1, len(clause) + 1):
+        for length in _chain_piece_lengths(vocabulary):
+            end = start + length
+            if end > len(clause):
+                break
             piece = clause[start:end]
             if piece in vocabulary and _CLAUSE_PREDICATE.search(piece):
                 reachable[end] = True
