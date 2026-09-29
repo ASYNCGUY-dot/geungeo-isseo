@@ -84,6 +84,13 @@
 
 ## 현재 첫 작업
 
+2026-09-29 현재 계획은 `docs/superpowers/plans/2026-09-29-attribution-coverage.md`입니다(사용자: "1단계부터 시작해").
+1단계 헤더 인식기를 마쳤고 결과 정본은 `docs/evidence/HEADER_RECOGNITION_2026-09-29.md`입니다.
+아래 오인 승인 방지 강화의 남은 P1은 원료명 사전 게이트로 해결했습니다(전체 필드 게이트·구조화 근거 설계는 적용하지 않음).
+원료명 사전은 `scripts/build_header_vocabulary.py`로 C003 스냅샷에서 다시 만들 수 있고, 제외 목록은 AI 검토이며 사람 검토가 아닙니다.
+공식 파서 버전은 `official-function-v2.3`입니다. 다음은 독립 재검토, 그 뒤 2단계(공식 문장 형식 확장)입니다.
+금지어를 하나씩 추가하지 말고, 인식된 형식·이름만 통과시키는 허용 목록 방식을 유지합니다.
+
 2026-09-28 사용자가 오인 승인 방지 검증 강화를 승인했습니다.
 현재 계획은 `docs/superpowers/plans/2026-09-28-false-clearance-hardening.md`, 결과 정본은
 `docs/evidence/FALSE_CLEARANCE_HARDENING_2026-09-28.md`입니다. 긍정 판정은 문장 전체의 좁은 단일
