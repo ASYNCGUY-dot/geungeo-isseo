@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.1"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.2"
 
 
 class EffectKey(StrEnum):
@@ -67,6 +67,23 @@ _HEADER_NAMES: dict[IngredientGroup, str] = {
     IngredientGroup.PROBIOTICS: r"(?:프로바이오틱스|probiotics?)",
 }
 _OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음|을줌)?[.。]*$")
+# Attribute only a fully consumed list of supported effects sharing an explicit predicate.
+# Detection below can still retain an unattributed keyword for review; it is not evidence.
+_SUPPORT_FUNCTION = (
+    r"(?:(?:노화로인해감소될수있는)?황반색소밀도를유지하여눈건강|"
+    r"혈중중성지질개선|혈행개선|기억력개선|건조한눈을개선하여눈건강|"
+    r"유산균증식및유해균억제|배변활동원활|장건강)"
+)
+_LIST_MARKER = r"(?:\(\d{1,2}\)|\d{1,2}[).]?|[*•·◦▪-])"
+_SUPPORT_CLAUSE = (
+    _SUPPORT_FUNCTION
+    + r"(?:(?:[·・,]|및)" + _SUPPORT_FUNCTION + r")*"
+    + r"에도움(?:을줄수있음|을줌)?"
+)
+_SUPPORTED_STATEMENT = re.compile(
+    rf"(?:{_LIST_MARKER})?{_SUPPORT_CLAUSE}"
+    rf"(?:(?:[.。]+(?:{_LIST_MARKER})?|{_LIST_MARKER}){_SUPPORT_CLAUSE})*[.。]*"
+)
 _NEGATIVE_STATEMENT = re.compile(
     r"않|없|아님|아니|못|안됨|안됩니다|제외|대신|삭제|미인정"
 )
@@ -110,7 +127,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.1"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.2"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass
@@ -227,8 +244,16 @@ def _segment_blocks(text: str) -> list[_Block]:
     return blocks
 
 
-def _block_effects(text: str, block: _Block) -> list[OfficialEffect]:
-    groups = _header_groups(block.header) if block.header is not None else ()
+def _block_effects(
+    text: str, block: _Block, *, allow_attribution: bool,
+) -> list[OfficialEffect]:
+    header_groups = _header_groups(block.header) if block.header is not None else ()
+    # Every line in the ingredient block must be understood before a fragment can be evidence.
+    # In particular, do not drop a tentative continuation just because it has no help predicate.
+    block_supported = all(
+        _SUPPORTED_STATEMENT.fullmatch(_compact(text[start:end])[0])
+        for start, end in block.body_spans
+    )
     effects: list[tuple[int, OfficialEffect]] = []
     for span_start, span_end in block.body_spans:
         statement_start, statement_end = _trimmed_span(text, span_start, span_end)
@@ -240,6 +265,9 @@ def _block_effects(text: str, block: _Block) -> list[OfficialEffect]:
             or _NEGATIVE_STATEMENT.search(compact)
         ):
             continue
+        groups = (
+            header_groups if allow_attribution and block_supported else ()
+        )
         for effect, pattern in _EFFECT_PATTERNS:
             for match in pattern.finditer(compact):
                 matched_start = statement_start + positions[match.start()]
@@ -266,16 +294,31 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
     if not text.strip():
         return OfficialFunctionParse(source_text=text, blocks=(), effects=())
     raw_blocks = _segment_blocks(text)
+    # A flattened C003 field cannot prove the scope of a negative section/continuation.
+    # Do not let a subsequent ingredient header silently reset that uncertainty.
+    unresolved_header = any(
+        block.header is not None and not block.body_spans and not _header_groups(block.header)
+        for block in raw_blocks
+    )
+    allow_attribution = (
+        not unresolved_header and _NEGATIVE_STATEMENT.search(_compact(text)[0]) is None
+    )
     blocks = tuple(
         OfficialFunctionBlock(
             header=block.header,
             header_span=block.header_span,
-            attributed_groups=_header_groups(block.header) if block.header is not None else (),
+            attributed_groups=(
+                _header_groups(block.header)
+                if allow_attribution and block.header is not None else ()
+            ),
             body_spans=tuple(block.body_spans),
         )
         for block in raw_blocks
     )
-    effects = tuple(effect for block in raw_blocks for effect in _block_effects(text, block))
+    effects = tuple(
+        effect for block in raw_blocks
+        for effect in _block_effects(text, block, allow_attribution=allow_attribution)
+    )
     return OfficialFunctionParse(source_text=text, blocks=blocks, effects=effects)
 
 

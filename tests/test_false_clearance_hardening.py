@@ -184,3 +184,120 @@ def test_extra_scope_never_inherits_a_supported_effect_clearance(
         f"[{header}] {official_effect}에 도움을 줄 수 있음",
     )
     assert decision.verdict is Verdict.UNVERIFIABLE
+
+
+@pytest.mark.parametrize("section", ["미인정", "삭제"])
+@pytest.mark.parametrize("header", [
+    "EPA 및 DHA 함유 유지:", "EPA 및 DHA 함유 유지 -", "[EPA 및 DHA 함유 유지]",
+])
+def test_negative_section_cannot_be_reset_by_a_nested_ingredient_header(
+    section: str, header: str,
+) -> None:
+    official = f"[{section}]\n{header} 기억력 개선에 도움을 줄 수 있음"
+    assert _decide("기억력 개선에 도움을 줄 수 있어요.", official).verdict is Verdict.UNVERIFIABLE
+
+
+@pytest.mark.parametrize("ad", [
+    "루테인이\n혈행 개선에 도움을 줄 수 있어요.",
+    "어린이의\n혈행 개선에 도움을 줄 수 있어요.",
+    "혈행 개선에 도움을 줄 수 있음\n이라는 주장은 사실이 아닙니다.",
+    "혈행 개선에 도움을 줄 수 있음\n은 미확인 주장입니다.",
+])
+def test_line_wrap_cannot_discard_subject_or_qualification(ad: str) -> None:
+    decision = _decide(ad)
+    assert decision.verdict is Verdict.UNVERIFIABLE
+    assert decision.claim.text == ad
+    assert ad[slice(*decision.claim.span)] == ad
+
+
+@pytest.mark.parametrize("body", [
+    "기억력 개선은 검토 중이며 혈행 개선에 도움을 줄 수 있음",
+    "기억력 개선은 확인 중, 혈행 개선에 도움을 줄 수 있음",
+    "기억력 개선은 가설이고 혈행 개선에 도움을 줄 수 있음",
+    "기억력 개선은 연구 대상이며 혈행 개선에 도움을 줄 수 있음",
+    "혈행 개선에 도움을 줄 수 있음 은행잎추출물 - 기억력 개선에 도움을 줄 수 있음",
+    "혈행 개선에 도움을 줄 수 있음 은행잎추출물 – 기억력 개선에 도움을 줄 수 있음",
+])
+def test_support_predicate_must_bind_to_the_whole_official_clause(body: str) -> None:
+    official = "[EPA 및 DHA 함유 유지] " + body
+    decision = _decide("기억력 개선에 도움을 줄 수 있어요.", official)
+    assert decision.verdict is Verdict.UNVERIFIABLE
+    assert decision.official_effect is None
+
+
+def test_wrapped_supported_subject_preserves_literal_span() -> None:
+    ad = "오메가3가\n혈행 개선에 도움을 줄 수 있어요."
+    decision = _decide(ad)
+    assert decision.verdict is Verdict.CONFIRMED
+    assert decision.claim.text == ad
+    assert ad[slice(*decision.claim.span)] == ad
+
+
+@pytest.mark.parametrize(("official", "ad"), [
+    (
+        ("[EPA 및 DHA 함유 유지] 혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음. "
+         "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음."),
+        "혈행 개선에 도움을 줄 수 있어요.",
+    ),
+    (
+        ("[EPA 및 DHA 함유 유지] 혈행 개선에 도움을 줄 수 있음. "
+         "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음"),
+        "건조한 눈 개선에 도움을 줄 수 있어요.",
+    ),
+    (
+        ("[프로바이오틱스]①유산균 증식 및 유해균 억제에 도움을 줄 수 있음 "
+         "②배변활동 원활에 도움을 줄 수 있음"),
+        "배변활동 원활에 도움을 줄 수 있어요.",
+    ),
+    (
+        ("[프로바이오틱스](1)유산균 증식 및 유해균 억제에 도움을 줄 수 있음 "
+         "(2)배변활동 원활에 도움을 줄 수 있음."),
+        "유산균 증식 및 유해균 억제에 도움을 줄 수 있어요.",
+    ),
+])
+def test_complete_positive_sentences_and_numbered_lists_keep_evidence(
+    official: str, ad: str,
+) -> None:
+    decision = _decide(ad, official)
+    assert decision.verdict is Verdict.CONFIRMED
+    assert decision.official_effect is not None
+    assert official[slice(*decision.official_effect.statement_span)] == (
+        decision.official_effect.statement_text
+    )
+
+
+@pytest.mark.parametrize("body", [
+    "혈행 개선에 도움을 줄 수 있음. 기억력 개선은 검토 중",
+    "혈행 개선에 도움을 줄 수 있음. 은행잎추출물 - 기억력 개선에 도움을 줄 수 있음",
+    "①혈행 개선에 도움을 줄 수 있음 ②기억력 개선은 검토 중",
+    "혈행 개선에 도움을 줄 수 있음\n이 문구는 미인정",
+])
+def test_positive_clause_does_not_erase_unresolved_following_clause(body: str) -> None:
+    assert _decide(
+        "혈행 개선에 도움을 줄 수 있어요.", "[EPA 및 DHA 함유 유지] " + body,
+    ).verdict is Verdict.UNVERIFIABLE
+
+
+@pytest.mark.parametrize("suffix", [
+    "\n이라는 문구는 검토 중",
+    "\n기억력 개선 문구는 검토 중",
+    "\n[검토 중]",
+    " [검토 중]",
+])
+def test_official_unresolved_continuation_cannot_disappear_at_a_boundary(suffix: str) -> None:
+    official = "[EPA 및 DHA 함유 유지] 기억력 개선에 도움을 줄 수 있음" + suffix
+    decision = _decide("기억력 개선에 도움을 줄 수 있어요.", official)
+    assert decision.verdict is Verdict.UNVERIFIABLE
+    assert decision.official_effect is None
+
+
+@pytest.mark.parametrize("separator", [". ", "․", "．", ".\n"])
+def test_separate_or_ambiguous_sentences_cannot_share_the_support_predicate(
+    separator: str,
+) -> None:
+    official = (
+        "[EPA 및 DHA 함유 유지] 기억력 개선" + separator + "혈행 개선에 도움을 줄 수 있음"
+    )
+    decision = _decide("기억력 개선에 도움을 줄 수 있어요.", official)
+    assert decision.verdict is Verdict.UNVERIFIABLE
+    assert decision.official_effect is None

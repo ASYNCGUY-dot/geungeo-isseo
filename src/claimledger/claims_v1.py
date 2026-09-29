@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.1"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.2"
 
 
 class ExpressionStrength(StrEnum):
@@ -67,7 +67,8 @@ _DISCLAIMER = re.compile(
     r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이"
     r"(?:아닙니다|아니에요|아니다|아님)[.!。]*"
 )
-_SENTENCE = re.compile(r"[^\n]+?(?:[.!?。…]+(?=\s|$)|$)", re.MULTILINE)
+# Layout wrapping is not a sentence boundary: retain the subject and trailing qualifiers.
+_SENTENCE = re.compile(r".+?(?:[.!?。…]+(?=\s|$)|$)", re.DOTALL)
 
 # Keyword extraction proposes candidates; only a fully consumed, single support statement
 # may be cleared. Unparsed subjects, modifiers, quantities and conjunctions remain unresolved.
@@ -106,7 +107,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.1"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.2"] = CLAIM_EXTRACTION_VERSION
 
 
 def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
