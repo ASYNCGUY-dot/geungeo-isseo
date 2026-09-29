@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.3"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.4"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -74,7 +74,13 @@ _HEADER_NAMES: dict[IngredientGroup, str] = {
     IngredientGroup.OMEGA3: r"(?:epa(?:및|와|/)dha함유유지|오메가-?3(?:지방산함유유지)?|omega-?3)",
     IngredientGroup.PROBIOTICS: r"(?:프로바이오틱스|probiotics?)",
 }
-_HEADER_LIST_MARKER = re.compile(r"(?:[*\-•·◦▪]+|\d{1,2}[).]|\(\d{1,2}\)|[①-⑳]|\([가-하]\))")
+# Korean list letters only; "[가-하]" would be every syllable, so "(안)" or "(미)" would vanish.
+_LIST_LETTERS = "가나다라마바사아자차카타파하"
+_HEADER_LIST_MARKER = re.compile(
+    rf"(?:[*\-•·◦▪]+|\d{{1,2}}[).]|\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\))"
+)
+# NFKC turns circled numbers into plain digits, so they are removed before compaction.
+_CIRCLED_MARKER = re.compile(r"\s*[①-⑳]")
 # Only decorations that keep naming the same ingredient are removed: approval numbers, the
 # notification type and the zeaxanthin note. Any other parenthetical stays part of the name.
 _HEADER_DECORATION = re.compile(
@@ -109,7 +115,9 @@ _NON_HEADER_NAMES = ("기능성내용", "기능성", "국문", "영문")
 
 _BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\]")
 # Used with match(text, pos): no "^", which would only match at the start of the whole field.
-_LINE_PREFIX = re.compile(r"(?:[*\-•·◦▪]|\d{1,2}\s*[).]|\(\d{1,2}\)|[①-⑳]|\([가-하]\))\s*")
+_LINE_PREFIX = re.compile(
+    rf"(?:[*\-•·◦▪]|\d{{1,2}}\s*[).]|\(\d{{1,2}}\)|[①-⑳]|\([{_LIST_LETTERS}]\))\s*"
+)
 _COLON_HEADER = re.compile(r"^(?P<name>[^:：\n]{1,60}?)\s*[:：]\s*(?P<rest>.*)$")
 _DASH_HEADER = re.compile(r"^(?P<name>[^\-–\n]{1,40}?)\s*[-–]\s*(?P<rest>.+)$")
 
@@ -143,7 +151,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.3"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.4"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -178,9 +186,11 @@ def _compact(text: str) -> tuple[str, list[int]]:
 
 
 def normalize_header_name(header: str) -> str:
-    """Compact a header and drop list markers and allowlisted same-ingredient decorations."""
-    compact = _compact(header)[0].strip("[]")
-    marker = _HEADER_LIST_MARKER.match(compact)
+    """Compact a header and drop one list marker and allowlisted same-ingredient decorations."""
+    text = header.strip().strip("[]")
+    circled = _CIRCLED_MARKER.match(text)
+    compact = _compact(text[circled.end():] if circled else text)[0].strip("[]")
+    marker = None if circled else _HEADER_LIST_MARKER.match(compact)
     if marker:
         compact = compact[marker.end():]
     return _HEADER_DECORATION.sub("", compact).removesuffix("제품")

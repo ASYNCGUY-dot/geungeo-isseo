@@ -97,6 +97,47 @@ def test_strain_composite_or_unexplained_names_are_not_the_generic_target(offici
     assert decision.verdict is not Verdict.CONFIRMED
 
 
+@pytest.mark.parametrize(("official", "ad"), [
+    ("[(안) EPA 및 DHA 함유 유지] 기억력 개선에 도움을 줄 수 있음", "기억력 개선에 도움을 줄 수 있어요."),
+    ("[(미)프로바이오틱스] 배변활동 원활에 도움을 줄 수 있음", "배변활동 원활에 도움을 줄 수 있어요."),
+    ("[(폐)프로바이오틱스] 배변활동 원활에 도움을 줄 수 있음", "배변활동 원활에 도움을 줄 수 있어요."),
+    ("[(삭)프로바이오틱스] 배변활동 원활에 도움을 줄 수 있음", "배변활동 원활에 도움을 줄 수 있어요."),
+    ("[(안)프로바이오틱스(고시형)] 배변활동 원활에 도움을 줄 수 있음", "배변활동 원활에 도움을 줄 수 있어요."),
+    (
+        "[아연] 정상적인 면역기능에 필요\n(미) 프로바이오틱스: 배변활동 원활에 도움을 줄 수 있음",
+        "배변활동 원활에 도움을 줄 수 있어요.",
+    ),
+    (
+        "[아연] 정상적인 면역기능에 필요\n(구) 프로바이오틱스 : 배변활동 원활에 도움을 줄 수 있음",
+        "배변활동 원활에 도움을 줄 수 있어요.",
+    ),
+    (
+        "[아연] 정상적인 면역기능에 필요\n(안) EPA 및 DHA 함유 유지: 기억력 개선에 도움을 줄 수 있음",
+        "기억력 개선에 도움을 줄 수 있어요.",
+    ),
+    ("(안) EPA 및 DHA 함유 유지: 기억력 개선에 도움을 줄 수 있음", "기억력 개선에 도움을 줄 수 있어요."),
+])
+def test_single_syllable_qualifier_is_not_a_list_marker(official: str, ad: str) -> None:
+    decision = _decide(ad, official)
+    assert decision.verdict is not Verdict.CONFIRMED
+    assert decision.official_effect is None
+
+
+@pytest.mark.parametrize(("official", "ad"), [
+    (
+        "[아연] 정상적인 면역기능에 필요\n(가) 프로바이오틱스: 배변활동 원활에 도움을 줄 수 있음",
+        "배변활동 원활에 도움을 줄 수 있어요.",
+    ),
+    ("[③프로바이오틱스] 배변활동 원활에 도움을 줄 수 있음", "배변활동 원활에 도움을 줄 수 있어요."),
+    (
+        f"[비타민E] {VITAMIN_E}\n② EPA 및 DHA 함유 유지: {CIRCULATION}",
+        "혈행 개선에 도움을 줄 수 있어요.",
+    ),
+])
+def test_real_list_markers_are_still_removed(official: str, ad: str) -> None:
+    assert _decide(ad, official).verdict is Verdict.CONFIRMED
+
+
 def test_variant_header_does_not_lend_its_group_to_another_groups_effect() -> None:
     official = "[루테인지아잔틴복합추출물(제2018-4호)] 건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음"
     decision = _decide("건조한 눈 개선에 도움을 줄 수 있어요.", official)
@@ -110,6 +151,10 @@ def test_variant_header_does_not_lend_its_group_to_another_groups_effect() -> No
     ("마리골드꽃추출물(지아잔틴함유)(제2025-7호)", "마리골드꽃추출물"),
     ("프로바이오틱스 제품(고시형)", "프로바이오틱스"),
     ("EPA 및 DHA 함유 유지(검토중)", "epa및dha함유유지(검토중)"),
+    ("③프로바이오틱스", "프로바이오틱스"),
+    ("(나) 프로바이오틱스", "프로바이오틱스"),
+    ("(안) 프로바이오틱스", "(안)프로바이오틱스"),
+    ("(철)", "(철)"),
 ])
 def test_header_normalization_strips_only_allowlisted_decorations(
     header: str, normalized: str,
@@ -119,7 +164,7 @@ def test_header_normalization_strips_only_allowlisted_decorations(
 
 def test_parse_reports_target_groups_for_variant_headers() -> None:
     parsed = parse_official_function_v2(f"[비타민E] {VITAMIN_E}\n- EPA와 DHA 함유 유지 : {CIRCULATION}")
-    assert parsed.parser_version == OFFICIAL_FUNCTION_V2_VERSION == "official-function-v2.3"
+    assert parsed.parser_version == OFFICIAL_FUNCTION_V2_VERSION == "official-function-v2.4"
     assert [effect.attributed_groups for effect in parsed.effects] == [(IngredientGroup.OMEGA3,)]
 
 

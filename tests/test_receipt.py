@@ -61,7 +61,7 @@ def test_receipt_records_each_claim_with_public_label_and_quote() -> None:
     assert receipt.claims[2].official_quote is None
     assert receipt.verdict_counts == {"confirmed": 1, "mismatch": 2}
     assert receipt.product is not None and receipt.product.report_no == "200400000000002"
-    assert receipt.rule_versions == ("claim-extract-v1.2", "official-function-v2.3", "claim-verdict-v1.1")
+    assert receipt.rule_versions == ("claim-extract-v1.2", "official-function-v2.4", "claim-verdict-v1.1")
     assert receipt.limitations
 
 
