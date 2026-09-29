@@ -49,7 +49,7 @@ class ClaimDecision(BaseModel):
     official_effect: OfficialEffect | None = None
     rule_version: Literal["claim-verdict-v1.1"] = CLAIM_VERDICT_VERSION
     extraction_version: Literal["claim-extract-v1.2"] = CLAIM_EXTRACTION_VERSION
-    official_parser_version: Literal["official-function-v2.4"] = OFFICIAL_FUNCTION_V2_VERSION
+    official_parser_version: Literal["official-function-v2.5"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 def _decision(

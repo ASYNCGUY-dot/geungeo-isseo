@@ -11,9 +11,12 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.4"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.5"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
+)
+_CLAUSE_VOCABULARY_PATH = (
+    Path(__file__).with_name("reference") / "official_clause_vocabulary_v1.json"
 )
 
 
@@ -95,16 +98,28 @@ _SUPPORT_FUNCTION = (
     r"혈중중성지질개선|혈행개선|기억력개선|건조한눈을개선하여눈건강|"
     r"유산균증식및유해균억제|배변활동원활|장건강)"
 )
-_LIST_MARKER = r"(?:\(\d{1,2}\)|\d{1,2}[).]?|[*•·◦▪-])"
+_LIST_MARKER = rf"(?:\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|\d{{1,2}}[).]?|[*•·◦▪-])"
+# Effect lists inside one clause share its predicate; complete clauses (each with its own
+# predicate) may be joined by a period, list marker, comma or slash.
 _SUPPORT_CLAUSE = (
     _SUPPORT_FUNCTION
-    + r"(?:(?:[·・,]|및)" + _SUPPORT_FUNCTION + r")*"
+    + r"(?:(?:[·・,•⋅ᆞ∙]|및)" + _SUPPORT_FUNCTION + r")*"
     + r"에도움(?:을줄수있음|을줌)?"
 )
 _SUPPORTED_STATEMENT = re.compile(
     rf"(?:{_LIST_MARKER})?{_SUPPORT_CLAUSE}"
-    rf"(?:(?:[.。]+(?:{_LIST_MARKER})?|{_LIST_MARKER}){_SUPPORT_CLAUSE})*[.。]*"
+    rf"(?:(?:[.。]+(?:{_LIST_MARKER})?|[,/](?:{_LIST_MARKER})?|{_LIST_MARKER})"
+    rf"{_SUPPORT_CLAUSE})*[.。]*"
 )
+_KOREAN_LABEL = "(국문)"
+# Clause boundaries for the vocabulary gate, applied after circled numbers became newlines.
+_CLAUSE_BREAK = re.compile(
+    rf"\n|\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|(?:^|(?<=\s))\d{{1,2}}[.)](?!\d)|[.。](?=\s|$)"
+)
+_CLAUSE_LEAD = re.compile(r"^(?:[*\-•·◦▪]+|\((?:국문|영문)\))+")
+_DOT_VARIANTS = re.compile(r"[・•⋅ᆞ∙]")
+# Only complete known statements may be chained; fragments such as "가" or "기억력개선" may not.
+_CLAUSE_PREDICATE = re.compile(r"(?:도움을줄수있음|도움을줄수있습니다|도움을줌|도움이될수있음|필요|관여)$")
 _NEGATIVE_STATEMENT = re.compile(
     r"않|없|아님|아니|못|안됨|안됩니다|제외|대신|삭제|미인정"
 )
@@ -151,11 +166,11 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.4"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.5"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
-class HeaderVocabulary:
+class ReviewedVocabulary:
     version: str
     source_id: str
     source_sha256: str
@@ -196,11 +211,9 @@ def normalize_header_name(header: str) -> str:
     return _HEADER_DECORATION.sub("", compact).removesuffix("제품")
 
 
-@cache
-def known_header_vocabulary() -> HeaderVocabulary:
-    """Reviewed ingredient header names; any other header next to evidence is unresolved."""
-    payload = json.loads(_HEADER_VOCABULARY_PATH.read_text(encoding="utf-8"))
-    return HeaderVocabulary(
+def _load_vocabulary(path: Path) -> ReviewedVocabulary:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return ReviewedVocabulary(
         version=payload["vocabulary_version"],
         source_id=payload["source"]["source_id"],
         source_sha256=payload["source"]["sha256"],
@@ -211,9 +224,57 @@ def known_header_vocabulary() -> HeaderVocabulary:
     )
 
 
+@cache
+def known_header_vocabulary() -> ReviewedVocabulary:
+    """Reviewed ingredient header names; any other header next to evidence is unresolved."""
+    return _load_vocabulary(_HEADER_VOCABULARY_PATH)
+
+
+@cache
+def known_clause_vocabulary() -> ReviewedVocabulary:
+    """Reviewed official clauses; any other body clause in the field holds attribution."""
+    return _load_vocabulary(_CLAUSE_VOCABULARY_PATH)
+
+
 def segment_header_names(text: str) -> tuple[str, ...]:
     """Raw header names in the order the parser segments them (no vocabulary needed)."""
     return tuple(block.header for block in _segment_blocks(text) if block.header is not None)
+
+
+def _clause_key(piece: str) -> str:
+    key = _CLAUSE_LEAD.sub("", _compact(piece)[0])
+    return _DOT_VARIANTS.sub("·", key).rstrip(".,;/·")
+
+
+def segment_body_clauses(text: str) -> tuple[str, ...]:
+    """Normalized clauses of every body span, headerless preface included (no vocabulary)."""
+    clauses: list[str] = []
+    for block in _segment_blocks(text):
+        for start, end in block.body_spans:
+            span = unicodedata.normalize("NFKC", re.sub(r"[①-⑳]", "\n", text[start:end]))
+            clauses.extend(
+                key for piece in _CLAUSE_BREAK.split(span) if (key := _clause_key(piece))
+            )
+    return tuple(clauses)
+
+
+def _clause_accepted(clause: str, vocabulary: frozenset[str]) -> bool:
+    """A reviewed clause, a fully supported target statement, or a chain of known statements."""
+    if clause in vocabulary or _SUPPORTED_STATEMENT.fullmatch(clause):
+        return True
+    # Statements written back to back without list markers ("…필요피부와…필요"). Every
+    # character must belong to a known complete statement or a single separator between two.
+    reachable = [True] + [False] * len(clause)
+    for start in range(len(clause)):
+        if not reachable[start]:
+            continue
+        for end in range(start + 1, len(clause) + 1):
+            piece = clause[start:end]
+            if piece in vocabulary and _CLAUSE_PREDICATE.search(piece):
+                reachable[end] = True
+                if end < len(clause) and clause[end] in ",./·":
+                    reachable[end + 1] = True
+    return reachable[-1]
 
 
 def _header_groups(header: str) -> tuple[IngredientGroup, ...]:
@@ -315,7 +376,7 @@ def _block_effects(
     # Every line in the ingredient block must be understood before a fragment can be evidence.
     # In particular, do not drop a tentative continuation just because it has no help predicate.
     block_supported = all(
-        _SUPPORTED_STATEMENT.fullmatch(_compact(text[start:end])[0])
+        _SUPPORTED_STATEMENT.fullmatch(_compact(text[start:end])[0].removeprefix(_KOREAN_LABEL))
         for start, end in block.body_spans
     )
     effects: list[tuple[int, OfficialEffect]] = []
@@ -369,8 +430,16 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
         and (not block.body_spans or normalize_header_name(block.header) not in vocabulary)
         for block in raw_blocks
     )
+    # Annotations can also sit in a body: another ingredient's block, a headerless preface or a
+    # second target block. Every body clause of the field must be a reviewed official clause.
+    clauses = known_clause_vocabulary().names
+    unknown_clause = not all(
+        _clause_accepted(clause, clauses) for clause in segment_body_clauses(text)
+    )
     allow_attribution = (
-        not unresolved_header and _NEGATIVE_STATEMENT.search(_compact(text)[0]) is None
+        not unresolved_header
+        and not unknown_clause
+        and _NEGATIVE_STATEMENT.search(_compact(text)[0]) is None
     )
     blocks = tuple(
         OfficialFunctionBlock(
@@ -400,13 +469,15 @@ __all__ = [
     "EFFECT_GROUP",
     "OFFICIAL_FUNCTION_V2_VERSION",
     "EffectKey",
-    "HeaderVocabulary",
     "OfficialEffect",
     "OfficialFunctionBlock",
     "OfficialFunctionParse",
+    "ReviewedVocabulary",
     "effect_mentioned",
+    "known_clause_vocabulary",
     "known_header_vocabulary",
     "normalize_header_name",
     "parse_official_function_v2",
+    "segment_body_clauses",
     "segment_header_names",
 ]

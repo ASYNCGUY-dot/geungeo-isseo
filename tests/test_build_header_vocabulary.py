@@ -59,6 +59,18 @@ def test_names_need_two_companies_and_reviewed_exclusions_are_removed(tmp_path: 
     assert source["sha256"] == expected
 
 
+def test_clause_kind_collects_body_clauses_used_by_two_companies(tmp_path: Path) -> None:
+    code, payload = _run(tmp_path, {}, "--kind", "clause")
+
+    assert code == 0
+    assert payload["vocabulary_version"] == "official-clause-vocabulary-v1"
+    assert payload["names"] == [
+        "정상적인면역기능에필요",
+        "항산화작용을하여유해산소로부터세포를보호하는데필요",
+    ]
+    assert "기억력개선" not in payload["names"]
+
+
 def test_output_is_deterministic(tmp_path: Path) -> None:
     _run(tmp_path, {})
     first = (tmp_path / "vocabulary.json").read_bytes()

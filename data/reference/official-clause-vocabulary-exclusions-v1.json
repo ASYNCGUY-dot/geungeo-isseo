@@ -1,0 +1,7 @@
+{
+  "reviewer": "Claude Code (claude-opus-5-5), AI developer review; not a human or expert review",
+  "reviewed_at": "2026-09-29T15:30:00+09:00",
+  "criterion": "Exclude any clause that could qualify, suspend, cancel or restrict a neighbouring official statement (review, re-evaluation, cancellation, pending, applicability condition). Keep official statements, English translations, dose conditions, function-grade notes and segmentation fragments, because they carry no qualifying content.",
+  "review_note": "852 candidates. All 290 clauses without an official predicate were read one by one; the other 562 were screened for review, cancellation, condition and caution words and the 2 hits (child height growth) are official functions. No qualifying annotation was found. Negation words are already held field-wide by the parser.",
+  "exclusions": {}
+}

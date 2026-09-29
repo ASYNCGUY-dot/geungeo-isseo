@@ -144,8 +144,9 @@ def test_api_does_not_turn_partial_support_into_a_confirmed_receipt() -> None:
     assert response.json()["claims"][0]["official_quote"] is None
 
 
+# Official wording as notified; since v2.5 an official clause never seen in C003 is held.
 SINGLE_FUNCTIONS = [
-    ("루테인", "황반색소밀도를 유지하여 눈 건강", "눈 건강"),
+    ("루테인", "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강", "눈 건강"),
     ("EPA 및 DHA 함유 유지", "혈중 중성지질 개선", "혈중 중성지질 개선"),
     ("EPA 및 DHA 함유 유지", "혈행 개선", "혈행 개선"),
     ("EPA 및 DHA 함유 유지", "기억력 개선", "기억력 개선"),
