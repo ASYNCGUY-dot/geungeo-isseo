@@ -1,0 +1,80 @@
+{
+  "eval_id": "attribution-eval-v1",
+  "parser_version": "official-function-v2.6",
+  "manifest_parser_version": "official-function-v2.6",
+  "labelers": [
+    "claude-opus-5-5-ai"
+  ],
+  "strata": {
+    "attributed_canonical": {
+      "n": 20,
+      "correct": 20,
+      "false_attribution": 0,
+      "unclear": 0,
+      "false_attribution_wilson": [
+        0.0,
+        0.1611
+      ]
+    },
+    "attributed_variant_header": {
+      "n": 20,
+      "correct": 20,
+      "false_attribution": 0,
+      "unclear": 0,
+      "false_attribution_wilson": [
+        0.0,
+        0.1611
+      ]
+    },
+    "attributed_extended_format": {
+      "n": 20,
+      "correct": 20,
+      "false_attribution": 0,
+      "unclear": 0,
+      "false_attribution_wilson": [
+        0.0,
+        0.1611
+      ]
+    },
+    "held_under_target_header": {
+      "n": 15,
+      "missed_attribution": 14,
+      "correctly_held": 0,
+      "unclear": 1,
+      "missed_attribution_wilson": [
+        0.7018,
+        0.9881
+      ]
+    },
+    "held_headerless": {
+      "n": 15,
+      "missed_attribution": 15,
+      "correctly_held": 0,
+      "unclear": 0,
+      "missed_attribution_wilson": [
+        0.7961,
+        1.0
+      ]
+    },
+    "held_other": {
+      "n": 10,
+      "missed_attribution": 4,
+      "correctly_held": 6,
+      "unclear": 0,
+      "missed_attribution_wilson": [
+        0.1682,
+        0.6873
+      ]
+    }
+  },
+  "attributed_overall": {
+    "n": 60,
+    "false_attribution": 0,
+    "false_attribution_wilson": [
+      0.0,
+      0.0602
+    ]
+  },
+  "unlabeled": 0,
+  "stratum_drift": []
+}

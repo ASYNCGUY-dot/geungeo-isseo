@@ -1,0 +1,731 @@
+{
+  "eval_id": "attribution-eval-v1",
+  "question": "Does the official function text say that the ingredient group has the effect?",
+  "labeling": "Labels are added later in labels.csv with the labeler recorded; see the evidence record.",
+  "seed": 20261001,
+  "source": {
+    "source_id": "C003",
+    "file_name": "c003-products.jsonl",
+    "sha256": "CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E",
+    "retrieved_at": "2026-08-27T12:42:29.050550+00:00"
+  },
+  "parser_version": "official-function-v2.6",
+  "quotas": {
+    "attributed_canonical": 20,
+    "attributed_variant_header": 20,
+    "attributed_extended_format": 20,
+    "held_under_target_header": 15,
+    "held_headerless": 15,
+    "held_other": 10
+  },
+  "frame_counts": {
+    "attributed_canonical": 13426,
+    "attributed_extended_format": 1169,
+    "attributed_variant_header": 224,
+    "held_headerless": 5590,
+    "held_other": 418,
+    "held_under_target_header": 1682
+  },
+  "items": [
+    {
+      "item_id": "AE-001",
+      "report_no": "200400200023922",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-002",
+      "report_no": "200400150831461",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-003",
+      "report_no": "200400200073037",
+      "group": "omega3",
+      "effect": "blood_triglyceride",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-004",
+      "report_no": "200400170211902",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-005",
+      "report_no": "200400200062128",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-006",
+      "report_no": "200400150832405",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-007",
+      "report_no": "200600200032518",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-008",
+      "report_no": "201600100951",
+      "group": "probiotics",
+      "effect": "gut_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-009",
+      "report_no": "20040017006763",
+      "group": "omega3",
+      "effect": "blood_triglyceride",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-010",
+      "report_no": "200700170352402",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-011",
+      "report_no": "20200016052238",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-012",
+      "report_no": "200700170352281",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-013",
+      "report_no": "200400200061737",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-014",
+      "report_no": "20060020008981",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-015",
+      "report_no": "20040017006739",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-016",
+      "report_no": "20190016024140",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-017",
+      "report_no": "20060020008980",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-018",
+      "report_no": "200400200201072",
+      "group": "probiotics",
+      "effect": "gut_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-019",
+      "report_no": "20220020002148",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-020",
+      "report_no": "20130020008400",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-021",
+      "report_no": "200400200071814",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-022",
+      "report_no": "200400170211246",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-023",
+      "report_no": "20120019007401",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-024",
+      "report_no": "200700170352595",
+      "group": "probiotics",
+      "effect": "gut_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-025",
+      "report_no": "2015000215281",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-026",
+      "report_no": "200400200061001",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-027",
+      "report_no": "20040020020795",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-028",
+      "report_no": "200700170351558",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-029",
+      "report_no": "2004001602086",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-030",
+      "report_no": "20060020008561",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-031",
+      "report_no": "200600200033095",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-032",
+      "report_no": "200400170061183",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-033",
+      "report_no": "20220011370244",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-034",
+      "report_no": "200400170211317",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-035",
+      "report_no": "200400200141863",
+      "group": "omega3",
+      "effect": "blood_triglyceride",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-036",
+      "report_no": "201000190041537",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-037",
+      "report_no": "20040020041562",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-038",
+      "report_no": "200400170211280",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-039",
+      "report_no": "2004001704953",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-040",
+      "report_no": "202100128551",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-041",
+      "report_no": "200400200061658",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-042",
+      "report_no": "20040020028530",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-043",
+      "report_no": "20040020029759",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-044",
+      "report_no": "2024002023376",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-045",
+      "report_no": "200400200061102",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-046",
+      "report_no": "20040017006677",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-047",
+      "report_no": "200400150832316",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-048",
+      "report_no": "20040020046577",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-049",
+      "report_no": "20190009483909",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-050",
+      "report_no": "200400170211215",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-051",
+      "report_no": "200400200061489",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-052",
+      "report_no": "20220010222108",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-053",
+      "report_no": "200400200021907",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-054",
+      "report_no": "2018001217427",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-055",
+      "report_no": "200400200061856",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-056",
+      "report_no": "200400170061296",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-057",
+      "report_no": "200600200033281",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-058",
+      "report_no": "200400150831279",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-059",
+      "report_no": "200700170352115",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-060",
+      "report_no": "200400200071449",
+      "group": "omega3",
+      "effect": "blood_triglyceride",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-061",
+      "report_no": "20040015083874",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-062",
+      "report_no": "20240028080457",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-063",
+      "report_no": "20220020002149",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-064",
+      "report_no": "202000142945",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-065",
+      "report_no": "200400200061940",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-066",
+      "report_no": "20040020046290",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-067",
+      "report_no": "200600200081258",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-068",
+      "report_no": "200600200033221",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-069",
+      "report_no": "200400170211519",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-070",
+      "report_no": "200400200061040",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-071",
+      "report_no": "200400200062029",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-072",
+      "report_no": "200700170352817",
+      "group": "probiotics",
+      "effect": "gut_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-073",
+      "report_no": "200600200033215",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-074",
+      "report_no": "200400200061971",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-075",
+      "report_no": "20130020008445",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-076",
+      "report_no": "202300010422",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-077",
+      "report_no": "2023000229687",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-078",
+      "report_no": "200700170352052",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-079",
+      "report_no": "200400200141887",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-080",
+      "report_no": "200700170352161",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-081",
+      "report_no": "20040020028506",
+      "group": "omega3",
+      "effect": "blood_triglyceride",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-082",
+      "report_no": "200600200081424",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-083",
+      "report_no": "201200190071278",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-084",
+      "report_no": "20040015083641",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-085",
+      "report_no": "200700170351969",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-086",
+      "report_no": "2020001605257",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-087",
+      "report_no": "200400150832489",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-088",
+      "report_no": "20190009483717",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_variant_header"
+    },
+    {
+      "item_id": "AE-089",
+      "report_no": "2024002023377",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-090",
+      "report_no": "200400150831195",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_extended_format"
+    },
+    {
+      "item_id": "AE-091",
+      "report_no": "2021001622919",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-092",
+      "report_no": "20040017006569",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-093",
+      "report_no": "200400170061672",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_other"
+    },
+    {
+      "item_id": "AE-094",
+      "report_no": "20040015162129",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-095",
+      "report_no": "20040020003157",
+      "group": "lutein_zeaxanthin",
+      "effect": "macular_pigment_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-096",
+      "report_no": "200400200142155",
+      "group": "omega3",
+      "effect": "dry_eye_eye_health",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-097",
+      "report_no": "201200190071039",
+      "group": "probiotics",
+      "effect": "probiotic_growth_harmful_inhibition",
+      "stratum": "attributed_canonical"
+    },
+    {
+      "item_id": "AE-098",
+      "report_no": "20180012174205",
+      "group": "probiotics",
+      "effect": "bowel_movement",
+      "stratum": "held_headerless"
+    },
+    {
+      "item_id": "AE-099",
+      "report_no": "200600200032426",
+      "group": "omega3",
+      "effect": "blood_circulation",
+      "stratum": "held_under_target_header"
+    },
+    {
+      "item_id": "AE-100",
+      "report_no": "200400200061733",
+      "group": "omega3",
+      "effect": "memory",
+      "stratum": "attributed_extended_format"
+    }
+  ]
+}

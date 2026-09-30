@@ -1,0 +1,101 @@
+item_id,label,labeler,note
+AE-001,yes,claude-opus-5-5-ai,헤더 오타(마리골드꽃춫출물)지만 마리골드꽃추출물 문구
+AE-002,yes,claude-opus-5-5-ai,
+AE-003,yes,claude-opus-5-5-ai,
+AE-004,no,claude-opus-5-5-ai,"프로바이오틱스 문구 없음, 차전자피·가르시니아 문구만"
+AE-005,yes,claude-opus-5-5-ai,
+AE-006,yes,claude-opus-5-5-ai,
+AE-007,yes,claude-opus-5-5-ai,
+AE-008,yes,claude-opus-5-5-ai,"헤더 없음, 프로바이오틱스 공식 문구이며 원재료 중 유일한 해당 원료"
+AE-009,yes,claude-opus-5-5-ai,
+AE-010,yes,claude-opus-5-5-ai,
+AE-011,no,claude-opus-5-5-ai,"혈행 문구는 은행잎 추출물 헤더, EPA 문구 없음"
+AE-012,yes,claude-opus-5-5-ai,
+AE-013,yes,claude-opus-5-5-ai,
+AE-014,yes,claude-opus-5-5-ai,
+AE-015,yes,claude-opus-5-5-ai,
+AE-016,yes,claude-opus-5-5-ai,
+AE-017,yes,claude-opus-5-5-ai,
+AE-018,yes,claude-opus-5-5-ai,
+AE-019,yes,claude-opus-5-5-ai,
+AE-020,yes,claude-opus-5-5-ai,"헤더 없음, 중성지질·혈행 문장은 EPA 공식 문구(원재료 중 중성지질 원료는 EPA뿐)"
+AE-021,yes,claude-opus-5-5-ai,
+AE-022,yes,claude-opus-5-5-ai,
+AE-023,yes,claude-opus-5-5-ai,
+AE-024,yes,claude-opus-5-5-ai,"개별인정 프로바이오틱스(드시모네) 헤더, 장면역 조절로 장건강"
+AE-025,yes,claude-opus-5-5-ai,"헤더 없음, 원재료 중 해당 원료는 EPA뿐"
+AE-026,yes,claude-opus-5-5-ai,
+AE-027,yes,claude-opus-5-5-ai,
+AE-028,yes,claude-opus-5-5-ai,
+AE-029,yes,claude-opus-5-5-ai,
+AE-030,yes,claude-opus-5-5-ai,
+AE-031,yes,claude-opus-5-5-ai,
+AE-032,yes,claude-opus-5-5-ai,
+AE-033,yes,claude-opus-5-5-ai,"헤더 없음, 황반 문구 가능 원료는 마리골드꽃추출물뿐"
+AE-034,yes,claude-opus-5-5-ai,
+AE-035,yes,claude-opus-5-5-ai,
+AE-036,yes,claude-opus-5-5-ai,
+AE-037,no,claude-opus-5-5-ai,"프로바이오틱스 문구 없음, 차전자피 문구만"
+AE-038,yes,claude-opus-5-5-ai,
+AE-039,yes,claude-opus-5-5-ai,
+AE-040,yes,claude-opus-5-5-ai,"헤더 없음, 원재료 중 해당 원료는 EPA뿐"
+AE-041,yes,claude-opus-5-5-ai,"개별인정 프로바이오틱스(드시모네), '배변활동에 원활' 표기"
+AE-042,yes,claude-opus-5-5-ai,"헤더 없음, 황반 문구 가능 원료는 마리골드꽃추출물뿐"
+AE-043,yes,claude-opus-5-5-ai,
+AE-044,yes,claude-opus-5-5-ai,
+AE-045,yes,claude-opus-5-5-ai,황반 문구가 토마토추출물 블록 뒤에 헤더 없이 있으나 루테인만 해당
+AE-046,no,claude-opus-5-5-ai,"기억력 문구는 은행잎추출물 헤더, EPA 문구 없음"
+AE-047,yes,claude-opus-5-5-ai,
+AE-048,yes,claude-opus-5-5-ai,"헤더 없음, 황반 문구 가능 원료는 마리골드꽃추출물뿐"
+AE-049,yes,claude-opus-5-5-ai,
+AE-050,yes,claude-opus-5-5-ai,
+AE-051,yes,claude-opus-5-5-ai,
+AE-052,yes,claude-opus-5-5-ai,
+AE-053,yes,claude-opus-5-5-ai,"헤더 없음, 황반 문구 가능 원료는 마리골드꽃추출물뿐"
+AE-054,yes,claude-opus-5-5-ai,"헤더 없음, 프로바이오틱스 결합 공식 문구"
+AE-055,no,claude-opus-5-5-ai,황반 문구 없음(마리골드는 원재료에만 있음)
+AE-056,yes,claude-opus-5-5-ai,
+AE-057,yes,claude-opus-5-5-ai,
+AE-058,yes,claude-opus-5-5-ai,
+AE-059,yes,claude-opus-5-5-ai,
+AE-060,yes,claude-opus-5-5-ai,
+AE-061,yes,claude-opus-5-5-ai,"헤더 없음, 원재료 중 루테인뿐"
+AE-062,yes,claude-opus-5-5-ai,
+AE-063,yes,claude-opus-5-5-ai,
+AE-064,yes,claude-opus-5-5-ai,
+AE-065,yes,claude-opus-5-5-ai,
+AE-066,unclear,claude-opus-5-5-ai,[오메가3] 아래 '혈행개선혈압이 높은 사람에게 도움'으로 다른 문구와 뭉개짐
+AE-067,yes,claude-opus-5-5-ai,
+AE-068,yes,claude-opus-5-5-ai,
+AE-069,yes,claude-opus-5-5-ai,
+AE-070,yes,claude-opus-5-5-ai,
+AE-071,yes,claude-opus-5-5-ai,
+AE-072,yes,claude-opus-5-5-ai,
+AE-073,yes,claude-opus-5-5-ai,
+AE-074,yes,claude-opus-5-5-ai,
+AE-075,yes,claude-opus-5-5-ai,"헤더 없음, 원재료 중 해당 원료는 EPA뿐"
+AE-076,yes,claude-opus-5-5-ai,"헤더 없음, 프로바이오틱스 결합 공식 문구"
+AE-077,yes,claude-opus-5-5-ai,
+AE-078,yes,claude-opus-5-5-ai,
+AE-079,yes,claude-opus-5-5-ai,
+AE-080,yes,claude-opus-5-5-ai,
+AE-081,yes,claude-opus-5-5-ai,"헤더 없음, 중성지질 문장은 EPA 공식 문구"
+AE-082,yes,claude-opus-5-5-ai,
+AE-083,yes,claude-opus-5-5-ai,
+AE-084,yes,claude-opus-5-5-ai,
+AE-085,yes,claude-opus-5-5-ai,
+AE-086,no,claude-opus-5-5-ai,"은행잎추출물 문구만, EPA 문구 없음"
+AE-087,yes,claude-opus-5-5-ai,
+AE-088,yes,claude-opus-5-5-ai,
+AE-089,yes,claude-opus-5-5-ai,
+AE-090,yes,claude-opus-5-5-ai,
+AE-091,yes,claude-opus-5-5-ai,
+AE-092,yes,claude-opus-5-5-ai,EPA 헤더 아래 기억력(생리활성기능 2등급)
+AE-093,yes,claude-opus-5-5-ai,B-3 프로바이오틱스 블록 뒤 프로바이오틱스 공식 결합 문구
+AE-094,yes,claude-opus-5-5-ai,
+AE-095,yes,claude-opus-5-5-ai,
+AE-096,yes,claude-opus-5-5-ai,
+AE-097,yes,claude-opus-5-5-ai,
+AE-098,yes,claude-opus-5-5-ai,"헤더 없음, 프로바이오틱스 결합 공식 문구(섬유 원료 문구와 다름)"
+AE-099,yes,claude-opus-5-5-ai,
+AE-100,yes,claude-opus-5-5-ai,
