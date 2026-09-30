@@ -474,6 +474,12 @@ def effect_mentioned(text: str, effect: EffectKey) -> bool:
     return _MENTION_PATTERNS[effect].search(compact) is not None
 
 
+def official_effect_keys(text: str) -> tuple[EffectKey, ...]:
+    """Effects whose official phrase appears anywhere in the text; this is not attribution."""
+    compact, _ = _compact(text)
+    return tuple(effect for effect, pattern in _EFFECT_PATTERNS if pattern.search(compact))
+
+
 __all__ = [
     "EFFECT_GROUP",
     "OFFICIAL_FUNCTION_V2_VERSION",
@@ -486,6 +492,7 @@ __all__ = [
     "known_clause_vocabulary",
     "known_header_vocabulary",
     "normalize_header_name",
+    "official_effect_keys",
     "parse_official_function_v2",
     "segment_body_clauses",
     "segment_header_names",
