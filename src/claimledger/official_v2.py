@@ -475,9 +475,37 @@ def effect_mentioned(text: str, effect: EffectKey) -> bool:
 
 
 def official_effect_keys(text: str) -> tuple[EffectKey, ...]:
-    """Effects whose official phrase appears anywhere in the text; this is not attribution."""
+    """Effects whose official phrase appears in the text, in order of appearance; not attribution."""
     compact, _ = _compact(text)
-    return tuple(effect for effect, pattern in _EFFECT_PATTERNS if pattern.search(compact))
+    found = [
+        (match.start(), effect)
+        for effect, pattern in _EFFECT_PATTERNS
+        if (match := pattern.search(compact))
+    ]
+    return tuple(effect for _, effect in sorted(found))
+
+
+_SUPPORT_CLAUSE_PATTERN = re.compile(_SUPPORT_CLAUSE)
+
+
+def support_statements(text: str) -> tuple[str, ...]:
+    """Complete support statements (effects with their own predicate), normalized like clauses."""
+    key = _DOT_VARIANTS.sub("·", _compact(text)[0])
+    return tuple(match.group() for match in _SUPPORT_CLAUSE_PATTERN.finditer(key))
+
+
+def effect_statement(effect: OfficialEffect) -> str | None:
+    """The complete support statement on the effect's line that contains its matched phrase."""
+    compact, positions = _compact(effect.statement_text)
+    offset = effect.matched_span[0] - effect.statement_span[0]
+    if offset not in positions:
+        return None
+    index = positions.index(offset)
+    key = _DOT_VARIANTS.sub("·", compact)
+    for match in _SUPPORT_CLAUSE_PATTERN.finditer(key):
+        if match.start() <= index < match.end():
+            return match.group()
+    return None
 
 
 __all__ = [
@@ -489,6 +517,7 @@ __all__ = [
     "OfficialFunctionParse",
     "ReviewedVocabulary",
     "effect_mentioned",
+    "effect_statement",
     "known_clause_vocabulary",
     "known_header_vocabulary",
     "normalize_header_name",
@@ -496,4 +525,5 @@ __all__ = [
     "parse_official_function_v2",
     "segment_body_clauses",
     "segment_header_names",
+    "support_statements",
 ]

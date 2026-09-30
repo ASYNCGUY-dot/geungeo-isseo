@@ -39,6 +39,10 @@ REASON_MESSAGES: dict[VerdictReason, str] = {
     VerdictReason.OFFICIAL_ATTRIBUTION_AMBIGUOUS: (
         "공식 원문에 비슷한 기능 문구는 있지만, 대상 원료에 붙은 문구인지 원문만으로 확정할 수 없습니다."
     ),
+    VerdictReason.OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT: (
+        "대상 원료 아래 적힌 공식 문구가 원재료에 함께 든 다른 원료의 공식 기능성 문구와 글자 그대로 같습니다. "
+        "대상 원료의 기능인지 원문만으로 확인할 수 없어 보류했습니다."
+    ),
     VerdictReason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL: (
         "공식 문구는 '도움을 줄 수 있음'인데, 광고는 그보다 단정적이거나 강하게 표현했습니다."
     ),

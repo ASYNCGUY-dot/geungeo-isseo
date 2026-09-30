@@ -272,8 +272,8 @@
       "name": "은행잎 추출물",
       "function_text": "기억력 개선･혈행 개선에 도움을 줄 수 있음",
       "effects": [
-        "blood_circulation",
-        "memory"
+        "memory",
+        "blood_circulation"
       ],
       "mentioned_effects": [
         "blood_circulation",

@@ -3,6 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
+from claimledger.carriers import borrowed_statement
 from claimledger.claims_v1 import (
     CLAIM_EXTRACTION_VERSION,
     STRENGTH_RANK,
@@ -22,7 +23,7 @@ from claimledger.official_v2 import (
     parse_official_function_v2,
 )
 
-CLAIM_VERDICT_VERSION = "claim-verdict-v1.1"
+CLAIM_VERDICT_VERSION = "claim-verdict-v1.2"
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 
 
@@ -36,6 +37,7 @@ class VerdictReason(StrEnum):
     OFFICIAL_FUNCTION_MISSING = "OFFICIAL_FUNCTION_MISSING"
     EFFECT_NOT_IN_OFFICIAL_FUNCTIONS = "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
     OFFICIAL_ATTRIBUTION_AMBIGUOUS = "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+    OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT = "OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT"
     EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL = "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
     MATCHES_OFFICIAL_FUNCTION = "MATCHES_OFFICIAL_FUNCTION"
 
@@ -47,7 +49,7 @@ class ClaimDecision(BaseModel):
     verdict: Verdict
     reason: VerdictReason
     official_effect: OfficialEffect | None = None
-    rule_version: Literal["claim-verdict-v1.1"] = CLAIM_VERDICT_VERSION
+    rule_version: Literal["claim-verdict-v1.2"] = CLAIM_VERDICT_VERSION
     extraction_version: Literal["claim-extract-v1.2"] = CLAIM_EXTRACTION_VERSION
     official_parser_version: Literal["official-function-v2.6"] = OFFICIAL_FUNCTION_V2_VERSION
 
@@ -61,11 +63,12 @@ def _decision(
     return ClaimDecision(claim=claim, verdict=verdict, reason=reason, official_effect=official_effect)
 
 
-def _attributed(effects: tuple[OfficialEffect, ...], candidates: tuple[EffectKey, ...]) -> OfficialEffect | None:
-    for official in effects:
-        if official.effect in candidates and EFFECT_GROUP[official.effect] in official.attributed_groups:
-            return official
-    return None
+def _attributed(effects: tuple[OfficialEffect, ...], candidates: tuple[EffectKey, ...]) -> list[OfficialEffect]:
+    return [
+        official
+        for official in effects
+        if official.effect in candidates and EFFECT_GROUP[official.effect] in official.attributed_groups
+    ]
 
 
 def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecision:
@@ -91,7 +94,17 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
         return _decision(claim, Verdict.UNVERIFIABLE, VerdictReason.OFFICIAL_FUNCTION_MISSING)
 
     parsed = parse_official_function_v2(function_text)
-    official = _attributed(parsed.effects, claim.effect_candidates)
+    attributed = _attributed(parsed.effects, claim.effect_candidates)
+    # A statement that is word for word another notified ingredient's official statement, with
+    # that ingredient in the raw materials and no header of its own, is not the header's evidence.
+    own = [
+        item
+        for item in attributed
+        if borrowed_statement(item, confirmed.product.raw_materials, function_text) is None
+    ]
+    if attributed and not own:
+        return _decision(claim, Verdict.UNVERIFIABLE, VerdictReason.OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT)
+    official = own[0] if own else None
     if official is None:
         mentioned = any(effect_mentioned(function_text, effect) for effect in claim.effect_candidates) or any(
             item.effect in claim.effect_candidates for item in parsed.effects
