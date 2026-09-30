@@ -1,7 +1,9 @@
 # 실제 제품 귀속 평가세트 v1 (4단계) — 2026-09-30
 
 **결론: 파서가 대상 원료에 귀속한 60쌍 중 잘못 귀속한 쌍은 0개였다(Wilson 95% 상한 6.0%).
-반대로 보류한 30쌍 중 29쌍은 원문을 읽으면 귀속할 수 있었다. 라벨은 AI 개발자 라벨이며 독립 검증이 아니다.**
+반대로 보류한 30쌍 중 29쌍은 원문을 읽으면 귀속할 수 있었다. 라벨은 AI 개발자 라벨이며 사람 검증이 아니다.
+라벨과 파서 결과를 보지 않은 별도 AI 라벨러(Sonnet)의 교차 라벨은 100쌍 중 99쌍이 일치했다(Cohen's kappa 0.918).
+그 라벨로 채점해도 잘못 귀속은 0이다.**
 계획은 [귀속 범위·정확도 개선](../superpowers/plans/2026-09-29-attribution-coverage.md) 4단계다.
 
 ## 무엇을 쟀나
@@ -29,7 +31,8 @@
 
 - 고정 시드 `20261001`, 층마다 원료군을 돌아가며 뽑고 제품당 한 쌍만 쓴다. 뽑은 뒤 섞어서 `AE-001`~`AE-100`을 붙였다.
   `scripts/build_attribution_eval.py`가 같은 입력이면 같은 표본을 만든다.
-- 추적 파일: `data/eval/attribution-eval-v1/manifest.json`(식별자·층·시드·원본 해시), `labels.csv`, `score.json`.
+- 추적 파일: `data/eval/attribution-eval-v1/manifest.json`(식별자·층·시드·원본 해시), `labels.csv`, `score.json`,
+  교차 라벨 `labels-independent.csv`, `score-independent.json`.
   제품 원문이 담긴 검토지는 ignored `build/eval/attribution-eval-v1/review.md`에만 있다.
 
 ## 라벨
@@ -58,6 +61,31 @@
 - `no` 6건은 모두 보류 층이었다. 대상 원료가 원재료에만 있고 공식 문구에는 없거나(AE-004·037·055),
   효과 문구가 은행잎 추출물 같은 다른 원료의 것이었다(AE-011·046·086).
 
+## 독립 교차 라벨 (2026-09-30)
+
+- 라벨러: Claude Code 서브에이전트, 모델 Sonnet(`independent-sonnet-ai`). 1차 라벨러(Opus)와 모델 크기는 다르지만
+  같은 회사의 AI다. **사람·전문가 검토가 아니다.**
+- 맹검 조건: 에이전트에게는 검토지 `build/eval/attribution-eval-v1/review.md`만 읽게 했고, `labels.csv`·`manifest.json`(층)·
+  `score.json`·이 문서·파서 코드는 읽지 못하게 했다. 에이전트 대화 기록에서 도구 호출을 확인했다. Read 세 번으로
+  검토지 1~1599행 전체만 읽었고, 출력 폴더를 만든 뒤 출력 CSV만 쓰고 그 파일을 파싱해 검증했다. 다른 파일 접근은 없었다.
+- 공유한 것: 판정 질문, `yes`/`no`/`unclear` 정의, 헤더 없는 나열 기준("그 문구를 가질 수 있는 원료가 대상 원료뿐이면 `yes`"),
+  고시형 배경지식 몇 가지(은행잎 추출물은 기억력·혈행, 식이섬유·올리고당은 배변, 난소화성말토덱스트린은 중성지질·배변)를
+  지시문에 넣었다. 항목별 판단은 알려주지 않았다. 따라서 이 일치율은 **같은 기준을 두 라벨러가 일관되게 적용하는지**를
+  보여줄 뿐, 기준 자체가 맞는지는 검증하지 않는다.
+- 결과: `yes` 94, `no` 6, `unclear` 0. `no` 6건(AE-004·011·037·046·055·086)은 1차 라벨과 같다.
+- 일치: 100쌍 중 99쌍(99.0%). 3분류 Cohen's kappa는 0.918이다(관측 일치 0.990, 우연 일치 0.878).
+  `yes` 비율이 93~94%로 치우쳐 우연 일치가 높으므로, 일치율 99%보다 kappa가 낮게 나온다.
+- 층별 일치: 귀속 세 층 60/60, 헤더 없는 나열 보류 15/15, 기타 보류 10/10, 대상 헤더 아래 보류 14/15.
+- 유일한 불일치는 AE-066이다. 1차는 `unclear`, 교차는 `yes`다.
+  원문은 `[오메가3]1. 혈중 중성지질 개선 2. 혈행개선혈압이 높은 사람에게 도움`처럼 뭉개져 있다.
+  교차 라벨러는 "혈행개선"을 오메가3 항목의 2번으로 보고 뒤 문구를 코엔자임Q10 문구의 잔여로 읽었다.
+  이 항목은 보류 층이므로 오인 승인 지표에는 영향이 없다.
+- 교차 라벨로 채점한 결과(`score-independent.json`): 귀속 60쌍 잘못 귀속 0(Wilson 상한 6.0%), 층 표류 0, 라벨 없는 항목 0.
+  보류 층은 대상 헤더 아래 15/15, 헤더 없는 나열 15/15, 기타 4/10이 귀속 가능이다.
+- 교차 라벨러가 어렵다고 꼽은 항목: AE-045(토마토추출물 블록 뒤 머리말 없는 루테인 문구), AE-093(B-3 프로바이오틱스 뒤 줄),
+  AE-066, AE-020(혈행 개선 문구가 두 곳), AE-098·054(머리말 없는 프로바이오틱스 문구와 배변 가능 식이섬유 공존).
+  모두 보류 층이며, AE-098·054처럼 다른 원료도 배변 문구를 가질 수 있는 경우는 나열형 귀속 규칙을 만들 때 위험 사례로 쓴다.
+
 ## 보류 원인과 다음 개선 후보 (보류 층 40개 분석)
 
 - **헤더 없는 나열 15개**: 사람이 보면 15개 모두 귀속 가능했다. 3단계 나열형 귀속 규칙(고시형 + 개별인정형 대응표로
@@ -80,8 +108,9 @@
 ## 한계
 
 - 100쌍이라 층별 구간이 넓다(귀속 층별 상한 16.1%). 표본 크기를 늘리면 상한이 줄어든다.
-- 같은 AI가 규칙과 라벨을 모두 만들었다. 발표에서 "정확도"로 말하려면 사람 스팟체크(예: 20쌍) 또는
-  독립 라벨러의 교차 라벨이 필요하다.
+- 같은 AI가 규칙과 1차 라벨을 모두 만들었다. 교차 라벨로 라벨 일관성은 확인했지만, 두 라벨러 모두 AI이고 같은 기준을 받았다.
+  발표에서는 "AI 라벨 두 벌 기준 잘못 귀속 0/60"으로 말하고 사람 정확도로 표현하지 않는다.
+  사람 기준 수치가 필요하면 사람 스팟체크(예: 20쌍)를 따로 한다.
 - 광고 문장 해석 오류와 제품 신원 오류는 이 평가 범위 밖이다.
 
 ## 실행 명령
@@ -89,7 +118,12 @@
 ```powershell
 .venv\Scripts\python.exe scripts\build_attribution_eval.py --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --seed 20261001 --manifest data\eval\attribution-eval-v1\manifest.json --review-sheet build\eval\attribution-eval-v1\review.md --labels-template build\eval\attribution-eval-v1\labels-template.csv
 .venv\Scripts\python.exe scripts\score_attribution_eval.py --manifest data\eval\attribution-eval-v1\manifest.json --labels data\eval\attribution-eval-v1\labels.csv --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --output data\eval\attribution-eval-v1\score.json --require-zero-false-attribution
+.venv\Scripts\python.exe scripts\score_attribution_eval.py --manifest data\eval\attribution-eval-v1\manifest.json --labels data\eval\attribution-eval-v1\labels-independent.csv --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --output data\eval\attribution-eval-v1\score-independent.json --require-zero-false-attribution
 ```
+
+- 교차 라벨 채점은 `attributed n=60 false_attribution=0 unlabeled=0 drift=0`, 종료코드 0이었다.
+- 일치율과 kappa는 두 CSV를 `item_id`로 맞춰 계산했다. 관측 일치 p_o, 라벨별 주변 비율 곱의 합 p_e로
+  kappa = (p_o - p_e) / (1 - p_e)이다. 계산 스크립트는 세션 임시 폴더에 두었고 저장소에는 넣지 않았다.
 
 ## 전체 실행
 
