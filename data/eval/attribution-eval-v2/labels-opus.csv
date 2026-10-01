@@ -1,0 +1,101 @@
+item_id,label,labeler,note
+AE2-001,yes,independent-opus-ai,루테인 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-002,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 건조한 눈 개선 문구가 있음
+AE2-003,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 무표제 문구에 배변활동 원활이 있음
+AE2-004,yes,independent-opus-ai,조류 DHA 유지 제품의 [오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-005,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 장 건강 문구가 있음
+AE2-006,yes,independent-opus-ai,[마리골드꽃추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-007,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 무표제 문구에 장 건강이 있음
+AE2-008,yes,independent-opus-ai,[루테인지아잔틴복합추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-009,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-010,yes,independent-opus-ai,[루테인지아잔틴복합추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-011,yes,independent-opus-ai,UREX와 별도로 [프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-012,yes,independent-opus-ai,[루테인지아잔틴추출복합물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-013,yes,independent-opus-ai,개별인정 프로바이오틱스 복합물 항목에 유산균 증식 및 유해균 억제가 있음
+AE2-014,yes,independent-opus-ai,[루테인지아잔틴복합추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-015,yes,independent-opus-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-016,yes,independent-opus-ai,무표제지만 혈중 중성지질·혈행 개선 문구는 원재료상 정제어유만 가질 수 있음
+AE2-017,no,independent-opus-ai,원재료에 마리골드가 있으나 원문에 황반색소밀도 문구가 없음
+AE2-018,yes,independent-opus-ai,[EPA 및 DHA 함유유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-019,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 장건강 문구가 있음
+AE2-020,yes,independent-opus-ai,마리골드꽃추출물 이름 줄 아래 황반색소밀도 유지 문구가 있음
+AE2-021,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈행 개선이 있음
+AE2-022,yes,independent-opus-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선이 있음
+AE2-023,yes,independent-opus-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제가 있음
+AE2-024,yes,independent-opus-ai,* 프로바이오틱스 항목에 배변활동 원활이 있음
+AE2-025,yes,independent-opus-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-026,no,independent-opus-ai,배변활동 원활은 차전자피식이섬유 문구이고 프로바이오틱스 문구는 없음
+AE2-027,yes,independent-opus-ai,[루테인지아잔틴추출복합물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-028,yes,independent-opus-ai,[마리골드꽃추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-029,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-030,yes,independent-opus-ai,[마리골드꽃추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-031,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-032,yes,independent-opus-ai,TWK10 문구와 별도로 [프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-033,yes,independent-opus-ai,무표제지만 황반색소밀도 문구는 원재료상 마리골드꽃추출물만 가질 수 있음
+AE2-034,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈행 개선이 있음
+AE2-035,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 건조한 눈 개선이 있음
+AE2-036,yes,independent-opus-ai,[루테인지아잔틴복합추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-037,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 장 건강 문구가 있음
+AE2-038,yes,independent-opus-ai,무표제지만 황반색소밀도 문구는 원재료상 마리골드꽃추출물만 가질 수 있음
+AE2-039,yes,independent-opus-ai,[오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-040,yes,independent-opus-ai,마리골드꽃추출물 이름 줄 아래 황반색소밀도 유지 문구가 있음
+AE2-041,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-042,yes,independent-opus-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-043,no,independent-opus-ai,원재료에 마리골드가 있으나 원문에 황반색소밀도 문구가 없음
+AE2-044,no,independent-opus-ai,배변활동 문구는 자일로올리고당 표제 아래뿐이고 프로바이오틱스 문구는 없음
+AE2-045,yes,independent-opus-ai,루테인지아잔틴복합추출물 표제(괄호 불완전) 아래 황반색소밀도 유지 문구가 있음
+AE2-046,yes,independent-opus-ai,원재료가 프로바이오틱스와 덱스트린뿐이고 무표제 문구에 배변활동 원활이 있음
+AE2-047,yes,independent-opus-ai,캡슐4의 [마리골드꽃추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-048,yes,independent-opus-ai,[프로바이오틱스] 표제 아래에도 배변활동 원활이 있음
+AE2-049,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 건조한 눈 개선이 있음
+AE2-050,yes,independent-opus-ai,[프로바이오틱스 제품] 표제 아래 배변활동 원활이 있음
+AE2-051,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-052,yes,independent-opus-ai,[루테인지아잔틴복합추출물20%] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-053,yes,independent-opus-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-054,yes,independent-opus-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-055,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-056,no,independent-opus-ai,원재료에 마리골드가 있으나 원문에 황반색소밀도 문구가 없음
+AE2-057,yes,independent-opus-ai,[마리골드꽃추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-058,yes,independent-opus-ai,무표제지만 건조한 눈 문구는 원재료 중 EPA 및 DHA 함유 유지만 가질 수 있음(고시형 마리골드는 해당 없음)
+AE2-059,yes,independent-opus-ai,EPA 및 DHA함유유지 항목에 혈중 중성지질 개선이 있음
+AE2-060,yes,independent-opus-ai,* 프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-061,yes,independent-opus-ai,[마리골드꽃주정추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-062,no,independent-opus-ai,원문은 홍삼제품 문구뿐이며 혈액흐름도 홍삼 표제 아래라 EPA·DHA 혈행 개선 문구가 없음
+AE2-063,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 배변활동 원활이 있음
+AE2-064,yes,independent-opus-ai,조류 DHA 유지 제품의 [오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-065,yes,independent-opus-ai,* 프로바이오틱스 항목에 장건강 문구가 있음
+AE2-066,yes,independent-opus-ai,[마리골드꽃추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-067,yes,independent-opus-ai,[마리골드꽃추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-068,yes,independent-opus-ai,* 프로바이오틱스 항목에 장건강 문구가 있음
+AE2-069,yes,independent-opus-ai,오타 표제 [루테인지아잔틴복합추춤물] 아래 황반색소밀도 유지 문구가 있음
+AE2-070,yes,independent-opus-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선이 있음
+AE2-071,yes,independent-opus-ai,[오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-072,yes,independent-opus-ai,HAC01 문구와 별도로 [프로바이오틱스] 표제 아래 장건강이 있음
+AE2-073,yes,independent-opus-ai,* 프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-074,yes,independent-opus-ai,TWK10 문구와 별도로 [프로바이오틱스] 표제 아래 장건강이 있음
+AE2-075,no,independent-opus-ai,EPA 및 DHA 항목은 혈중 중성지질·혈행 개선뿐이고 기억력 개선은 은행잎 문구임
+AE2-076,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈행 개선이 있음
+AE2-077,yes,independent-opus-ai,[프로바이오틱스] 표제 아래 유산균 증식 및 유해균 억제가 있음
+AE2-078,yes,independent-opus-ai,무표제지만 혈중 중성지질·혈행·건조한 눈 문구는 원재료상 EPA 및 DHA 함유 유지만 가질 수 있음
+AE2-079,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-080,yes,independent-opus-ai,[마리골드꽃추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-081,yes,independent-opus-ai,[마리골드꽃주정추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-082,yes,independent-opus-ai,* 프로바이오틱스 항목에 장건강 문구가 있음
+AE2-083,yes,independent-opus-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선이 있음
+AE2-084,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 건조한 눈 개선이 있음
+AE2-085,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-086,yes,independent-opus-ai,[오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-087,yes,independent-opus-ai,[EPA와 DHA 함유 유지] 표제 아래 혈행 개선이 있음
+AE2-088,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 건조한 눈 개선이 있음
+AE2-089,yes,independent-opus-ai,[루테인 제품] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-090,yes,independent-opus-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-091,yes,independent-opus-ai,[EPA 및 DHA 함유 유지] 표제 아래 혈중 중성지질 개선이 있음
+AE2-092,no,independent-opus-ai,기억력 개선은 은행잎 추출물 표제 아래뿐이고 EPA·DHA 문구가 없음
+AE2-093,yes,independent-opus-ai,[마리골드꽃추출물(지아잔틴함유)] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-094,yes,independent-opus-ai,무표제지만 황반색소밀도 문구는 원재료상 마리골드꽃추출물만 가질 수 있음
+AE2-095,yes,independent-opus-ai,무표제지만 황반색소밀도 문구는 원재료상 마리골드꽃추출물만 가질 수 있음
+AE2-096,no,independent-opus-ai,기억력 개선은 홍삼제품 표제 아래뿐이고 EPA·DHA 문구가 없음
+AE2-097,yes,independent-opus-ai,[루테인] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-098,yes,independent-opus-ai,[오메가-3지방산함유유지 제품] 표제 아래 혈행개선이 있음
+AE2-099,yes,independent-opus-ai,[루테인지아잔틴복합추출물] 표제 아래 황반색소밀도 유지 문구가 있음
+AE2-100,yes,independent-opus-ai,[EPA및DHA함유유지] 표제 아래 혈중 중성지질 개선이 있음

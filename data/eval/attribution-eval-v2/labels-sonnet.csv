@@ -1,0 +1,101 @@
+item_id,label,labeler,note
+AE2-001,yes,independent-sonnet-ai,루테인 항목에 황반색소밀도 유지 문구가 직접 있음
+AE2-002,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-003,yes,independent-sonnet-ai,라벨 없는 단일 문구이며 원재료가 프로바이오틱스뿐이라 귀속 확실
+AE2-004,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-005,yes,independent-sonnet-ai,프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-006,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-007,yes,independent-sonnet-ai,라벨 없는 단일 문구이며 원재료가 프로바이오틱스뿐이라 귀속 확실
+AE2-008,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-009,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-010,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-011,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음(UREX 항목은 질내 유익균이라 별개)
+AE2-012,yes,independent-sonnet-ai,루테인지아잔틴추출복합물 항목에 황반색소밀도 유지 문구가 있음
+AE2-013,yes,independent-sonnet-ai,프로바이오틱스 복합물 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-014,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-015,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-016,yes,independent-sonnet-ai,라벨 없는 첫 문구(중성지질 혈행)는 원재료 중 정제어유만 가질 수 있음
+AE2-017,no,independent-sonnet-ai,원재료에 마리골드꽃추출물이 있으나 기능성 원문에 황반색소밀도 문구가 없음
+AE2-018,yes,independent-sonnet-ai,EPA 및 DHA 함유유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-019,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음
+AE2-020,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-021,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-022,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-023,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-024,yes,independent-sonnet-ai,프로바이오틱스 항목에 배변활동 원활 문구가 있음
+AE2-025,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-026,no,independent-sonnet-ai,배변활동 원활은 차전자피식이섬유 항목에만 있고 프로바이오틱스 문구는 없음
+AE2-027,yes,independent-sonnet-ai,루테인지아잔틴추출복합물 항목에 황반색소밀도 유지 문구가 있음
+AE2-028,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-029,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-030,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-031,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-032,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음(TWK10 항목은 운동수행능력)
+AE2-033,yes,independent-sonnet-ai,라벨 없는 황반색소밀도 문구는 원재료 중 마리골드꽃추출물만 가질 수 있음(간 건강은 밀크씨슬)
+AE2-034,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-035,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-036,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-037,yes,independent-sonnet-ai,프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-038,yes,independent-sonnet-ai,라벨 없는 황반색소밀도 문구는 원재료 중 마리골드꽃추출물만 가질 수 있음
+AE2-039,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-040,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음(은행잎은 별개)
+AE2-041,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-042,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-043,no,independent-sonnet-ai,원재료에 마리골드꽃추출물이 있으나 기능성 원문에 황반색소밀도 문구가 없음
+AE2-044,no,independent-sonnet-ai,배변활동 문구는 자일로올리고당 항목에만 있고 프로바이오틱스 항목은 원문에 없음
+AE2-045,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-046,yes,independent-sonnet-ai,라벨 없는 단일 문구이며 원재료가 프로바이오틱스뿐이라 귀속 확실
+AE2-047,yes,independent-sonnet-ai,캡슐4의 마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-048,yes,independent-sonnet-ai,프로바이오틱스 항목에 배변활동 원활 문구가 있음(프락토올리고당은 별개 항목)
+AE2-049,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-050,yes,independent-sonnet-ai,프로바이오틱스 제품 항목에 배변활동 원활 문구가 있음
+AE2-051,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-052,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음(은행잎은 별개)
+AE2-053,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-054,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-055,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-056,no,independent-sonnet-ai,원재료에 마리골드꽃추출물이 있으나 기능성 원문에 황반색소밀도 문구가 없음
+AE2-057,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-058,yes,independent-sonnet-ai,라벨 없는 건조한 눈 문구는 원재료 중 EPA 및 DHA 함유 유지만 가질 수 있음
+AE2-059,yes,independent-sonnet-ai,EPA 및 DHA함유유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-060,yes,independent-sonnet-ai,프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-061,yes,independent-sonnet-ai,마리골드꽃주정추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-062,no,independent-sonnet-ai,원문에는 홍삼제품 문구만 있고 오메가3 혈행 개선 문구는 없음
+AE2-063,yes,independent-sonnet-ai,프로바이오틱스 항목에 배변활동 원활 문구가 있음
+AE2-064,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-065,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음
+AE2-066,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-067,yes,independent-sonnet-ai,마리골드꽃추출물 항목에 황반색소밀도 유지 문구가 있음(나머지는 라벨 없는 비타민 문구)
+AE2-068,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음
+AE2-069,yes,independent-sonnet-ai,루테인지아잔틴복합추출물(오탈자 헤더) 항목에 황반색소밀도 유지 문구가 있음
+AE2-070,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-071,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-072,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음(HAC01 항목은 혈당)
+AE2-073,yes,independent-sonnet-ai,프로바이오틱스 항목에 장 건강 문구가 있음
+AE2-074,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음(TWK10 항목은 운동수행능력)
+AE2-075,no,independent-sonnet-ai,기억력 개선은 은행잎 추출물 항목에만 있고 EPA 및 DHA 함유 유지 항목은 중성지질 혈행뿐
+AE2-076,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-077,yes,independent-sonnet-ai,프로바이오틱스 항목에 유산균 증식 및 유해균 억제 문구가 있음
+AE2-078,yes,independent-sonnet-ai,라벨 없는 첫 문구(중성지질 혈행 건조한 눈)는 원재료 중 EPA 및 DHA 함유 유지만 가질 수 있음
+AE2-079,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-080,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-081,yes,independent-sonnet-ai,마리골드꽃주정추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-082,yes,independent-sonnet-ai,프로바이오틱스 항목에 장건강 문구가 있음
+AE2-083,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-084,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-085,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-086,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-087,yes,independent-sonnet-ai,EPA와 DHA 함유 유지 항목에 혈행 개선 문구가 있음
+AE2-088,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 건조한 눈 개선 문구가 있음
+AE2-089,yes,independent-sonnet-ai,루테인 제품 항목에 황반색소밀도 유지 문구가 있음
+AE2-090,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-091,yes,independent-sonnet-ai,EPA 및 DHA 함유 유지 항목에 혈중 중성지질 개선 문구가 있음
+AE2-092,no,independent-sonnet-ai,기억력 개선은 은행잎 추출물 항목에만 있고 오메가3(정제어유) 문구는 원문에 없음
+AE2-093,yes,independent-sonnet-ai,마리골드꽃추출물(지아잔틴함유) 항목에 황반색소밀도 유지 문구가 있음
+AE2-094,yes,independent-sonnet-ai,라벨 없는 황반색소밀도 문구는 원재료 중 마리골드꽃추출물만 가질 수 있음
+AE2-095,yes,independent-sonnet-ai,라벨 없는 황반색소밀도 문구는 원재료 중 마리골드꽃추출물만 가질 수 있음
+AE2-096,no,independent-sonnet-ai,기억력 개선은 홍삼제품 항목에만 있고 오메가3(정제어유) 문구는 원문에 없음
+AE2-097,yes,independent-sonnet-ai,루테인 항목에 황반색소밀도 유지 문구가 있음
+AE2-098,yes,independent-sonnet-ai,오메가-3지방산함유유지 제품 항목에 혈행개선 문구가 있음
+AE2-099,yes,independent-sonnet-ai,루테인지아잔틴복합추출물 항목에 황반색소밀도 유지 문구가 있음
+AE2-100,yes,independent-sonnet-ai,EPA및DHA함유유지 항목에 혈중 중성지질 개선 문구가 있음
