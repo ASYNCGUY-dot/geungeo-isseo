@@ -292,7 +292,10 @@ def test_official_unresolved_continuation_cannot_disappear_at_a_boundary(suffix:
     assert decision.official_effect is None
 
 
-@pytest.mark.parametrize("separator", [". ", "․", "．", ".\n"])
+# U+2024 ("․") was in this list until 2026-10-01. The user then chose to minimise unverifiable
+# results; in C003 every U+2024 checked joins effects as a middle dot, so it now reads as "·"
+# (tests/test_hold_formats.py). Periods, full-width periods and line breaks still end a sentence.
+@pytest.mark.parametrize("separator", [". ", "．", ".\n"])
 def test_separate_or_ambiguous_sentences_cannot_share_the_support_predicate(
     separator: str,
 ) -> None:

@@ -257,10 +257,47 @@ def test_or_is_only_rewritten_before_a_korean_name() -> None:
     assert normalize_header_name("비타민C(orange)").endswith("(orange)")
 
 
-# attribution-eval-v2 holds (v2.9). A period between effects still ends a sentence; U+2024 ("․")
-# also stays a sentence boundary as decided in the false-clearance hardening (see
-# test_false_clearance_hardening.py), pending a separate decision.
+# U+2024 ("․") is typed as a middle dot; NFKC turns it into ".", which is not an effect-list
+# separator. From v2.10 (user decision 2026-10-01: minimise unverifiable) U+2024 itself reads as
+# "·"; ASCII and full-width periods still end a sentence.
 ONE_DOT = "․"
+
+
+@pytest.mark.parametrize(("official", "effect"), [
+    (
+        MEM_BLOCK + "\n혈중 중성지질 개선" + ONE_DOT + "혈행 개선" + ONE_DOT + "기억력 개선" + ONE_DOT
+        + "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음\n[비타민E] " + VITAMIN_E,
+        EffectKey.MEMORY,
+    ),
+    (
+        "EPA 및 DHA 함유 유지 : 혈중 중성지질 개선" + ONE_DOT + "혈행 개선에 도움을 줄 수 있음\n비타민E : " + VITAMIN_E,
+        EffectKey.BLOOD_CIRCULATION,
+    ),
+    (
+        MEM_BLOCK + "\n건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음. 혈중 중성지질 개선" + ONE_DOT
+        + "혈행 개선에 도움을 줄 수 있음.\n[비타민E] " + VITAMIN_E,
+        EffectKey.BLOOD_CIRCULATION,
+    ),
+    (MEM_BLOCK + " 기억력 개선" + ONE_DOT + "혈행 개선에 도움을 줄 수 있음", EffectKey.MEMORY),
+    (MEM_BLOCK + " 기억력 개선" + ONE_DOT + " 혈행 개선에 도움을 줄 수 있음", EffectKey.MEMORY),
+])
+def test_one_dot_leader_reads_as_a_middle_dot(official: str, effect: EffectKey) -> None:
+    assert _attributed(official, OMEGA3, effect)
+
+
+def test_one_dot_leader_confirms_like_a_middle_dot() -> None:
+    official = MEM_BLOCK + " 기억력 개선" + ONE_DOT + "혈행 개선에 도움을 줄 수 있음"
+    assert _decide(MEM_AD, official).verdict is Verdict.CONFIRMED
+
+
+@pytest.mark.parametrize("official", [
+    MEM_BLOCK + " 기억력 개선" + ONE_DOT + " 검토 중" + ONE_DOT + " 혈행 개선에 도움을 줄 수 있음",
+    MEM_BLOCK + " 기억력 개선" + ONE_DOT + "\n혈행 개선에 도움을 줄 수 있음",
+    MEM_BLOCK + " 기억력 개선 검토 중" + ONE_DOT + "혈행 개선에 도움을 줄 수 있음",
+    MEM_BLOCK + " 기억력 개선．혈행 개선에 도움을 줄 수 있음",
+])
+def test_one_dot_leader_does_not_join_annotations_or_lines(official: str) -> None:
+    assert not _attributed(official, OMEGA3, EffectKey.MEMORY)
 
 
 @pytest.mark.parametrize("official", [

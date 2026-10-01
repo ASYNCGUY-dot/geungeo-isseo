@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.9"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.10"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -96,6 +96,9 @@ _HEADER_OR = re.compile(r"\(or(?=[가-힣])")
 _HEADER_PERCENT = re.compile(r"(?<=[가-힣a-z)])\d{1,3}(?:\.\d{1,2})?%$")
 # Lines such as "정제1" or "<캡슐2>" without a body separate the units of one product.
 _DOSAGE_UNIT = re.compile(r"<?(?:정제|캡슐|연질캡슐|경질캡슐|액상)\d{1,2}>?")
+# U+2024 ("․") is typed as a middle dot, but NFKC turns it into "." (not an effect-list separator).
+# Read as "·" by user decision 2026-10-01; ASCII and full-width periods still end a sentence.
+_ONE_DOT_LEADER = "․"
 # The former grade 2 wording is "도움을 줄 수 있음", so only that pair is read as one statement.
 _GRADE_TWO = r"(?:(?<=을줄수있음)\(생리활성기능2등급\))?"
 _OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음(?:\(생리활성기능2등급\))?|을줌)?[.。]*$")
@@ -184,7 +187,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.9"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.10"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -343,6 +346,11 @@ def _target_translations() -> frozenset[str]:
     return frozenset(pieces)
 
 
+def _line_compact(text: str, start: int, end: int) -> tuple[str, list[int]]:
+    """Compact a line, reading U+2024 as a middle dot (same length, so positions do not move)."""
+    return _compact(text[start:end].replace(_ONE_DOT_LEADER, "·"))
+
+
 def _statement_core(compact: str) -> str:
     # Dot variants mark or separate statements exactly as "·" does (the clause keys do the same).
     core = _FUNCTION_LABEL.sub("", _DOT_VARIANTS.sub("·", compact).removeprefix(_KOREAN_LABEL))
@@ -454,12 +462,12 @@ def _block_effects(
     # Every line in the ingredient block must be understood before a fragment can be evidence.
     # In particular, do not drop a tentative continuation just because it has no help predicate.
     block_supported = all(
-        _line_supported(_compact(text[start:end])[0]) for start, end in block.body_spans
+        _line_supported(_line_compact(text, start, end)[0]) for start, end in block.body_spans
     )
     effects: list[tuple[int, OfficialEffect]] = []
     for span_start, span_end in block.body_spans:
         statement_start, statement_end = _trimmed_span(text, span_start, span_end)
-        compact, positions = _compact(text[statement_start:statement_end])
+        compact, positions = _line_compact(text, statement_start, statement_end)
         core = _statement_core(compact)
         # A remaining colon signals an unparsed inline header; do not inherit the old header.
         if (
@@ -520,8 +528,12 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
     # Annotations can also sit in a body: another ingredient's block, a headerless preface or a
     # second target block. Every body clause of the field must be a reviewed official clause.
     clauses = known_clause_vocabulary().names
-    unknown_clause = not all(
-        _clause_accepted(clause, clauses) for clause in segment_body_clauses(text)
+    # Reviewed clauses were collected with U+2024 read as "."; a field also passes when every
+    # clause is accepted with U+2024 read as "·" (the same-length replacement keeps all spans).
+    readings = [text] + ([text.replace(_ONE_DOT_LEADER, "·")] if _ONE_DOT_LEADER in text else [])
+    unknown_clause = not any(
+        all(_clause_accepted(clause, clauses) for clause in segment_body_clauses(reading))
+        for reading in readings
     )
     allow_attribution = (
         not unresolved_header
