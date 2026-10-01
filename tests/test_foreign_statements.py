@@ -37,6 +37,19 @@ def test_other_ingredients_statement_under_the_header_is_held(joiner: str) -> No
     assert decision.official_effect is None
 
 
+# v2.10 reads U+2024 as a middle dot; the borrowed-statement check must read it the same way, or
+# "기억력 개선․혈행 개선…" slips past it (found while building headerless attribution, 2026-10-01).
+@pytest.mark.parametrize("official", [
+    "[EPA 및 DHA 함유 유지] 기억력 개선․혈행 개선에 도움을 줄 수 있음",
+    EPA + ", 기억력 개선․혈행 개선에 도움을 줄 수 있음",
+    "[EPA 및 DHA 함유 유지] 혈중 중성지질 개선․혈행 개선에 도움을 줄 수 있음 / 기억력 개선․ 혈행 개선에 도움을 줄 수 있음",
+])
+def test_one_dot_leader_does_not_hide_another_ingredients_statement(official: str) -> None:
+    decision = _decide(MEMORY_AD, official, RAW_WITH_GINKGO)
+    assert decision.verdict is Verdict.UNVERIFIABLE
+    assert decision.reason is VerdictReason.OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT
+
+
 @pytest.mark.parametrize(("official", "raw", "ad"), [
     (EPA + ", " + GINKGO, "EPA 및 DHA 함유 유지, 비타민E", MEMORY_AD),
     (EPA + ", " + GINKGO + "\n[은행잎추출물] " + GINKGO, RAW_WITH_GINKGO, MEMORY_AD),

@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.10"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.11"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -187,7 +187,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.10"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.11"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -579,14 +579,17 @@ _SUPPORT_CLAUSE_PATTERN = re.compile(_SUPPORT_CLAUSE)
 
 
 def support_statements(text: str) -> tuple[str, ...]:
-    """Complete support statements (effects with their own predicate), normalized like clauses."""
-    key = _DOT_VARIANTS.sub("·", _compact(text)[0])
+    """Complete support statements (effects with their own predicate), normalized like clauses.
+
+    U+2024 reads as "·" here exactly as in attribution, so checks on statements see what was attributed.
+    """
+    key = _DOT_VARIANTS.sub("·", _compact(text.replace(_ONE_DOT_LEADER, "·"))[0])
     return tuple(match.group() for match in _SUPPORT_CLAUSE_PATTERN.finditer(key))
 
 
 def effect_statement(effect: OfficialEffect) -> str | None:
     """The complete support statement on the effect's line that contains its matched phrase."""
-    compact, positions = _compact(effect.statement_text)
+    compact, positions = _compact(effect.statement_text.replace(_ONE_DOT_LEADER, "·"))
     offset = effect.matched_span[0] - effect.statement_span[0]
     if offset not in positions:
         return None

@@ -164,7 +164,7 @@ def test_header_normalization_strips_only_allowlisted_decorations(
 
 def test_parse_reports_target_groups_for_variant_headers() -> None:
     parsed = parse_official_function_v2(f"[비타민E] {VITAMIN_E}\n- EPA와 DHA 함유 유지 : {CIRCULATION}")
-    assert parsed.parser_version == OFFICIAL_FUNCTION_V2_VERSION == "official-function-v2.10"
+    assert parsed.parser_version == OFFICIAL_FUNCTION_V2_VERSION == "official-function-v2.11"
     assert [effect.attributed_groups for effect in parsed.effects] == [(IngredientGroup.OMEGA3,)]
 
 
