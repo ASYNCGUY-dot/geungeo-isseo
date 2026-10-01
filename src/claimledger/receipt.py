@@ -9,6 +9,7 @@ from pydantic import AwareDatetime, BaseModel
 
 from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION, ExpressionStrength
 from claimledger.domain import ConfirmedProduct, Verdict
+from claimledger.headerless import HEADERLESS_ATTRIBUTION_VERSION
 from claimledger.official_v2 import OFFICIAL_FUNCTION_V2_VERSION, EffectKey
 from claimledger.verdict_v1 import CLAIM_VERDICT_VERSION, ClaimDecision, VerdictReason
 
@@ -47,6 +48,10 @@ REASON_MESSAGES: dict[VerdictReason, str] = {
         "공식 문구는 '도움을 줄 수 있음'인데, 광고는 그보다 단정적이거나 강하게 표현했습니다."
     ),
     VerdictReason.MATCHES_OFFICIAL_FUNCTION: "공식 기능성 원문의 해당 원료 문구와 같은 범위·강도로 표현했습니다.",
+    VerdictReason.MATCHES_UNLABELED_OFFICIAL_FUNCTION: (
+        "공식 기능성 원문에 원료명 표기가 없지만, 이 문구는 다른 제품들에서 해당 원료 이름 아래 쓰였고 "
+        "원재료 중 같은 문구를 가질 수 있는 다른 원료가 없습니다. 같은 범위·강도로 표현했습니다."
+    ),
 }
 
 EFFECT_LABELS: dict[EffectKey, str] = {
@@ -182,7 +187,12 @@ def build_receipt(
         product=receipt_product,
         claims=tuple(_receipt_claim(decision) for decision in decisions),
         verdict_counts=dict(sorted(counts.items())),
-        rule_versions=(CLAIM_EXTRACTION_VERSION, OFFICIAL_FUNCTION_V2_VERSION, CLAIM_VERDICT_VERSION),
+        rule_versions=(
+            CLAIM_EXTRACTION_VERSION,
+            OFFICIAL_FUNCTION_V2_VERSION,
+            HEADERLESS_ATTRIBUTION_VERSION,
+            CLAIM_VERDICT_VERSION,
+        ),
         limitations=LIMITATIONS,
     )
 

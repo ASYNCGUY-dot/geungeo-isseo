@@ -62,6 +62,24 @@ def test_pairs_attributed_through_new_formats_get_their_own_stratum(text, group,
     assert classify_pair(text, group, effect) is Stratum.ATTRIBUTED_NEW_FORMAT
 
 
+PROBIOTIC_STATEMENT = "유산균 증식 및 유해균 억제･배변활동 원활･장 건강에 도움을 줄 수 있음"
+
+
+def test_headerless_attribution_gets_its_own_stratum_when_raw_materials_are_given() -> None:
+    effect = EffectKey.BOWEL_MOVEMENT
+    assert classify_pair(PROBIOTIC_STATEMENT, PROBIOTICS, effect, "프로바이오틱스(고시형), 덱스트린") is (
+        Stratum.ATTRIBUTED_HEADERLESS
+    )
+    assert classify_pair(PROBIOTIC_STATEMENT, PROBIOTICS, effect) is Stratum.HELD_HEADERLESS
+    assert classify_pair(PROBIOTIC_STATEMENT, PROBIOTICS, effect, "덱스트린") is Stratum.HELD_HEADERLESS
+
+
+def test_candidate_pairs_pass_raw_materials_to_the_classifier() -> None:
+    rows = [{"report_no": "H", "primary_function": PROBIOTIC_STATEMENT, "raw_materials": "프로바이오틱스(고시형)"}]
+    strata = {p.effect: p.stratum for p in candidate_pairs(rows)}
+    assert strata[EffectKey.GUT_HEALTH] is Stratum.ATTRIBUTED_HEADERLESS
+
+
 @pytest.mark.parametrize("text", [
     "[EPA 및 DHA 함유 유지] 기억력 개선에 도움을 줄 수 있음\n" + VITAMIN_E,
     "EPA 및 DHA 함유 유지(제2004-1호) : 기억력 개선에 도움을 줄 수 있음\n" + VITAMIN_E,
@@ -94,7 +112,8 @@ def _export(path: Path) -> Path:
                      "raw_materials": "EPA 및 DHA 함유 유지", "intake_method": "1일 1회"})
         rows.append({"report_no": f"H{i}", "name": f"유산균{i}", "company": f"업체{i % 3}",
                      "primary_function": "유산균 증식 및 유해균 억제에 도움을 줄 수 있음",
-                     "raw_materials": "프로바이오틱스", "intake_method": "1일 1회"})
+                     # 프락토올리고당 could own this single-effect statement, so it stays held.
+                     "raw_materials": "프로바이오틱스, 프락토올리고당", "intake_method": "1일 1회"})
     path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
     return path
 

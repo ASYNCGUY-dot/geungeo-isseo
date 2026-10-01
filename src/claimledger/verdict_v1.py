@@ -13,6 +13,7 @@ from claimledger.claims_v1 import (
 )
 from claimledger.domain import ConfirmedProduct, Verdict
 from claimledger.errors import IdentityRequiredError
+from claimledger.headerless import headerless_effects
 from claimledger.identity import require_confirmed_product
 from claimledger.official_v2 import (
     EFFECT_GROUP,
@@ -23,7 +24,7 @@ from claimledger.official_v2 import (
     parse_official_function_v2,
 )
 
-CLAIM_VERDICT_VERSION = "claim-verdict-v1.2"
+CLAIM_VERDICT_VERSION = "claim-verdict-v1.3"
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 
 
@@ -40,6 +41,7 @@ class VerdictReason(StrEnum):
     OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT = "OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT"
     EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL = "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
     MATCHES_OFFICIAL_FUNCTION = "MATCHES_OFFICIAL_FUNCTION"
+    MATCHES_UNLABELED_OFFICIAL_FUNCTION = "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
 
 
 class ClaimDecision(BaseModel):
@@ -49,7 +51,7 @@ class ClaimDecision(BaseModel):
     verdict: Verdict
     reason: VerdictReason
     official_effect: OfficialEffect | None = None
-    rule_version: Literal["claim-verdict-v1.2"] = CLAIM_VERDICT_VERSION
+    rule_version: Literal["claim-verdict-v1.3"] = CLAIM_VERDICT_VERSION
     extraction_version: Literal["claim-extract-v1.2"] = CLAIM_EXTRACTION_VERSION
     official_parser_version: Literal["official-function-v2.11"] = OFFICIAL_FUNCTION_V2_VERSION
 
@@ -105,6 +107,18 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
     if attributed and not own:
         return _decision(claim, Verdict.UNVERIFIABLE, VerdictReason.OFFICIAL_STATEMENT_OF_OTHER_INGREDIENT)
     official = own[0] if own else None
+    match_reason = VerdictReason.MATCHES_OFFICIAL_FUNCTION
+    if official is None:
+        # No header anywhere: the statement's owner is inferred from C003 wording and raw materials.
+        unlabeled = [
+            item
+            for item in headerless_effects(function_text, confirmed.product.raw_materials)
+            if item.effect in claim.effect_candidates
+            and borrowed_statement(item, confirmed.product.raw_materials, function_text) is None
+        ]
+        if unlabeled:
+            official = unlabeled[0]
+            match_reason = VerdictReason.MATCHES_UNLABELED_OFFICIAL_FUNCTION
     if official is None:
         mentioned = any(effect_mentioned(function_text, effect) for effect in claim.effect_candidates) or any(
             item.effect in claim.effect_candidates for item in parsed.effects
@@ -121,7 +135,7 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
         return _decision(claim, Verdict.MISMATCH, VerdictReason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL, official)
     if not supports_confirmation(claim, official.effect):
         return _decision(claim, Verdict.UNVERIFIABLE, VerdictReason.CLAIM_SCOPE_UNRESOLVED)
-    return _decision(claim, Verdict.CONFIRMED, VerdictReason.MATCHES_OFFICIAL_FUNCTION, official)
+    return _decision(claim, Verdict.CONFIRMED, match_reason, official)
 
 
 __all__ = ["CLAIM_VERDICT_VERSION", "ClaimDecision", "VerdictReason", "decide_claim"]

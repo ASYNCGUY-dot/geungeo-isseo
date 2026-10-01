@@ -179,6 +179,8 @@ class OfficialEffect(BaseModel):
     block_header: str | None
     attributed_groups: tuple[IngredientGroup, ...]
     official_strength: Literal["support"] = "support"
+    # "header": under the target's own header; "headerless_owner": see claimledger.headerless.
+    attribution_basis: Literal["header", "headerless_owner"] = "header"
 
 
 class OfficialFunctionParse(BaseModel):
@@ -464,41 +466,42 @@ def _block_effects(
     block_supported = all(
         _line_supported(_line_compact(text, start, end)[0]) for start, end in block.body_spans
     )
-    effects: list[tuple[int, OfficialEffect]] = []
-    for span_start, span_end in block.body_spans:
-        statement_start, statement_end = _trimmed_span(text, span_start, span_end)
-        compact, positions = _line_compact(text, statement_start, statement_end)
-        core = _statement_core(compact)
-        # A remaining colon signals an unparsed inline header; do not inherit the old header.
-        if (
-            ":" in core
-            or not _OFFICIAL_SUPPORT_END.search(core)
-            or _NEGATIVE_STATEMENT.search(compact)
-        ):
-            continue
-        groups = (
-            header_groups if allow_attribution and block_supported else ()
-        )
-        for effect, pattern in _EFFECT_PATTERNS:
-            for match in pattern.finditer(compact):
-                matched_start = statement_start + positions[match.start()]
-                matched_end = statement_start + positions[match.end() - 1] + 1
-                effects.append(
-                    (
-                        matched_start,
-                        OfficialEffect(
-                            effect=effect,
-                            effect_group=EFFECT_GROUP[effect],
-                            matched_text=text[matched_start:matched_end],
-                            matched_span=(matched_start, matched_end),
-                            statement_text=text[statement_start:statement_end],
-                            statement_span=(statement_start, statement_end),
-                            block_header=block.header,
-                            attributed_groups=groups,
-                        ),
-                    )
+    groups = header_groups if allow_attribution and block_supported else ()
+    effects = [
+        effect
+        for span_start, span_end in block.body_spans
+        for effect in _span_effects(text, span_start, span_end, block.header, groups)
+    ]
+    return sorted(effects, key=lambda effect: effect.matched_span[0])
+
+
+def _span_effects(
+    text: str, span_start: int, span_end: int, header: str | None, groups: tuple[IngredientGroup, ...],
+) -> list[OfficialEffect]:
+    statement_start, statement_end = _trimmed_span(text, span_start, span_end)
+    compact, positions = _line_compact(text, statement_start, statement_end)
+    core = _statement_core(compact)
+    # A remaining colon signals an unparsed inline header; do not inherit the old header.
+    if ":" in core or not _OFFICIAL_SUPPORT_END.search(core) or _NEGATIVE_STATEMENT.search(compact):
+        return []
+    effects: list[OfficialEffect] = []
+    for effect, pattern in _EFFECT_PATTERNS:
+        for match in pattern.finditer(compact):
+            matched_start = statement_start + positions[match.start()]
+            matched_end = statement_start + positions[match.end() - 1] + 1
+            effects.append(
+                OfficialEffect(
+                    effect=effect,
+                    effect_group=EFFECT_GROUP[effect],
+                    matched_text=text[matched_start:matched_end],
+                    matched_span=(matched_start, matched_end),
+                    statement_text=text[statement_start:statement_end],
+                    statement_span=(statement_start, statement_end),
+                    block_header=header,
+                    attributed_groups=groups,
                 )
-    return [effect for _, effect in sorted(effects, key=lambda item: item[0])]
+            )
+    return effects
 
 
 def _dosage_divider(block: _Block) -> bool:
@@ -509,10 +512,7 @@ def _dosage_divider(block: _Block) -> bool:
     )
 
 
-def parse_official_function_v2(text: str) -> OfficialFunctionParse:
-    if not text.strip():
-        return OfficialFunctionParse(source_text=text, blocks=(), effects=())
-    raw_blocks = _segment_blocks(text)
+def _field_allows_attribution(text: str, raw_blocks: list[_Block]) -> bool:
     # A flattened C003 field cannot prove the scope of a negative section/continuation.
     # Do not let a subsequent ingredient header silently reset that uncertainty. A header that is
     # neither a target nor a reviewed ingredient name (e.g. "[검토 중]") may qualify neighbouring
@@ -535,11 +535,41 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
         all(_clause_accepted(clause, clauses) for clause in segment_body_clauses(reading))
         for reading in readings
     )
-    allow_attribution = (
+    return (
         not unresolved_header
         and not unknown_clause
         and _NEGATIVE_STATEMENT.search(_compact(text)[0]) is None
     )
+
+
+def field_allows_attribution(text: str) -> bool:
+    """The field-wide gates (headers, reviewed clauses, negative words) every attribution needs."""
+    return bool(text.strip()) and _field_allows_attribution(text, _segment_blocks(text))
+
+
+def headerless_body_spans(text: str) -> tuple[tuple[int, int], ...] | None:
+    """Body line spans of a field with no ingredient header at all; None when any header exists."""
+    blocks = _segment_blocks(text)
+    if any(block.header is not None for block in blocks):
+        return None
+    return tuple(span for block in blocks for span in block.body_spans)
+
+
+def line_supported(text: str, start: int, end: int) -> bool:
+    """Whether the line is entirely target support statements (labels and reviewed translations aside)."""
+    return _line_supported(_line_compact(text, start, end)[0])
+
+
+def span_effects(text: str, start: int, end: int) -> tuple[OfficialEffect, ...]:
+    """Unattributed official effects on one line, found exactly as in a header block."""
+    return tuple(_span_effects(text, start, end, None, ()))
+
+
+def parse_official_function_v2(text: str) -> OfficialFunctionParse:
+    if not text.strip():
+        return OfficialFunctionParse(source_text=text, blocks=(), effects=())
+    raw_blocks = _segment_blocks(text)
+    allow_attribution = _field_allows_attribution(text, raw_blocks)
     blocks = tuple(
         OfficialFunctionBlock(
             header=block.header,
@@ -611,12 +641,16 @@ __all__ = [
     "ReviewedVocabulary",
     "effect_mentioned",
     "effect_statement",
+    "field_allows_attribution",
+    "headerless_body_spans",
     "known_clause_vocabulary",
     "known_header_vocabulary",
+    "line_supported",
     "normalize_header_name",
     "official_effect_keys",
     "parse_official_function_v2",
     "segment_body_clauses",
     "segment_header_names",
+    "span_effects",
     "support_statements",
 ]

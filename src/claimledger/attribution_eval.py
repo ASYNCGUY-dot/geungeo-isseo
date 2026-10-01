@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 
 from claimledger.domain import IngredientGroup
+from claimledger.headerless import headerless_effects
 from claimledger.official_v2 import (
     EFFECT_GROUP,
     EffectKey,
@@ -57,6 +58,7 @@ class Stratum(StrEnum):
     ATTRIBUTED_VARIANT_HEADER = "attributed_variant_header"
     ATTRIBUTED_EXTENDED_FORMAT = "attributed_extended_format"
     ATTRIBUTED_NEW_FORMAT = "attributed_new_format"
+    ATTRIBUTED_HEADERLESS = "attributed_headerless"
     HELD_UNDER_TARGET_HEADER = "held_under_target_header"
     HELD_HEADERLESS = "held_headerless"
     HELD_OTHER = "held_other"
@@ -67,6 +69,7 @@ ATTRIBUTED_STRATA = (
     Stratum.ATTRIBUTED_VARIANT_HEADER,
     Stratum.ATTRIBUTED_EXTENDED_FORMAT,
     Stratum.ATTRIBUTED_NEW_FORMAT,
+    Stratum.ATTRIBUTED_HEADERLESS,
 )
 
 
@@ -128,7 +131,10 @@ def _v22_header(header: str | None, group: IngredientGroup) -> bool:
     return re.fullmatch(_V22_HEADER_NAMES[group] + r"(?:제품)?(?:\(고시형\))?", compact) is not None
 
 
-def classify_pair(function_text: str, group: IngredientGroup, effect: EffectKey) -> Stratum:
+def classify_pair(
+    function_text: str, group: IngredientGroup, effect: EffectKey, raw_materials: str = "",
+) -> Stratum:
+    """Parser path of the pair; headerless attribution needs the raw materials (none: never)."""
     parse = parse_official_function_v2(function_text)
     attributed = [
         item for item in parse.effects if item.effect is effect and group in item.attributed_groups
@@ -142,6 +148,11 @@ def classify_pair(function_text: str, group: IngredientGroup, effect: EffectKey)
         if not _v22_header(first.block_header, group):
             return Stratum.ATTRIBUTED_VARIANT_HEADER
         return Stratum.ATTRIBUTED_CANONICAL
+    if raw_materials and any(
+        item.effect is effect and group in item.attributed_groups
+        for item in headerless_effects(function_text, raw_materials)
+    ):
+        return Stratum.ATTRIBUTED_HEADERLESS
     headers = segment_header_names(function_text)
     if not headers:
         return Stratum.HELD_HEADERLESS
@@ -158,7 +169,8 @@ def candidate_pairs(rows: Iterable[Mapping[str, str]]) -> list[EvalPair]:
         text = row.get("primary_function") or ""
         if not text.strip():
             continue
-        raw = _squash(row.get("raw_materials") or "")
+        raw_materials = row.get("raw_materials") or ""
+        raw = _squash(raw_materials)
         attributed_groups = {
             group
             for item in parse_official_function_v2(text).effects
@@ -170,9 +182,8 @@ def candidate_pairs(rows: Iterable[Mapping[str, str]]) -> list[EvalPair]:
                 continue
             for effect in EffectKey:
                 if EFFECT_GROUP[effect] is group and effect_mentioned(text, effect):
-                    pairs.append(
-                        EvalPair(row["report_no"], group, effect, classify_pair(text, group, effect))
-                    )
+                    stratum = classify_pair(text, group, effect, raw_materials)
+                    pairs.append(EvalPair(row["report_no"], group, effect, stratum))
     return pairs
 
 

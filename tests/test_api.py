@@ -27,7 +27,8 @@ def _products() -> list[ProductCandidate]:
             name="오메가 무표시",
             company="다라 업체",
             primary_function="혈중 중성지질 개선에 도움을 줄 수 있음",
-            raw_materials="정제어유",
+            # Another possible owner of the headerless statement keeps this product unverifiable.
+            raw_materials="정제어유, 난소화성말토덱스트린",
             intake_method="1일 1회",
             source_id="C003",
             retrieved_at=RETRIEVED_AT,

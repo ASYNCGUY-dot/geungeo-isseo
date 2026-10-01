@@ -62,7 +62,8 @@ def score(manifest: dict, labels: dict[str, dict], rows: dict[str, dict]) -> dic
     for item in manifest["items"]:
         row = rows[item["report_no"]]
         current = classify_pair(
-            row.get("primary_function") or "", IngredientGroup(item["group"]), EffectKey(item["effect"])
+            row.get("primary_function") or "", IngredientGroup(item["group"]), EffectKey(item["effect"]),
+            row.get("raw_materials") or "",
         )
         if current.value != item["stratum"]:
             drift.append({"item_id": item["item_id"], "manifest": item["stratum"], "current": current.value})
