@@ -89,7 +89,7 @@
 아래 오인 승인 방지 강화의 남은 P1은 원료명 사전 게이트로 해결했습니다(전체 필드 게이트·구조화 근거 설계는 적용하지 않음).
 원료명 사전은 `scripts/build_header_vocabulary.py`로 C003 스냅샷에서 다시 만들 수 있고, 제외 목록은 AI 검토이며 사람 검토가 아닙니다.
 독립 AI 재검토에서 P1 2건이 나왔습니다. 목록 기호 P1-B와 P3는 v2.4에서, 본문 속 주석 P1-A는 2단계 공식 문장 사전
-게이트(`docs/evidence/CLAUSE_GATE_2026-09-29.md`)에서 고쳤습니다. 현재 공식 파서 버전은 `official-function-v2.6`입니다.
+게이트(`docs/evidence/CLAUSE_GATE_2026-09-29.md`)에서 고쳤습니다. 현재 공식 파서 버전은 `official-function-v2.7`입니다(10/1 형식 확장).
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.
@@ -99,6 +99,8 @@
 4단계 평가세트 v1(`docs/evidence/ATTRIBUTION_EVAL_2026-09-30.md`, `data/eval/attribution-eval-v1/`)은 귀속 60쌍 오류 0,
 보류 30쌍 중 29쌍 귀속 가능이며, 라벨은 AI 개발자 라벨입니다. 맹검 AI 교차 라벨(`labels-independent.csv`)은
 99/100 일치(kappa 0.918)이고 잘못 귀속 0입니다. 두 라벨 모두 AI라서 평가 수치를 사람 정확도로 표현하지 않습니다.
+2026-10-01 보류 원인별 형식 6개를 좁게 허용했습니다(`docs/evidence/HOLD_FORMATS_2026-10-01.md`, `official-function-v2.7`).
+평가세트 v1 수치는 v2.6 기준 기록이며, v2.7 새 형식의 독립 정확도는 아직 재지 않았습니다.
 금지어를 하나씩 추가하지 말고, 인식된 형식·이름만 통과시키는 허용 목록 방식을 유지합니다.
 
 2026-09-28 사용자가 오인 승인 방지 검증 강화를 승인했습니다.
