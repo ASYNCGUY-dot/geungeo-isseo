@@ -203,6 +203,32 @@ def test_score_reports_false_attribution_and_missed_attribution(tmp_path: Path) 
     assert summary["unlabeled"] == 0
 
 
+def test_score_counts_a_held_item_that_is_now_attributed_with_a_no_label(tmp_path: Path) -> None:
+    # Review P2-1: an item frozen as held, now attributed by a newer rule and labelled "no", is a
+    # false attribution of the current parser even though its frozen stratum is a held one.
+    _, manifest = _build(tmp_path)
+    moved = next(item for item in manifest["items"] if item["stratum"] == "attributed_canonical")
+    moved["stratum"] = "held_headerless"
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+    labels = tmp_path / "labels.csv"
+    with labels.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["item_id", "label", "labeler", "note"])
+        writer.writeheader()
+        for item in manifest["items"]:
+            label = "no" if item["item_id"] == moved["item_id"] else "yes"
+            writer.writerow({"item_id": item["item_id"], "label": label, "labeler": "test", "note": ""})
+    output = tmp_path / "score.json"
+    args = [
+        "--manifest", str(tmp_path / "manifest.json"), "--labels", str(labels),
+        "--source-export", str(tmp_path / "c003.jsonl"),
+        "--source-retrieved-at", "2026-08-27T12:42:29+00:00", "--output", str(output),
+    ]
+
+    assert score_attribution_eval.main([*args, "--require-zero-false-attribution"]) == 1
+    summary = json.loads(output.read_text(encoding="utf-8"))
+    assert summary["drift_false_attribution"] == [moved["item_id"]]
+
+
 def test_score_rejects_unknown_labels_and_counts_unlabeled(tmp_path: Path) -> None:
     _build(tmp_path)
     labels = tmp_path / "labels.csv"

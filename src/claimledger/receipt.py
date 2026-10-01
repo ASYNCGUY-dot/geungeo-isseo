@@ -9,7 +9,7 @@ from pydantic import AwareDatetime, BaseModel
 
 from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION, ExpressionStrength
 from claimledger.domain import ConfirmedProduct, Verdict
-from claimledger.headerless import HEADERLESS_ATTRIBUTION_VERSION
+from claimledger.headerless import HEADERLESS_ATTRIBUTION_VERSION, headerless_references
 from claimledger.official_v2 import OFFICIAL_FUNCTION_V2_VERSION, EffectKey
 from claimledger.verdict_v1 import CLAIM_VERDICT_VERSION, ClaimDecision, VerdictReason
 
@@ -49,8 +49,9 @@ REASON_MESSAGES: dict[VerdictReason, str] = {
     ),
     VerdictReason.MATCHES_OFFICIAL_FUNCTION: "공식 기능성 원문의 해당 원료 문구와 같은 범위·강도로 표현했습니다.",
     VerdictReason.MATCHES_UNLABELED_OFFICIAL_FUNCTION: (
-        "공식 기능성 원문에 원료명 표기가 없지만, 이 문구는 다른 제품들에서 해당 원료 이름 아래 쓰였고 "
-        "원재료 중 같은 문구를 가질 수 있는 다른 원료가 없습니다. 같은 범위·강도로 표현했습니다."
+        "공식 기능성 원문에 원료명 표기가 없습니다. 이 문구는 C003의 다른 제품들에서 해당 원료 이름 아래 쓰였고, "
+        "C003 원료명과 고시형 원료 기준으로 같은 문구를 가질 수 있는 다른 원료를 원재료에서 찾지 못했습니다. "
+        "개별인정형 원료는 일부만 확인됩니다. 광고는 같은 범위·강도로 표현했습니다."
     ),
 }
 
@@ -99,6 +100,7 @@ class ReceiptOfficialQuote(BaseModel):
     statement_text: str
     statement_span: tuple[int, int]
     matched_text: str
+    attribution_basis: Literal["header", "headerless_owner"] = "header"
 
 
 class ReceiptClaim(BaseModel):
@@ -138,6 +140,7 @@ def _receipt_claim(decision: ClaimDecision) -> ReceiptClaim:
             statement_text=official.statement_text,
             statement_span=official.statement_span,
             matched_text=official.matched_text,
+            attribution_basis=official.attribution_basis,
         )
         if official is not None
         else None
@@ -191,6 +194,7 @@ def build_receipt(
             CLAIM_EXTRACTION_VERSION,
             OFFICIAL_FUNCTION_V2_VERSION,
             HEADERLESS_ATTRIBUTION_VERSION,
+            *headerless_references(),
             CLAIM_VERDICT_VERSION,
         ),
         limitations=LIMITATIONS,
