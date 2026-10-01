@@ -134,6 +134,90 @@ def test_unreviewed_or_korean_translation_text_stays_held(official: str) -> None
     assert not _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
 
 
+def test_numbered_translations_of_target_statements_are_accepted() -> None:
+    official = (
+        "[루테인지아잔틴복합추출물(제2018-4호)]\n"
+        "(국문) ① " + EYE + " ② 건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음\n"
+        "(영문) ① " + EYE_EN + " ② May help to maintain eyes healthy by relieving dryness\n"
+        "[비타민E] " + VITAMIN_E
+    )
+    assert _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+
+
+# Review of v2.7 (P2-1): the clause gate checks pieces, so any reviewed English piece could ride
+# along. Only English that the vocabulary pairs with a target statement may be set aside; any
+# other English line is an unexplained line in the block, exactly like its Korean counterpart.
+MEM_BLOCK = "[EPA 및 DHA 함유 유지]"
+MEM_LINE = "기억력 개선에 도움을 줄 수 있음"
+
+
+@pytest.mark.parametrize("official", [
+    MEM_BLOCK + "\n(영문) May help to reduce body fat\n" + MEM_LINE + "\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + "\n" + MEM_LINE + "\n(영문) May help to reduce body fat\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + " " + MEM_LINE + ", (영문). May help to improve memory. May help to reduce body fat",
+    MEM_BLOCK + " " + MEM_LINE + ", (영문). :. May help to improve memory",
+    MEM_BLOCK + " " + MEM_LINE + " (영문) May help to improve memory (other function claim 2 grade)",
+])
+def test_english_outside_target_translations_holds_the_block(official: str) -> None:
+    assert not _attributed(official, OMEGA3, EffectKey.MEMORY)
+    assert _decide(MEM_AD, official).verdict is not Verdict.CONFIRMED
+
+
+def test_reviewed_target_translation_of_the_same_statement_is_accepted() -> None:
+    official = MEM_BLOCK + " " + MEM_LINE + " (영문) May help to improve memory\n[비타민E] " + VITAMIN_E
+    assert _decide(MEM_AD, official).verdict is Verdict.CONFIRMED
+
+
+# Review of v2.7 (P3-1): "[A] : B : statement" names a second ingredient on the same line.
+@pytest.mark.parametrize(("official", "group", "effect"), [
+    (
+        "[프로바이오틱스] : EPA 및 DHA 함유 유지 : " + MEM_LINE + "\n[비타민E] " + VITAMIN_E,
+        OMEGA3, EffectKey.MEMORY,
+    ),
+    (
+        "[EPA 및 DHA 함유 유지] : 루테인 : " + EYE + "\n[비타민E] " + VITAMIN_E,
+        LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH,
+    ),
+    (
+        "[EPA 및 DHA 함유 유지] : 마리골드꽃추출물 - " + EYE + "\n[비타민E] " + VITAMIN_E,
+        LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH,
+    ),
+])
+def test_second_header_after_a_bracket_colon_holds(
+    official: str, group: IngredientGroup, effect: EffectKey,
+) -> None:
+    assert not _attributed(official, group, effect)
+
+
+def test_bracket_colon_with_a_header_on_the_next_line_is_unchanged() -> None:
+    official = "[EPA 및 DHA 함유 유지] : " + OMEGA_ALL + "\n마리골드꽃추출물 : " + EYE + "\n[비타민E] " + VITAMIN_E
+    assert _attributed(official, OMEGA3, EffectKey.MEMORY)
+    assert _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+
+
+# Review of v2.7 (P3-2): the label and translation formats are accepted only where the reviewed
+# clause vocabulary holds that exact labelled or paired clause. These pin the narrower scope so a
+# vocabulary rebuild that widens it shows up as a test change.
+@pytest.mark.parametrize(("official", "group", "effect"), [
+    (
+        MEM_BLOCK + "\n(1) 기능성 내용 : " + MEM_LINE + "\n[비타민E]\n(1) " + VITAMIN_E,
+        OMEGA3, EffectKey.MEMORY,
+    ),
+    (
+        "[프로바이오틱스]\n(1) 기능성 내용 : 유산균 증식 및 유해균 억제에 도움을 줄 수 있음\n[비타민E]\n(1) " + VITAMIN_E,
+        IngredientGroup.PROBIOTICS, EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION,
+    ),
+    (
+        MEM_BLOCK + " " + MEM_LINE + " (영문) May help improve memory\n[비타민E] " + VITAMIN_E,
+        OMEGA3, EffectKey.MEMORY,
+    ),
+])
+def test_label_and_translation_outside_the_vocabulary_stay_held(
+    official: str, group: IngredientGroup, effect: EffectKey,
+) -> None:
+    assert not _attributed(official, group, effect)
+
+
 # The former grade 2 wording is "도움을 줄 수 있음"; grades 1 and 3 name other strengths.
 GRADED = (
     "[EPA 및 DHA 함유유지]①혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음 "

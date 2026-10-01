@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.7"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.8"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -116,10 +116,14 @@ _SUPPORTED_STATEMENT = re.compile(
     rf"{_SUPPORT_CLAUSE}{_GRADE_TWO})*[.。]*"
 )
 _KOREAN_LABEL = "(국문)"
-# Labels and translations around a statement. The clause gate has already required the whole line,
-# translation included, to be a reviewed official clause, so they are set aside only here.
+# Labels and translations around a statement, set aside only in the target-block check. The clause
+# gate checks a line piece by piece, so it does not prove an English tail is a translation: a tail
+# is set aside only when every piece is English that the reviewed clause vocabulary pairs with a
+# target support statement. Any other English stays in the line, which then holds the block.
 _FUNCTION_LABEL = re.compile(r"^(?:\(\d{1,2}\)|\d{1,2}[.)]?)?기능성내용:")
-_TRANSLATION = re.compile(r"[,/]?\(영문\)[^가-힣]*$")
+_TRANSLATION = re.compile(r"[,/]?\(영문\)(?P<english>[^가-힣]*)$")
+_TRANSLATION_PAIR = re.compile(r"^(?P<korean>.*?)[,/]?\(영문\)(?P<english>[^가-힣]*)$")
+_TRANSLATION_BREAK = re.compile(r"[.,;/。]|\(\d{1,2}\)|\d{1,2}[.)]?")
 # Clause boundaries for the vocabulary gate, applied after circled numbers became newlines.
 _CLAUSE_BREAK = re.compile(
     rf"\n|\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|(?:^|(?<=\s))\d{{1,2}}[.)](?!\d)|[.。](?=\s|$)"
@@ -136,8 +140,9 @@ _FUNCTION_WORDS = (
 )
 _NON_HEADER_NAMES = ("기능성내용", "기능성", "국문", "영문")
 
-# A colon right after the closing bracket ("[name] : statement") belongs to the header.
-_BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\](?:[ \t]*[:：])?")
+# A colon right after the closing bracket ("[name] : statement") belongs to the header, unless the
+# rest of that line names another ingredient ("[A] : B : statement"), which is then held.
+_BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\](?P<colon>[ \t]*[:：])?")
 # Used with match(text, pos): no "^", which would only match at the start of the whole field.
 _LINE_PREFIX = re.compile(
     rf"(?:[*\-•·◦▪]|\d{{1,2}}\s*[).]|\(\d{{1,2}}\)|[①-⑳]|\([{_LIST_LETTERS}]\))\s*"
@@ -175,7 +180,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.7"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.8"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -318,8 +323,29 @@ def _balanced(name: str) -> bool:
     return normalized.count("(") == normalized.count(")")
 
 
+def _translation_pieces(english: str) -> list[str]:
+    return [piece for piece in _TRANSLATION_BREAK.split(_DOT_VARIANTS.sub("·", english)) if piece]
+
+
+@cache
+def _target_translations() -> frozenset[str]:
+    """English pieces that the reviewed clause vocabulary pairs with a target support statement."""
+    pieces: set[str] = set()
+    for clause in known_clause_vocabulary().names:
+        pair = _TRANSLATION_PAIR.match(clause)
+        if pair and _SUPPORTED_STATEMENT.fullmatch(_FUNCTION_LABEL.sub("", pair["korean"])):
+            pieces.update(_translation_pieces(pair["english"]))
+    return frozenset(pieces)
+
+
 def _statement_core(compact: str) -> str:
-    return _TRANSLATION.sub("", _FUNCTION_LABEL.sub("", compact.removeprefix(_KOREAN_LABEL)))
+    core = _FUNCTION_LABEL.sub("", compact.removeprefix(_KOREAN_LABEL))
+    translation = _TRANSLATION.search(core)
+    if translation and all(
+        piece in _target_translations() for piece in _translation_pieces(translation["english"])
+    ):
+        return core[:translation.start()]
+    return core
 
 
 def _line_supported(compact: str) -> bool:
@@ -401,8 +427,18 @@ def _segment_blocks(text: str) -> list[_Block]:
             body_spans=[],
         )
         blocks.append(block)
-        blocks.extend(_line_blocks(text, match.end(), body_end, block))
+        following = _line_blocks(text, match.end(), body_end, block)
+        if match["colon"] and _header_on_first_line(text, match.end(), body_end, following):
+            block.body_spans.clear()
+            following = _line_blocks(text, match.start("colon"), body_end, block)
+        blocks.extend(following)
     return blocks
+
+
+def _header_on_first_line(text: str, start: int, end: int, blocks: list[_Block]) -> bool:
+    newline = text.find("\n", start, end)
+    line_end = end if newline == -1 else newline
+    return bool(blocks) and blocks[0].header_span is not None and blocks[0].header_span[0] < line_end
 
 
 def _block_effects(
