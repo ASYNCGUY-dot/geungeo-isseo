@@ -2,12 +2,15 @@
   "reviewer": "Claude Code (claude-opus-5-5), AI developer review; not a human or expert review",
   "reviewed_at": "2026-09-29T11:30:00+09:00",
   "criterion": "Keep names of ingredients or nutrients (typos and strain or brand names included). Exclude labels, dosage forms, function phrases, notes, citations and sentence fragments, because they are not ingredient names and may qualify neighbouring evidence.",
+  "revisions": [
+    {
+      "revised_at": "2026-10-01T00:00:00+09:00",
+      "change": "Removed 4 fragment exclusions ((인정번호, (제2009, (제2019, 혈관벽두께(내중막두께) that official-function-v2.7 no longer produces, because a dash or colon inside parentheses no longer splits a header. No name was added."
+    }
+  ],
   "exclusions": {
     "(2)(다)의제조방법에한함": "manufacturing-method condition note",
     "(생리활성기능2등급)": "function grade note",
-    "(인정번호": "approval number fragment",
-    "(제2009": "approval number fragment",
-    "(제2019": "approval number fragment",
     "<액상>": "dosage form label",
     "degradedbyaging": "English function sentence fragment",
     "epa와dha의합": "content specification label",
@@ -41,7 +44,6 @@
     "최종": "section label",
     "필수지방산의보충": "function phrase",
     "항산화작용": "function phrase",
-    "항산화작용2구강에서의항균작용": "function phrase",
-    "혈관벽두께(내중막두께": "function phrase fragment"
+    "항산화작용2구강에서의항균작용": "function phrase"
   }
 }

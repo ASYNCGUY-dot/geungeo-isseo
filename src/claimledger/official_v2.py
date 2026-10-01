@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.8"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.9"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -92,13 +92,17 @@ _HEADER_DECORATION = re.compile(
 )
 # "셀레늄(or 셀렌)" names the same ingredient as the reviewed "셀레늄(또는셀렌)".
 _HEADER_OR = re.compile(r"\(or(?=[가-힣])")
+# A content percentage ending the name ("루테인지아잔틴복합추출물20%") names the same ingredient.
+_HEADER_PERCENT = re.compile(r"(?<=[가-힣a-z)])\d{1,3}(?:\.\d{1,2})?%$")
+# Lines such as "정제1" or "<캡슐2>" without a body separate the units of one product.
+_DOSAGE_UNIT = re.compile(r"<?(?:정제|캡슐|연질캡슐|경질캡슐|액상)\d{1,2}>?")
 # The former grade 2 wording is "도움을 줄 수 있음", so only that pair is read as one statement.
 _GRADE_TWO = r"(?:(?<=을줄수있음)\(생리활성기능2등급\))?"
 _OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음(?:\(생리활성기능2등급\))?|을줌)?[.。]*$")
 # Attribute only a fully consumed list of supported effects sharing an explicit predicate.
 # Detection below can still retain an unattributed keyword for review; it is not evidence.
 _SUPPORT_FUNCTION = (
-    r"(?:(?:노화로인해감소될수있는)?황반색소밀도를유지하여눈건강|"
+    r"(?:(?:노화로인(?:해|하여)감소될수있는)?황반색소밀도를유지하여눈건강|"
     r"혈중중성지질개선|혈행개선|기억력개선|건조한눈을개선하여눈건강|"
     r"유산균증식및유해균억제|배변활동원활|장건강)"
 )
@@ -180,7 +184,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.8"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.9"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -222,7 +226,8 @@ def normalize_header_name(header: str) -> str:
     marker = None if circled else _HEADER_LIST_MARKER.match(compact)
     if marker:
         compact = compact[marker.end():]
-    return _HEADER_OR.sub("(또는", _HEADER_DECORATION.sub("", compact)).removesuffix("제품")
+    name = _HEADER_OR.sub("(또는", _HEADER_DECORATION.sub("", compact))
+    return _HEADER_PERCENT.sub("", name).removesuffix("제품")
 
 
 def _load_vocabulary(path: Path) -> ReviewedVocabulary:
@@ -339,7 +344,8 @@ def _target_translations() -> frozenset[str]:
 
 
 def _statement_core(compact: str) -> str:
-    core = _FUNCTION_LABEL.sub("", compact.removeprefix(_KOREAN_LABEL))
+    # Dot variants mark or separate statements exactly as "·" does (the clause keys do the same).
+    core = _FUNCTION_LABEL.sub("", _DOT_VARIANTS.sub("·", compact).removeprefix(_KOREAN_LABEL))
     translation = _TRANSLATION.search(core)
     if translation and all(
         piece in _target_translations() for piece in _translation_pieces(translation["english"])
@@ -487,6 +493,14 @@ def _block_effects(
     return [effect for _, effect in sorted(effects, key=lambda item: item[0])]
 
 
+def _dosage_divider(block: _Block) -> bool:
+    return (
+        block.header is not None
+        and not block.body_spans
+        and _DOSAGE_UNIT.fullmatch(normalize_header_name(block.header).lstrip("﻿")) is not None
+    )
+
+
 def parse_official_function_v2(text: str) -> OfficialFunctionParse:
     if not text.strip():
         return OfficialFunctionParse(source_text=text, blocks=(), effects=())
@@ -500,6 +514,7 @@ def parse_official_function_v2(text: str) -> OfficialFunctionParse:
         block.header is not None
         and not _header_groups(block.header)
         and (not block.body_spans or normalize_header_name(block.header) not in vocabulary)
+        and not _dosage_divider(block)
         for block in raw_blocks
     )
     # Annotations can also sit in a body: another ingredient's block, a headerless preface or a

@@ -8,18 +8,21 @@
   },
   "rule": "normalized header names used by >= 2 distinct companies, minus reviewed exclusions",
   "min_companies": 2,
-  "candidate_count": 404,
+  "candidate_count": 392,
   "review": {
     "reviewer": "Claude Code (claude-opus-5-5), AI developer review; not a human or expert review",
     "reviewed_at": "2026-09-29T11:30:00+09:00",
-    "criterion": "Keep names of ingredients or nutrients (typos and strain or brand names included). Exclude labels, dosage forms, function phrases, notes, citations and sentence fragments, because they are not ingredient names and may qualify neighbouring evidence."
+    "criterion": "Keep names of ingredients or nutrients (typos and strain or brand names included). Exclude labels, dosage forms, function phrases, notes, citations and sentence fragments, because they are not ingredient names and may qualify neighbouring evidence.",
+    "revisions": [
+      {
+        "revised_at": "2026-10-01T00:00:00+09:00",
+        "change": "Removed 4 fragment exclusions ((인정번호, (제2009, (제2019, 혈관벽두께(내중막두께) that official-function-v2.7 no longer produces, because a dash or colon inside parentheses no longer splits a header. No name was added."
+      }
+    ]
   },
   "excluded": {
     "(2)(다)의제조방법에한함": "manufacturing-method condition note",
     "(생리활성기능2등급)": "function grade note",
-    "(인정번호": "approval number fragment",
-    "(제2009": "approval number fragment",
-    "(제2019": "approval number fragment",
     "<액상>": "dosage form label",
     "degradedbyaging": "English function sentence fragment",
     "epa와dha의합": "content specification label",
@@ -53,8 +56,7 @@
     "최종": "section label",
     "필수지방산의보충": "function phrase",
     "항산화작용": "function phrase",
-    "항산화작용2구강에서의항균작용": "function phrase",
-    "혈관벽두께(내중막두께": "function phrase fragment"
+    "항산화작용2구강에서의항균작용": "function phrase"
   },
   "names": [
     "(마그네슘)",
@@ -88,7 +90,6 @@
     "lactiplantibacillusplantarumhac01프로바이오틱스",
     "lactobacillusacidophilusyt1",
     "lactobacillusgasseribnr17",
-    "lactobacillusgasseribnr17(기능성원료인정제2017",
     "lactobacillussakeiprobio65",
     "lactobacillus복합물hy7601+ky1032",
     "mr-10민들레등복합추출물",
@@ -98,7 +99,6 @@
     "n-아세틸글루코사민(nag)",
     "nag",
     "nag(n-아세틸글루코사민)",
-    "nag(엔에이지,n",
     "nag(엔에이지,n-아세틸글루코사민)",
     "nag(엔에이지,n-아세틸글루코사민,n-acetylglucosamine)",
     "opti-msm",
@@ -180,7 +180,6 @@
     "루바브뿌리추출물(err731®)",
     "루테인",
     "루테인지아잔틴복합추출물",
-    "루테인지아잔틴복합추출물20%",
     "루테인지아잔틴추출복합물",
     "리프리놀-초록입홍합추출오일",
     "마그네슘",
@@ -188,7 +187,6 @@
     "마리골드꽃주정추출물",
     "마리골드꽃추출물",
     "마리골드꽃추출물(루테인)",
-    "마리골드꽃추출물(제2025",
     "마리골드꽃출물",
     "마카젤라틴화분말",
     "망간",
@@ -246,7 +244,6 @@
     "사삼추출물",
     "산화아연",
     "석류농축분말",
-    "석류농축분말(제2018",
     "석류농축액",
     "석류농축액(개별인정형제2014-22호)",
     "석류추출물",
@@ -261,7 +258,6 @@
     "솔잎증류농축액",
     "스쿠알렌",
     "스페인감초추출물",
-    "스페인감초추출물(제2014",
     "스피루리나",
     "시서스추출물",
     "식이섬유",
@@ -319,12 +315,10 @@
     "자몽추출물등복합물(sinetrol)",
     "자일로올리고당",
     "자일로올리고당(xylooligosaccharide)분말",
-    "자일로올리고당(xylooligosaccharide)분말(제2009",
     "자일로올리고당분말",
     "자일리톨",
     "작약추출물등복합물(ht074)",
     "저분자콜라겐펩타이드",
-    "저분자콜라겐펩타이드(제2023",
     "저분자콜라겐펩타이드ag",
     "저분자콜라겐펩타이드gt",
     "저분자콜라겐펩타이드ns",

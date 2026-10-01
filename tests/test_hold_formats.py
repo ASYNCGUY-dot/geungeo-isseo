@@ -255,3 +255,83 @@ def test_english_or_in_a_header_reads_as_korean_or() -> None:
 
 def test_or_is_only_rewritten_before_a_korean_name() -> None:
     assert normalize_header_name("비타민C(orange)").endswith("(orange)")
+
+
+# attribution-eval-v2 holds (v2.9). A period between effects still ends a sentence; U+2024 ("․")
+# also stays a sentence boundary as decided in the false-clearance hardening (see
+# test_false_clearance_hardening.py), pending a separate decision.
+ONE_DOT = "․"
+
+
+@pytest.mark.parametrize("official", [
+    MEM_BLOCK + "\n혈중 중성지질 개선. 혈행 개선에 도움을 줄 수 있음.\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + "\n혈중 중성지질 개선.혈행 개선에 도움을 줄 수 있음\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + "\n혈중 중성지질 개선" + ONE_DOT + " 혈행 개선 검토 중" + ONE_DOT + "\n[비타민E] " + VITAMIN_E,
+])
+def test_ascii_period_or_unknown_text_still_holds(official: str) -> None:
+    assert not _attributed(official, OMEGA3, EffectKey.BLOOD_CIRCULATION)
+
+
+# Dot variants ("ㆍ", "･", "•") may mark or separate complete statements on one line, as "·" does.
+def test_dot_variants_separate_complete_statements() -> None:
+    official = (
+        MEM_BLOCK + " ㆍ혈중 중성지질 개선ㆍ혈행 개선에 도움을 줄 수 있음ㆍ건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음\n"
+        "[비타민E] " + VITAMIN_E
+    )
+    assert _attributed(official, OMEGA3, EffectKey.BLOOD_CIRCULATION)
+    assert _attributed(official, OMEGA3, EffectKey.DRY_EYE_EYE_HEALTH)
+
+
+def test_bullets_without_a_predicate_on_their_own_line_still_hold() -> None:
+    official = (
+        MEM_BLOCK + "\nㆍ혈중 중성지질 개선\nㆍ혈행 개선에 도움을 줄 수 있음\n"
+        "ㆍ건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음\n[비타민E] " + VITAMIN_E
+    )
+    assert not _attributed(official, OMEGA3, EffectKey.BLOOD_CIRCULATION)
+
+
+# "노화로 인하여" is the same wording as the notified "노화로 인해".
+def test_inhayeo_wording_of_the_lutein_statement_is_accepted() -> None:
+    official = (
+        "[마리골드꽃추출물] (1) 노화로 인하여 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음\n"
+        "[비타민E] " + VITAMIN_E
+    )
+    assert _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+
+
+# A content percentage at the end of a header name names the same ingredient.
+@pytest.mark.parametrize("header", [
+    "1)\t루테인지아잔틴복합추출물20%: ",
+    "[루테인지아잔틴복합추출물20%(기능성원료인정제2013-23호)] ",
+])
+def test_trailing_content_percentage_in_a_header_is_a_decoration(header: str) -> None:
+    official = header + EYE + "\n[비타민E] " + VITAMIN_E
+    assert _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+
+
+@pytest.mark.parametrize("header", [
+    "[루테인20%추출물] ",
+    "[루테인(재평가)20%] ",
+    "[루테인 20% 미만] ",
+])
+def test_percentage_inside_or_with_other_text_still_holds(header: str) -> None:
+    official = header + EYE + "\n[비타민E] " + VITAMIN_E
+    assert not _attributed(official, LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+
+
+# "정제1", "<캡슐2>" lines without a body separate the units of a product; they are not ingredients.
+@pytest.mark.parametrize("divider", ["정제1", "﻿정제1", "<정제1>", "캡슐4", "연질캡슐2", "액상3"])
+def test_dosage_unit_divider_without_a_body_does_not_hold(divider: str) -> None:
+    official = divider + "\n" + MEM_BLOCK + " " + MEM_LINE + "\n정제2\n[비타민E] " + VITAMIN_E
+    assert _attributed(official, OMEGA3, EffectKey.MEMORY)
+    assert _decide(MEM_AD, official).verdict is Verdict.CONFIRMED
+
+
+@pytest.mark.parametrize("official", [
+    "정제1 검토 중\n" + MEM_BLOCK + " " + MEM_LINE + "\n[비타민E] " + VITAMIN_E,
+    "정제1(재평가)\n" + MEM_BLOCK + " " + MEM_LINE + "\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + " " + MEM_LINE + "\n정제2\n기억력 개선 재검토 중\n[비타민E] " + VITAMIN_E,
+    MEM_BLOCK + " " + MEM_LINE + "\n정제2 : 기억력 개선에 도움을 줄 수 있음\n[비타민E] " + VITAMIN_E,
+])
+def test_dosage_unit_variants_or_dividers_with_a_body_still_hold(official: str) -> None:
+    assert not _attributed(official, OMEGA3, EffectKey.MEMORY)
