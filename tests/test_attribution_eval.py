@@ -32,6 +32,47 @@ def test_pairs_are_classified_by_parser_path(text, group, effect, stratum) -> No
     assert classify_pair(text, group, effect) is stratum
 
 
+VITAMIN_E = "[비타민E] 항산화 작용을 하여 유해산소로부터 세포를 보호하는데 필요"
+OMEGA_STATEMENT = "혈중 중성지질 개선･혈행 개선･기억력 개선･건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음"
+
+
+# Formats first accepted in official-function-v2.7/v2.8 get their own attributed stratum.
+@pytest.mark.parametrize(("text", "group", "effect"), [
+    ("[EPA 및 DHA 함유 유지] : " + OMEGA_STATEMENT + "\n" + VITAMIN_E, OMEGA, EffectKey.MEMORY),
+    ("[EPA 및 DHA 함유 유지]\n(1) 기능성 내용 : " + OMEGA_STATEMENT + "\n" + VITAMIN_E, OMEGA, EffectKey.MEMORY),
+    (
+        "[루테인지아잔틴복합추출물]\n(국문) " + EYE + "\n(영문) May help the eye health by maintaining the density "
+        "of macular pigments which can be decreased by aging\n" + VITAMIN_E,
+        IngredientGroup.LUTEIN_ZEAXANTHIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH,
+    ),
+    (
+        "[EPA 및 DHA 함유유지]①기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)\n" + VITAMIN_E,
+        OMEGA, EffectKey.MEMORY,
+    ),
+    (
+        "* 셀레늄(or 셀렌)\n① 유해산소로부터 세포를 보호하는데 필요\n* 프로바이오틱스\n① 배변활동 원활에 도움을 줄 수 있음",
+        PROBIOTICS, EffectKey.BOWEL_MOVEMENT,
+    ),
+    (
+        "마리골드꽃주정추출물(지아잔틴함유)(제2025-70호)\n" + EYE + "\n비타민E\n항산화 작용을 하여 유해산소로부터 세포를 보호하는데 필요",
+        IngredientGroup.LUTEIN_ZEAXANTHIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH,
+    ),
+])
+def test_pairs_attributed_through_new_formats_get_their_own_stratum(text, group, effect) -> None:
+    assert classify_pair(text, group, effect) is Stratum.ATTRIBUTED_NEW_FORMAT
+
+
+@pytest.mark.parametrize("text", [
+    "[EPA 및 DHA 함유 유지] 기억력 개선에 도움을 줄 수 있음\n" + VITAMIN_E,
+    "EPA 및 DHA 함유 유지(제2004-1호) : 기억력 개선에 도움을 줄 수 있음\n" + VITAMIN_E,
+    "[EPA 및 DHA 함유 유지] 기억력 개선에 도움을 줄 수 있음\n[아연] 정상적인 면역기능에 필요\n" + VITAMIN_E,
+])
+def test_formats_read_before_v27_are_not_counted_as_new(text) -> None:
+    assert classify_pair(text, OMEGA, EffectKey.MEMORY) in (
+        Stratum.ATTRIBUTED_CANONICAL, Stratum.ATTRIBUTED_VARIANT_HEADER, Stratum.ATTRIBUTED_EXTENDED_FORMAT,
+    )
+
+
 def test_candidate_pairs_need_the_target_in_raw_materials_or_an_attribution() -> None:
     rows = [
         {"report_no": "A", "primary_function": "배변활동 원활에 도움을 줄 수 있음", "raw_materials": "프로바이오틱스"},
@@ -91,6 +132,26 @@ def test_build_samples_quotas_deterministically_and_hides_the_stratum(tmp_path: 
         rows = list(csv.DictReader(handle))
     assert [row["item_id"] for row in rows] == [f"AE-{i:03d}" for i in range(1, 6)]
     assert all(row["label"] == "" for row in rows)
+
+
+def test_build_excludes_products_of_an_earlier_manifest_and_uses_the_item_prefix(tmp_path: Path) -> None:
+    _, first = _build(tmp_path)
+    earlier = tmp_path / "earlier.json"
+    earlier.write_text(json.dumps(first, ensure_ascii=False), encoding="utf-8")
+    used = {item["report_no"] for item in first["items"]}
+
+    code, second = _build(
+        tmp_path, "--exclude-manifest", str(earlier), "--item-prefix", "AE2", "--eval-id", "attribution-eval-v2",
+    )
+
+    assert code == 0
+    assert not used & {item["report_no"] for item in second["items"]}
+    assert [item["item_id"] for item in second["items"]] == [f"AE2-{i:03d}" for i in range(1, 6)]
+    assert second["eval_id"] == "attribution-eval-v2"
+    excluded = second["excluded_manifests"]
+    assert excluded[0]["eval_id"] == first["eval_id"] and excluded[0]["products"] == 5
+    assert len(excluded[0]["sha256"]) == 64
+    assert "AE2-001" in (tmp_path / "review.md").read_text(encoding="utf-8")
 
 
 def test_score_reports_false_attribution_and_missed_attribution(tmp_path: Path) -> None:

@@ -48,6 +48,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--quota", action="append", default=[], help="stratum=count")
     parser.add_argument("--eval-id", default="attribution-eval-v1")
+    parser.add_argument("--item-prefix", default="AE")
+    parser.add_argument(
+        "--exclude-manifest", type=Path, action="append", default=[],
+        help="earlier manifest whose products are not sampled again",
+    )
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--review-sheet", type=Path, required=True)
     parser.add_argument("--labels-template", type=Path, required=True)
@@ -131,15 +136,27 @@ def main(argv: Sequence[str] | None = None) -> int:
         quotas = _quotas(args.quota)
         data = args.source_export.read_bytes()
         rows = [json.loads(line) for line in data.decode("utf-8").splitlines() if line.strip()]
-    except (ValueError, OSError) as exc:
+        excluded_manifests, excluded = [], set()
+        for path in args.exclude_manifest:
+            raw = path.read_bytes()
+            earlier = json.loads(raw.decode("utf-8"))
+            products = {item["report_no"] for item in earlier["items"]}
+            excluded |= products
+            excluded_manifests.append({
+                "eval_id": earlier["eval_id"],
+                "file_name": path.name,
+                "sha256": hashlib.sha256(raw).hexdigest().upper(),
+                "products": len(products),
+            })
+    except (ValueError, OSError, KeyError) as exc:
         print(f"error: {exc}")
         return 3
     by_report = {row["report_no"]: row for row in rows}
-    pairs = candidate_pairs(rows)
+    pairs = [pair for pair in candidate_pairs(rows) if pair.report_no not in excluded]
     chosen = sample(pairs, quotas, args.seed)
     items = [
         {
-            "item_id": f"AE-{index:03d}",
+            "item_id": f"{args.item_prefix}-{index:03d}",
             "report_no": pair.report_no,
             "group": pair.group.value,
             "effect": pair.effect.value,
@@ -159,6 +176,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "retrieved_at": retrieved_at.isoformat(),
         },
         "parser_version": OFFICIAL_FUNCTION_V2_VERSION,
+        "excluded_manifests": excluded_manifests,
         "quotas": {stratum.value: count for stratum, count in quotas.items()},
         "frame_counts": dict(sorted(Counter(pair.stratum.value for pair in pairs).items())),
         "items": items,

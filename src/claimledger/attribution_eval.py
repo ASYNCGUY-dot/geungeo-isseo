@@ -6,6 +6,7 @@ ingredient group has the effect. Strata follow the parser outcome so that each p
 """
 
 import re
+import unicodedata
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from enum import StrEnum
@@ -15,6 +16,7 @@ from claimledger.official_v2 import (
     EFFECT_GROUP,
     EffectKey,
     OfficialEffect,
+    OfficialFunctionParse,
     effect_mentioned,
     normalize_header_name,
     parse_official_function_v2,
@@ -43,12 +45,18 @@ _RAW_NAMES = {
 }
 # Formats accepted from step 2 on: (가) markers, bullet separators, the (국문) label.
 _EXTENDED_MARK = re.compile(r"\([가나다라마바사아자차카타파하]\)|[•ᆞ⋅∙‧]|^\(국문\)")
+# Formats first accepted in official-function-v2.7/v2.8 (translations, the function-content label,
+# grade 2 notes, "[name] :", "(or" headers, separators inside a parenthesis of a name line). On the
+# C003 snapshot this marks all 509 pairs gained over v2.6 and 3 pairs v2.6 already attributed.
+_NEW_BLOCK_MARK = re.compile(r"\(영문\)|생리활성기능2등급")
+_PAREN_SEPARATOR = re.compile(r"\([^()]*[-:][^()]*\)")
 
 
 class Stratum(StrEnum):
     ATTRIBUTED_CANONICAL = "attributed_canonical"
     ATTRIBUTED_VARIANT_HEADER = "attributed_variant_header"
     ATTRIBUTED_EXTENDED_FORMAT = "attributed_extended_format"
+    ATTRIBUTED_NEW_FORMAT = "attributed_new_format"
     HELD_UNDER_TARGET_HEADER = "held_under_target_header"
     HELD_HEADERLESS = "held_headerless"
     HELD_OTHER = "held_other"
@@ -58,6 +66,7 @@ ATTRIBUTED_STRATA = (
     Stratum.ATTRIBUTED_CANONICAL,
     Stratum.ATTRIBUTED_VARIANT_HEADER,
     Stratum.ATTRIBUTED_EXTENDED_FORMAT,
+    Stratum.ATTRIBUTED_NEW_FORMAT,
 )
 
 
@@ -79,6 +88,41 @@ def _extended_format(effect: OfficialEffect) -> bool:
     return bool(_EXTENDED_MARK.search(compact) or joined)
 
 
+def _bracketed(text: str, span: tuple[int, int]) -> bool:
+    return span[0] > 0 and text[span[0] - 1] == "["
+
+
+def _new_format(text: str, parse: OfficialFunctionParse, effect: OfficialEffect) -> bool:
+    block = next(
+        (
+            block for block in parse.blocks
+            if block.header == effect.block_header
+            and any(start <= effect.statement_span[0] < end for start, end in block.body_spans)
+        ),
+        None,
+    )
+    if block is None or block.header_span is None:
+        return False
+    body = _squash(unicodedata.normalize("NFKC", " ".join(text[s:e] for s, e in block.body_spans)))
+    if _NEW_BLOCK_MARK.search(body) or "기능성내용:" in _squash(unicodedata.normalize("NFKC", effect.statement_text)):
+        return True
+    if _bracketed(text, block.header_span) and re.match(r"\s*\][ \t]*[:：]", text[block.header_span[1]:]):
+        return True
+    for other in parse.blocks:
+        if other.header is None or other.header_span is None:
+            continue
+        header = _squash(unicodedata.normalize("NFKC", other.header))
+        if "(or" in header:
+            return True
+        if (
+            not _bracketed(text, other.header_span)
+            and _PAREN_SEPARATOR.search(header)
+            and re.match(r"[ \t]*(?:\n|$)", text[other.header_span[1]:])
+        ):
+            return True
+    return False
+
+
 def _v22_header(header: str | None, group: IngredientGroup) -> bool:
     compact = _squash(header or "").strip("[]")
     return re.fullmatch(_V22_HEADER_NAMES[group] + r"(?:제품)?(?:\(고시형\))?", compact) is not None
@@ -91,6 +135,8 @@ def classify_pair(function_text: str, group: IngredientGroup, effect: EffectKey)
     ]
     if attributed:
         first = attributed[0]
+        if _new_format(function_text, parse, first):
+            return Stratum.ATTRIBUTED_NEW_FORMAT
         if _extended_format(first):
             return Stratum.ATTRIBUTED_EXTENDED_FORMAT
         if not _v22_header(first.block_header, group):
