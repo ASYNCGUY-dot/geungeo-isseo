@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from claimledger.domain import IngredientGroup
 
-OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.6"
+OFFICIAL_FUNCTION_V2_VERSION = "official-function-v2.7"
 _HEADER_VOCABULARY_PATH = (
     Path(__file__).with_name("reference") / "official_header_vocabulary_v1.json"
 )
@@ -90,7 +90,11 @@ _HEADER_DECORATION = re.compile(
     r"\((?:(?:기능성원료)?인정(?:번호)?[:：]?)?제?\d{4}-\d{1,3}호?\)"
     r"|\((?:고시형|개별인정형(?:원료)?|지아잔틴함유)\)"
 )
-_OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음|을줌)?[.。]*$")
+# "셀레늄(or 셀렌)" names the same ingredient as the reviewed "셀레늄(또는셀렌)".
+_HEADER_OR = re.compile(r"\(or(?=[가-힣])")
+# The former grade 2 wording is "도움을 줄 수 있음", so only that pair is read as one statement.
+_GRADE_TWO = r"(?:(?<=을줄수있음)\(생리활성기능2등급\))?"
+_OFFICIAL_SUPPORT_END = re.compile(r"도움(?:을줄수있음(?:\(생리활성기능2등급\))?|을줌)?[.。]*$")
 # Attribute only a fully consumed list of supported effects sharing an explicit predicate.
 # Detection below can still retain an unattributed keyword for review; it is not evidence.
 _SUPPORT_FUNCTION = (
@@ -107,11 +111,15 @@ _SUPPORT_CLAUSE = (
     + r"에도움(?:을줄수있음|을줌)?"
 )
 _SUPPORTED_STATEMENT = re.compile(
-    rf"(?:{_LIST_MARKER})?{_SUPPORT_CLAUSE}"
+    rf"(?:{_LIST_MARKER})?{_SUPPORT_CLAUSE}{_GRADE_TWO}"
     rf"(?:(?:[.。]+(?:{_LIST_MARKER})?|[,/](?:{_LIST_MARKER})?|{_LIST_MARKER})"
-    rf"{_SUPPORT_CLAUSE})*[.。]*"
+    rf"{_SUPPORT_CLAUSE}{_GRADE_TWO})*[.。]*"
 )
 _KOREAN_LABEL = "(국문)"
+# Labels and translations around a statement. The clause gate has already required the whole line,
+# translation included, to be a reviewed official clause, so they are set aside only here.
+_FUNCTION_LABEL = re.compile(r"^(?:\(\d{1,2}\)|\d{1,2}[.)]?)?기능성내용:")
+_TRANSLATION = re.compile(r"[,/]?\(영문\)[^가-힣]*$")
 # Clause boundaries for the vocabulary gate, applied after circled numbers became newlines.
 _CLAUSE_BREAK = re.compile(
     rf"\n|\(\d{{1,2}}\)|\([{_LIST_LETTERS}]\)|(?:^|(?<=\s))\d{{1,2}}[.)](?!\d)|[.。](?=\s|$)"
@@ -128,7 +136,8 @@ _FUNCTION_WORDS = (
 )
 _NON_HEADER_NAMES = ("기능성내용", "기능성", "국문", "영문")
 
-_BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\]")
+# A colon right after the closing bracket ("[name] : statement") belongs to the header.
+_BRACKET_HEADER = re.compile(r"\[([^\[\]\n]{1,80})\](?:[ \t]*[:：])?")
 # Used with match(text, pos): no "^", which would only match at the start of the whole field.
 _LINE_PREFIX = re.compile(
     rf"(?:[*\-•·◦▪]|\d{{1,2}}\s*[).]|\(\d{{1,2}}\)|[①-⑳]|\([{_LIST_LETTERS}]\))\s*"
@@ -166,7 +175,7 @@ class OfficialFunctionParse(BaseModel):
     source_text: str
     blocks: tuple[OfficialFunctionBlock, ...]
     effects: tuple[OfficialEffect, ...]
-    parser_version: Literal["official-function-v2.6"] = OFFICIAL_FUNCTION_V2_VERSION
+    parser_version: Literal["official-function-v2.7"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
 @dataclass(frozen=True)
@@ -208,7 +217,7 @@ def normalize_header_name(header: str) -> str:
     marker = None if circled else _HEADER_LIST_MARKER.match(compact)
     if marker:
         compact = compact[marker.end():]
-    return _HEADER_DECORATION.sub("", compact).removesuffix("제품")
+    return _HEADER_OR.sub("(또는", _HEADER_DECORATION.sub("", compact)).removesuffix("제품")
 
 
 def _load_vocabulary(path: Path) -> ReviewedVocabulary:
@@ -303,6 +312,24 @@ def _is_header_name(name: str) -> bool:
     return not any(stripped.startswith(stop) for stop in _NON_HEADER_NAMES)
 
 
+def _balanced(name: str) -> bool:
+    """A separator inside parentheses, e.g. "(제2025-70호)", does not end a header name."""
+    normalized = unicodedata.normalize("NFKC", name)
+    return normalized.count("(") == normalized.count(")")
+
+
+def _statement_core(compact: str) -> str:
+    return _TRANSLATION.sub("", _FUNCTION_LABEL.sub("", compact.removeprefix(_KOREAN_LABEL)))
+
+
+def _line_supported(compact: str) -> bool:
+    core = _statement_core(compact)
+    if not core:
+        # A translation line of its own carries no evidence and needs nothing else.
+        return compact.removeprefix(_KOREAN_LABEL).startswith("(영문)")
+    return _SUPPORTED_STATEMENT.fullmatch(core) is not None
+
+
 def _trimmed_span(text: str, start: int, end: int) -> tuple[int, int]:
     while start < end and text[start].isspace():
         start += 1
@@ -338,7 +365,7 @@ def _line_blocks(text: str, start: int, end: int, current: _Block | None) -> lis
         rest_start = content_end
         for pattern in (_COLON_HEADER, _DASH_HEADER):
             match = pattern.match(line)
-            if match and _is_header_name(match.group("name")):
+            if match and _balanced(match.group("name")) and _is_header_name(match.group("name")):
                 name_start, name_end = _trimmed_span(
                     text, body_start + match.start("name"), body_start + match.end("name")
                 )
@@ -385,17 +412,17 @@ def _block_effects(
     # Every line in the ingredient block must be understood before a fragment can be evidence.
     # In particular, do not drop a tentative continuation just because it has no help predicate.
     block_supported = all(
-        _SUPPORTED_STATEMENT.fullmatch(_compact(text[start:end])[0].removeprefix(_KOREAN_LABEL))
-        for start, end in block.body_spans
+        _line_supported(_compact(text[start:end])[0]) for start, end in block.body_spans
     )
     effects: list[tuple[int, OfficialEffect]] = []
     for span_start, span_end in block.body_spans:
         statement_start, statement_end = _trimmed_span(text, span_start, span_end)
         compact, positions = _compact(text[statement_start:statement_end])
+        core = _statement_core(compact)
         # A remaining colon signals an unparsed inline header; do not inherit the old header.
         if (
-            ":" in compact
-            or not _OFFICIAL_SUPPORT_END.search(compact)
+            ":" in core
+            or not _OFFICIAL_SUPPORT_END.search(core)
             or _NEGATIVE_STATEMENT.search(compact)
         ):
             continue
