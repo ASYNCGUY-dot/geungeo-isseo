@@ -108,10 +108,12 @@ _EFFECT_CARRIERS: dict[EffectKey, re.Pattern[str] | None] = {
 }
 # A raw material declared as a functional ingredient in this product.
 _FUNCTIONAL_MARK = re.compile(r"고시형|기능성원료|개별인정|인정번호|제\d{4}-\d{1,3}호")
-# Vitamins and minerals (and their usual chemical forms): none carries a target effect.
+# Vitamins and minerals (and their usual chemical forms): none carries a target effect. Copper is
+# matched only in salt forms, since "동" alone appears in other names (동충하초).
 _NUTRIENT = re.compile(
-    r"비타민|토코페롤|레티놀|카로틴|칼시페롤|아스코르브|티아민|리보플라빈|니코틴|나이아신|판토텐|피리독신"
-    r"|비오틴|엽산|폴산|코발라민|칼슘|마그네슘|아연|구리|셀렌|셀레늄|망간|요오드|크롬|몰리브덴|칼륨|철|효모"
+    r"비타민|토코페롤|토코페릴|레티놀|레티닐|카로틴|칼시페롤|아스코르브|아스코르빈|티아민|리보플라빈|니코틴"
+    r"|나이아신|판토텐|피리독신|비오틴|엽산|폴산|코발라민|칼슘|마그네슘|아연|구리|(?:글루콘산|황산|산화|구연산|탄산|염화)동"
+    r"|셀렌|셀레늄|망간|요오드|크롬|몰리브덴|칼륨|철|효모"
 )
 _NAME_SUFFIXES = (
     "주정추출분말", "열수추출분말", "열수추출물", "추출분말", "추출물", "농축분말", "농축액", "건조분말",

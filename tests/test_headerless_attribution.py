@@ -150,6 +150,7 @@ def test_known_carrier_name_variants_hold_single_effect_statements(text: str, ra
 
 
 @pytest.mark.parametrize("raw", [
+    "EPA 및 DHA 함유 유지(고시형), 동충하초추출물(제2020-12호)",
     "EPA 및 DHA 함유 유지(고시형), 미지추출물(제2020-12호)",
     "EPA 및 DHA 함유 유지(고시형), 미지추출분말(고시형)",
     "EPA 및 DHA 함유 유지, 미지추출물(기능성원료인정 제2020-12호)",
@@ -159,6 +160,8 @@ def test_unidentified_marked_functional_ingredient_holds_single_effect_statement
 
 
 @pytest.mark.parametrize("raw", [
+    "EPA 및 DHA 함유 유지(고시형), 레티닐 팔미트산염(고시형), 황산동(고시형), 글루콘산동(고시형)",
+    "EPA 및 DHA 함유 유지(고시형), 아스코르빈산(고시형), d-α-토코페릴호박산(고시형)",
     "EPA 및 DHA 함유 유지(고시형), 산화아연(고시형), D-α-토코페롤(고시형), 비타민D3혼합제제(고시형)",
     "EPA 및 DHA 함유 유지(고시형), 밀크씨슬(카르두스 마리아누스) 추출물(고시형)",
     "EPA 및 DHA 함유 유지(고시형), 결정셀룰로스, 젤라틴",
