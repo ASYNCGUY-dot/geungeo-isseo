@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CE-001,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 건조한 눈 개선 명시·도움 수준
+CE-002,mismatch,opus-blind,3번: 원문은 인지력·피부·항산화뿐이고 건조한 눈 기능 없음
+CE-003,mismatch,opus-blind,3번: 원문 EPA/DHA는 중성지질·혈행뿐이고 기억력 개선 없음
+CE-004,confirmed,opus-blind,6번: [프로바이오틱스 제품] 아래 배변활동 원활 명시·도움 수준
+CE-005,unverifiable,opus-blind,2번: 프로바이오틱스의 혈행 개선은 판정 규칙 범위 밖
+CE-006,mismatch,opus-blind,3번: 원문은 EPA/DHA·비타민E·베타카로틴뿐이고 황반색소밀도 없음
+CE-007,mismatch,opus-blind,5번: [오메가-3지방산함유유지 제품] 혈행개선은 확인되나 '반드시' 단정
+CE-008,unverifiable,opus-blind,2번: 프로바이오틱스의 면역력 증진은 범위 밖
+CE-009,confirmed,opus-blind,6번: 원료 표시 없으나 기능성 원료가 EPA/DHA뿐이라 건조한 눈 귀속 확정
+CE-010,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 명시
+CE-011,confirmed,opus-blind,6번: 기능성 원료가 루테인지아잔틴복합추출물뿐이라 황반색소밀도 귀속 확정
+CE-012,unverifiable,opus-blind,2번: 루테인의 피부 건강은 범위 밖
+CE-013,mismatch,opus-blind,3번: 원문은 비타민·아연뿐이고 배변활동 기능 없음
+CE-014,mismatch,opus-blind,3번: 원문은 TWK10 운동수행능력뿐이고 유산균 증식·유해균 억제 없음
+CE-015,confirmed,opus-blind,6번: 'EPA 및 DHA 함유 유지' 항목에 혈중 중성지질 개선 명시
+CE-016,mismatch,opus-blind,3번: 원재료에 마리골드가 있으나 원문에 황반색소밀도 기능 없음
+CE-017,unverifiable,opus-blind,2번: 루테인의 장 건강은 범위 밖
+CE-018,mismatch,opus-blind,3번: 원문 어디에도 혈중 중성지질 개선 없음
+CE-019,unverifiable,opus-blind,4번: 기억력 개선은 [홍삼] 이름 아래 기재되어 오메가3 기능으로 확정 불가
+CE-020,unverifiable,opus-blind,2번: 루테인의 혈행 개선은 범위 밖
+CE-021,mismatch,opus-blind,3번: 원재료에 마리골드가 있으나 원문은 비타민류뿐이고 황반색소밀도 없음
+CE-022,unverifiable,opus-blind,2번: 오메가3의 수면의 질 개선은 범위 밖
+CE-023,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 명시
+CE-024,confirmed,opus-blind,6번: 'EPA 및 DHA 함유 유지' 항목에 건조한 눈 개선 명시
+CE-025,mismatch,opus-blind,3번: 원문은 홍국·폴리코사놀·비타민류뿐이고 혈행 개선 없음
+CE-026,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈중 중성지질 개선 명시
+CE-027,unverifiable,opus-blind,2번: 루테인의 수면의 질 개선은 범위 밖
+CE-028,mismatch,opus-blind,5번: 유산균 증식 및 유해균 억제는 프로바이오틱스 고유 문구로 귀속 확정·'늘리고 억제합니다' 단정
+CE-029,mismatch,opus-blind,1번: 고지혈증 예방·완화 질병 표현
+CE-030,mismatch,opus-blind,5번: '* 프로바이오틱스' 아래 장 건강 확인되나 '개선합니다' 단정
+CE-031,unverifiable,opus-blind,2번: 루테인의 장 건강은 범위 밖
+CE-032,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈행 개선 명시
+CE-033,mismatch,opus-blind,1번: 황반변성 예방 질병 표현
+CE-034,mismatch,opus-blind,5번: [마리골드꽃추출물] 황반색소밀도는 확인되나 '반드시' 단정
+CE-035,unverifiable,opus-blind,2번: 프로바이오틱스의 기억력 개선은 범위 밖
+CE-036,mismatch,opus-blind,5번: [프로바이오틱스] 배변활동 확인되나 '좋아지게 만듭니다' 단정
+CE-037,confirmed,opus-blind,6번: 원료 표시 없으나 기능성 원료가 정제어유뿐이라 혈행 개선 귀속 확정
+CE-038,mismatch,opus-blind,3번: 원문은 빌베리 눈의 피로 개선뿐이고 황반색소밀도 없음
+CE-039,unverifiable,opus-blind,4번: 원료 표시 없는 나열이고 원재료 프락토올리고당(고시형)도 배변활동 원활 기능 가능
+CE-040,mismatch,opus-blind,3번: 원재료에 루테인이 있으나 원문은 EPA/DHA 중성지질·혈행뿐
+CE-041,mismatch,opus-blind,5번: 기능성 원료가 EPA/DHA뿐이라 귀속 확정·'반드시 개선해 지켜줍니다' 단정
+CE-042,mismatch,opus-blind,1번: 과민성대장증후군 예방·완화 질병 표현
+CE-043,mismatch,opus-blind,1번: 황반변성 진행 억제 질병 표현
+CE-044,mismatch,opus-blind,1번: 고지혈증 치료 질병 표현
+CE-045,mismatch,opus-blind,5번: [프로바이오틱스] 배변활동 확인되나 '원활하게 개선합니다' 단정
+CE-046,confirmed,opus-blind,6번: 원료 표시 없으나 황반색소밀도는 원재료 중 루테인지아잔틴복합추출물만 가능
+CE-047,unverifiable,opus-blind,2번: 오메가3의 유산균 증식·유해균 억제는 범위 밖
+CE-048,mismatch,opus-blind,3번: 원문은 비타민C·아연뿐이고 배변활동 기능 없음
+CE-049,mismatch,opus-blind,3번: 원문 오메가3 항목은 중성지질·혈행뿐이고 기억력 없음
+CE-050,mismatch,opus-blind,1번: 고지혈증 완화 질병 표현
+CE-051,mismatch,opus-blind,5번: 마리골드꽃추출물 항목 황반색소밀도 확인되나 '확실하게 지켜드립니다' 단정
+CE-052,confirmed,opus-blind,6번: [프로바이오틱스] 아래 장건강 명시
+CE-053,unverifiable,opus-blind,2번: 프로바이오틱스의 피로 회복은 범위 밖
+CE-054,confirmed,opus-blind,6번: [마리골드꽃추출물(루테인)] 아래 황반색소밀도 명시
+CE-055,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 기억력 개선 명시
+CE-056,mismatch,opus-blind,1번: 혈전·뇌졸중 예방 질병 표현
+CE-057,confirmed,opus-blind,6번: [프로바이오틱스] 아래 배변활동 원활 명시(프락토올리고당은 별도 항목)
+CE-058,mismatch,opus-blind,1번: 혈전·뇌졸중 위험 감소 질병 표현
+CE-059,confirmed,opus-blind,6번: [EPA 및 DHA 함유유지] 아래 혈중 중성지질 개선 명시
+CE-060,mismatch,opus-blind,5번: 루테인지아잔틴복합추출물 항목 확인되나 '반드시·확실하게' 단정
+CE-061,mismatch,opus-blind,1번: 황반변성 치료 질병 표현
+CE-062,unverifiable,opus-blind,2번: 프로바이오틱스의 기억력 개선은 범위 밖
+CE-063,confirmed,opus-blind,6번: [마리골도꽃추출물](마리골드 오기) 아래 황반색소밀도 명시
+CE-064,mismatch,opus-blind,1번: 장염 예방 질병 표현
+CE-065,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 명시
+CE-066,mismatch,opus-blind,1번: 장염 치료 질병 표현
+CE-067,mismatch,opus-blind,1번: 황반변성 위험 감소 질병 표현
+CE-068,mismatch,opus-blind,1번: 장염 완화 질병 표현
+CE-069,mismatch,opus-blind,3번: 원문은 비타민E뿐이고 기억력 개선 없음
+CE-070,confirmed,opus-blind,6번: 원료 표시 없으나 중성지질 개선은 원재료 중 EPA/DHA만 가능
+CE-071,unverifiable,opus-blind,2번: 루테인의 혈중 중성지질 개선은 범위 밖
+CE-072,mismatch,opus-blind,5번: [EPA 및 DHA 함유 유지] 혈행 확인되나 '좋아집니다' 단정
+CE-073,confirmed,opus-blind,6번: 원료 표시 없으나 유해균 억제를 포함한 문구는 프로바이오틱스만 가능(프락토올리고당은 유익균 증식·배변)
+CE-074,unverifiable,opus-blind,4번: 원료 표시 없는 두 줄 모두 배변활동 원활이고 원재료 프락토올리고당(고시형)도 가능
+CE-075,unverifiable,opus-blind,2번: 루테인의 면역력 증진은 범위 밖
+CE-076,confirmed,opus-blind,6번: '프로바이오틱스 :' 아래 유산균 증식 및 유해균 억제 명시
+CE-077,confirmed,opus-blind,6번: '1) 프로바이오틱스 :' 아래 장 건강 명시
+CE-078,unverifiable,opus-blind,2번: 프로바이오틱스의 건조한 눈 개선은 범위 밖
+CE-079,mismatch,opus-blind,3번: 원문은 홍국 콜레스테롤뿐이고 중성지질 없음
+CE-080,mismatch,opus-blind,5번: 원료 표시 없으나 황반색소밀도는 마리골드만 가능·'반드시 지켜줍니다' 단정
+CE-081,mismatch,opus-blind,3번: 원문은 체지방·클로렐라 기능뿐이고 유산균 증식 없음
+CE-082,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 명시
+CE-083,mismatch,opus-blind,5번: [EPA 및 DHA 함유 유지] 기억력 확인되나 '개선합니다' 단정
+CE-084,confirmed,opus-blind,6번: 원료 표시 없으나 황반색소밀도는 원재료 중 루테인만 가능
+CE-085,mismatch,opus-blind,1번: 고지혈증 위험 감소 질병 표현
+CE-086,mismatch,opus-blind,3번: 원재료에 마리골드가 있으나 원문은 비타민류뿐이고 황반색소밀도 없음
+CE-087,mismatch,opus-blind,5번: 기능성 원료가 프로바이오틱스뿐이라 귀속 확정·'100% 보장' 단정
+CE-088,mismatch,opus-blind,1번: 변비 완화 질병 표현
+CE-089,mismatch,opus-blind,5번: [EPA 및 DHA 함유 유지] 중성지질 확인되나 '100% 보장' 단정
+CE-090,mismatch,opus-blind,5번: [마리골드꽃추출물] 황반색소밀도 확인되나 '확실하게' 단정
+CE-091,unverifiable,opus-blind,4번: 배변활동 원활은 [차전자피식이섬유] 이름 아래 기재되어 프로바이오틱스 기능으로 확정 불가
+CE-092,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 명시(원재료 루테인)
+CE-093,confirmed,opus-blind,6번: 기능성 원료가 루테인지아잔틴복합추출물뿐이라 황반색소밀도 귀속 확정
+CE-094,confirmed,opus-blind,6번: 원료 표시 없으나 장 건강은 원재료 중 프로바이오틱스만 가능(프락토올리고당·아연·셀레늄 불가)
+CE-095,confirmed,opus-blind,6번: 장 건강은 프로바이오틱스 문구 줄에만 있고 난소화성말토덱스트린 기능 아님
+CE-096,unverifiable,opus-blind,2번: 오메가3의 피부 건강은 범위 밖
+CE-097,unverifiable,opus-blind,2번: 프로바이오틱스의 피부 건강은 범위 밖
+CE-098,confirmed,opus-blind,6번: 원료 표시 없으나 혈행 개선은 원재료 중 EPA/DHA만 가능(비타민A·D·E 불가)
+CE-099,mismatch,opus-blind,1번: 황반변성 증상 완화 질병 표현
+CE-100,mismatch,opus-blind,5번: 원료 표시 없으나 황반색소밀도는 루테인만 가능·'개선합니다' 단정

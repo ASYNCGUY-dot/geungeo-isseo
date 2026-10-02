@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CE-001,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래에 건조한 눈 개선 있음 '도움을 줄 수 있음' 수준
+CE-002,mismatch,sonnet-blind,3번: 원문에 건조한 눈 기능이 없음 (인지력·피부 기능만 있음)
+CE-003,mismatch,sonnet-blind,3번: 오메가3 항목은 중성지질·혈행뿐이고 원문 어디에도 기억력 없음
+CE-004,confirmed,sonnet-blind,6번: [프로바이오틱스 제품] 아래 배변활동 원활 있음 도움 수준
+CE-005,unverifiable,sonnet-blind,2번: 프로바이오틱스의 혈행 개선은 판정 범위 밖 (원문에도 혈행 없음 / 범위를 합집합으로 보면 3번 mismatch 가능)
+CE-006,mismatch,sonnet-blind,3번: 원재료에 마리골드꽃추출물은 있으나 원문에 황반색소밀도 기능 없음
+CE-007,mismatch,sonnet-blind,5번: [오메가-3지방산함유유지 제품] 혈행개선 확정이나 '반드시 도움이 됩니다'는 단정
+CE-008,unverifiable,sonnet-blind,2번: 면역력 증진은 판정 범위 밖 기능
+CE-009,confirmed,sonnet-blind,6번: 기능성 원료가 EPA 및 DHA 함유 유지뿐이라 건조한 눈 개선 귀속 확정 도움 수준
+CE-010,confirmed,sonnet-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 있음 도움 수준
+CE-011,confirmed,sonnet-blind,6번: 기능성 원료가 루테인지아잔틴복합추출물뿐이라 황반색소밀도 귀속 확정
+CE-012,unverifiable,sonnet-blind,2번: 피부 건강은 루테인 판정 범위 밖 (비타민A의 피부와 점막 문구는 다른 기능)
+CE-013,mismatch,sonnet-blind,3번: 원문에 프로바이오틱스 기능(배변활동) 없음 (비타민·아연뿐) 표현도 단정
+CE-014,mismatch,sonnet-blind,3번: TWK10 원문은 운동수행능력뿐이고 유산균 증식 및 유해균 억제 기능 없음
+CE-015,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈중 중성지질 개선 있음 도움 수준
+CE-016,mismatch,sonnet-blind,3번: 마리골드꽃추출물이 원재료에 있으나 원문에 황반색소밀도 기능 없음
+CE-017,unverifiable,sonnet-blind,2번: 루테인의 장 건강은 판정 범위 밖 (원문에도 장 건강 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-018,mismatch,sonnet-blind,3번: 원문 어디에도 혈중 중성지질 기능 없음 (기억력·혈행 문구만)
+CE-019,unverifiable,sonnet-blind,4번: 기억력 개선은 [홍삼] 이름 아래 문구이고 오메가3(정제어유) 기능으로 확정 불가
+CE-020,unverifiable,sonnet-blind,2번: 루테인의 혈행 개선은 판정 범위 밖 (원문에도 혈행 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-021,mismatch,sonnet-blind,3번: 마리골드꽃추출물이 원재료에 있으나 원문에 황반색소밀도 기능 없음 (비타민류만)
+CE-022,unverifiable,sonnet-blind,2번: 수면의 질 개선은 판정 범위 밖 기능
+CE-023,confirmed,sonnet-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 있음 도움 수준
+CE-024,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래 건조한 눈 개선 있음 도움 수준
+CE-025,mismatch,sonnet-blind,3번: 원문에 오메가3 혈행 개선 없음 (콜레스테롤·비타민 등뿐) 표현도 단정
+CE-026,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈중 중성지질 개선 있음 도움 수준
+CE-027,unverifiable,sonnet-blind,2번: 수면의 질 개선은 판정 범위 밖 기능
+CE-028,mismatch,sonnet-blind,5번: 프로바이오틱스 기능 확정이나 '늘리고 억제합니다'는 단정 (도움 표현 없음)
+CE-029,mismatch,sonnet-blind,1번: 고지혈증 예방·완화 = 질병 표현
+CE-030,mismatch,sonnet-blind,5번: * 프로바이오틱스 아래 장 건강 확정이나 '개선합니다'는 단정
+CE-031,unverifiable,sonnet-blind,2번: 루테인의 장 건강은 판정 범위 밖 (원문에도 장 건강 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-032,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈행 개선 있음 도움 수준
+CE-033,mismatch,sonnet-blind,1번: 황반변성 예방 = 질병 표현
+CE-034,mismatch,sonnet-blind,5번: 황반색소밀도는 마리골드꽃추출물 기능으로 확정이나 '반드시 도움이 됩니다'는 단정
+CE-035,unverifiable,sonnet-blind,2번: 프로바이오틱스의 기억력 개선은 판정 범위 밖 (원문에도 기억력 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-036,mismatch,sonnet-blind,5번: [프로바이오틱스] 배변활동 원활 확정이나 '좋아지게 만듭니다'는 단정
+CE-037,confirmed,sonnet-blind,6번: 기능성 원료가 정제어유뿐이라 혈행 개선 귀속 확정 도움 수준
+CE-038,mismatch,sonnet-blind,3번: 원문은 빌베리 눈의 피로뿐이고 황반색소밀도 기능 없음 (100% 보장 표현도 단정)
+CE-039,mismatch,sonnet-blind,5번: 배변활동 원활 확정이나 '확실하게 도움을 드립니다'는 단정·보장
+CE-040,mismatch,sonnet-blind,3번: 루테인지아잔틴복합추출물이 원재료에 있으나 원문은 EPA·DHA 기능뿐이라 황반색소밀도 없음
+CE-041,mismatch,sonnet-blind,5번: 건조한 눈 개선 귀속 확정이나 '반드시 개선'은 단정
+CE-042,mismatch,sonnet-blind,1번: 과민성대장증후군 예방·완화 = 질병 표현
+CE-043,mismatch,sonnet-blind,1번: 황반변성 진행 억제 = 질병 표현
+CE-044,mismatch,sonnet-blind,1번: 고지혈증 치료 = 질병 표현
+CE-045,mismatch,sonnet-blind,5번: [프로바이오틱스] 배변활동 원활 확정이나 '개선합니다'는 단정
+CE-046,confirmed,sonnet-blind,6번: 황반색소밀도 문구는 루테인지아잔틴복합추출물만 낼 수 있어 귀속 확정 도움 수준
+CE-047,unverifiable,sonnet-blind,2번: 오메가3의 유산균 증식 및 유해균 억제는 판정 범위 밖 (원문에도 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-048,mismatch,sonnet-blind,3번: 프로바이오틱스가 원재료에 있으나 원문은 비타민C·아연뿐이라 배변활동 기능 없음
+CE-049,mismatch,sonnet-blind,3번: 오메가3 항목은 중성지질·혈행뿐이고 원문 어디에도 기억력 없음
+CE-050,mismatch,sonnet-blind,1번: 고지혈증 완화 = 질병 표현
+CE-051,mismatch,sonnet-blind,5번: 마리골드꽃추출물 황반색소밀도 확정이나 '확실하게'는 보장 표현
+CE-052,confirmed,sonnet-blind,6번: [프로바이오틱스] 아래 장건강 있음 도움 수준
+CE-053,unverifiable,sonnet-blind,2번: 피로 회복은 판정 범위 밖 기능
+CE-054,confirmed,sonnet-blind,6번: [마리골드꽃추출물(루테인)] 아래 황반색소밀도 유지 있음 도움 수준
+CE-055,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유 유지] 아래 기억력 개선 있음 도움 수준
+CE-056,mismatch,sonnet-blind,1번: 혈전·뇌졸중 예방 = 질병 표현
+CE-057,confirmed,sonnet-blind,6번: [프로바이오틱스] 아래 배변활동 원활 있음 도움 수준
+CE-058,mismatch,sonnet-blind,1번: 혈전·뇌졸중 위험 감소 = 질병 표현
+CE-059,confirmed,sonnet-blind,6번: [EPA 및 DHA 함유유지] 아래 혈중 중성지질 개선 있음 도움 수준
+CE-060,mismatch,sonnet-blind,5번: 황반색소밀도 귀속은 확정이나 '반드시 필요'·'확실하게'는 단정·보장
+CE-061,mismatch,sonnet-blind,1번: 황반변성 치료 = 질병 표현
+CE-062,unverifiable,sonnet-blind,2번: 프로바이오틱스의 기억력 개선은 판정 범위 밖 (원문에도 기억력 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-063,confirmed,sonnet-blind,6번: [마리골도꽃추출물] (마리골드 오타로 판단) 아래 황반색소밀도 유지 있음 도움 수준
+CE-064,mismatch,sonnet-blind,1번: 장염 예방 = 질병 표현
+CE-065,confirmed,sonnet-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 있음 도움 수준
+CE-066,mismatch,sonnet-blind,1번: 장염 치료 = 질병 표현
+CE-067,mismatch,sonnet-blind,1번: 황반변성 위험 감소 = 질병 표현
+CE-068,mismatch,sonnet-blind,1번: 장염 완화 = 질병 표현
+CE-069,mismatch,sonnet-blind,3번: 원문은 비타민E뿐이고 오메가3 기억력 기능 없음
+CE-070,confirmed,sonnet-blind,6번: 기능성 원료가 EPA 및 DHA 함유 유지뿐이라 혈중 중성지질 귀속 확정 도움 수준
+CE-071,unverifiable,sonnet-blind,2번: 루테인의 혈중 중성지질 개선은 판정 범위 밖 (원문에도 중성지질 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-072,mismatch,sonnet-blind,5번: [EPA 및 DHA 함유 유지] 혈행 개선 확정이나 '좋아집니다'는 단정
+CE-073,confirmed,sonnet-blind,6번: 유산균 증식 및 유해균 억제 문구는 프로바이오틱스만 낼 수 있어 귀속 확정 도움 수준
+CE-074,confirmed,sonnet-blind,6번: 둘째 줄(유산균 증식·유해균 억제·배변활동)이 프로바이오틱스 기능 (첫 줄은 프락토올리고당) 귀속 약간 애매
+CE-075,unverifiable,sonnet-blind,2번: 면역력 증진은 판정 범위 밖 기능
+CE-076,confirmed,sonnet-blind,6번: 프로바이오틱스 아래 유산균 증식 및 유해균 억제 있음 도움 수준
+CE-077,confirmed,sonnet-blind,6번: 1) 프로바이오틱스 아래 장 건강 있음 도움 수준
+CE-078,unverifiable,sonnet-blind,2번: 프로바이오틱스의 건조한 눈 개선은 판정 범위 밖 (원문에도 없음 / 합집합 해석이면 3번 mismatch 가능)
+CE-079,mismatch,sonnet-blind,3번: 원문은 [홍국 제품] 콜레스테롤뿐이고 오메가3 중성지질 기능 없음
+CE-080,mismatch,sonnet-blind,5번: 황반색소밀도는 마리골드 기능으로 확정이나 '반드시 지켜줍니다'는 단정
+CE-081,mismatch,sonnet-blind,3번: 프로바이오틱스가 원재료에 있으나 원문은 체지방·클로렐라 기능뿐이라 유산균 증식 없음
+CE-082,confirmed,sonnet-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 있음 도움 수준
+CE-083,mismatch,sonnet-blind,5번: [EPA 및 DHA 함유 유지] 기억력 개선 확정이나 '개선합니다'는 단정
+CE-084,confirmed,sonnet-blind,6번: 황반색소밀도 문구는 루테인만 낼 수 있어 귀속 확정 '도움을 줌' 수준
+CE-085,mismatch,sonnet-blind,1번: 고지혈증 위험 감소 = 질병 표현
+CE-086,mismatch,sonnet-blind,3번: 마리골드꽃추출물이 원재료에 있으나 원문에 황반색소밀도 기능 없음 (비타민류만)
+CE-087,mismatch,sonnet-blind,5번: 프로바이오틱스 기능 확정이나 '100% 보장'은 보장 표현
+CE-088,mismatch,sonnet-blind,1번: 변비 완화 = 질병 표현
+CE-089,mismatch,sonnet-blind,5번: 오메가 연질캡슐 [EPA 및 DHA 함유 유지] 중성지질 확정이나 '100% 보장'은 보장 표현
+CE-090,mismatch,sonnet-blind,5번: [마리골드꽃추출물] 황반색소밀도 확정이나 '확실하게'는 보장 표현
+CE-091,unverifiable,sonnet-blind,4번: 배변활동 원활은 [차전자피식이섬유] 이름 아래 문구이고 프로바이오틱스 기능으로 확정 불가
+CE-092,confirmed,sonnet-blind,6번: [마리골드꽃추출물] 황반색소밀도 있음 원재료의 루테인(고시형)이 해당 원료 도움 수준
+CE-093,confirmed,sonnet-blind,6번: 기능성 원료가 루테인지아잔틴복합추출물뿐이라 황반색소밀도 귀속 확정
+CE-094,confirmed,sonnet-blind,6번: 첫 줄 프로바이오틱스 기능에 장 건강 있음 (아연·셀레늄은 별도 줄) 도움 수준
+CE-095,confirmed,sonnet-blind,6번: 마지막 줄 유산균 증식·장 건강 문구가 프로바이오틱스 기능 (위쪽 번호 항목은 난소화성말토덱스트린) 귀속 약간 애매
+CE-096,unverifiable,sonnet-blind,2번: 피부 건강은 판정 범위 밖 기능
+CE-097,unverifiable,sonnet-blind,2번: 피부 건강은 판정 범위 밖 기능
+CE-098,confirmed,sonnet-blind,6번: 기능성 원료가 EPA 및 DHA 함유 유지뿐이라 혈행 개선 귀속 확정 도움 수준
+CE-099,mismatch,sonnet-blind,1번: 황반변성 증상 완화 = 질병 표현
+CE-100,mismatch,sonnet-blind,5번: 황반색소밀도는 루테인 기능으로 확정이나 '눈 건강을 개선합니다'는 단정
