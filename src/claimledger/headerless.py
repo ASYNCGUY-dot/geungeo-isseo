@@ -18,8 +18,16 @@ owner (its rows are layout errors). This is inference from the raw materials, no
 results carry attribution_basis="headerless_owner" so verdicts and receipts can say so.
 v2 (independent review of v1): the carrier keywords and marked-ingredient hold, and Latin word
 boundaries for EPA/DHA (ashwagandha, preparations are not omega-3; Bacillus natto is not a probiotic).
+v3 (independent review of v2): every statement gets the per-effect holds unless it carries a phrase
+only the target has ("유산균 증식 및 유해균 억제", "황반색소밀도"); every raw entry must be the target,
+a vitamin or mineral, an excipient, or a notified ingredient lacking the effect, whatever the marks
+say; individually approved entries (approval numbers) are never identified by a notified name;
+nutrients and excipients are judged on the entry name, not its bracketed composition; unbalanced
+raw lists hold; spelling variants (아르지닌, 락툴로즈) and bracket entities are normalized.
 """
 
+import hashlib
+import html
 import json
 import re
 import unicodedata
@@ -42,7 +50,7 @@ from claimledger.official_v2 import (
     span_effects,
 )
 
-HEADERLESS_ATTRIBUTION_VERSION = "headerless-attribution-v2"
+HEADERLESS_ATTRIBUTION_VERSION = "headerless-attribution-v3"
 STATEMENT_OWNERS_VERSION = "official-statement-owners-v1"
 MIN_COMPANIES = 2
 _OWNERS_PATH = Path(__file__).with_name("reference") / "official_statement_owners_v1.json"
@@ -57,7 +65,8 @@ _GENERA = (
 )
 # EPA/DHA as words: "ashwagandha" or "preparations" contain the letters but are not omega-3.
 _OMEGA3_NAME = (
-    r"(?<![a-z])(?:epa|dha)(?:(?:및|와|과|/|\+|,|&)?(?:epa|dha))?(?![a-z])|오메가-?3|(?<![a-z])omega-?3"
+    r"(?<![a-z])(?:epa|dha)(?:(?:및|와|과|/|\+|,|&)?(?:epa|dha))?(?![a-z])"
+    r"|(?<!식물성)오메가-?3|(?<![a-z])omega-?3"
 )
 # Header names of a target group's family, including individually approved strains and extracts.
 _HEADER_FAMILY: dict[IngredientGroup, re.Pattern[str]] = {
@@ -68,7 +77,8 @@ _HEADER_FAMILY: dict[IngredientGroup, re.Pattern[str]] = {
 # Raw-material names that put the target group in the product (strict).
 _RAW_TARGET: dict[IngredientGroup, re.Pattern[str]] = {
     IngredientGroup.PROBIOTICS: re.compile(r"프로바이오틱스|probiotic"),
-    IngredientGroup.OMEGA3: re.compile(rf"{_OMEGA3_NAME}|어유"),
+    # 상어유 (shark liver oil) is a separate notified ingredient, not EPA/DHA oil.
+    IngredientGroup.OMEGA3: re.compile(rf"{_OMEGA3_NAME}|(?<!상)어유"),
     IngredientGroup.LUTEIN_ZEAXANTHIN: re.compile(r"루테인|지아잔틴|마리골드|lutein|zeaxanthin"),
 }
 # Raw-material names that put a family in the product when it is another owner (generous).
@@ -83,6 +93,13 @@ _RAW_SELF: dict[IngredientGroup, re.Pattern[str]] = {
     IngredientGroup.PROBIOTICS: re.compile(rf"프로바이오틱스|probiotic|{_GENERA}"),
     IngredientGroup.OMEGA3: _RAW_TARGET[IngredientGroup.OMEGA3],
     IngredientGroup.LUTEIN_ZEAXANTHIN: _RAW_TARGET[IngredientGroup.LUTEIN_ZEAXANTHIN],
+}
+# Phrases only the target group has; a statement containing one belongs to the target even when other
+# carriers of some of its effects are in the raw materials (their notified wording differs).
+_TARGET_ONLY: dict[IngredientGroup, re.Pattern[str] | None] = {
+    IngredientGroup.PROBIOTICS: re.compile(r"유산균증식및유해균억제"),
+    IngredientGroup.LUTEIN_ZEAXANTHIN: re.compile(r"황반색소밀도"),
+    IngredientGroup.OMEGA3: None,
 }
 # Effects each target family can carry, to judge it as another owner of a single-effect statement.
 _FAMILY_EFFECTS: dict[IngredientGroup, frozenset[EffectKey]] = {
@@ -103,28 +120,29 @@ _EFFECT_CARRIERS: dict[EffectKey, re.Pattern[str] | None] = {
         r"은행|홍삼|인삼|영지|불로초|감마리놀렌|보라지|달맞이꽃|까막까치밥|블랙커런트|(?<!안)나토|natto|아르기닌"
     ),
     EffectKey.MEMORY: re.compile(r"은행|홍삼|인삼|원지|피브로인|포스파티딜세린|바코파|아쉬와간다|ashwagandha"),
-    EffectKey.BLOOD_TRIGLYCERIDE: re.compile(r"난소화성|식이섬유|글로빈"),
+    EffectKey.BLOOD_TRIGLYCERIDE: re.compile(r"난소화|저항성말토|저항성덱스트린|식이섬유|글로빈"),
     EffectKey.BOWEL_MOVEMENT: re.compile(
-        r"알로에|차전자|질경이|한천|이눌린|치커리|올리고당|식이섬유|난소화성|폴리덱스트로스|구아검|글루코만난"
-        r"|곤약|아카시아검|아라비아검|호로파|목이버섯|라피노스|락추로스|귀리|보리|밀기울|키토산"
+        r"알로에|차전자|질경이|한천|이눌린|치커리|올리고당|식이섬유|난소화|저항성말토|저항성덱스트린|폴리덱스트로스"
+        r"|구아검|글루코만난|곤약|아카시아검|아라비아검|호로파|목이버섯|라피노스|락추로스|귀리|보리|밀기울|키토산"
     ),
     EffectKey.GUT_HEALTH: re.compile(r"알로에|올리고당|식이섬유|이눌린|치커리"),
     EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: re.compile(r"올리고당|이눌린|치커리|식이섬유|락추로스"),
     EffectKey.DRY_EYE_EYE_HEALTH: re.compile(r"루테인|지아잔틴|마리골드|빌베리|감잎|헤마토코쿠스"),
     EffectKey.MACULAR_PIGMENT_EYE_HEALTH: None,
 }
-# A raw material declared as a functional ingredient in this product.
-_FUNCTIONAL_MARK = re.compile(r"고시형|기능성원료|개별인정|인정번호|제\d{4}-\d{1,3}호")
-# Vitamins and minerals (and their usual chemical forms): none carries a target effect. Copper is
-# matched only in salt forms, since "동" alone appears in other names (동충하초).
+# An individually approved ingredient (approval number or label): never identified by a notified name.
+_APPROVAL_MARK = re.compile(r"\d{4}-\d{1,3}|개별인정|인정형|인정번호|인증번호|기능성원료인정")
+# Vitamins and minerals (and their usual chemical forms): none carries a target effect. Copper and
+# iron are matched only in salt forms ("동충하초", "사철쑥" are not minerals); yeast only as a mineral
+# or vitamin carrier ("건조효모(셀렌함유)").
 _NUTRIENT = re.compile(
     r"비타민|토코페롤|토코페릴|레티놀|레티닐|카로틴|칼시페롤|아스코르브|아스코르빈|티아민|리보플라빈|니코틴"
     r"|나이아신|판토텐|피리독신|비오틴|엽산|폴산|코발라민|칼슘|마그네슘|아연|구리|(?:글루콘산|황산|산화|구연산|탄산|염화)동"
-    r"|셀렌|셀레늄|망간|요오드|크롬|몰리브덴|칼륨|철|효모"
+    r"|셀렌|셀레늄|망간|요오드|크롬|몰리브덴|칼륨|(?:제일|제이|인산|헴)철|철분"
 )
-# Common capsule and tablet excipients, colours, flavours, sweeteners and carrier oils. When a raw
-# list marks no functional ingredient at all, a single-effect statement is attributed only if every
-# other entry is one of these, a nutrient or the target itself.
+_MINERAL_YEAST = re.compile(r"효모\((?:셀렌|셀레늄|크롬|몰리브|몰디브|아연|비타민|철|망간|구리|요오드)")
+# Common capsule and tablet excipients, colours, flavours, sweeteners and carrier oils: they carry no
+# target effect, so they do not hold an attribution.
 _EXCIPIENT = re.compile(
     r"젤라틴|글리세린|소르비톨|소비톨|솔비톨|정제수|밀납|색소|향료|향미|바닐린|카라기난|전분|덱스트린|셀룰로"
     r"|이산화규소|규소|스테아린산|이산화티타늄|트리아세틴|레시틴|대두유|콩기름|카놀라유|팜유|해바라기|포도씨"
@@ -159,8 +177,15 @@ class _NoticeItem:
     effects: frozenset[EffectKey]
 
 
+# Spellings that name the same ingredient; C003 mostly writes 아르지닌 and 락툴로즈.
+_SPELLINGS = (("아르지닌", "아르기닌"), ("락툴로즈", "락추로스"), ("락툴로오스", "락추로스"), ("락툴로스", "락추로스"))
+
+
 def _squash(text: str) -> str:
-    return re.sub(r"\s+", "", unicodedata.normalize("NFKC", text)).casefold()
+    squashed = re.sub(r"\s+", "", unicodedata.normalize("NFKC", text)).casefold()
+    for variant, canonical in _SPELLINGS:
+        squashed = squashed.replace(variant, canonical)
+    return squashed
 
 
 def owner_key(header: str) -> str:
@@ -235,49 +260,80 @@ def _known_non_carrier(owner: str, effects: Iterable[EffectKey]) -> bool:
     return bool(matches) and all(not wanted & item.effects for item in matches)
 
 
-def _raw_items(raw_materials: str) -> list[str]:
-    """Raw-material entries split at top-level commas (commas inside parentheses stay)."""
+_OPEN_BRACKETS = str.maketrans({"【": "(", "〔": "(", "［": "(", "〈": "(", "】": ")", "〕": ")", "］": ")", "〉": ")"})
+
+
+def _raw_items(raw_materials: str) -> tuple[list[str], bool]:
+    """Raw-material entries split at top-level commas and semicolons, and whether brackets balance."""
+    text = unicodedata.normalize("NFKC", html.unescape(raw_materials)).translate(_OPEN_BRACKETS)
     items: list[str] = []
     current: list[str] = []
     depth = 0
-    for character in unicodedata.normalize("NFKC", raw_materials):
+    balanced = True
+    for character in text:
         if character in "([{":
             depth += 1
         elif character in ")]}":
+            if depth == 0:
+                balanced = False
             depth = max(0, depth - 1)
-        if character == "," and depth == 0:
+        if character in ",;" and depth == 0:
             items.append("".join(current))
             current = []
         else:
             current.append(character)
     items.append("".join(current))
-    return [_squash(item) for item in items if item.strip()]
+    return [_squash(item) for item in items if item.strip()], balanced and depth == 0
 
 
-def _unmarked_unknown_ingredient(items: list[str], group: IngredientGroup) -> bool:
-    """With no functional mark anywhere, any entry that is not the target, a nutrient or an excipient."""
-    if any(_FUNCTIONAL_MARK.search(item) for item in items):
-        return False
-    return any(
-        not (_RAW_SELF[group].search(item) or _NUTRIENT.search(item) or _EXCIPIENT.search(item))
-        for item in items
+def _entry_name(entry: str) -> str:
+    """The ingredient name before its first bracket (its composition or marks follow)."""
+    return re.split(r"[(\[{]", entry, maxsplit=1)[0] or entry
+
+
+def _entry_kind(entry: str, group: IngredientGroup, effect: EffectKey) -> str:
+    """"inert" (target, nutrient, excipient, non-carrier), "carrier" (known to carry it) or "unknown"."""
+    name = _entry_name(entry)
+    if _RAW_SELF[group].search(name):
+        return "inert"
+    if _APPROVAL_MARK.search(entry):
+        return "unknown"
+    if _NUTRIENT.search(name) or _MINERAL_YEAST.search(entry) or _EXCIPIENT.search(name):
+        return "inert"
+    families = [g for g, pattern in _RAW_SELF.items() if g is not group and pattern.search(name)]
+    if families:
+        return "carrier" if any(effect in _FAMILY_EFFECTS[g] for g in families) else "inert"
+    notified = [notice for notice in _all_notice_items() if any(key in name for key in notice.keys)]
+    if not notified:
+        return "unknown"
+    return "carrier" if any(effect in notice.effects for notice in notified) else "inert"
+
+
+def _known_carrier(effect: EffectKey, group: IngredientGroup, raw: str, items: list[str]) -> bool:
+    """A notified carrier, a carrier keyword or an entry known to carry the effect is present."""
+    carriers = (item for item in _notice_items() if effect in item.effects)
+    if any(key in raw for item in carriers for key in item.keys):
+        return True
+    keywords = _EFFECT_CARRIERS[effect]
+    if keywords is not None and keywords.search(raw):
+        return True
+    return any(_entry_kind(entry, group, effect) == "carrier" for entry in items)
+
+
+def _held_for_effect(effect: EffectKey, group: IngredientGroup, raw: str, items: list[str]) -> bool:
+    """Per-effect holds: a known carrier, or any entry that is not identified as inert."""
+    return _known_carrier(effect, group, raw, items) or any(
+        _entry_kind(entry, group, effect) == "unknown" for entry in items
     )
 
 
-def _unidentified_marked_ingredient(items: Iterable[str], group: IngredientGroup, effect: EffectKey) -> bool:
-    """A declared functional ingredient that could carry the effect or is not identified at all."""
-    for item in items:
-        if not _FUNCTIONAL_MARK.search(item) or _RAW_SELF[group].search(item) or _NUTRIENT.search(item):
-            continue
-        families = [g for g, pattern in _RAW_FAMILY.items() if g is not group and pattern.search(item)]
-        if families:
-            if any(effect in _FAMILY_EFFECTS[g] for g in families):
-                return True
-            continue
-        notified = [notice for notice in _all_notice_items() if any(key in item for key in notice.keys)]
-        if not notified or any(effect in notice.effects for notice in notified):
-            return True
-    return False
+def _set_specific(effects: Iterable[EffectKey], group: IngredientGroup) -> bool:
+    """Two or more effects that no other single notified ingredient or target family carries together
+    (e.g. 혈중 중성지질 개선 + 혈행 개선 is the EPA/DHA combination; 기억력 + 혈행 is also 은행잎's)."""
+    wanted = set(effects)
+    if len(wanted) < 2 or any(wanted <= notice.effects for notice in _notice_items()):
+        return False
+    return not any(other is not group and wanted <= carried for other, carried in _FAMILY_EFFECTS.items())
 
 
 def _raw_has_owner(raw: str, owner: str) -> bool:
@@ -292,6 +348,7 @@ def _owned(
     owners: Mapping[str, Mapping[str, int]],
     raw: str,
     items: list[str],
+    balanced: bool,
 ) -> bool:
     effects = official_effect_keys(statement)
     if not effects or any(EFFECT_GROUP[effect] is not group for effect in effects):
@@ -306,17 +363,16 @@ def _owned(
         if owner != own and not _known_non_carrier(owner, effects)
     ):
         return False
-    if len(effects) == 1:
-        effect = effects[0]
-        carriers = (item for item in _notice_items() if effect in item.effects)
-        if any(key in raw for item in carriers for key in item.keys):
-            return False
-        keywords = _EFFECT_CARRIERS[effect]
-        if keywords is not None and keywords.search(raw):
-            return False
-        if _unidentified_marked_ingredient(items, group, effect) or _unmarked_unknown_ingredient(items, group):
-            return False
-    return True
+    target_only = _TARGET_ONLY[group]
+    if target_only is not None and target_only.search(statement):
+        return True
+    if not balanced:
+        return False
+    if _set_specific(effects, group):
+        # Only the target carries the whole combination; hold when known carriers present could
+        # have supplied every effect of it together.
+        return not all(_known_carrier(effect, group, raw, items) for effect in effects)
+    return not any(_held_for_effect(effect, group, raw, items) for effect in effects)
 
 
 def headerless_effects(
@@ -329,15 +385,15 @@ def headerless_effects(
     if not spans or not field_allows_attribution(function_text):
         return ()
     table = known_statement_owners().statements if owners is None else owners
-    raw = _squash(raw_materials)
-    items = _raw_items(raw_materials)
+    raw = _squash(html.unescape(raw_materials))
+    items, balanced = _raw_items(raw_materials)
     found: list[OfficialEffect] = []
     for start, end in spans:
         if not line_supported(function_text, start, end):
             continue
         for effect in span_effects(function_text, start, end):
             statement = effect_statement(effect)
-            if statement is not None and _owned(statement, effect.effect_group, table, raw, items):
+            if statement is not None and _owned(statement, effect.effect_group, table, raw, items, balanced):
                 found.append(
                     effect.model_copy(
                         update={
@@ -352,10 +408,11 @@ def headerless_effects(
 def headerless_references() -> tuple[str, ...]:
     """Versions (with source hash prefixes) of the tables a headerless attribution depends on."""
     table = known_statement_owners()
-    notice = json.loads(_NOTICE_PATH.read_text(encoding="utf-8"))
+    data = _NOTICE_PATH.read_bytes()
+    notice = json.loads(data.decode("utf-8"))
     return (
         f"{table.version}@{table.source_sha256[:12]}",
-        str(notice["reference_version"]),
+        f"{notice['reference_version']}@{hashlib.sha256(data).hexdigest()[:12].upper()}",
     )
 
 

@@ -185,7 +185,7 @@ def test_generic_words_are_not_name_keys() -> None:
     (CIRCULATION, "정제어유, 젤라틴, 글리세린, 아마씨앗유"),
     (MEMORY_STATEMENT, "정제어유, 산화아연, 젤라틴, 미르틸루스산앵도추출물분말"),
     ("혈중 중성지질 개선에 도움을 줄 수 있음", "EPA 및 DHA 함유 유지, 글리세린, 크릴새우오일"),
-    (CIRCULATION, "정제어유, 젤라틴, 마늘유지(Oil), 홍국 분말"),
+    (CIRCULATION, "정제어유, 젤라틴, 비수리추출분말, 홍국 분말"),
 ])
 def test_unmarked_list_with_an_unknown_entry_holds_single_effect_statements(text: str, raw: str) -> None:
     assert not _pairs(text, raw, SINGLE_OWNERS)
@@ -212,11 +212,6 @@ def test_marked_probiotic_strains_are_the_target_itself() -> None:
     }
 
 
-def test_marked_list_trusts_its_marks_for_unmarked_entries() -> None:
-    raw = "EPA 및 DHA 함유 유지(고시형), 젤라틴, 아마씨앗유"
-    assert _pairs(CIRCULATION, raw, SINGLE_OWNERS) == {(OMEGA3, EffectKey.BLOOD_CIRCULATION)}
-
-
 def test_owned_multi_effect_statement_ignores_unidentified_marked_ingredients() -> None:
     raw = "프로바이오틱스(고시형), 미지추출물(제2020-12호), 알로에베라(고시형)"
     assert (PROBIOTICS, EffectKey.BOWEL_MOVEMENT) in _pairs(PROBIOTIC_STATEMENT, raw)
@@ -236,6 +231,137 @@ def test_epa_and_dha_as_words_are_omega3(raw: str) -> None:
     assert _pairs(OMEGA_STATEMENT, raw) == {
         (OMEGA3, EffectKey.BLOOD_TRIGLYCERIDE), (OMEGA3, EffectKey.BLOOD_CIRCULATION),
     }
+
+
+# Re-review of v2 (headerless-attribution-v3).
+MULTI_OWNERS = {
+    **SINGLE_OWNERS,
+    "배변활동원활·장건강에도움을줄수있음": {"group:probiotics": 5},
+    "혈중중성지질개선·혈행개선에도움을줄수있음": {"group:omega3": 50},
+    "유산균증식및유해균억제·배변활동원활·장건강에도움을줄수있음": {"group:probiotics": 105},
+    "노화로인해감소될수있는황반색소밀도를유지하여눈건강에도움을줄수있음": {"group:lutein_zeaxanthin": 73},
+}
+EYE_STATEMENT = "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음"
+
+
+# P1-A: a multi-effect statement without a target-only phrase gets the single-effect holds per effect.
+@pytest.mark.parametrize(("text", "raw", "held"), [
+    ("배변활동 원활·장 건강에 도움을 줄 수 있음", "프로바이오틱스, 알로에겔(고시형), 차전자피식이섬유(고시형)",
+     {EffectKey.BOWEL_MOVEMENT, EffectKey.GUT_HEALTH}),
+    (OMEGA_STATEMENT, "정제어유, 난소화성말토덱스트린(고시형), 영지버섯자실체추출물(고시형)",
+     {EffectKey.BLOOD_TRIGLYCERIDE, EffectKey.BLOOD_CIRCULATION}),
+    ("①유산균 증식 및 유해균 억제에 도움을 줄 수 있음\n②배변활동 원활· 장건강에 도움을 줄 수 있음",
+     "프로바이오틱스(고시형), 프락토올리고당, 이눌린/치커리추출물(고시형)",
+     {EffectKey.BOWEL_MOVEMENT, EffectKey.GUT_HEALTH}),
+])
+def test_multi_effect_statement_without_target_only_phrase_is_checked_per_effect(text, raw, held) -> None:
+    owners = {**MULTI_OWNERS, "유산균증식및유해균억제에도움을줄수있음": {"group:probiotics": 46}}
+    assert not {effect for _, effect in _pairs(text, raw, owners)} & held
+
+
+@pytest.mark.parametrize("raw", [
+    "정제어유, 미지추출물",
+    "정제어유, L-아르지닌(기능성원료인정제2015-19호)",
+    "정제어유, 난소화성말토덱스트린(고시형)",
+])
+def test_target_specific_combination_holds_only_when_known_carriers_cover_every_effect(raw: str) -> None:
+    # 혈중 중성지질 개선 + 혈행 개선 together is only the EPA/DHA combination.
+    assert _pairs(OMEGA_STATEMENT, raw, MULTI_OWNERS) == {
+        (OMEGA3, EffectKey.BLOOD_TRIGLYCERIDE), (OMEGA3, EffectKey.BLOOD_CIRCULATION),
+    }
+
+
+def test_shared_combination_is_checked_per_effect() -> None:
+    # 기억력 개선 + 혈행 개선 is also the 은행잎 combination, so an unknown entry holds it.
+    owners = {"기억력개선·혈행개선에도움을줄수있음": {"group:omega3": 5}}
+    assert not _pairs("기억력 개선·혈행 개선에 도움을 줄 수 있음", "정제어유, 미지추출물", owners)
+
+
+def test_target_only_phrases_keep_the_statement_with_other_carriers_present() -> None:
+    raw = "프로바이오틱스(고시형), 프락토올리고당(고시형), 난소화성말토덱스트린(고시형)"
+    assert (PROBIOTICS, EffectKey.BOWEL_MOVEMENT) in _pairs(PROBIOTIC_STATEMENT, raw, MULTI_OWNERS)
+    assert _pairs(EYE_STATEMENT, "마리골드꽃추출물(고시형), 미지추출물", MULTI_OWNERS) == {
+        (LUTEIN, EffectKey.MACULAR_PIGMENT_EYE_HEALTH)
+    }
+
+
+# P1-B and P3-3: spellings C003 uses most (아르지닌, 락툴로즈).
+@pytest.mark.parametrize(("text", "raw"), [
+    (CIRCULATION, "EPA 및 DHA 함유 유지(고시형), L-아르지닌"),
+    (BOWEL_STATEMENT, "프로바이오틱스, 락툴로즈"),
+    (BOWEL_STATEMENT, "프로바이오틱스, 락툴로오스분말"),
+])
+def test_common_spelling_variants_of_carriers_hold(text: str, raw: str) -> None:
+    assert not _pairs(text, raw, SINGLE_OWNERS)
+
+
+# P2-C: marks are not reliable; an unknown unmarked entry holds even when other entries are marked.
+@pytest.mark.parametrize("raw", [
+    "EPA 및 DHA 함유 유지(고시형), 미지추출물",
+    "정제어유, 미지추출물, 비타민E(고시형)",
+    "EPA 및 DHA 함유 유지(고시형), 젤라틴, 아마씨앗유",
+])
+def test_unknown_unmarked_entries_hold_even_in_marked_lists(raw: str) -> None:
+    assert not _pairs(CIRCULATION, raw, SINGLE_OWNERS)
+
+
+# P2-D and P3-2: an individually approved entry is never identified by a notified name.
+@pytest.mark.parametrize("raw", [
+    "EPA 및 DHA 함유 유지(고시형), 녹차추출물(열처리)(제2022-34호)",
+    "EPA 및 DHA 함유 유지(고시형), 녹차추출물(개별인정형)",
+    "EPA 및 DHA 함유 유지(고시형), 녹차추출물(인정형)",
+    "EPA 및 DHA 함유 유지(고시형), 녹차추출물(2006-1)",
+    "EPA 및 DHA 함유 유지(고시형), 녹차추출물(인증번호 제2006-1호)",
+])
+def test_individually_approved_entries_are_not_matched_to_notified_names(raw: str) -> None:
+    assert not _pairs(MEMORY_STATEMENT, raw, SINGLE_OWNERS)
+
+
+# P2-E: a probiotic genus inside another approved ingredient's name does not identify it.
+def test_genus_inside_another_approved_ingredient_holds() -> None:
+    raw = "EPA 및 DHA 함유 유지(고시형), Lactobacillus brevis 발효 다시마추출물(제2011-22호)"
+    assert not _pairs(MEMORY_STATEMENT, raw, SINGLE_OWNERS)
+
+
+# P2-F: nutrients and excipients are judged on the entry name, not on its composition in brackets.
+@pytest.mark.parametrize(("text", "raw"), [
+    (CIRCULATION, "정제어유, 미지추출분말(미지추출물 50%, 덱스트린 50%)"),
+    (CIRCULATION, "EPA 및 DHA 함유 유지(고시형), 미지추출물(셀렌 0.1%)(제2020-12호)"),
+    (BOWEL_STATEMENT, "프로바이오틱스, 저항성말토덱스트린"),
+    (BOWEL_STATEMENT, "프로바이오틱스, 난소화말토덱스트린"),
+    (CIRCULATION, "정제어유, 사철쑥추출물"),
+])
+def test_entry_names_not_compositions_decide_nutrients_and_excipients(text: str, raw: str) -> None:
+    assert not _pairs(text, raw, SINGLE_OWNERS)
+
+
+def test_notified_ingredients_lacking_the_effect_do_not_hold() -> None:
+    # 마늘 and 홍국 are notified for blood cholesterol, not blood circulation.
+    assert _pairs(CIRCULATION, "정제어유, 젤라틴, 마늘유지(Oil), 홍국 분말", SINGLE_OWNERS) == {
+        (OMEGA3, EffectKey.BLOOD_CIRCULATION)
+    }
+
+
+def test_mineral_yeast_is_still_a_nutrient() -> None:
+    assert _pairs(CIRCULATION, "정제어유, 건조효모(셀렌함유), 젤라틴", SINGLE_OWNERS) == {
+        (OMEGA3, EffectKey.BLOOD_CIRCULATION)
+    }
+
+
+# P2-G and P3-7: an unbalanced raw list holds; HTML entities and other brackets are normalized.
+def test_unbalanced_raw_list_holds_and_brackets_are_normalized() -> None:
+    from claimledger.headerless import _raw_items
+
+    assert not _pairs(CIRCULATION, "정제어유(EPA 18%, DHA 12%, 젤라틴, 미지추출물", SINGLE_OWNERS)
+    assert _raw_items("정제어유&#40;EPA, DHA&#41;, 젤라틴【소】; 글리세린")[0] == [
+        "정제어유(epa,dha)", "젤라틴(소)", "글리세린",
+    ]
+
+
+# P3-1: shark liver oil and plant omega-3 are not EPA/DHA oil.
+@pytest.mark.parametrize("raw", ["상어유, 젤라틴", "철갑상어유지, 젤라틴", "식물성오메가3, 젤라틴"])
+def test_other_oils_are_not_the_omega3_target(raw: str) -> None:
+    assert not _pairs(CIRCULATION, raw, SINGLE_OWNERS)
 
 
 def test_owner_keys_group_target_families_and_keep_other_names() -> None:

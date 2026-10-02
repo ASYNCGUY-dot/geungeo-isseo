@@ -227,6 +227,10 @@ def test_score_counts_a_held_item_that_is_now_attributed_with_a_no_label(tmp_pat
     assert score_attribution_eval.main([*args, "--require-zero-false-attribution"]) == 1
     summary = json.loads(output.read_text(encoding="utf-8"))
     assert summary["drift_false_attribution"] == [moved["item_id"]]
+    # Re-review P3-6: the current parser's attributed items are also scored as one group.
+    current = summary["current_attributed"]
+    assert (current["n"], current["false_attribution"], current["unclear"]) == (3, 1, 0)
+    assert current["false_attribution_wilson"][0] > 0
 
 
 def test_score_rejects_unknown_labels_and_counts_unlabeled(tmp_path: Path) -> None:

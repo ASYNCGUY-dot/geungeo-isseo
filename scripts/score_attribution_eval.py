@@ -59,6 +59,7 @@ def _read_labels(path: Path, item_ids: set[str]) -> dict[str, dict]:
 def score(manifest: dict, labels: dict[str, dict], rows: dict[str, dict]) -> dict:
     strata: dict[str, dict] = {}
     drift, drift_false, unlabeled = [], [], 0
+    now_attributed = {"n": 0, "no": 0, "unclear": 0}
     for item in manifest["items"]:
         row = rows[item["report_no"]]
         current = classify_pair(
@@ -71,9 +72,14 @@ def score(manifest: dict, labels: dict[str, dict], rows: dict[str, dict]) -> dic
         if not label:
             unlabeled += 1
             continue
-        # A frozen held item that the current parser attributes is judged as an attribution too.
-        if current in ATTRIBUTED_STRATA and Stratum(item["stratum"]) not in ATTRIBUTED_STRATA and label == "no":
-            drift_false.append(item["item_id"])
+        # The current parser's attributions are scored as a group too; a frozen held item that is
+        # attributed now and labelled "no" is also listed on its own.
+        if current in ATTRIBUTED_STRATA:
+            now_attributed["n"] += 1
+            if label in ("no", "unclear"):
+                now_attributed[label] += 1
+            if Stratum(item["stratum"]) not in ATTRIBUTED_STRATA and label == "no":
+                drift_false.append(item["item_id"])
         bucket = strata.setdefault(item["stratum"], {"n": 0, "yes": 0, "no": 0, "unclear": 0})
         bucket["n"] += 1
         bucket[label] += 1
@@ -112,6 +118,12 @@ def score(manifest: dict, labels: dict[str, dict], rows: dict[str, dict]) -> dic
             "false_attribution": attributed_no,
             "false_attribution_wilson": _interval(attributed_no, attributed_n),
         },
+        "current_attributed": {
+            "n": now_attributed["n"],
+            "false_attribution": now_attributed["no"],
+            "unclear": now_attributed["unclear"],
+            "false_attribution_wilson": _interval(now_attributed["no"], now_attributed["n"]),
+        },
         "unlabeled": unlabeled,
         "stratum_drift": drift,
         "drift_false_attribution": drift_false,
@@ -141,8 +153,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     overall = summary["attributed_overall"]
     print(f"attributed n={overall['n']} false_attribution={overall['false_attribution']} "
           f"unlabeled={summary['unlabeled']} drift={len(summary['stratum_drift'])} "
-          f"drift_false_attribution={len(summary['drift_false_attribution'])}")
-    if args.require_zero_false_attribution and (overall["false_attribution"] or summary["drift_false_attribution"]):
+          f"drift_false_attribution={len(summary['drift_false_attribution'])} "
+          f"current_attributed={summary['current_attributed']['n']}/"
+          f"false={summary['current_attributed']['false_attribution']}")
+    failed = (
+        overall["false_attribution"]
+        or summary["drift_false_attribution"]
+        or summary["current_attributed"]["false_attribution"]
+    )
+    if args.require_zero_false_attribution and failed:
         return 1
     return 0
 
