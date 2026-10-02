@@ -178,6 +178,45 @@ def test_generic_words_are_not_name_keys() -> None:
     assert "감마리놀렌산" in _name_keys("감마리놀렌산 함유 유지")
 
 
+# Residual risk (2026-10-02): a raw list without any functional mark cannot use the marked-ingredient
+# hold, so a single-effect statement there needs every other entry to be the target, a nutrient or
+# a common excipient.
+@pytest.mark.parametrize(("text", "raw"), [
+    (CIRCULATION, "정제어유, 젤라틴, 글리세린, 아마씨앗유"),
+    (MEMORY_STATEMENT, "정제어유, 산화아연, 젤라틴, 미르틸루스산앵도추출물분말"),
+    ("혈중 중성지질 개선에 도움을 줄 수 있음", "EPA 및 DHA 함유 유지, 글리세린, 크릴새우오일"),
+    (CIRCULATION, "정제어유, 젤라틴, 마늘유지(Oil), 홍국 분말"),
+])
+def test_unmarked_list_with_an_unknown_entry_holds_single_effect_statements(text: str, raw: str) -> None:
+    assert not _pairs(text, raw, SINGLE_OWNERS)
+
+
+@pytest.mark.parametrize("raw", [
+    "정제어유, 젤라틴, 글리세린, D-소르비톨액",
+    "정제어유, d-α-토코페롤",
+    "오메가-3지방산함유유지(정제어유(EPA와 DHA의 합-30%이상)), 젤라틴, 글리세린, D-α-토코페롤(식물성유지(대두유 50%))",
+    "EPA 및 DHA 함유 유지, 프탈산히드록시프로필메틸셀룰로오스, 카라기난, 변성전분, 에틸바닐린, 안나토색소",
+])
+def test_unmarked_list_of_target_nutrients_and_excipients_attributes(raw: str) -> None:
+    assert _pairs(CIRCULATION, raw, SINGLE_OWNERS) == {(OMEGA3, EffectKey.BLOOD_CIRCULATION)}
+
+
+def test_marked_probiotic_strains_are_the_target_itself() -> None:
+    raw = (
+        "프로바이오틱스분말(고시형), Bifidobacterium animalis ssp. lactis(고시형), "
+        "Lactiplantibacillus plantarum(고시형), 결정셀룰로스"
+    )
+    assert _pairs(BOWEL_STATEMENT, raw, SINGLE_OWNERS) == {(PROBIOTICS, EffectKey.BOWEL_MOVEMENT)}
+    assert _pairs(BOWEL_STATEMENT, "Lactobacillus gasseri, 프로바이오틱스, 결정셀룰로스", SINGLE_OWNERS) == {
+        (PROBIOTICS, EffectKey.BOWEL_MOVEMENT)
+    }
+
+
+def test_marked_list_trusts_its_marks_for_unmarked_entries() -> None:
+    raw = "EPA 및 DHA 함유 유지(고시형), 젤라틴, 아마씨앗유"
+    assert _pairs(CIRCULATION, raw, SINGLE_OWNERS) == {(OMEGA3, EffectKey.BLOOD_CIRCULATION)}
+
+
 def test_owned_multi_effect_statement_ignores_unidentified_marked_ingredients() -> None:
     raw = "프로바이오틱스(고시형), 미지추출물(제2020-12호), 알로에베라(고시형)"
     assert (PROBIOTICS, EffectKey.BOWEL_MOVEMENT) in _pairs(PROBIOTIC_STATEMENT, raw)

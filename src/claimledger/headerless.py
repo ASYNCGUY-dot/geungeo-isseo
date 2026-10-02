@@ -77,6 +77,13 @@ _RAW_FAMILY: dict[IngredientGroup, re.Pattern[str]] = {
     IngredientGroup.OMEGA3: re.compile(rf"{_OMEGA3_NAME}|어유|크릴"),
     IngredientGroup.LUTEIN_ZEAXANTHIN: _RAW_TARGET[IngredientGroup.LUTEIN_ZEAXANTHIN],
 }
+# Raw-material entries that are the target itself in the marked/unmarked checks: strict names, plus
+# probiotic genera (strains listed one by one are the notified probiotics); krill oil is not EPA/DHA oil.
+_RAW_SELF: dict[IngredientGroup, re.Pattern[str]] = {
+    IngredientGroup.PROBIOTICS: re.compile(rf"프로바이오틱스|probiotic|{_GENERA}"),
+    IngredientGroup.OMEGA3: _RAW_TARGET[IngredientGroup.OMEGA3],
+    IngredientGroup.LUTEIN_ZEAXANTHIN: _RAW_TARGET[IngredientGroup.LUTEIN_ZEAXANTHIN],
+}
 # Effects each target family can carry, to judge it as another owner of a single-effect statement.
 _FAMILY_EFFECTS: dict[IngredientGroup, frozenset[EffectKey]] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: frozenset(
@@ -93,7 +100,7 @@ _FAMILY_EFFECTS: dict[IngredientGroup, frozenset[EffectKey]] = {
 # Other carriers of a single effect under the names raw materials actually use (generous on purpose).
 _EFFECT_CARRIERS: dict[EffectKey, re.Pattern[str] | None] = {
     EffectKey.BLOOD_CIRCULATION: re.compile(
-        r"은행|홍삼|인삼|영지|불로초|감마리놀렌|보라지|달맞이꽃|까막까치밥|블랙커런트|나토|natto|아르기닌"
+        r"은행|홍삼|인삼|영지|불로초|감마리놀렌|보라지|달맞이꽃|까막까치밥|블랙커런트|(?<!안)나토|natto|아르기닌"
     ),
     EffectKey.MEMORY: re.compile(r"은행|홍삼|인삼|원지|피브로인|포스파티딜세린|바코파|아쉬와간다|ashwagandha"),
     EffectKey.BLOOD_TRIGLYCERIDE: re.compile(r"난소화성|식이섬유|글로빈"),
@@ -114,6 +121,15 @@ _NUTRIENT = re.compile(
     r"비타민|토코페롤|토코페릴|레티놀|레티닐|카로틴|칼시페롤|아스코르브|아스코르빈|티아민|리보플라빈|니코틴"
     r"|나이아신|판토텐|피리독신|비오틴|엽산|폴산|코발라민|칼슘|마그네슘|아연|구리|(?:글루콘산|황산|산화|구연산|탄산|염화)동"
     r"|셀렌|셀레늄|망간|요오드|크롬|몰리브덴|칼륨|철|효모"
+)
+# Common capsule and tablet excipients, colours, flavours, sweeteners and carrier oils. When a raw
+# list marks no functional ingredient at all, a single-effect statement is attributed only if every
+# other entry is one of these, a nutrient or the target itself.
+_EXCIPIENT = re.compile(
+    r"젤라틴|글리세린|소르비톨|소비톨|솔비톨|정제수|밀납|색소|향료|향미|바닐린|카라기난|전분|덱스트린|셀룰로"
+    r"|이산화규소|규소|스테아린산|이산화티타늄|트리아세틴|레시틴|대두유|콩기름|카놀라유|팜유|해바라기|포도씨"
+    r"|올리브|옥수수유|유당|포도당|과당|자당|설탕|구연산|사과산|탤크|활석|쉘락|셸락|캡슐|피막|코팅|지방산에스테르"
+    r"|이소말트|자일리톨|에리스리톨|말티톨|스테비아|수크랄로스|아스파탐|아세설팜|아라비아검|잔탄검|펙틴|한천겔"
 )
 _NAME_SUFFIXES = (
     "주정추출분말", "열수추출분말", "열수추출물", "추출분말", "추출물", "농축분말", "농축액", "건조분말",
@@ -238,10 +254,20 @@ def _raw_items(raw_materials: str) -> list[str]:
     return [_squash(item) for item in items if item.strip()]
 
 
+def _unmarked_unknown_ingredient(items: list[str], group: IngredientGroup) -> bool:
+    """With no functional mark anywhere, any entry that is not the target, a nutrient or an excipient."""
+    if any(_FUNCTIONAL_MARK.search(item) for item in items):
+        return False
+    return any(
+        not (_RAW_SELF[group].search(item) or _NUTRIENT.search(item) or _EXCIPIENT.search(item))
+        for item in items
+    )
+
+
 def _unidentified_marked_ingredient(items: Iterable[str], group: IngredientGroup, effect: EffectKey) -> bool:
     """A declared functional ingredient that could carry the effect or is not identified at all."""
     for item in items:
-        if not _FUNCTIONAL_MARK.search(item) or _RAW_FAMILY[group].search(item) or _NUTRIENT.search(item):
+        if not _FUNCTIONAL_MARK.search(item) or _RAW_SELF[group].search(item) or _NUTRIENT.search(item):
             continue
         families = [g for g, pattern in _RAW_FAMILY.items() if g is not group and pattern.search(item)]
         if families:
@@ -265,7 +291,7 @@ def _owned(
     group: IngredientGroup,
     owners: Mapping[str, Mapping[str, int]],
     raw: str,
-    items: Iterable[str],
+    items: list[str],
 ) -> bool:
     effects = official_effect_keys(statement)
     if not effects or any(EFFECT_GROUP[effect] is not group for effect in effects):
@@ -288,7 +314,7 @@ def _owned(
         keywords = _EFFECT_CARRIERS[effect]
         if keywords is not None and keywords.search(raw):
             return False
-        if _unidentified_marked_ingredient(items, group, effect):
+        if _unidentified_marked_ingredient(items, group, effect) or _unmarked_unknown_ingredient(items, group):
             return False
     return True
 
