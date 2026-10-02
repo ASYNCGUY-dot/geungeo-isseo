@@ -99,6 +99,8 @@ C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료�
 모든 효과를 채울 때만 보류합니다. 판정은 `claim-verdict-v1.3`, 사유 `MATCHES_UNLABELED_OFFICIAL_FUNCTION`입니다.
 기록: `docs/evidence/HEADERLESS_ATTRIBUTION_2026-10-01.md`. 독립 재검토 두 번에서 실제 C003 오인 승인이 나왔으므로,
 이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다. `I-0040`은 2026-10-02에도 활용신청 대기(INFO-110)입니다.
+2026-10-03 주장 단위 동결 평가세트 `claim-eval-v1`(`docs/evidence/CLAIM_EVAL_V1_2026-10-03.md`, AI 생성 문장·맹검 AI 라벨 두 벌)은
+오인 승인 0/68이지만 `확인됨` 재현율 6/30입니다. 이 세트로 엔진을 조정하지 말고, 개선 후에는 새 평가세트로 다시 잽니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.

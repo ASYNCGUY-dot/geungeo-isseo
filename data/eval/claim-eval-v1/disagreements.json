@@ -1,0 +1,16 @@
+[
+  {
+    "case_id": "CE-039",
+    "labels": {
+      "sonnet-blind": "mismatch",
+      "opus-blind": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CE-074",
+    "labels": {
+      "sonnet-blind": "confirmed",
+      "opus-blind": "unverifiable"
+    }
+  }
+]

@@ -17,6 +17,11 @@
 3단계는 고시형 원료 93개의 공식 기능성 대응표를 만든 상태이고, 개별인정형 목록(식품안전나라 `I-0040`)은 활용신청을 기다립니다
 ([대응표 기록](docs/evidence/CARRIER_TABLE_2026-09-30.md)). 현재 테스트 통과를 자동 승인·출시 허가로 해석하지 않습니다.
 
+- 2026-10-03 (주장 단위 동결 평가세트 `claim-eval-v1`): 실제 C003 제품 100개에 AI가 쓴 광고 문장을 붙이고, 맹검 AI 라벨러
+  두 개(98/100 일치, kappa 0.968)의 기대 판정으로 엔진 전체를 채점했습니다. `확인됨` 오인 승인 0/68(Wilson 95% 상한 5.4%),
+  불일치 2건 포함 엄격 평가 0/70. 다만 `확인됨` 재현율은 6/30(20%)이며, 놓친 24건 중 18건은 광고 문장 확인 문법이 흔한 표현
+  변형을 받지 않아 `검증 불가`로 떨어진 것입니다. AI 문장·AI 라벨이므로 사람 기준 정확도가 아닙니다.
+  [주장 단위 평가 기록](docs/evidence/CLAIM_EVAL_V1_2026-10-03.md).
 - 2026-10-01~02 (헤더 없는 나열 귀속 `headerless-attribution-v3`, 판정 `claim-verdict-v1.3`): 원료명 헤더가 없는 공식 문구도,
   C003 다른 제품들이 대상 원료 이름 아래 쓴 문장이고 같은 문장을 가질 수 있는 다른 원료가 원재료에 없으면 귀속합니다.
   확인됨에는 별도 사유 코드와 영수증 문구를 붙입니다. 독립 재검토 두 번에서 나온 오인 승인 사례(실제 C003 5건)를 막았고
@@ -162,6 +167,12 @@
 
 ```powershell
 .venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\dev-cases\core-mvp-dev-v1.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
+```
+
+주장 단위 동결 평가세트 채점 명령(맹검 AI 라벨 두 벌이 일치한 98건, 오인 승인이 있으면 종료코드 1):
+
+```powershell
+.venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\eval\claim-eval-v1\cases.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
 
 사람 검토는 2026-09-27 사용자 결정으로 생략했습니다. 지금 사용자가 할 검토 작업은 없습니다.
