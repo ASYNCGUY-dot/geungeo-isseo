@@ -89,14 +89,16 @@
 아래 오인 승인 방지 강화의 남은 P1은 원료명 사전 게이트로 해결했습니다(전체 필드 게이트·구조화 근거 설계는 적용하지 않음).
 원료명 사전은 `scripts/build_header_vocabulary.py`로 C003 스냅샷에서 다시 만들 수 있고, 제외 목록은 AI 검토이며 사람 검토가 아닙니다.
 독립 AI 재검토에서 P1 2건이 나왔습니다. 목록 기호 P1-B와 P3는 v2.4에서, 본문 속 주석 P1-A는 2단계 공식 문장 사전
-게이트(`docs/evidence/CLAUSE_GATE_2026-09-29.md`)에서 고쳤습니다. 현재 공식 파서 버전은 `official-function-v2.10`입니다(10/1 형식 확장, 독립 재검토 반영, 평가세트 v2 보류 원인 반영).
+게이트(`docs/evidence/CLAUSE_GATE_2026-09-29.md`)에서 고쳤습니다. 현재 공식 파서 버전은 `official-function-v2.11`입니다(10/1 형식 확장, 독립 재검토 반영, 평가세트 v2 보류 원인 반영,
+U+2024를 P2 문장 검사에도 같게 적용).
 2026-10-01 사용자 결정 "검증 불가 항목을 최소화 해야해"에 따라 `․`(U+2024)는 가운뎃점으로 읽습니다.
 일반·전각 마침표와 줄바꿈은 여전히 문장 경계이며, 검증 불가를 줄이는 변경도 오인 승인 방지 게이트(헤더·문장 사전, 부정어)를 지킵니다.
-헤더 없는 나열은 `src/claimledger/headerless.py`(`headerless-attribution-v2`)가 귀속합니다. 근거는 헤더가 아니라
-C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료이며, 효과가 하나뿐인 문장은 알려진 다른 원료 핵심어나
-확인되지 않은 기능성 원료(`(고시형)`·인정번호)가 있으면 보류합니다. 판정은 `claim-verdict-v1.3`,
-사유 `MATCHES_UNLABELED_OFFICIAL_FUNCTION`입니다. 기록: `docs/evidence/HEADERLESS_ATTRIBUTION_2026-10-01.md`.
-v1에서 독립 재검토가 실제 C003 오인 승인 2건을 찾았으므로, 이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다.
+헤더 없는 나열은 `src/claimledger/headerless.py`(`headerless-attribution-v3`)가 귀속합니다. 근거는 헤더가 아니라
+C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료입니다. 대상 원료에만 있는 문구가 없는 문장은 효과별로
+보류 검사를 하고(다른 원료 핵심어, 고시 원료, 정체를 모르는 원재료 항목이면 보류), 오메가3 고유 효과 조합은 알려진 다른 원료가
+모든 효과를 채울 때만 보류합니다. 판정은 `claim-verdict-v1.3`, 사유 `MATCHES_UNLABELED_OFFICIAL_FUNCTION`입니다.
+기록: `docs/evidence/HEADERLESS_ATTRIBUTION_2026-10-01.md`. 독립 재검토 두 번에서 실제 C003 오인 승인이 나왔으므로,
+이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다. `I-0040`은 2026-10-02에도 활용신청 대기(INFO-110)입니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.
