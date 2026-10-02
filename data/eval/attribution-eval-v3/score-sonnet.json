@@ -1,0 +1,51 @@
+{
+  "eval_id": "attribution-eval-v3",
+  "parser_version": "official-function-v2.11",
+  "manifest_parser_version": "official-function-v2.11",
+  "labelers": [
+    "independent-sonnet-ai"
+  ],
+  "strata": {
+    "attributed_headerless": {
+      "n": 70,
+      "correct": 70,
+      "false_attribution": 0,
+      "unclear": 0,
+      "false_attribution_wilson": [
+        0.0,
+        0.052
+      ]
+    },
+    "held_headerless": {
+      "n": 15,
+      "missed_attribution": 12,
+      "correctly_held": 3,
+      "unclear": 0,
+      "missed_attribution_wilson": [
+        0.5481,
+        0.9295
+      ]
+    },
+    "held_other": {
+      "n": 15,
+      "missed_attribution": 6,
+      "correctly_held": 9,
+      "unclear": 0,
+      "missed_attribution_wilson": [
+        0.1982,
+        0.6425
+      ]
+    }
+  },
+  "attributed_overall": {
+    "n": 70,
+    "false_attribution": 0,
+    "false_attribution_wilson": [
+      0.0,
+      0.052
+    ]
+  },
+  "unlabeled": 0,
+  "stratum_drift": [],
+  "drift_false_attribution": []
+}

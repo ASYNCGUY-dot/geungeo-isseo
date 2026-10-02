@@ -92,6 +92,11 @@
 게이트(`docs/evidence/CLAUSE_GATE_2026-09-29.md`)에서 고쳤습니다. 현재 공식 파서 버전은 `official-function-v2.10`입니다(10/1 형식 확장, 독립 재검토 반영, 평가세트 v2 보류 원인 반영).
 2026-10-01 사용자 결정 "검증 불가 항목을 최소화 해야해"에 따라 `․`(U+2024)는 가운뎃점으로 읽습니다.
 일반·전각 마침표와 줄바꿈은 여전히 문장 경계이며, 검증 불가를 줄이는 변경도 오인 승인 방지 게이트(헤더·문장 사전, 부정어)를 지킵니다.
+헤더 없는 나열은 `src/claimledger/headerless.py`(`headerless-attribution-v2`)가 귀속합니다. 근거는 헤더가 아니라
+C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료이며, 효과가 하나뿐인 문장은 알려진 다른 원료 핵심어나
+확인되지 않은 기능성 원료(`(고시형)`·인정번호)가 있으면 보류합니다. 판정은 `claim-verdict-v1.3`,
+사유 `MATCHES_UNLABELED_OFFICIAL_FUNCTION`입니다. 기록: `docs/evidence/HEADERLESS_ATTRIBUTION_2026-10-01.md`.
+v1에서 독립 재검토가 실제 C003 오인 승인 2건을 찾았으므로, 이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.

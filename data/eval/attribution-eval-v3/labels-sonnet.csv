@@ -1,0 +1,101 @@
+item_id,label,labeler,note
+AE3-001,no,independent-sonnet-ai,원문에 황반색소밀도 문구가 없고 마리골드는 원재료에만 있음
+AE3-002,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구의 주인은 마리골드꽃추출물뿐임
+AE3-003,yes,independent-sonnet-ai,무라벨 혈중 중성지질 개선·혈행 개선 문구는 EPA·DHA 유지의 것임
+AE3-004,yes,independent-sonnet-ai,원재료가 모두 유산균이고 배변활동 원활이 명시됨
+AE3-005,no,independent-sonnet-ai,배변활동 원활은 차전자피·이눌린 쪽 문구이고 프로바이오틱스 고유 문구가 없음
+AE3-006,yes,independent-sonnet-ai,황반색소밀도 문구는 루테인만 가능함
+AE3-007,yes,independent-sonnet-ai,황반색소밀도 문구는 루테인추출물의 것임
+AE3-008,no,independent-sonnet-ai,배변활동 원활은 차전자피·난소화성말토덱스트린 문구이며 프로바이오틱스 문구가 없음
+AE3-009,yes,independent-sonnet-ai,중성지질 개선이 EPA·DHA 유지 문구로 명시됨
+AE3-010,yes,independent-sonnet-ai,[EPA 및 DHA 함유 유지] 헤더(오타 포함) 아래 중성지질 개선이 있음
+AE3-011,no,independent-sonnet-ai,기억력 개선은 원지추출분말 문구이고 EPA·DHA 문구에는 없음
+AE3-012,yes,independent-sonnet-ai,무라벨이며 EPA·DHA 유지가 유일한 기능성 원료라 중성지질 개선이 귀속됨
+AE3-013,no,independent-sonnet-ai,유산균 증식 및 유해균 억제 문구가 없고 유익균 증식은 프락토올리고당 문구임
+AE3-014,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 유산균 증식 및 유해균 억제가 명시됨
+AE3-015,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 배변활동 원활이 명시됨
+AE3-016,yes,independent-sonnet-ai,<프로바이오틱스> 헤더 아래 유산균 증식 및 유해균 억제가 있음
+AE3-017,yes,independent-sonnet-ai,루테인지아잔틴복합추출물의 황반색소밀도 국문 문구가 있음
+AE3-018,yes,independent-sonnet-ai,EPA·DHA 유지 단일 기능성 원료의 중성지질 개선 문구임
+AE3-019,yes,independent-sonnet-ai,마리골드꽃추출물 헤더 아래 황반색소밀도 문구가 있음
+AE3-020,yes,independent-sonnet-ai,(다)항에 건조한 눈 개선이 EPA와 DHA 합 용량과 함께 명시됨
+AE3-021,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 장 건강이 명시됨
+AE3-022,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물만 가능함
+AE3-023,yes,independent-sonnet-ai,중성지질 개선은 정제어유(EPA·DHA) 문구로 명시됨
+AE3-024,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-025,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 배변활동 원활이 명시됨
+AE3-026,yes,independent-sonnet-ai,황반색소밀도 문구는 루테인추출물·마리골드추출물의 것임
+AE3-027,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-028,yes,independent-sonnet-ai,프로바이오틱스 원료만 있고 배변활동 원활이 명시됨
+AE3-029,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-030,yes,independent-sonnet-ai,[EPA와 DHA의 합] 헤더 아래 중성지질 개선이 있음
+AE3-031,yes,independent-sonnet-ai,마리골드꽃추출물 헤더 아래 황반색소밀도 문구가 있음
+AE3-032,yes,independent-sonnet-ai,기능성 내용에 중성지질·혈행 개선이 있고 다른 원료 문구와 구분됨
+AE3-033,yes,independent-sonnet-ai,EPA·DHA 유지 단일 원료의 혈행개선 문구임
+AE3-034,yes,independent-sonnet-ai,정제어유 단일 기능성 원료에 혈행·기억력 개선이 명시됨
+AE3-035,yes,independent-sonnet-ai,중성지질·혈행 개선은 정제어유 문구이고 코엔자임Q10 문구는 따로 없음
+AE3-036,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-037,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물만 가능함
+AE3-038,no,independent-sonnet-ai,원문에 황반색소밀도 문구가 없고 마리골드는 원재료에만 있음
+AE3-039,yes,independent-sonnet-ai,유산균 증식·배변활동·장 건강 문구는 프로바이오틱스의 것임
+AE3-040,yes,independent-sonnet-ai,유산균 증식·배변활동·장 건강 문구는 프로바이오틱스의 것임
+AE3-041,yes,independent-sonnet-ai,중성지질 개선은 EPA·DHA 유지의 무라벨 문구이고 황반 문구는 마리골드 쪽임
+AE3-042,yes,independent-sonnet-ai,EPA·DHA 유지 문구에 혈행 개선이 명시됨
+AE3-043,yes,independent-sonnet-ai,EPA·DHA 유지가 유일한 기능성 원료이고 기억력 개선이 명시됨
+AE3-044,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-045,yes,independent-sonnet-ai,기능성 내용에 건조한 눈 개선이 EPA·DHA 유지 문구로 있음
+AE3-046,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-047,no,independent-sonnet-ai,혈행 개선은 은행잎 추출물 헤더 아래이며 EPA·DHA 문구가 없음
+AE3-048,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 유산균 증식 및 유해균 억제가 명시됨
+AE3-049,yes,independent-sonnet-ai,EPA·DHA 유지 단일 원료의 건조한 눈 개선 문구임
+AE3-050,yes,independent-sonnet-ai,[마리골드꽃출물] 헤더(오타) 아래 황반색소밀도 문구가 있음
+AE3-051,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-052,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-053,yes,independent-sonnet-ai,프로바이오틱스 문구에 배변활동 원활이 명시됨
+AE3-054,yes,independent-sonnet-ai,루테인지아잔틴복합추출물의 황반색소밀도 문구가 있음
+AE3-055,yes,independent-sonnet-ai,EPA·DHA 유지 문구에 건조한 눈 개선이 있음
+AE3-056,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 배변활동 원활이 명시됨
+AE3-057,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-058,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-059,yes,independent-sonnet-ai,프로바이오틱스 문구에 배변활동 원활이 명시됨
+AE3-060,no,independent-sonnet-ai,원문 전체에 황반색소밀도 문구가 없고 마리골드는 원재료에만 있음
+AE3-061,yes,independent-sonnet-ai,프로바이오틱스 문구에 장 건강이 명시됨
+AE3-062,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물만 가능함
+AE3-063,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-064,yes,independent-sonnet-ai,프로바이오틱스 복합물 헤더 아래 유산균 증식 및 유해균 억제가 있음
+AE3-065,no,independent-sonnet-ai,배변활동 원활은 차전자피식이섬유 헤더 아래이며 프로바이오틱스 문구가 없음
+AE3-066,yes,independent-sonnet-ai,중성지질·혈행 개선 문구는 EPA·DHA 유지의 것임
+AE3-067,yes,independent-sonnet-ai,프로바이오틱스 문구에 배변활동 원활이 명시됨
+AE3-068,yes,independent-sonnet-ai,혈행개선은 정제어유(EPA·DHA) 문구이며 난소화성말토덱스트린은 혈행 문구가 없음
+AE3-069,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-070,no,independent-sonnet-ai,배변활동 원활은 차전자피식이섬유 헤더 아래이며 프로바이오틱스 문구가 없음
+AE3-071,yes,independent-sonnet-ai,황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-072,yes,independent-sonnet-ai,프로바이오틱스 문구에 장 건강이 명시됨
+AE3-073,yes,independent-sonnet-ai,프로바이오틱스 문구에 유산균 증식 및 유해균 억제가 명시됨
+AE3-074,yes,independent-sonnet-ai,EPA·DHA 유지 문구에 혈행 개선이 명시됨
+AE3-075,yes,independent-sonnet-ai,루테인지아잔틴복합추출물의 황반색소밀도 문구가 있음
+AE3-076,yes,independent-sonnet-ai,기능성 내용에 혈행 개선이 있고 EPA·DHA 유지 외 다른 문구는 없음
+AE3-077,yes,independent-sonnet-ai,중성지질·혈행 개선 문구는 EPA·DHA 유지의 것이고 달맞이꽃종자유 문구는 따로 있음
+AE3-078,yes,independent-sonnet-ai,프로바이오틱스 문구에 배변활동 원활이 명시됨
+AE3-079,yes,independent-sonnet-ai,프로바이오틱스 문구에 유산균 증식 및 유해균 억제가 명시됨
+AE3-080,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물의 것임
+AE3-081,yes,independent-sonnet-ai,[EPA 및 DHA의 합] 헤더 아래 혈행 개선이 있음
+AE3-082,yes,independent-sonnet-ai,프로바이오틱스 단일 원료이고 배변활동 원활이 명시됨
+AE3-083,yes,independent-sonnet-ai,(EPA 및 DHA 함유 유지) 헤더 아래 건조한 눈 개선이 있음
+AE3-084,yes,independent-sonnet-ai,중성지질·혈행·건조한 눈 개선 문구는 EPA·DHA 유지의 것임
+AE3-085,yes,independent-sonnet-ai,유산균 증식·배변활동·장 건강 문구는 프로바이오틱스의 것임
+AE3-086,yes,independent-sonnet-ai,중성지질·혈행 개선 결합 문구는 정제어유(EPA·DHA)의 것임
+AE3-087,yes,independent-sonnet-ai,프로바이오틱스 문구에 장 건강이 명시됨
+AE3-088,yes,independent-sonnet-ai,루테인지아잔틴복합추출물의 황반색소밀도 문구가 있음
+AE3-089,no,independent-sonnet-ai,혈행 개선은 은행잎추출물 헤더 아래이며 정제어유 문구는 없음
+AE3-090,yes,independent-sonnet-ai,프로바이오틱스 문구에 유산균 증식 및 유해균 억제가 명시됨
+AE3-091,yes,independent-sonnet-ai,프로바이오틱스 문구에 장 건강이 명시됨
+AE3-092,yes,independent-sonnet-ai,EPA·DHA 유지 단일 원료의 혈행 개선 문구임
+AE3-093,yes,independent-sonnet-ai,무라벨 황반색소밀도 문구는 마리골드꽃추출물만 가능함
+AE3-094,no,independent-sonnet-ai,배변활동 원활은 차전자피식이섬유 헤더 아래이며 프로바이오틱스 문구가 없음
+AE3-095,yes,independent-sonnet-ai,루테인지아잔틴복합추출물의 황반색소밀도 문구가 있음
+AE3-096,yes,independent-sonnet-ai,(프로바이오틱스) 헤더 아래 유산균 증식 및 유해균 억제가 있음
+AE3-097,yes,independent-sonnet-ai,마리골드꽃출물(지아잔틴함유) 헤더 아래 황반색소밀도 문구가 있음
+AE3-098,yes,independent-sonnet-ai,EPA·DHA 유지 문구에 중성지질 개선이 명시됨
+AE3-099,yes,independent-sonnet-ai,중성지질·혈행 개선 결합 문구는 EPA·DHA 유지의 것임
+AE3-100,yes,independent-sonnet-ai,프로바이오틱스 문구에 유산균 증식 및 유해균 억제가 명시됨

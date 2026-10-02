@@ -1,0 +1,101 @@
+item_id,label,labeler,note
+AE3-001,no,independent-opus-ai,원문에 황반색소밀도 문구가 없고 EPA·베타카로틴·비타민E 문구만 있음
+AE3-002,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 원재료상 마리골드꽃추출물 외 다른 주체가 없음
+AE3-003,yes,independent-opus-ai,무표지 혈중 중성지질·혈행 개선 문구이며 원재료상 EPA·DHA 함유 유지만 가능
+AE3-004,yes,independent-opus-ai,원재료가 모두 프로바이오틱스이고 유산균 증식·배변활동 원활 문구가 있음
+AE3-005,no,independent-opus-ai,혈중 콜레스테롤·배변활동 원활 문구는 차전자피식이섬유 문형이며 프로바이오틱스 문구는 없음
+AE3-006,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 루테인 외 다른 주체가 없음
+AE3-007,yes,independent-opus-ai,무표지 황반색소 밀도 문구이며 루테인추출물만 해당 기능 가능
+AE3-008,no,independent-opus-ai,혈중콜레스테롤·배변활동원활 문구는 차전자피 문형이며 프로바이오틱스 문구 없음
+AE3-009,yes,independent-opus-ai,무표지 혈중 중성지질 개선 복합 문구이며 EPA·DHA 함유 유지만 가능
+AE3-010,yes,independent-opus-ai,[EPA및 DAH 함유 유지] 표지(오타) 아래 혈중 중성지질 개선 문구
+AE3-011,no,independent-opus-ai,기억력 개선은 (원지추출분말) 표지 문구이고 EPA·DHA 문구에는 기억력이 없음
+AE3-012,yes,independent-opus-ai,원재료 기능성 원료가 EPA·DHA 함유 유지뿐이고 혈중 중성지질 개선 문구가 있음
+AE3-013,no,independent-opus-ai,유익균 증식 문구는 [프락토올리고당] 표지이며 프로바이오틱스 문구 없음
+AE3-014,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 유산균 증식 및 유해균 억제 문구가 있음
+AE3-015,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 배변활동 원활 문구가 있음
+AE3-016,yes,independent-opus-ai,<프로바이오틱스> 표지 아래 유산균 증식 및 유해균 억제 문구
+AE3-017,yes,independent-opus-ai,(국문) 황반색소밀도 문구이며 루테인지아잔틴복합추출물만 가능
+AE3-018,yes,independent-opus-ai,무표지 혈중 중성지질 개선 복합 문구이며 EPA·DHA 함유 유지만 가능
+AE3-019,yes,independent-opus-ai,마리골드꽃추출물 표지 아래 황반색소밀도 문구
+AE3-020,yes,independent-opus-ai,(다) 건조한 눈 개선 문구이며 기능성 원료가 EPA·DHA 함유 유지뿐
+AE3-021,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 장 건강 문구가 있음
+AE3-022,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-023,yes,independent-opus-ai,무표지 혈중 중성지질 개선 문구이며 정제어유(EPA와 DHA의 합)만 가능
+AE3-024,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-025,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 배변활동 원활 문구가 있음
+AE3-026,yes,independent-opus-ai,무표지 황반색소 밀도 문구이며 루테인추출물만 가능
+AE3-027,yes,independent-opus-ai,유일한 문구가 황반색소밀도이며 마리골드꽃추출물만 가능
+AE3-028,yes,independent-opus-ai,원재료가 프로바이오틱스분말뿐이고 배변활동 원활 문구가 있음
+AE3-029,yes,independent-opus-ai,유일한 문구가 황반색소밀도이며 마리골드꽃추출물만 가능
+AE3-030,yes,independent-opus-ai,[EPA와 DHA의 합] 표지 아래 혈중 중성지질 개선 문구
+AE3-031,yes,independent-opus-ai,마리골드꽃추출물 표지 아래 황반색소밀도 문구
+AE3-032,yes,independent-opus-ai,중성지질·혈행·건조한 눈 복합 문구는 EPA·DHA 함유 유지만 가능
+AE3-033,yes,independent-opus-ai,기능성 원료가 EPA·DHA 함유 유지뿐이고 혈행개선 문구가 있음
+AE3-034,yes,independent-opus-ai,기능성 원료가 정제어유뿐이고 기억력 개선 문구가 있음
+AE3-035,yes,independent-opus-ai,혈중 중성지질·혈행 개선 문구는 정제어유만 가능하며 코엔자임Q10 문형과 다름
+AE3-036,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-037,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-038,no,independent-opus-ai,원료별 표지 목록에 마리골드꽃추출물이 없고 황반색소밀도 문구도 없음
+AE3-039,yes,independent-opus-ai,유산균 증식·장 건강 복합 문구는 프로바이오틱스 문형임
+AE3-040,yes,independent-opus-ai,유산균 증식·배변활동 원활 복합 문구는 프로바이오틱스 문형임
+AE3-041,yes,independent-opus-ai,중성지질·혈행·건조한 눈 복합 문구는 EPA·DHA 함유 유지만 가능
+AE3-042,yes,independent-opus-ai,기능성 원료가 EPA·DHA 함유 유지와 비타민E뿐이고 혈행 개선 문구가 있음
+AE3-043,yes,independent-opus-ai,기능성 원료가 EPA·DHA 함유 유지뿐이고 기억력 개선 문구가 있음
+AE3-044,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-045,yes,independent-opus-ai,기능성 내용 복합 문구에 건조한 눈 개선이 있고 EPA·DHA 함유 유지만 가능
+AE3-046,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-047,no,independent-opus-ai,혈행 개선은 [은행잎 추출물] 표지 문구이며 EPA·DHA 문구 없음
+AE3-048,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 유산균 증식 및 유해균 억제 문구가 있음
+AE3-049,yes,independent-opus-ai,기능성 원료가 EPA·DHA 함유 유지뿐이고 건조한 눈 개선 문구가 있음
+AE3-050,yes,independent-opus-ai,[마리골드꽃출물] 표지(오타) 아래 황반색소밀도 문구
+AE3-051,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-052,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-053,yes,independent-opus-ai,유산균 증식·배변활동 원활 복합 문구는 프로바이오틱스 문형임
+AE3-054,yes,independent-opus-ai,(국문) 황반색소밀도 문구이며 루테인지아잔틴복합추출물뿐
+AE3-055,yes,independent-opus-ai,무표지 복합 문구의 건조한 눈 개선은 EPA·DHA 함유 유지만 가능
+AE3-056,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 배변활동 원활 문구가 있음
+AE3-057,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-058,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-059,yes,independent-opus-ai,유산균 증식·배변활동 원활 복합 문구는 프로바이오틱스 문형임
+AE3-060,no,independent-opus-ai,원료별 표지 목록에 마리골드꽃추출물 항목이 없고 황반색소밀도 문구 없음
+AE3-061,yes,independent-opus-ai,유산균 증식·장 건강 복합 문구는 프로바이오틱스 문형임
+AE3-062,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-063,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-064,yes,independent-opus-ai,프로바이오틱스 복합물(제2019-4호) 표지 아래 유산균 증식 및 유해균 억제 문구
+AE3-065,no,independent-opus-ai,배변활동 원활은 [차전자피식이섬유] 표지 문구이며 프로바이오틱스 문구 없음
+AE3-066,yes,independent-opus-ai,중성지질·혈행·기억력·건조한 눈 복합 문구는 EPA·DHA 함유 유지만 가능
+AE3-067,yes,independent-opus-ai,기능성 원료가 프로바이오틱스뿐이고 배변활동 원활 문구가 있음
+AE3-068,yes,independent-opus-ai,혈중 중성지질·혈행개선 목록은 정제어유 문형이며 다른 혈행 원료 없음
+AE3-069,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-070,no,independent-opus-ai,배변활동 원활은 [차전자피식이섬유] 표지 문구이며 프로바이오틱스 문구 없음
+AE3-071,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-072,yes,independent-opus-ai,원재료가 프로바이오틱스와 덱스트린뿐이고 장 건강 문구가 있음
+AE3-073,yes,independent-opus-ai,유산균 증식 및 유해균 억제 문형은 프로바이오틱스 것이며 프락토올리고당 문형과 다름
+AE3-074,yes,independent-opus-ai,무표지 복합 문구의 혈행 개선은 EPA·DHA 함유 유지만 가능
+AE3-075,yes,independent-opus-ai,(국문) 황반색소밀도 문구이며 루테인지아잔틴복합추출물만 가능
+AE3-076,yes,independent-opus-ai,기능성 내용 복합 문구의 혈행 개선은 EPA·DHA 함유 유지만 가능
+AE3-077,yes,independent-opus-ai,첫 줄 혈중 중성지질·혈행 개선은 EPA·DHA 문형이고 둘째 줄 콜레스테롤·혈행은 달맞이꽃종자유 문형
+AE3-078,yes,independent-opus-ai,①유산균 증식 ②배변활동 원활이 한 원료 목록이며 프로바이오틱스 문형임
+AE3-079,yes,independent-opus-ai,원재료가 프로바이오틱스와 덱스트린뿐이고 유산균 증식 문구가 있음
+AE3-080,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-081,yes,independent-opus-ai,[EPA 및 DHA의 합] 표지 아래 혈행 개선 문구
+AE3-082,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 배변활동 원활 문구가 있음
+AE3-083,yes,independent-opus-ai,(EPA 및 DHA 함유 유지) 표지 아래 건조한 눈 개선 문구
+AE3-084,yes,independent-opus-ai,중성지질·혈행·건조한 눈 복합 문구는 EPA·DHA 함유 유지만 가능
+AE3-085,yes,independent-opus-ai,유산균 증식·장 건강 복합 문구는 프로바이오틱스 문형임
+AE3-086,yes,independent-opus-ai,혈중 중성지질·혈행 개선 복합 문구는 정제어유 문형이며 중성지질 원료가 달리 없음
+AE3-087,yes,independent-opus-ai,원재료가 프로바이오틱스뿐이고 장 건강 문구가 있음
+AE3-088,yes,independent-opus-ai,무표지 황반색소밀도 문구이며 루테인지아잔틴복합추출물만 가능
+AE3-089,no,independent-opus-ai,혈행 개선은 [은행잎추출물] 표지 문구이며 EPA·DHA 문구 없음
+AE3-090,yes,independent-opus-ai,유산균 증식 및 유해균 억제 문형은 프로바이오틱스만 가능
+AE3-091,yes,independent-opus-ai,유산균 증식·장 건강 복합 문구는 프로바이오틱스 문형임
+AE3-092,yes,independent-opus-ai,원재료 기능성 원료가 EPA·DHA 함유 유지뿐이고 혈행 개선 문구가 있음
+AE3-093,yes,independent-opus-ai,마지막 무표지 황반색소밀도 문구이며 마리골드꽃추출물만 가능
+AE3-094,no,independent-opus-ai,배변활동 원활은 [차전자피식이섬유] 표지 문구이며 프로바이오틱스 문구 없음
+AE3-095,yes,independent-opus-ai,무표지 황반색소 밀도 문구이며 루테인지아잔틴복합추출물만 가능
+AE3-096,yes,independent-opus-ai,(프로바이오틱스) 표지 아래 유산균 증식 및 유해균 억제 문구
+AE3-097,yes,independent-opus-ai,1) 마리골드꽃출물(지아잔틴함유) 표지(오타) 아래 황반색소밀도 문구
+AE3-098,yes,independent-opus-ai,무표지 복합 문구의 혈중 중성지질 개선은 EPA·DHA 함유 유지만 가능
+AE3-099,yes,independent-opus-ai,마지막 중성지질·혈행·건조한 눈 복합 문구는 EPA·DHA 함유 유지만 가능
+AE3-100,yes,independent-opus-ai,유산균 증식 및 유해균 억제 문형은 프로바이오틱스 것이며 올리고당·식이섬유 문형과 다름
