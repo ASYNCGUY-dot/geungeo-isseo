@@ -162,6 +162,11 @@ def classify_pair(
     return Stratum.HELD_OTHER
 
 
+def in_raw_materials(raw_materials: str, group: IngredientGroup) -> bool:
+    """Whether the raw-material list names the group (sampling frame only, not attribution)."""
+    return _RAW_NAMES[group].search(_squash(raw_materials)) is not None
+
+
 def candidate_pairs(rows: Iterable[Mapping[str, str]]) -> list[EvalPair]:
     """Pairs whose effect is mentioned and whose group is in the raw materials or attributed."""
     pairs: list[EvalPair] = []
@@ -170,7 +175,6 @@ def candidate_pairs(rows: Iterable[Mapping[str, str]]) -> list[EvalPair]:
         if not text.strip():
             continue
         raw_materials = row.get("raw_materials") or ""
-        raw = _squash(raw_materials)
         attributed_groups = {
             group
             for item in parse_official_function_v2(text).effects
@@ -178,7 +182,7 @@ def candidate_pairs(rows: Iterable[Mapping[str, str]]) -> list[EvalPair]:
             if EFFECT_GROUP[item.effect] is group
         }
         for group in TARGET_GROUPS:
-            if not (_RAW_NAMES[group].search(raw) or group in attributed_groups):
+            if not (in_raw_materials(raw_materials, group) or group in attributed_groups):
                 continue
             for effect in EffectKey:
                 if EFFECT_GROUP[effect] is group and effect_mentioned(text, effect):
@@ -194,4 +198,5 @@ __all__ = [
     "Stratum",
     "candidate_pairs",
     "classify_pair",
+    "in_raw_materials",
 ]
