@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+C2-001,confirmed,opus-blind,6번: [프로바이오틱스] 표시 아래 유산균 증식·유해균 억제 기능 있음 / 도움 수준
+C2-002,confirmed,opus-blind,6번: [마리골드꽃추출물](루테인 원료) 아래 황반색소밀도 유지 기능 있음 / 도움 수준
+C2-003,confirmed,opus-blind,6번: [루테인지아잔틴복합추출물] 아래 황반색소밀도 유지 / 화면 사용자 대상 문구는 기능을 바꾸지 않는 표현으로 판단 / 도움 수준
+C2-004,mismatch,opus-blind,1번: 장염 예방이라는 질병 예방 표현
+C2-005,mismatch,opus-blind,5번: 루테인 원료 표시 아래 기능은 확인되나 100%·확실하게 등 단정·보장 표현
+C2-006,mismatch,opus-blind,3번: 원문에 건조한 눈 개선 기능 없음(마리골드는 황반색소밀도만)
+C2-007,mismatch,opus-blind,3번: 원문은 빌베리 눈의 피로 개선뿐이고 장 건강 기능 없음
+C2-008,mismatch,opus-blind,5번: 원료 표시 없는 나열이나 기능 원료는 정제어유뿐이라 오메가3 기능으로 확정 / 100%·확실하게 단정 표현
+C2-009,confirmed,opus-blind,6번: 원료 표시 없는 나열이나 황반색소밀도 기능을 낼 원료는 마리골드꽃추출물뿐 / 도움 수준
+C2-010,mismatch,opus-blind,5번: [EPA및DHA함유유지] 기능은 확인되나 수치가 눈에 띄게 좋아진다는 단정 표현
+C2-011,confirmed,opus-blind,6번: [프로바이오틱스] 아래 유산균 증식 및 유해균 억제 기능 있음 / 도움 수준
+C2-012,unverifiable,opus-blind,2번: 피로 회복은 판정 대상 기능 8개 밖
+C2-013,mismatch,opus-blind,5번: 원료 표시 없으나 장 건강 문구는 프로바이오틱스 외 다른 원료(아연·비타민D)가 낼 수 없음 / 개선합니다 단정 표현
+C2-014,confirmed,opus-blind,6번: 마리골드꽃추출물(지아잔틴함유) 아래 황반색소밀도 유지 / 현대인 대상 문구는 기능 변경 아님 / 도움 수준
+C2-015,mismatch,opus-blind,3번: 원문 어디에도 유산균 증식·유해균 억제 기능 없음
+C2-016,unverifiable,opus-blind,2번: 수면의 질 개선은 판정 대상 기능 8개 밖
+C2-017,mismatch,opus-blind,1번: 고지혈증 예방·치료라는 질병 표현
+C2-018,mismatch,opus-blind,3번: 원문(EPA·DHA·아연·프로바이오틱스) 어디에도 기억력 개선 기능 없음
+C2-019,mismatch,opus-blind,3번: 원문에 황반색소밀도 유지 기능 없음(원재료에 마리골드가 있어도 원문 기재 없음)
+C2-020,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈중 중성지질 개선 있음 / 도움 수준
+C2-021,confirmed,opus-blind,6번: [프로바이오틱스 제품] 아래 배변활동 원활 있음 / 화장실 고민 문구는 질병명 없음 / 도움 수준
+C2-022,mismatch,opus-blind,5번: [프로바이오틱스] 기능은 확인되나 확실하게·100% 억제라는 단정·보장 표현
+C2-023,mismatch,opus-blind,1번: 황반변성 예방이라는 질병 예방 표현
+C2-024,mismatch,opus-blind,1번: 장염 증상 완화라는 질병 표현
+C2-025,confirmed,opus-blind,6번: 프로바이오틱스 원료 표시 아래 유산균 증식 및 유해균 억제 있음 / 도움 수준
+C2-026,mismatch,opus-blind,1번: 혈전 생성 억제·뇌졸중 예방이라는 질병 표현
+C2-027,mismatch,opus-blind,5번: 원료 표시 없으나 혈행 개선 문구는 EPA·DHA 외 비타민E가 낼 수 없어 확정 / 반드시·100% 보장 표현
+C2-028,unverifiable,opus-blind,2번: 수면의 질 향상은 판정 대상 기능 8개 밖
+C2-029,confirmed,opus-blind,6번: 원료 표시 없으나 혈중 중성지질 개선을 낼 원료는 EPA·DHA뿐 / 식습관 걱정 대상 문구는 기능 변경 아님 / 도움 수준
+C2-030,mismatch,opus-blind,5번: [루테인지아잔틴복합추출물] 기능은 확인되나 반드시 체감이라는 보장 표현
+C2-031,confirmed,opus-blind,6번: 기능 원료가 루테인지아잔틴복합추출물 하나뿐이라 황반색소밀도 유지 귀속 확정 / 도움 수준
+C2-032,mismatch,opus-blind,3번: 원문은 비타민D뿐이고 건조한 눈 개선 기능 없음(단정 표현도 있음)
+C2-033,confirmed,opus-blind,6번: [마리골드꽃추출물(지아잔틴함유)] 아래 황반색소밀도 유지 / 스마트폰 사용자 대상 문구는 기능 변경 아님으로 판단 / 도움 수준
+C2-034,confirmed,opus-blind,6번: 단일 기능 원료 마리골드꽃추출물의 황반색소밀도 유지 / 도움 수준
+C2-035,mismatch,opus-blind,5번: 프로바이오틱스 원료 표시 아래 기능은 확인되나 장내 환경을 개선합니다라는 단정 표현
+C2-036,mismatch,opus-blind,3번: 원문에 기억력 개선 기능 없음(혈중 중성지질·혈행·건조한 눈만)
+C2-037,mismatch,opus-blind,5번: 마리골드꽃추출물 기능은 확인되나 누구에게나 100%·확실한 이라는 보장 표현
+C2-038,unverifiable,opus-blind,2번: 피로 해소는 판정 대상 기능 8개 밖
+C2-039,mismatch,opus-blind,1번: 장염 치료라는 질병 표현
+C2-040,mismatch,opus-blind,5번: 원료 표시 없으나 황반색소밀도 기능은 마리골드꽃추출물뿐이라 확정 / 100% 만족 보장·반드시 표현
+C2-041,mismatch,opus-blind,1번: 변비 치료라는 질병 표현
+C2-042,confirmed,opus-blind,6번: 원료 표시 없으나 유산균 증식 및 유해균 억제 문구는 프로바이오틱스 고시 문구이고 다른 원료가 낼 기능 아님 / 도움 수준
+C2-043,mismatch,opus-blind,1번: 황반변성 증상 개선·진행 억제라는 질병 표현
+C2-044,confirmed,opus-blind,6번: 원료 표시 없으나 혈중 중성지질 개선을 낼 원료는 EPA·DHA뿐 / 검진 수치 걱정 문구는 질병명 없음 / 도움 수준
+C2-045,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 건조한 눈 개선 있음 / 도움 수준
+C2-046,mismatch,opus-blind,1번: 장염 걱정 없는 장을 만든다는 질병 예방 표현
+C2-047,unverifiable,opus-blind,2번: 면역력 관리는 판정 대상 기능 8개 밖
+C2-048,mismatch,opus-blind,3번: 원문 프로바이오틱스·프락토올리고당 기능에 장 건강 항목 없음(유산균 증식·배변활동만)
+C2-049,mismatch,opus-blind,3번: 원문 어디에도 기억력 개선 기능 없음([EPA 및 DHA]는 중성지질·혈행·건조한 눈)
+C2-050,mismatch,opus-blind,1번: 황반변성 발병 위험 감소라는 질병 표현
+C2-051,confirmed,opus-blind,6번: [EPA 및 DHA 함유 유지] 아래 혈중 중성지질 개선 있음 / 도움 수준
+C2-052,confirmed,opus-blind,6번: [루테인지아잔틴복합추출물] 아래 황반색소밀도 유지 / 40대부터 챙겨야 할은 효과 보장이 아닌 권유로 판단 / 도움 수준
+C2-053,confirmed,opus-blind,6번: [EPA및DHA함유유지] 아래 기억력 개선 있음 / 수험생 대상 문구는 기능 변경 아님으로 판단 / 도움 수준
+C2-054,mismatch,opus-blind,3번: 원문(아연·마그네슘·비타민D)에 황반색소밀도 유지 기능 없음
+C2-055,confirmed,opus-blind,6번: 마리골드꽃추출물 표시 아래 황반색소밀도 유지 / 도움 수준
+C2-056,mismatch,opus-blind,3번: 원문에 혈행 개선 기능 없음(프로바이오틱스 장 관련 기능만)
+C2-057,mismatch,opus-blind,3번: 원문에 유산균 증식·유해균 억제 기능 없음
+C2-058,mismatch,opus-blind,3번: 원문에 혈행 개선 기능 없음(글루코사민·비타민 등만)
+C2-059,mismatch,opus-blind,3번: 원문에 기억력 개선 기능 없음
+C2-060,confirmed,opus-blind,6번: 원료 표시 없으나 황반색소밀도 기능을 낼 원료는 마리골드꽃추출물뿐 / 추천 문구는 보장 아님 / 도움 수준
+C2-061,confirmed,opus-blind,6번: 원료 표시 없으나 혈중 중성지질 개선을 낼 원료는 EPA·DHA뿐 / 직장인 대상 문구는 기능 변경 아님 / 도움 수준
+C2-062,confirmed,opus-blind,6번: EPA 및 DHA 함유 유지 표시 아래 혈중 중성지질 개선 있음(낮추는 데 도움은 같은 기능) / 도움 수준
+C2-063,confirmed,opus-blind,6번: 원료 표시 없으나 유산균 증식 및 유해균 억제는 프로바이오틱스 고시 문구이고 셀레늄·아연·비타민D가 낼 기능 아님 / 도움 수준
+C2-064,mismatch,opus-blind,5번: [Bifidobacterium breve B-3 프로바이오틱스] 아래 배변활동 원활 확인되나 반드시라는 단정 표현
+C2-065,unverifiable,opus-blind,2번: 피로 회복은 판정 대상 기능 8개 밖
+C2-066,mismatch,opus-blind,1번: 치매 예방이라는 질병 표현
+C2-067,mismatch,opus-blind,5번: [마리골드꽃추출물] 기능은 확인되나 눈 건강을 개선합니다라는 단정 표현
+C2-068,mismatch,opus-blind,3번: 원문에 프로바이오틱스 관련 기능 없음(단정 표현도 있음)
+C2-069,mismatch,opus-blind,5번: [프로바이오틱스] 기능은 확인되나 100% 보장·첫 주부터 확실하게라는 보장·과장 표현
+C2-070,unverifiable,opus-blind,4번: 원문의 기억력 개선은 원료 표시 없는 홍삼 기능 목록(면역·피로·혈액흐름·항산화)으로 보여 오메가3(정제어유) 기능으로 확정 불가
+C2-071,mismatch,opus-blind,3번: 원문 어디에도 기억력 개선 기능 없음
+C2-072,confirmed,opus-blind,6번: [프로바이오틱스] 아래 유산균 증식 및 유해균 억제 있음(장내 유익균 증식은 같은 기능) / 도움 수준
+C2-073,mismatch,opus-blind,3번: 원문에 배변활동 원활 기능 없음(돌외잎·비타민류만)
+C2-074,unverifiable,opus-blind,4번: 혈소판 응집억제를 통한 혈액흐름(혈행)은 원료 표시 없는 홍삼 기능 목록으로 보여 식물성DHA유지 기능으로 확정 불가
+C2-075,confirmed,opus-blind,6번: [프로바이오틱스] 아래 배변활동 원활 있음 / 도움 수준
+C2-076,mismatch,opus-blind,1번: 고지혈증 개선이라는 질병 표현
+C2-077,mismatch,opus-blind,3번: 원문에 황반색소밀도 유지 기능 없음(옥타코사놀·쏘팔메토 등만)
+C2-078,confirmed,opus-blind,6번: 기능 원료가 프로바이오틱스뿐이라 장 건강 귀속 확정 / 도움 수준
+C2-079,confirmed,opus-blind,6번: [마리골드꽃추출물(지아잔틴함유)] 아래 황반색소밀도 유지 / 모니터 보는 수험생 대상 문구는 기능 변경 아님으로 판단(경계 사례) / 도움 수준
+C2-080,mismatch,opus-blind,3번: 원문에 배변활동 원활 기능 없음
+C2-081,confirmed,opus-blind,6번: [마리골드꽃추출물] 아래 황반색소밀도 유지 / 챙기세요는 권유일 뿐 보장 아님 / 도움 수준
+C2-082,mismatch,opus-blind,5번: [EPA 및 DHA 함유 유지] 기능은 확인되나 건조한 눈을 개선하고 지켜 줍니다라는 단정 표현
+C2-083,mismatch,opus-blind,1번: 황반변성 치료·황반 회복이라는 질병 표현
+C2-084,mismatch,opus-blind,5번: [EPA및 DHA 함유 유지] 기능은 확인되나 혈행을 개선합니다라는 단정 표현
+C2-085,confirmed,opus-blind,6번: 원료 표시 없으나 혈행 개선 문구는 EPA·DHA 기능 목록이고 비타민E 문구와 분리됨 / 중장년 대상 문구는 기능 변경 아님 / 도움 수준
+C2-086,mismatch,opus-blind,5번: 원료 표시 없으나 황반색소밀도 기능은 마리골드꽃추출물뿐이라 확정 / 섭취 즉시·확실하게라는 보장 표현
+C2-087,unverifiable,opus-blind,2번: 면역력 증진은 판정 대상 기능 8개 밖
+C2-088,confirmed,opus-blind,6번: 루테인지아잔틴복합추출물 표시 아래 황반색소밀도 유지 / 도움 수준
+C2-089,mismatch,opus-blind,3번: 원문에 혈중 중성지질 개선 기능 없음
+C2-090,mismatch,opus-blind,3번: 원문은 관절 및 연골 건강뿐이고 건조한 눈 개선 기능 없음
+C2-091,mismatch,opus-blind,3번: 원문에 배변활동 원활 기능 없음
+C2-092,mismatch,opus-blind,1번: 안구건조증 증상 완화·재발 방지라는 질병 표현
+C2-093,confirmed,opus-blind,6번: 원료 표시 없으나 혈중 중성지질 개선을 낼 원료는 정제어유뿐 / 꾸준히 섭취하면은 기간·효과 보장이 아님 / 도움 수준
+C2-094,mismatch,opus-blind,3번: 원문(비타민A·D·E·아연)에 황반색소밀도 유지 기능 없음(반드시·환불 보장 표현도 있음)
+C2-095,mismatch,opus-blind,3번: 원문은 레시틴 콜레스테롤 개선뿐이고 기억력 개선 기능 없음
+C2-096,mismatch,opus-blind,1번: 고지혈증 환자 증상 완화라는 질병 표현
+C2-097,mismatch,opus-blind,5번: 원료 표시 없으나 프로바이오틱스 고시 문구라 귀속 확정 / 100% 효과 보장·반드시·확실하게 표현
+C2-098,unverifiable,opus-blind,2번: 피부 건강은 판정 대상 기능 8개 밖
+C2-099,mismatch,opus-blind,3번: 원문에 황반색소밀도 유지 기능 없음(프로바이오틱스 장 관련 기능만)
+C2-100,mismatch,opus-blind,1번: 황반변성 증상 완화라는 질병 표현
