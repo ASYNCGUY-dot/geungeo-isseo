@@ -136,6 +136,8 @@ def test_labeling_sheet_hides_claim_types_and_strata(tmp_path: Path) -> None:
     assert "CE-001 광고 문장입니다." in sheet and EYE in sheet
     for hidden in ("exaggerated", "out_of_scope", "other_effect", "headerless", "held", "stratum"):
         assert hidden not in sheet
+    # The rule scope is one list of functions, not functions paired with ingredients (claim-eval-v1 flaw).
+    assert "어느 원료가 주어인지와 관계없이" in sheet and "루테인의 황반색소밀도" not in sheet
 
 
 def test_cases_keep_agreed_labels_and_list_disagreements(tmp_path: Path) -> None:
