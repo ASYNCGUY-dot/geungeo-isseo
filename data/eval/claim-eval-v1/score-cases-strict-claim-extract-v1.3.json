@@ -1,0 +1,912 @@
+{
+  "case_count": 100,
+  "judged_case_count": 100,
+  "exact_agreement_count": 63,
+  "false_clearance_count": 0,
+  "false_clearance_rate": 0.0,
+  "confirmed_recall": 0.5666666666666667,
+  "coverage": 0.69,
+  "claim_extraction_error_count": 9,
+  "results": [
+    {
+      "case_id": "CE-001",
+      "report_no": "20190009483240",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-002",
+      "report_no": "20060020008342",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-003",
+      "report_no": "20140020012111",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-004",
+      "report_no": "20040020020405",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-005",
+      "report_no": "202100187495",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-006",
+      "report_no": "200400200023428",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-007",
+      "report_no": "20040020003146",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-008",
+      "report_no": "20040020029643",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-009",
+      "report_no": "20120019007421",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_UNLABELED_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-010",
+      "report_no": "200400200082881",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-011",
+      "report_no": "200400200022436",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-012",
+      "report_no": "20120019007941",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-013",
+      "report_no": "200400170061142",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-014",
+      "report_no": "200700170353202",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-015",
+      "report_no": "200400200023330",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-016",
+      "report_no": "20220011370107",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-017",
+      "report_no": "200600200032815",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-018",
+      "report_no": "20172880193138",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-019",
+      "report_no": "200400200021019",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-020",
+      "report_no": "20040020006615",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-021",
+      "report_no": "2004001606171",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-022",
+      "report_no": "200400170061577",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-023",
+      "report_no": "200400150831271",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-024",
+      "report_no": "200600200033126",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-025",
+      "report_no": "200400200021261",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-026",
+      "report_no": "200400200071302",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-027",
+      "report_no": "200400200072990",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-028",
+      "report_no": "2023002721145",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-029",
+      "report_no": "200400200021336",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-030",
+      "report_no": "200400200201357",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-031",
+      "report_no": "200400150832317",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-032",
+      "report_no": "20040017006638",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-033",
+      "report_no": "20160012278175",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-034",
+      "report_no": "200400150832511",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-035",
+      "report_no": "20040020020673",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-036",
+      "report_no": "200700170353231",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-037",
+      "report_no": "20040020046540",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-038",
+      "report_no": "20240028080121",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-039",
+      "report_no": "200400200081948",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-040",
+      "report_no": "200600200081439",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-041",
+      "report_no": "2018000391521",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-042",
+      "report_no": "200700170351622",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-043",
+      "report_no": "20120019007685",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-044",
+      "report_no": "200400200021673",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-045",
+      "report_no": "200700170352707",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-046",
+      "report_no": "20060020008452",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_UNLABELED_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-047",
+      "report_no": "20130020008411",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-048",
+      "report_no": "200400200141971",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-049",
+      "report_no": "20040020006885",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-050",
+      "report_no": "2004001703886",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-051",
+      "report_no": "200400200022974",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-052",
+      "report_no": "20140017002231",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-053",
+      "report_no": "2012001700256",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-054",
+      "report_no": "201728208674",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-055",
+      "report_no": "200400170061897",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-056",
+      "report_no": "20040015100150",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-057",
+      "report_no": "200700170351974",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-058",
+      "report_no": "200400170061199",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-059",
+      "report_no": "20040020002937",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-060",
+      "report_no": "200400200062124",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-061",
+      "report_no": "20040020006958",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-062",
+      "report_no": "200700170352530",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-063",
+      "report_no": "200400200071680",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-064",
+      "report_no": "20140017002174",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-065",
+      "report_no": "200400170211460",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-066",
+      "report_no": "2019001431753",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-067",
+      "report_no": "20060020008886",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-068",
+      "report_no": "200400200083410",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-069",
+      "report_no": "20040020028248",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-070",
+      "report_no": "20040020028621",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-071",
+      "report_no": "20040015107897",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-072",
+      "report_no": "200400200072094",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-073",
+      "report_no": "20180012174498",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_UNLABELED_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-074",
+      "report_no": "2004001508166",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-075",
+      "report_no": "20040020001246",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-076",
+      "report_no": "200400200061380",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-077",
+      "report_no": "2009002004736",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-078",
+      "report_no": "20140017002119",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-079",
+      "report_no": "2004001508138",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-080",
+      "report_no": "20060020008479",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-081",
+      "report_no": "2015001205514",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-082",
+      "report_no": "20120019007798",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-083",
+      "report_no": "200600200081248",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-084",
+      "report_no": "20040015083954",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_UNLABELED_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-085",
+      "report_no": "200600200032980",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-086",
+      "report_no": "2004001606139",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-087",
+      "report_no": "20040020029758",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-088",
+      "report_no": "20040015094190",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-089",
+      "report_no": "200400151071119",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-090",
+      "report_no": "200400200083013",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-091",
+      "report_no": "200400150832109",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-092",
+      "report_no": "200700170351299",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-093",
+      "report_no": "200400170061868",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-094",
+      "report_no": "20180012174449",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-095",
+      "report_no": "2020001244632",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_ATTRIBUTION_AMBIGUOUS",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CE-096",
+      "report_no": "200400200142005",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-097",
+      "report_no": "200700170353210",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_NOT_EXTRACTED",
+      "claim_count": 0,
+      "outcome": "claim_count_error"
+    },
+    {
+      "case_id": "CE-098",
+      "report_no": "20040020028677",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "confirmed",
+      "reason_code": "MATCHES_UNLABELED_OFFICIAL_FUNCTION",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-099",
+      "report_no": "201200190071101",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CE-100",
+      "report_no": "20040015107674",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    }
+  ]
+}
