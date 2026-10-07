@@ -26,7 +26,8 @@ def test_build_app_loads_snapshot_with_given_time(tmp_path: Path) -> None:
         ["--source-export", str(_export(tmp_path / "e.jsonl")), "--source-retrieved-at", "2026-08-27T12:42:29+00:00"]
     )
 
-    body = TestClient(serve_api.build_app(args)).get("/api/v1/health").json()
+    # The script serves local Host names only.
+    body = TestClient(serve_api.build_app(args), base_url="http://127.0.0.1:8000").get("/api/v1/health").json()
 
     assert args.host == "127.0.0.1"
     assert body["product_count"] == 1

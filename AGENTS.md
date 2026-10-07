@@ -104,6 +104,9 @@ C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료�
 2026-10-04 `claim-extract-v1.3`(질병 단서 보강·광고 확인 문법 허용 목록 확대)부터 v1은 개발용입니다. 독립 평가세트 `claim-eval-v2`
 (`docs/evidence/CLAIM_EVAL_V2_2026-10-04.md`)는 오인 승인 0/68, 재현율 2/32입니다. v2도 개발자가 문장을 봤으므로 다음 수정은 v3로 잽니다.
 대상자·상황 앞말은 허용 목록으로 통과시키지 않습니다(공식 인정 범위 판단이 필요함).
+2026-10-07 현재 엔진으로 MVP를 고정했습니다. 전체 재현 실행은 `scripts/reproduce.py`이고(로컬 통과), 보안 점검 기록은
+`docs/evidence/SECURITY_AND_REPRODUCE_2026-10-07.md`입니다. Docker 파일은 작성했지만 이 PC의 Docker Desktop이 시작되지 않아
+이미지 빌드·컨테이너 실행은 미검증입니다. Docker 설치 상태(초기화·파일 삭제)는 사용자 확인 없이 건드리지 않습니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.

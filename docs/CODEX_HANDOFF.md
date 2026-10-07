@@ -6,7 +6,19 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-04 claim-extract-v1.3과 독립 평가세트 claim-eval-v2 (Claude Code)
+## 이번 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)
+
+- 사용자: "작업 이어서 해줘". 현재 엔진으로 MVP 고정. [기록](evidence/SECURITY_AND_REPRODUCE_2026-10-07.md).
+- `scripts/reproduce.py`: 스냅샷 해시 검증 → pytest → 귀속 평가 6벌·claim-eval-v2·v1 게이트(개발 사례는 게이트 없음). 로컬 통과(1211 passed).
+- API 보강(`tests/test_api_hardening.py`): 분석 저장소 상한 1,000, 본문 64KiB 상한(413/411), `serve_api.py` Host 허용 목록
+  (`--allowed-host`), 보안 헤더·CSP. 기존 테스트에서 `serve_api.build_app`을 쓰면 `base_url="http://127.0.0.1:8000"`이 필요하다.
+- Docker: `Dockerfile`·`docker-compose.yml`·`.dockerignore`·`constraints.txt` 작성, `docker compose config` 통과. **빌드·실행 미검증.**
+  이 PC의 Docker Desktop이 `%LOCALAPPDATA%\Docker\run\sailor-ingest.sock`을 지우지 못해 시작 실패. 16:38:44 오류 창에서
+  "Reset to factory defaults"가 선택돼 앱 상태가 초기화됨(이미지 디스크는 남아 있음). 이후 Docker 설치는 건드리지 않았다.
+- 남은 것: Docker 복구 후 `docker compose build` → `docker compose run --rm verify`(리눅스에서 테스트 실패 가능성 확인),
+  의존성 취약점 점검(도구 설치는 사용자 확인 필요), 10/10 문서·10/11 발표자료.
+
+## 이전 인계 — 2026-10-04 claim-extract-v1.3과 독립 평가세트 claim-eval-v2 (Claude Code)
 
 - 사용자: "병행해서 진행하자". [기록](evidence/CLAIM_EVAL_V2_2026-10-04.md), 데이터 `data/eval/claim-eval-v2/`.
 - 엔진 `873d6af`: 질병·증상명 단서 보강, 광고 확인 문법 허용 목록 확대(동사형 "~하는 데", "도움이 될 수", "~원료입니다",

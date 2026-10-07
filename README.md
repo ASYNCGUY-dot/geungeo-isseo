@@ -17,6 +17,11 @@
 3단계는 고시형 원료 93개의 공식 기능성 대응표를 만든 상태이고, 개별인정형 목록(식품안전나라 `I-0040`)은 활용신청을 기다립니다
 ([대응표 기록](docs/evidence/CARRIER_TABLE_2026-09-30.md)). 현재 테스트 통과를 자동 승인·출시 허가로 해석하지 않습니다.
 
+- 2026-10-07 (재현 실행·보안 점검): 한 명령(`scripts/reproduce.py`)으로 스냅샷 해시 검증, 단위 테스트 1211개, 평가 게이트 8개가
+  로컬에서 통과합니다. 보안 점검에서 커밋 이력의 비밀정보는 없었고, API의 문제 4건(분석 저장소 무제한 증가, 요청 본문 크기 상한 없음,
+  Host 검사 없음, 보안 헤더 없음)을 고쳤습니다. Dockerfile·compose 파일은 작성했지만 이 PC의 Docker Desktop이 시작되지 않아
+  **이미지 빌드와 컨테이너 실행은 아직 검증하지 못했습니다.** 의존성 취약점 점검도 하지 않았습니다.
+  [보안·재현 기록](docs/evidence/SECURITY_AND_REPRODUCE_2026-10-07.md).
 - 2026-10-04 (광고 확인 문법 확대 `claim-extract-v1.3`, 독립 평가세트 `claim-eval-v2`): 질병 단서(혈전·뇌졸중·장염·변비·안구건조증 등)를
   보강하고, 같은 명제의 흔한 광고 표현을 허용 목록으로 받았습니다(용량·횟수·대상자·비교·꼬리 과장은 계속 보류).
   수정 전에 표본을 고정한 v2(Opus 생성 문장, 맹검 AI 라벨 100/100 일치)에서 오인 승인은 수정 전후 모두 0/68이지만,
@@ -172,6 +177,21 @@
 
 ```powershell
 .venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\dev-cases\core-mvp-dev-v1.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
+```
+
+전체 재현 실행(스냅샷 해시 검증 → 단위 테스트 → 평가 게이트 8개, 모두 통과하면 종료코드 0):
+
+```powershell
+.venv\Scripts\python.exe scripts\reproduce.py
+```
+
+Docker로 같은 검증을 네트워크 없이 돌리고 웹 화면을 띄우는 명령입니다(2026-10-07 현재 이 PC에서는 빌드·실행 미검증).
+C003 스냅샷은 이미지에 넣지 않고 `data\c003-products.jsonl`을 읽기 전용으로 연결합니다:
+
+```powershell
+docker compose build
+docker compose run --rm verify
+docker compose up web
 ```
 
 주장 단위 독립 평가세트 채점 명령(`claim-eval-v2`, 맹검 AI 라벨 두 벌 100/100 일치, 오인 승인이 있으면 종료코드 1).
