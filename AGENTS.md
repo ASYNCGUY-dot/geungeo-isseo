@@ -107,6 +107,12 @@ C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료�
 2026-10-07 현재 엔진으로 MVP를 고정했습니다. 전체 재현 실행은 `scripts/reproduce.py`이고(로컬 통과), 보안 점검 기록은
 `docs/evidence/SECURITY_AND_REPRODUCE_2026-10-07.md`입니다. Docker 파일은 작성했지만 이 PC의 Docker Desktop이 시작되지 않아
 이미지 빌드·컨테이너 실행은 미검증입니다. Docker 설치 상태(초기화·파일 삭제)는 사용자 확인 없이 건드리지 않습니다.
+
+2026-10-07 사용자 결정으로 화장품을 판별 대상에 넣습니다("발표 기한 고려하지 않고 작업해도 된다"). 작업 브랜치는 `cosmetics-data-gate`이고
+발표용 MVP 브랜치(`phase-0-c003-data-gate`)는 건드리지 않습니다. 계획은 `docs/superpowers/plans/2026-10-07-cosmetics-expansion.md`,
+조사 기록은 `docs/evidence/COSMETICS_DATA_SOURCES_2026-10-07.md`입니다. 지금은 0단계(데이터 실측)이며, `scripts/audit_cosmetics.py`의
+실제 실행은 사용자의 공공데이터포털 활용신청과 `.env`의 `DATA_GO_KR_SERVICE_KEY`를 기다립니다. 실측 전에는 화장품 판정 규칙·화면·평가세트를
+만들지 않습니다. 일반 화장품에는 `확인됨`을 내지 않습니다. 기능성화장품 범위는 화장품법 시행규칙 제2조 원문(11개 호)을 따릅니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.

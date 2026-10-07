@@ -6,7 +6,17 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)
+## 이번 인계 — 2026-10-07 화장품 확장 0단계 시작 (Claude Code, 브랜치 `cosmetics-data-gate`)
+
+- 사용자: "여기서 화장품까지 판별 대상으로 넣자", "발표 기한 고려하지 않고 작업해도 된다". 승인 범위 문서의 화장품 제외를 확장 트랙으로 바꿈.
+- [조사 기록](evidence/COSMETICS_DATA_SOURCES_2026-10-07.md), [계획](superpowers/plans/2026-10-07-cosmetics-expansion.md).
+- 확인: 기능성화장품 보고품목(15095680)·심사품목(15056939) API가 제품별 효능효과 문구(`EE_DOC_DATA`)를 제공한다(공개 Swagger 명세).
+  법정 범위는 시행규칙 제2조 11개 호(시행 2026-04-02 원문). 일반 화장품은 제품별 공식 효능 데이터가 없다.
+- 구현: `src/claimledger/sources/functional_cosmetics.py`, `scripts/audit_cosmetics.py`, `tests/test_functional_cosmetics.py`(21개, 네트워크 없음).
+- **미실행**: 실제 API 호출. 사용자의 활용신청과 `.env`의 `DATA_GO_KR_SERVICE_KEY`가 필요하다. 응답 JSON 구조는 탐침(`--max-pages 1`)으로 먼저 확인한다.
+- 다음: 키가 오면 탐침 → 전체 수집·측정 → 효능효과 문구 분석 → 게이트 판단. 그 전에는 판정 규칙을 만들지 않는다.
+
+## 이전 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)
 
 - 사용자: "작업 이어서 해줘". 현재 엔진으로 MVP 고정. [기록](evidence/SECURITY_AND_REPRODUCE_2026-10-07.md).
 - `scripts/reproduce.py`: 스냅샷 해시 검증 → pytest → 귀속 평가 6벌·claim-eval-v2·v1 게이트(개발 사례는 게이트 없음). 로컬 통과(1211 passed).
