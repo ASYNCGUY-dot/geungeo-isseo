@@ -14,6 +14,8 @@
   법정 범위는 시행규칙 제2조 11개 호(시행 2026-04-02 원문). 일반 화장품은 제품별 공식 효능 데이터가 없다.
 - 구현: `src/claimledger/sources/functional_cosmetics.py`, `scripts/audit_cosmetics.py`, `tests/test_functional_cosmetics.py`(21개, 네트워크 없음).
 - **미실행**: 실제 API 호출. 사용자의 활용신청과 `.env`의 `DATA_GO_KR_SERVICE_KEY`가 필요하다. 응답 JSON 구조는 탐침(`--max-pages 1`)으로 먼저 확인한다.
+- 10/9: 키가 아직 없어 전체 수집 미실행. 가짜 키로 두 요청 주소 존재 확인(403 `SERVICE_KEY_IS_NOT_REGISTERED_ERROR`), 오류가 JSON·403으로 오는 것을 반영해 클라이언트 수정.
+  공개 화면 예비 표본(심사 70·보고 48, 무작위 아님): 문구는 8가지 정형 문장, 오래된 제품(2006~2012)은 비어 있음, 보고 품목 총 183,080건.
 - 다음: 키가 오면 탐침 → 전체 수집·측정 → 효능효과 문구 분석 → 게이트 판단. 그 전에는 판정 규칙을 만들지 않는다.
 
 ## 이전 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)

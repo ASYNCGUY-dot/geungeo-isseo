@@ -40,8 +40,11 @@ REVIEWED = CosmeticsSource(
     "ITEM_PERMIT_DATE",
 )
 SOURCES = {source.key: source for source in (REPORTED, REVIEWED)}
-# The gateway answers key and quota errors in XML even when JSON is requested.
-_GATEWAY_REASON = re.compile(r"<(?:returnAuthMsg|errMsg)>([A-Z_ ]{1,80})</")
+# Gateway errors (key, quota, unknown service) carry an upper-case reason code. On 2026-10-09 they
+# came as JSON with HTTP 403 or 400; the XML form is kept for the older gateway. Only the code is
+# echoed, never free text.
+_REASON_CODE = re.compile(r"[A-Z][A-Z_ ]{1,79}")
+_XML_REASON = re.compile(r"<(?:returnAuthMsg|errMsg)>([A-Z][A-Z_ ]{1,79})</")
 
 
 class FunctionalCosmetic(BaseModel):
@@ -102,18 +105,32 @@ class FunctionalCosmeticsClient:
         except httpx.TimeoutException:
             raise DataSourceError(f"{name} request timeout") from None
         except httpx.HTTPStatusError as error:
-            raise DataSourceError(f"{name} returned HTTP {error.response.status_code}") from None
+            reason = _gateway_reason(error.response)
+            status = f"{name} returned HTTP {error.response.status_code}"
+            raise DataSourceError(f"{status}: {reason}" if reason else status) from None
         except httpx.HTTPError:
             raise DataSourceError(f"{name} request failed") from None
         try:
             payload = response.json()
         except ValueError:
-            reason = _GATEWAY_REASON.search(response.text)
-            detail = reason.group(1).strip() if reason else "response is not JSON"
+            detail = _gateway_reason(response) or "response is not JSON"
             raise DataSourceError(f"{name} gateway error: {detail}") from None
         if not isinstance(payload, dict):
             raise DataSourceError(f"{name} response must be a JSON object")
+        if "OpenAPI_ServiceResponse" in payload:
+            detail = _gateway_reason(response) or "unknown reason"
+            raise DataSourceError(f"{name} gateway error: {detail}")
         return parse_cosmetics_payload(payload, self.source, retrieved_at=datetime.now(UTC))
+
+
+def _gateway_reason(response: httpx.Response) -> str | None:
+    try:
+        header = response.json()["OpenAPI_ServiceResponse"]["cmmMsgHeader"]
+        code = str(header.get("errMsg") or "")
+    except (ValueError, KeyError, TypeError, AttributeError):
+        match = _XML_REASON.search(response.text)
+        return match.group(1).strip() if match else None
+    return code if _REASON_CODE.fullmatch(code) else None
 
 
 def parse_cosmetics_payload(

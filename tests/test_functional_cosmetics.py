@@ -140,6 +140,25 @@ def test_gateway_error_text_names_the_reason() -> None:
         FunctionalCosmeticsClient(REPORTED, "  ")
 
 
+def test_the_live_gateway_error_format_names_the_reason() -> None:
+    # Observed on 2026-10-09 with a dummy key: HTTP 403 and a JSON body, not XML.
+    body = {"OpenAPI_ServiceResponse": {"cmmMsgHeader": {
+        "errMsg": "SERVICE_KEY_IS_NOT_REGISTERED_ERROR", "returnAuthMsg": "등록되지 않은 서비스키",
+        "returnReasonCode": "30",
+    }}}
+    for status in (403, 200):
+        with pytest.raises(DataSourceError) as error:
+            _client(lambda request, status=status: httpx.Response(status, json=body)).fetch_page(1, 1)
+        assert "SERVICE_KEY_IS_NOT_REGISTERED_ERROR" in str(error.value) and SECRET not in str(error.value)
+    with pytest.raises(DataSourceError, match="HTTP 403"):
+        _client(lambda request: httpx.Response(403, json=body)).fetch_page(1, 1)
+    # Free text from the gateway is not echoed: only an upper-case reason code is.
+    odd = {"OpenAPI_ServiceResponse": {"cmmMsgHeader": {"errMsg": f"key {SECRET} rejected"}}}
+    with pytest.raises(DataSourceError) as error:
+        _client(lambda request: httpx.Response(403, json=odd)).fetch_page(1, 1)
+    assert SECRET not in str(error.value)
+
+
 def test_an_encoded_key_is_not_encoded_twice() -> None:
     seen: list[httpx.Request] = []
 
