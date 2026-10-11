@@ -6,7 +6,17 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-07 화장품 확장 0단계 시작 (Claude Code, 브랜치 `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-11 화장품 0단계 데이터 게이트 통과 (Claude Code, 브랜치 `cosmetics-data-gate`)
+
+- 사용자가 `.env`에 API별 키 두 개(`DATA_GO_KR_SERVICE_KEY_REPORTED`·`_REVIEWED`)를 넣어 실측 완료. [결과](evidence/COSMETICS_DATA_GATE_2026-10-11.md).
+- 전체 수집: 보고 196,608건·심사 20,728건(식별번호 중복 0). 효능효과 결측은 오래된 제품(보고 2008~2013, 심사 2001~2007)에 몰려 있고 그 밖은 1% 미만.
+- 문구 정형성: 상위 문장 종류 10개가 행의 99.1%(보고)·97.5%(심사)를 덮는다. 보고품목 효능효과 코드 8종은 코드마다 문장이 하나.
+- 명세와 달랐던 점: 보고품목 식별자는 `COSMETIC_REPORT_SEQ`, 효능효과는 `EE_NAME`, `EFFECT_YN`은 신뢰 불가, 심사품목 `EE_DOC_DATA`는 XML(393건은 제목만).
+- `확인됨` 근거로 쓰면 안 되는 행: 문구 없음 12,636, 양식 안내 문구 잔재 258, 문서·효능효과명 충돌 26, 허용 목록 밖 문장.
+- 재측정: `scripts/audit_cosmetics.py --from-export build\cosmetics`(네트워크 없음). 내보내기는 `build/cosmetics/`(추적 안 함).
+- 다음(사용자 결정): 1단계 설계 — 첫 대상 기능(추천: 미백·주름개선), 엔진과의 경계, 표시·광고 지침 원문 확보. 화장품 판정 규칙은 아직 없다.
+
+## 이전 인계 — 2026-10-07 화장품 확장 0단계 시작 (Claude Code, 브랜치 `cosmetics-data-gate`)
 
 - 사용자: "여기서 화장품까지 판별 대상으로 넣자", "발표 기한 고려하지 않고 작업해도 된다". 승인 범위 문서의 화장품 제외를 확장 트랙으로 바꿈.
 - [조사 기록](evidence/COSMETICS_DATA_SOURCES_2026-10-07.md), [계획](superpowers/plans/2026-10-07-cosmetics-expansion.md).

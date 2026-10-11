@@ -6,7 +6,8 @@ Field names follow the published Swagger specifications (read 2026-10-07) and th
 - `body.items` is a list of rows.
 - Reported rows have a null ITEM_SEQ; COSMETIC_REPORT_SEQ identifies them. Their efficacy
   sentence is EE_NAME, EE_DOC_DATA is usually null, and the EFFECT_YN flags do not follow it.
-- Reviewed rows carry the efficacy as an XML document in EE_DOC_DATA.
+- Reviewed rows carry the efficacy as an XML document in EE_DOC_DATA. A few hundred documents
+  hold it only in ARTICLE titles, with no paragraph.
 
 Only product identity, the registration date and the official efficacy fields are kept; addresses
 and business registration numbers are dropped at parse time. Unknown shapes fail closed.
@@ -58,6 +59,7 @@ _PARAGRAPH = re.compile(r"<PARAGRAPH\b[^>]*>(.*?)</PARAGRAPH>", re.DOTALL | re.I
 _CDATA = re.compile(r"<!\[CDATA\[(.*?)\]\]>", re.DOTALL)
 _COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 _LINE_BREAK = re.compile(r"<br\s*/?>", re.IGNORECASE)
+_ARTICLE_TITLE = re.compile(r"<ARTICLE\b[^>]*?\btitle=\"([^\"]*)\"", re.IGNORECASE)
 _TAG = re.compile(r"<[^>]+>")
 
 
@@ -157,13 +159,21 @@ def _gateway_reason(response: httpx.Response) -> str | None:
 
 
 def doc_paragraphs(doc: str) -> tuple[str, ...]:
-    """Plain lines of an efficacy document; nothing is read from tables or other elements."""
+    """Plain lines of an efficacy document; nothing is read from tables or other elements.
+
+    Paragraphs are the statement. Only when a document has no paragraph text are its ARTICLE
+    titles read (the title-only layout); a title above paragraphs is a heading and is ignored.
+    """
     lines: list[str] = []
     for body in _PARAGRAPH.findall(doc):
         inner = "".join(_CDATA.findall(body)) or body
         inner = _LINE_BREAK.sub("\n", _COMMENT.sub(" ", inner))
         for line in html.unescape(_TAG.sub(" ", inner)).replace("\xa0", " ").split("\n"):
             if text := re.sub(r"\s+", " ", line).strip():
+                lines.append(text)
+    if not lines:
+        for title in _ARTICLE_TITLE.findall(doc):
+            if text := re.sub(r"\s+", " ", html.unescape(title).replace("\xa0", " ")).strip():
                 lines.append(text)
     return tuple(lines)
 

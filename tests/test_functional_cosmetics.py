@@ -93,6 +93,22 @@ def test_document_paragraphs_are_plain_lines() -> None:
     assert doc_paragraphs("") == ()
 
 
+def test_a_title_only_document_is_read_from_its_article_titles() -> None:
+    # 393 live documents (2026-10-11) hold the efficacy only in ARTICLE titles, with no paragraph.
+    doc = (
+        '<DOC title="효능효과" type="EE"><SECTION title="">'
+        '<ARTICLE title="1. 피부의 미백에 도움을 준다."></ARTICLE>'
+        '<ARTICLE title="2. 자외선으로부터 피부를 보호한다.(SPF 45, PA+++)" />'
+        '<ARTICLE title=""></ARTICLE></SECTION></DOC>'
+    )
+    assert doc_paragraphs(doc) == ("1. 피부의 미백에 도움을 준다.", "2. 자외선으로부터 피부를 보호한다.(SPF 45, PA+++)")
+    item = parse_cosmetics_payload(_payload([_reviewed("1", "제목 문서", doc)]), REVIEWED, NOW).items[0]
+    assert item.effect_doc_unreadable is False and item.statement.startswith("1. 피부의 미백")
+    # A title above paragraphs is a heading, not a statement (one live document: "기준 및 시험방법").
+    mixed = '<DOC><SECTION><ARTICLE title="기준 및 시험방법"><PARAGRAPH tagName="p"><![CDATA[피부의 미백에 도움을 준다.]]></PARAGRAPH></ARTICLE></SECTION></DOC>'
+    assert doc_paragraphs(mixed) == ("피부의 미백에 도움을 준다.",)
+
+
 def test_a_document_without_readable_paragraphs_is_flagged_not_guessed() -> None:
     odd = '<DOC title="효능효과" type="EE"><SECTION><TABLE><TR><TD>표로 적은 효능</TD></TR></TABLE></SECTION></DOC>'
     item = parse_cosmetics_payload(_payload([_reviewed("1", "표 문서", odd)]), REVIEWED, NOW).items[0]
@@ -276,6 +292,94 @@ def test_audit_of_the_reviewed_list_counts_unreadable_documents(
     assert report["missing"]["statement"] == 2 and report["unreadable_documents"] == 1
     assert report["statement_source"] == {"document": 1, "none": 2}
     assert "withdrawn_rows" not in report
+
+
+def test_sentence_cores_drop_markers_details_and_punctuation() -> None:
+    cores = audit_cosmetics.sentence_cores
+    assert cores("1. 피부의 미백에 도움을 준다.\n-. 자외선으로부터 피부를 보호한다. (SPF50+, PA+++)") == (
+        "피부의미백에도움을준다", "자외선으로부터피부를보호한다",
+    )
+    assert cores("피부의 미백에 도움을 준다. 피부의 주름개선에 도움을 준다.") == (
+        "피부의미백에도움을준다", "피부의주름개선에도움을준다",
+    )
+    assert cores("모발(백모)의 염모(흑색)") == ("모발의염모",) and cores("") == ()
+
+
+def test_audit_measures_regularity_conflicts_and_template_remnants(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    whitening = "피부의 미백에 도움을 준다."
+    rows = [
+        _reported("1", "가", effect=whitening),
+        _reported("2", "나", effect=None, REPORT_DATE="20130102"),
+        # The efficacy sentence and the document disagree: conflicting official data.
+        _reported("3", "다", effect=whitening, EE_DOC_DATA=_doc("자외선으로부터 피부를 보호한다.(SPF50+, PA+++)")),
+        # The form's instruction was left in: the list of functions may be the unedited template.
+        _reported("4", "라", effect=None, EE_DOC_DATA=_doc(
+            "- 피부의 미백에 도움을 준다.", "※ 해당하는 효능효과 이외에는 모두 삭제하시기 바랍니다.",
+        )),
+        _reported("5", "가", effect=whitening, ENTP_NAME="다른 업체"),
+    ]
+
+    assert _audit(tmp_path, monkeypatch, _FakeClient(rows)) == 0
+
+    report = json.loads((tmp_path / "functional-cosmetics-reported.audit.json").read_text(encoding="utf-8"))
+    assert report["statement_missing_by_year"] == {
+        "2013": {"rows": 1, "missing": 1}, "2025": {"rows": 4, "missing": 0},
+    }
+    assert report["conflicting_sources"] == 1 and report["template_instruction_rows"] == 1
+    assert report["sentence_cores"]["피부의미백에도움을준다"] == 3 and report["distinct_sentence_cores"] == 3
+    assert report["rows_fully_covered_by_top_cores"]["1"] == 2
+    assert report["names_shared_by_several_records"] == 1 and report["records_under_shared_names"] == 2
+    assert report["shared_names_with_one_company"] == 0
+
+
+def test_an_export_is_measured_again_without_the_network(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    rows = [
+        _reported("1", "가"),
+        _reported("2", "나", effect=None, EE_DOC_DATA=_doc("여드름성 피부를 완화하는 데 도움을 준다.")),
+    ]
+    assert _audit(tmp_path, monkeypatch, _FakeClient(rows)) == 0
+    first = json.loads((tmp_path / "functional-cosmetics-reported.audit.json").read_text(encoding="utf-8"))
+    # A stale parsed text in the export is replaced by a fresh reading of the raw document.
+    export = tmp_path / "functional-cosmetics-reported.jsonl"
+    lines = [json.loads(line) for line in export.read_text(encoding="utf-8").splitlines()]
+    lines[1]["effect_text"], lines[1]["effect_doc_unreadable"] = "", True
+    export.write_text("".join(json.dumps(line, ensure_ascii=False) + "\n" for line in lines), encoding="utf-8")
+
+    def no_network(source, key):
+        raise AssertionError("the network must not be used")
+
+    monkeypatch.setattr(audit_cosmetics, "_client", no_network)
+    for name in KEY_NAMES:
+        monkeypatch.delenv(name, raising=False)
+    assert audit_cosmetics.main(["--service", "reported", "--from-export", str(tmp_path)]) == 0
+
+    again = json.loads((tmp_path / "functional-cosmetics-reported.audit.json").read_text(encoding="utf-8"))
+    assert again["retrieved_at"] == first["retrieved_at"] and again["total_count"] == 2
+    assert again["statement_source"] == {"document": 1, "effect_name": 1} and again["unreadable_documents"] == 0
+    assert json.loads(export.read_text(encoding="utf-8").splitlines()[1])["effect_text"].startswith("여드름성")
+    assert audit_cosmetics.main(["--service", "reviewed", "--from-export", str(tmp_path)]) == 3
+
+
+def test_both_lists_report_their_overlap(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def fake(source, key):
+        rows = (
+            [_reported("1", "같은 이름"), _reported("2", "보고만")]
+            if source is REPORTED
+            else [_reviewed("9", "같은 이름"), {**_reviewed("8", "보고만"), "ENTP_NAME": "다른 업체"}]
+        )
+        return _FakeClient(rows, source=source)
+
+    for name in KEY_NAMES:
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("DATA_GO_KR_SERVICE_KEY", SECRET)
+    monkeypatch.setattr(audit_cosmetics, "_client", fake)
+
+    assert audit_cosmetics.main(["--output-dir", str(tmp_path)]) == 0
+
+    overlap = json.loads((tmp_path / "functional-cosmetics-overlap.json").read_text(encoding="utf-8"))
+    assert overlap == {"names_in_both_lists": 2, "name_and_company_in_both_lists": 1}
 
 
 def test_audit_fails_closed_on_a_short_download_or_missing_key(
