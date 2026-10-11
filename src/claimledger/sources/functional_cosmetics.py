@@ -1,12 +1,18 @@
 """MFDS functional cosmetics on data.go.kr: reported (보고) and reviewed (심사) products.
 
-Field names follow the published Swagger specifications (read 2026-10-07). Only product identity,
-the registration date and the official efficacy fields are kept; addresses and business
-registration numbers are dropped at parse time. The specification documents `body.items.item`;
-list forms common on data.go.kr are accepted too and anything else fails closed. The live shape
-is measured by scripts/audit_cosmetics.py before any verdict rule relies on these fields.
+Field names follow the published Swagger specifications (read 2026-10-07) and the live responses
+(first read 2026-10-11), which differ from the specification in ways that matter:
+
+- `body.items` is a list of rows.
+- Reported rows have a null ITEM_SEQ; COSMETIC_REPORT_SEQ identifies them. Their efficacy
+  sentence is EE_NAME, EE_DOC_DATA is usually null, and the EFFECT_YN flags do not follow it.
+- Reviewed rows carry the efficacy as an XML document in EE_DOC_DATA.
+
+Only product identity, the registration date and the official efficacy fields are kept; addresses
+and business registration numbers are dropped at parse time. Unknown shapes fail closed.
 """
 
+import html
 import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -24,6 +30,7 @@ class CosmeticsSource:
     key: str
     source_id: str
     url: str
+    id_field: str
     date_field: str
 
 
@@ -31,12 +38,14 @@ REPORTED = CosmeticsSource(
     "reported",
     "data.go.kr:15095680",
     "https://apis.data.go.kr/1471000/FtnltCosmRptPrdlstInfoService01/getRptPrdlstInq01",
+    "COSMETIC_REPORT_SEQ",
     "REPORT_DATE",
 )
 REVIEWED = CosmeticsSource(
     "reviewed",
     "data.go.kr:15056939",
     "https://apis.data.go.kr/1471057/FtnltCosmSrngPrdlstInfoService05/getSrngPrdlstInq05",
+    "ITEM_SEQ",
     "ITEM_PERMIT_DATE",
 )
 SOURCES = {source.key: source for source in (REPORTED, REVIEWED)}
@@ -45,19 +54,28 @@ SOURCES = {source.key: source for source in (REPORTED, REVIEWED)}
 # echoed, never free text.
 _REASON_CODE = re.compile(r"[A-Z][A-Z_ ]{1,79}")
 _XML_REASON = re.compile(r"<(?:returnAuthMsg|errMsg)>([A-Z][A-Z_ ]{1,79})</")
+_PARAGRAPH = re.compile(r"<PARAGRAPH\b[^>]*>(.*?)</PARAGRAPH>", re.DOTALL | re.IGNORECASE)
+_CDATA = re.compile(r"<!\[CDATA\[(.*?)\]\]>", re.DOTALL)
+_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
+_LINE_BREAK = re.compile(r"<br\s*/?>", re.IGNORECASE)
+_TAG = re.compile(r"<[^>]+>")
 
 
 class FunctionalCosmetic(BaseModel):
     model_config = {"frozen": True}
 
-    item_seq: str = Field(min_length=1)
+    record_id: str = Field(min_length=1)
     item_name: str = Field(min_length=1)
     company: str
     registered_on: str
+    # Paragraphs of the efficacy document, one per line; empty when there is no readable document.
     effect_text: str
+    effect_doc: str = ""
+    effect_doc_unreadable: bool = False
+    # Reported products: the efficacy code and its sentence(s).
     effect_code: str = ""
     effect_name: str = ""
-    # Reported products only: the three flagged functions and withdrawal of the report.
+    # Reported products only. Observed not to follow the efficacy sentence; kept for measurement.
     whitening: bool | None = None
     wrinkle: bool | None = None
     sunscreen: bool | None = None
@@ -68,6 +86,11 @@ class FunctionalCosmetic(BaseModel):
     notice_class: str = ""
     source_id: str
     retrieved_at: AwareDatetime
+
+    @property
+    def statement(self) -> str:
+        """The official efficacy wording: the document if readable, otherwise the sentence."""
+        return self.effect_text or self.effect_name
 
 
 @dataclass(frozen=True)
@@ -133,6 +156,18 @@ def _gateway_reason(response: httpx.Response) -> str | None:
     return code if _REASON_CODE.fullmatch(code) else None
 
 
+def doc_paragraphs(doc: str) -> tuple[str, ...]:
+    """Plain lines of an efficacy document; nothing is read from tables or other elements."""
+    lines: list[str] = []
+    for body in _PARAGRAPH.findall(doc):
+        inner = "".join(_CDATA.findall(body)) or body
+        inner = _LINE_BREAK.sub("\n", _COMMENT.sub(" ", inner))
+        for line in html.unescape(_TAG.sub(" ", inner)).replace("\xa0", " ").split("\n"):
+            if text := re.sub(r"\s+", " ", line).strip():
+                lines.append(text)
+    return tuple(lines)
+
+
 def parse_cosmetics_payload(
     payload: dict[str, Any], source: CosmeticsSource, retrieved_at: datetime,
 ) -> CosmeticsPage:
@@ -187,13 +222,17 @@ def _flag(row: dict, key: str) -> bool | None:
 def _parse_row(
     row: dict, index: int, source: CosmeticsSource, retrieved_at: datetime,
 ) -> FunctionalCosmetic:
+    doc = str(row.get("EE_DOC_DATA") or "")
+    lines = doc_paragraphs(doc)
     try:
         return FunctionalCosmetic(
-            item_seq=_text(row, "ITEM_SEQ"),
+            record_id=_text(row, source.id_field),
             item_name=_text(row, "ITEM_NAME"),
             company=_text(row, "ENTP_NAME"),
             registered_on=_text(row, source.date_field),
-            effect_text=_text(row, "EE_DOC_DATA"),
+            effect_text="\n".join(lines),
+            effect_doc=doc,
+            effect_doc_unreadable=bool(doc.strip()) and not lines,
             effect_code=_text(row, "EE_CODE"),
             effect_name=_text(row, "EE_NAME"),
             whitening=_flag(row, "EFFECT_YN1"),
@@ -207,7 +246,7 @@ def _parse_row(
             retrieved_at=retrieved_at,
         )
     except ValidationError:
-        raise DataSourceError(f"{source.source_id} row {index} lacks an item number or name") from None
+        raise DataSourceError(f"{source.source_id} row {index} lacks {source.id_field} or a name") from None
 
 
 __all__ = [
@@ -218,5 +257,6 @@ __all__ = [
     "CosmeticsSource",
     "FunctionalCosmetic",
     "FunctionalCosmeticsClient",
+    "doc_paragraphs",
     "parse_cosmetics_payload",
 ]

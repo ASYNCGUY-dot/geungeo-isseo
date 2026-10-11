@@ -2,8 +2,9 @@
 
 No cosmetics verdict is designed before this audit shows what the official data holds. For the
 reported (보고) and reviewed (심사) product lists it writes a JSONL export and an audit report with
-the total count, missing fields, duplicate item numbers, product names shared by several items,
-withdrawn reports and the distribution of official functions.
+the total count, missing fields, duplicate record numbers, product names shared by several
+records, withdrawn reports, unreadable efficacy documents and the distribution of official efficacy
+statements. A row's statement is its efficacy document if readable, otherwise its efficacy sentence.
 
 The service key comes from the environment or, if absent, from --env-file. Each list may have its
 own key (DATA_GO_KR_SERVICE_KEY_REPORTED, DATA_GO_KR_SERVICE_KEY_REVIEWED); otherwise the shared
@@ -17,6 +18,8 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import time
 from collections import Counter, defaultdict
 from collections.abc import Sequence
 from datetime import UTC, datetime
@@ -35,10 +38,11 @@ from claimledger.sources.functional_cosmetics import (
 
 _KEY_NAME = "DATA_GO_KR_SERVICE_KEY"
 _EXPORT_FIELDS = (
-    "item_seq", "item_name", "company", "registered_on", "effect_text", "effect_code", "effect_name",
-    "whitening", "wrinkle", "sunscreen", "spf", "pa", "withdrawn", "notice_class",
+    "record_id", "item_name", "company", "registered_on", "effect_text", "effect_code", "effect_name",
+    "effect_doc_unreadable", "whitening", "wrinkle", "sunscreen", "spf", "pa", "withdrawn", "notice_class",
+    "effect_doc",
 )
-_REQUIRED_FIELDS = ("item_name", "company", "registered_on", "effect_text")
+_REQUIRED_FIELDS = ("item_name", "company", "registered_on", "statement")
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -46,7 +50,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--service", choices=[*SOURCES, "both"], default="both")
     parser.add_argument("--output-dir", type=Path, default=Path("build/cosmetics"))
     parser.add_argument("--env-file", type=Path)
-    parser.add_argument("--page-size", type=int, default=100)
+    parser.add_argument("--page-size", type=int, default=500)
     parser.add_argument("--max-pages", type=int, help="probe only: stop after this many pages")
     return parser.parse_args(argv)
 
@@ -72,13 +76,29 @@ def _client(source: CosmeticsSource, key: str) -> FunctionalCosmeticsClient:
     return FunctionalCosmeticsClient(source, key, httpx.Client(timeout=30.0))
 
 
+# Timeouts, connection failures and 5xx answers are retried; key, quota and shape errors are not.
+_TRANSIENT = re.compile(r"request timeout|request failed|returned HTTP 5\d\d")
+_ATTEMPTS = 3
+
+
+def _fetch_page(client, page_no: int, page_size: int):
+    for attempt in range(1, _ATTEMPTS + 1):
+        try:
+            return client.fetch_page(page_no, page_size)
+        except DataSourceError as error:
+            if attempt == _ATTEMPTS or not _TRANSIENT.search(str(error)):
+                raise
+            time.sleep(2.0 * attempt)
+    raise AssertionError("unreachable")
+
+
 def fetch(client, page_size: int, max_pages: int | None) -> tuple[int, list[FunctionalCosmetic]]:
     items: list[FunctionalCosmetic] = []
     total, page_no = None, 1
     while total is None or len(items) < total:
         if max_pages is not None and page_no > max_pages:
             break
-        page = client.fetch_page(page_no, page_size)
+        page = _fetch_page(client, page_no, page_size)
         total = page.total_count if total is None else total
         if not page.items:
             break
@@ -89,11 +109,17 @@ def fetch(client, page_size: int, max_pages: int | None) -> tuple[int, list[Func
     return total or 0, items
 
 
+def _statement_source(item: FunctionalCosmetic) -> str:
+    if item.effect_text:
+        return "document"
+    return "effect_name" if item.effect_name else "none"
+
+
 def measure(source: CosmeticsSource, total: int, items: list[FunctionalCosmetic], text: str) -> dict:
     by_name: dict[str, set[str]] = defaultdict(set)
     for item in items:
-        by_name[item.item_name].add(item.item_seq)
-    fields = (*_REQUIRED_FIELDS, "effect_name") if source is REPORTED else _REQUIRED_FIELDS
+        by_name[item.item_name].add(item.record_id)
+    statements = Counter(item.statement for item in items if item.statement)
     report = {
         "source_id": source.source_id,
         "endpoint": source.url,
@@ -102,14 +128,17 @@ def measure(source: CosmeticsSource, total: int, items: list[FunctionalCosmetic]
         "row_count": len(items),
         "complete": len(items) == total,
         "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest().upper(),
-        "missing": {field: sum(1 for item in items if not getattr(item, field)) for field in fields},
-        "duplicate_item_seq_rows": len(items) - len({item.item_seq for item in items}),
-        "names_shared_by_several_items": sum(1 for seqs in by_name.values() if len(seqs) > 1),
-        "distinct_effect_texts": len({item.effect_text for item in items if item.effect_text}),
+        "missing": {field: sum(1 for item in items if not getattr(item, field)) for field in _REQUIRED_FIELDS},
+        "statement_source": dict(sorted(Counter(_statement_source(item) for item in items).items())),
+        "unreadable_documents": sum(1 for item in items if item.effect_doc_unreadable),
+        "duplicate_id_rows": len(items) - len({item.record_id for item in items}),
+        "names_shared_by_several_records": sum(1 for ids in by_name.values() if len(ids) > 1),
+        "distinct_statements": len(statements),
+        "statements": dict(statements.most_common(60)),
     }
     if source is REPORTED:
         report["withdrawn_rows"] = sum(1 for item in items if item.withdrawn)
-        report["effect_names"] = dict(Counter(item.effect_name for item in items if item.effect_name).most_common(40))
+        report["effect_codes"] = dict(sorted(Counter(item.effect_code for item in items if item.effect_code).items()))
         report["flags"] = {
             flag: sum(1 for item in items if getattr(item, flag)) for flag in ("whitening", "wrinkle", "sunscreen")
         }
@@ -149,7 +178,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(
                 f"{source.key}: {report['row_count']} of {report['total_count']} rows"
                 f"{'' if report['complete'] else ' (probe)'}; missing: {missing}; "
-                f"shared names {report['names_shared_by_several_items']}"
+                f"unreadable documents {report['unreadable_documents']}; "
+                f"shared names {report['names_shared_by_several_records']}; "
+                f"distinct statements {report['distinct_statements']}"
             )
     except (DataSourceError, OSError) as exc:
         print(f"error: {exc}")

@@ -1,4 +1,4 @@
-"""Functional cosmetics sources on data.go.kr (synthetic payloads, no network)."""
+"""Functional cosmetics sources on data.go.kr (synthetic payloads shaped like the live ones, no network)."""
 
 import json
 from datetime import UTC, datetime
@@ -12,28 +12,41 @@ from claimledger.sources.functional_cosmetics import (
     REPORTED,
     REVIEWED,
     FunctionalCosmeticsClient,
+    doc_paragraphs,
     parse_cosmetics_payload,
 )
 from scripts import audit_cosmetics
 
 NOW = datetime(2026, 10, 7, tzinfo=UTC)
 SECRET = "synthetic-service-key-000"
+KEY_NAMES = ("DATA_GO_KR_SERVICE_KEY", "DATA_GO_KR_SERVICE_KEY_REPORTED", "DATA_GO_KR_SERVICE_KEY_REVIEWED")
 
 
-def _reported(seq: str, name: str, effect: str = "피부의 미백에 도움을 준다", **extra: str) -> dict:
+def _doc(*paragraphs: str) -> str:
+    body = "".join(
+        f'      <PARAGRAPH tagName="p" textIndent="" marginLeft=""><![CDATA[{text}]]></PARAGRAPH>\r\n'
+        for text in paragraphs
+    )
+    return f'<DOC title="효능효과" type="EE">\r\n  <SECTION title="">\r\n    <ARTICLE title="">\r\n{body}    </ARTICLE>\r\n  </SECTION>\r\n</DOC>'
+
+
+def _reported(seq: str, name: str, effect: str | None = "피부의 미백에 도움을 준다.", **extra: str | None) -> dict:
+    # Live rows (2026-10-11): ITEM_SEQ is null, the report number is the identity, the efficacy
+    # sentence is EE_NAME, EE_DOC_DATA is usually null and the EFFECT_YN flags do not follow it.
     return {
-        "COSMETIC_REPORT_SEQ": f"R{seq}", "ITEM_SEQ": seq, "ITEM_NAME": name, "ENTP_NAME": "테스트 화장품",
-        "MANUF_NAME": "테스트 제조", "REPORT_DATE": "20250102", "CANCEL_APPROVAL_YN": "N",
-        "EE_CODE": "1", "EE_NAME": "미백", "EE_DOC_DATA": effect, "EFFECT_YN1": "Y", "EFFECT_YN2": "N",
-        "EFFECT_YN3": "N", "SPF": "", "PA": "", "BIZRNO": "0000000000", "MANUF_PLACE": "테스트 주소", **extra,
+        "COSMETIC_REPORT_SEQ": seq, "ITEM_SEQ": None, "ITEM_NAME": name, "ENTP_NAME": "테스트 화장품",
+        "MANUF_NAME": None, "REPORT_DATE": "20250102", "CANCEL_APPROVAL_YN": "N",
+        "EE_CODE": "1" if effect else None, "EE_NAME": effect, "EE_DOC_DATA": None, "EFFECT_YN1": None,
+        "EFFECT_YN2": "N", "EFFECT_YN3": "N", "SPF": None, "PA": None, "BIZRNO": "0000000000",
+        "MANUF_PLACE": "테스트 주소", **extra,
     }
 
 
-def _reviewed(seq: str, name: str, effect: str = "피부의 주름개선에 도움을 준다") -> dict:
+def _reviewed(seq: str, name: str, doc: str | None = None) -> dict:
     return {
-        "ITEM_SEQ": seq, "ITEM_NAME": name, "ENTP_NAME": "테스트 화장품", "ITEM_NO": f"제{seq}호",
-        "ITEM_PERMIT_DATE": "20240305", "COSMETIC_NOTICE_NAME": "고시품목", "EE_DOC_DATA": effect,
-        "BIZRNO": "0000000000",
+        "ITEM_SEQ": seq, "ITEM_NAME": name, "ENTP_NAME": "테스트 화장품", "ITEM_NO": "5",
+        "ITEM_PERMIT_DATE": "20240305", "COSMETIC_NOTICE_NAME": None,
+        "EE_DOC_DATA": _doc("피부의 주름개선에 도움을 준다.") if doc is None else doc, "BIZRNO": "0000000000",
     }
 
 
@@ -45,27 +58,47 @@ def _payload(items: object, total: int | None = None, code: str = "00") -> dict:
     }
 
 
-def test_reported_rows_keep_identity_and_official_effect_only() -> None:
-    page = parse_cosmetics_payload(_payload([_reported("101", "미백 크림")]), REPORTED, NOW)
+def test_reported_rows_use_the_report_number_and_the_efficacy_sentence() -> None:
+    page = parse_cosmetics_payload(_payload([_reported("2026030396", "미백 토너패드")]), REPORTED, NOW)
 
     assert page.total_count == 1
     item = page.items[0]
-    assert (item.item_seq, item.item_name, item.company) == ("101", "미백 크림", "테스트 화장품")
-    assert item.effect_text == "피부의 미백에 도움을 준다"
-    assert (item.effect_name, item.whitening, item.wrinkle, item.sunscreen) == ("미백", True, False, False)
+    assert (item.record_id, item.item_name, item.company) == ("2026030396", "미백 토너패드", "테스트 화장품")
+    assert (item.effect_code, item.effect_name, item.effect_text) == ("1", "피부의 미백에 도움을 준다.", "")
+    assert item.statement == "피부의 미백에 도움을 준다."
+    assert (item.whitening, item.wrinkle, item.sunscreen) == (None, False, False)
     assert item.registered_on == "20250102" and item.withdrawn is False
     assert item.source_id == "data.go.kr:15095680" and item.retrieved_at == NOW
     dumped = item.model_dump(mode="json")
     assert "BIZRNO" not in dumped and "테스트 주소" not in json.dumps(dumped, ensure_ascii=False)
 
 
-def test_reviewed_rows_use_the_permit_fields() -> None:
-    item = parse_cosmetics_payload(_payload([_reviewed("201", "주름 세럼")]), REVIEWED, NOW).items[0]
+def test_reviewed_rows_read_the_efficacy_document() -> None:
+    doc = _doc("<!--StartFragment -->자외선으로부터 피부를 보호한다.(SPF50+, PA++++) \n<!--EndFragment -->", "피부의 미백에 도움을 준다.")
+    item = parse_cosmetics_payload(_payload([_reviewed("202603070", "선로션", doc)]), REVIEWED, NOW).items[0]
 
-    assert (item.item_seq, item.effect_text) == ("201", "피부의 주름개선에 도움을 준다")
-    assert item.registered_on == "20240305" and item.notice_class == "고시품목"
+    assert item.record_id == "202603070" and item.registered_on == "20240305"
+    assert item.effect_text == "자외선으로부터 피부를 보호한다.(SPF50+, PA++++)\n피부의 미백에 도움을 준다."
+    assert item.statement == item.effect_text and item.effect_doc == doc and not item.effect_doc_unreadable
     assert item.whitening is None and item.withdrawn is None
     assert item.source_id == "data.go.kr:15056939"
+
+
+def test_document_paragraphs_are_plain_lines() -> None:
+    assert doc_paragraphs(_doc("피부의 미백에&nbsp;도움을 준다.<br/>피부의 주름개선에 도움을 준다.", "  ")) == (
+        "피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.",
+    )
+    plain = '<DOC><SECTION><ARTICLE><PARAGRAPH tagName="p">모발의 염모(흑색)</PARAGRAPH></ARTICLE></SECTION></DOC>'
+    assert doc_paragraphs(plain) == ("모발의 염모(흑색)",)
+    assert doc_paragraphs("") == ()
+
+
+def test_a_document_without_readable_paragraphs_is_flagged_not_guessed() -> None:
+    odd = '<DOC title="효능효과" type="EE"><SECTION><TABLE><TR><TD>표로 적은 효능</TD></TR></TABLE></SECTION></DOC>'
+    item = parse_cosmetics_payload(_payload([_reviewed("1", "표 문서", odd)]), REVIEWED, NOW).items[0]
+    assert item.effect_text == "" and item.effect_doc_unreadable is True and item.statement == ""
+    empty = parse_cosmetics_payload(_payload([_reviewed("2", "빈 문서", "")]), REVIEWED, NOW).items[0]
+    assert empty.effect_text == "" and empty.effect_doc_unreadable is False
 
 
 @pytest.mark.parametrize("items", [
@@ -74,12 +107,12 @@ def test_reviewed_rows_use_the_permit_fields() -> None:
 ])
 def test_documented_item_wrappers_are_accepted(items: object) -> None:
     page = parse_cosmetics_payload(_payload(items, total=2), REPORTED, NOW)
-    assert [item.item_seq for item in page.items] == ["1", "2"]
+    assert [item.record_id for item in page.items] == ["1", "2"]
 
 
 def test_single_wrapped_item_and_the_response_envelope() -> None:
     wrapped = {"response": _payload({"item": _reported("7", "하나")}, total=1)}
-    assert parse_cosmetics_payload(wrapped, REPORTED, NOW).items[0].item_seq == "7"
+    assert parse_cosmetics_payload(wrapped, REPORTED, NOW).items[0].record_id == "7"
     assert parse_cosmetics_payload(_payload("", total=0), REPORTED, NOW).items == ()
 
 
@@ -97,6 +130,13 @@ def test_errors_and_unknown_shapes_fail_closed(payload: dict) -> None:
         parse_cosmetics_payload(payload, REPORTED, NOW)
 
 
+def test_the_identity_field_is_not_borrowed_from_the_other_list() -> None:
+    # A reviewed row without ITEM_SEQ is rejected even if it carried a report number.
+    row = {**_reviewed("", "번호 없음"), "COSMETIC_REPORT_SEQ": "2026000001"}
+    with pytest.raises(DataSourceError):
+        parse_cosmetics_payload(_payload([row]), REVIEWED, NOW)
+
+
 def _client(handler) -> FunctionalCosmeticsClient:
     return FunctionalCosmeticsClient(REPORTED, SECRET, httpx.Client(transport=httpx.MockTransport(handler)))
 
@@ -110,7 +150,7 @@ def test_client_sends_the_documented_request() -> None:
 
     page = _client(handler).fetch_page(3, 50)
 
-    assert page.items[0].item_seq == "1"
+    assert page.items[0].record_id == "1"
     url = seen[0].url
     assert url.host == "apis.data.go.kr"
     assert url.path == "/1471000/FtnltCosmRptPrdlstInfoService01/getRptPrdlstInq01"
@@ -173,28 +213,33 @@ def test_an_encoded_key_is_not_encoded_twice() -> None:
 
 
 class _FakeClient:
-    def __init__(self, rows: list[dict], total: int | None = None) -> None:
-        self.rows, self.total, self.calls = rows, len(rows) if total is None else total, []
+    def __init__(self, rows: list[dict], total: int | None = None, source=REPORTED) -> None:
+        self.rows, self.total, self.source, self.calls = rows, len(rows) if total is None else total, source, []
 
     def fetch_page(self, page_no: int, num_of_rows: int):
         self.calls.append((page_no, num_of_rows))
         chunk = self.rows[(page_no - 1) * num_of_rows : page_no * num_of_rows]
-        return parse_cosmetics_payload(_payload(chunk, total=self.total), REPORTED, NOW)
+        return parse_cosmetics_payload(_payload(chunk, total=self.total), self.source, NOW)
 
 
 def _audit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, client: _FakeClient, *extra: str) -> int:
+    for name in KEY_NAMES:
+        monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("DATA_GO_KR_SERVICE_KEY", SECRET)
     monkeypatch.setattr(audit_cosmetics, "_client", lambda source, key: client)
-    return audit_cosmetics.main(["--service", "reported", "--output-dir", str(tmp_path), "--page-size", "2", *extra])
+    service = client.source.key
+    return audit_cosmetics.main(["--service", service, "--output-dir", str(tmp_path), "--page-size", "2", *extra])
 
 
 def test_audit_writes_the_export_and_measures_the_gate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    both = "피부의 미백에 도움을 준다. 피부의 주름개선에 도움을 준다."
     rows = [
         _reported("1", "미백 크림"),
-        _reported("2", "미백 크림", effect=""),
-        _reported("3", "선크림", EE_NAME="자외선차단", EFFECT_YN1="N", EFFECT_YN3="Y", SPF="50", PA="PA+++"),
-        _reported("4", "철회 제품", CANCEL_APPROVAL_YN="Y"),
-        _reported("4", "철회 제품", CANCEL_APPROVAL_YN="Y"),
+        _reported("2", "미백 크림", effect=None),
+        _reported("3", "선크림", effect="자외선으로부터 피부를 보호한다.", EE_CODE="5", SPF="50+", PA="++++"),
+        _reported("4", "철회 제품", effect=both, EE_CODE="3", CANCEL_APPROVAL_YN="Y"),
+        _reported("4", "철회 제품", effect=both, EE_CODE="3", CANCEL_APPROVAL_YN="Y"),
+        _reported("5", "문서 제품", effect=None, EE_DOC_DATA=_doc("여드름성 피부를 완화하는 데 도움을 준다.")),
     ]
     client = _FakeClient(rows)
 
@@ -202,16 +247,35 @@ def test_audit_writes_the_export_and_measures_the_gate(tmp_path: Path, monkeypat
 
     assert client.calls == [(1, 2), (2, 2), (3, 2)]
     export = (tmp_path / "functional-cosmetics-reported.jsonl").read_text(encoding="utf-8").splitlines()
-    assert len(export) == 5 and SECRET not in "".join(export)
+    assert len(export) == 6 and SECRET not in "".join(export)
+    assert json.loads(export[0])["record_id"] == "1"
     report = json.loads((tmp_path / "functional-cosmetics-reported.audit.json").read_text(encoding="utf-8"))
-    assert report["total_count"] == 5 and report["row_count"] == 5 and len(report["sha256"]) == 64
-    assert report["duplicate_item_seq_rows"] == 1 and report["withdrawn_rows"] == 2
-    assert report["missing"]["effect_text"] == 1 and report["missing"]["item_name"] == 0
-    assert report["effect_names"] == {"미백": 4, "자외선차단": 1}
-    assert report["flags"] == {"whitening": 4, "wrinkle": 0, "sunscreen": 1}
-    # Product names shared by several item numbers cannot identify a product on their own.
-    assert report["names_shared_by_several_items"] == 1
+    assert report["total_count"] == 6 and report["row_count"] == 6 and len(report["sha256"]) == 64
+    assert report["duplicate_id_rows"] == 1 and report["withdrawn_rows"] == 2
+    # A row has an official statement if either the document or the efficacy sentence is present.
+    assert report["missing"] == {"item_name": 0, "company": 0, "registered_on": 0, "statement": 1}
+    assert report["statement_source"] == {"document": 1, "effect_name": 4, "none": 1}
+    assert report["effect_codes"] == {"1": 1, "3": 2, "5": 1}
+    assert report["statements"][both] == 2 and report["distinct_statements"] == 4
+    assert report["unreadable_documents"] == 0
+    # Product names shared by several records cannot identify a product on their own.
+    assert report["names_shared_by_several_records"] == 1
     assert SECRET not in json.dumps(report)
+
+
+def test_audit_of_the_reviewed_list_counts_unreadable_documents(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = [
+        _reviewed("1", "주름 세럼"),
+        _reviewed("2", "오래된 제품", ""),
+        _reviewed("3", "표 문서", "<DOC><SECTION><TABLE><TR><TD>표</TD></TR></TABLE></SECTION></DOC>"),
+    ]
+    assert _audit(tmp_path, monkeypatch, _FakeClient(rows, source=REVIEWED)) == 0
+    report = json.loads((tmp_path / "functional-cosmetics-reviewed.audit.json").read_text(encoding="utf-8"))
+    assert report["missing"]["statement"] == 2 and report["unreadable_documents"] == 1
+    assert report["statement_source"] == {"document": 1, "none": 2}
+    assert "withdrawn_rows" not in report
 
 
 def test_audit_fails_closed_on_a_short_download_or_missing_key(
@@ -223,15 +287,50 @@ def test_audit_fails_closed_on_a_short_download_or_missing_key(
     assert audit_cosmetics.main(["--service", "reported", "--output-dir", str(tmp_path)]) == 3
 
 
+class _FlakyClient(_FakeClient):
+    def __init__(self, rows: list[dict], failures: list[str]) -> None:
+        super().__init__(rows)
+        self.failures = failures
+
+    def fetch_page(self, page_no: int, num_of_rows: int):
+        if self.failures:
+            self.calls.append((page_no, num_of_rows))
+            raise DataSourceError(self.failures.pop(0))
+        return super().fetch_page(page_no, num_of_rows)
+
+
+def test_transient_failures_are_retried_but_key_errors_are_not(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    waits: list[float] = []
+    monkeypatch.setattr(audit_cosmetics.time, "sleep", waits.append)
+    rows = [_reported(str(n), f"제품 {n}") for n in range(1, 4)]
+
+    flaky = _FlakyClient(rows, ["data.go.kr:15095680 request timeout", "data.go.kr:15095680 returned HTTP 502"])
+    assert _audit(tmp_path, monkeypatch, flaky) == 0
+    assert len(waits) == 2 and flaky.calls[:3] == [(1, 2), (1, 2), (1, 2)]
+
+    waits.clear()
+    dead = _FlakyClient(rows, ["data.go.kr:15095680 request failed"] * 5)
+    assert _audit(tmp_path / "dead", monkeypatch, dead) == 3
+    assert len(dead.calls) == 3 and not (tmp_path / "dead").exists()
+
+    waits.clear()
+    denied = _FlakyClient(rows, ["data.go.kr:15095680 returned HTTP 403: SERVICE_KEY_IS_NOT_REGISTERED_ERROR"])
+    assert _audit(tmp_path / "denied", monkeypatch, denied) == 3
+    assert waits == [] and len(denied.calls) == 1
+
+
 def test_each_source_may_have_its_own_key(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     # It is not confirmed whether data.go.kr issues one key per account or one per API.
     seen: dict[str, str] = {}
 
     def fake(source, key):
         seen[source.key] = key
-        return _FakeClient([_reported("1", "가")])
+        rows = [_reported("1", "가")] if source is REPORTED else [_reviewed("1", "가")]
+        return _FakeClient(rows, source=source)
 
-    for name in ("DATA_GO_KR_SERVICE_KEY", "DATA_GO_KR_SERVICE_KEY_REPORTED", "DATA_GO_KR_SERVICE_KEY_REVIEWED"):
+    for name in KEY_NAMES:
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setattr(audit_cosmetics, "_client", fake)
     env = tmp_path / ".env"
@@ -253,7 +352,7 @@ def test_each_source_may_have_its_own_key(tmp_path: Path, monkeypatch: pytest.Mo
 def test_a_missing_key_names_both_variables(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    for name in ("DATA_GO_KR_SERVICE_KEY", "DATA_GO_KR_SERVICE_KEY_REPORTED", "DATA_GO_KR_SERVICE_KEY_REVIEWED"):
+    for name in KEY_NAMES:
         monkeypatch.delenv(name, raising=False)
     env = tmp_path / ".env"
     env.write_text("DATA_GO_KR_SERVICE_KEY_REPORTED=only-reported\n", encoding="utf-8")
