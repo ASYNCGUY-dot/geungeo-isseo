@@ -5,9 +5,10 @@ reported (보고) and reviewed (심사) product lists it writes a JSONL export a
 the total count, missing fields, duplicate item numbers, product names shared by several items,
 withdrawn reports and the distribution of official functions.
 
-The service key comes from DATA_GO_KR_SERVICE_KEY in the environment or, if absent, from that
-single variable in --env-file. The key is never printed or written. Exports must stay in an
-ignored path (the default is build/cosmetics/).
+The service key comes from the environment or, if absent, from --env-file. Each list may have its
+own key (DATA_GO_KR_SERVICE_KEY_REPORTED, DATA_GO_KR_SERVICE_KEY_REVIEWED); otherwise the shared
+DATA_GO_KR_SERVICE_KEY is used for both. Keys are never printed or written. Exports must stay in
+an ignored path (the default is build/cosmetics/).
 
 Exit codes: 0 measured, 3 source or input error.
 """
@@ -50,15 +51,20 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _api_key(env_file: Path | None) -> str:
-    if key := os.environ.get(_KEY_NAME, "").strip():
-        return key
-    if env_file is None:
-        return ""
-    for line in env_file.read_text(encoding="utf-8").splitlines():
-        name, _, value = line.partition("=")
-        if name.strip() == _KEY_NAME and value.strip():
-            return value.strip().strip("\"'")
+def _key_names(source: CosmeticsSource) -> tuple[str, str]:
+    return f"{_KEY_NAME}_{source.key.upper()}", _KEY_NAME
+
+
+def _api_key(env_file: Path | None, source: CosmeticsSource) -> str:
+    """The source's own key if set, otherwise the shared one; the environment wins over the file."""
+    from_file: dict[str, str] = {}
+    if env_file is not None:
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            name, _, value = line.partition("=")
+            from_file[name.strip()] = value.strip().strip("\"'")
+    for name in _key_names(source):
+        if key := os.environ.get(name, "").strip() or from_file.get(name, ""):
+            return key
     return ""
 
 
@@ -132,11 +138,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     sources = list(SOURCES.values()) if args.service == "both" else [SOURCES[args.service]]
     try:
-        key = _api_key(args.env_file)
-        if not key:
-            raise DataSourceError(f"{_KEY_NAME} is not set")
+        # Resolve every key first so that nothing is downloaded when one is missing.
+        keys = {source.key: _api_key(args.env_file, source) for source in sources}
         for source in sources:
-            report = audit(source, key, args)
+            if not keys[source.key]:
+                raise DataSourceError(f"{' or '.join(_key_names(source))} is not set")
+        for source in sources:
+            report = audit(source, keys[source.key], args)
             missing = ", ".join(f"{field} {count}" for field, count in report["missing"].items())
             print(
                 f"{source.key}: {report['row_count']} of {report['total_count']} rows"

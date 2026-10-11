@@ -223,6 +223,51 @@ def test_audit_fails_closed_on_a_short_download_or_missing_key(
     assert audit_cosmetics.main(["--service", "reported", "--output-dir", str(tmp_path)]) == 3
 
 
+def test_each_source_may_have_its_own_key(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # It is not confirmed whether data.go.kr issues one key per account or one per API.
+    seen: dict[str, str] = {}
+
+    def fake(source, key):
+        seen[source.key] = key
+        return _FakeClient([_reported("1", "가")])
+
+    for name in ("DATA_GO_KR_SERVICE_KEY", "DATA_GO_KR_SERVICE_KEY_REPORTED", "DATA_GO_KR_SERVICE_KEY_REVIEWED"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(audit_cosmetics, "_client", fake)
+    env = tmp_path / ".env"
+    env.write_text(
+        "FOODSAFETY_API_KEY=unrelated\nDATA_GO_KR_SERVICE_KEY=shared-key\n"
+        "DATA_GO_KR_SERVICE_KEY_REVIEWED='reviewed-key'\nDATA_GO_KR_SERVICE_KEY_REPORTED=\n",
+        encoding="utf-8",
+    )
+
+    assert audit_cosmetics.main(["--env-file", str(env), "--output-dir", str(tmp_path / "out")]) == 0
+    # The reported slot is empty, so the shared key is used there; the reviewed slot wins for its API.
+    assert seen == {"reported": "shared-key", "reviewed": "reviewed-key"}
+
+    monkeypatch.setenv("DATA_GO_KR_SERVICE_KEY_REPORTED", "from-environment")
+    assert audit_cosmetics.main(["--service", "reported", "--env-file", str(env), "--output-dir", str(tmp_path / "out")]) == 0
+    assert seen["reported"] == "from-environment"
+
+
+def test_a_missing_key_names_both_variables(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+) -> None:
+    for name in ("DATA_GO_KR_SERVICE_KEY", "DATA_GO_KR_SERVICE_KEY_REPORTED", "DATA_GO_KR_SERVICE_KEY_REVIEWED"):
+        monkeypatch.delenv(name, raising=False)
+    env = tmp_path / ".env"
+    env.write_text("DATA_GO_KR_SERVICE_KEY_REPORTED=only-reported\n", encoding="utf-8")
+    monkeypatch.setattr(audit_cosmetics, "_client", lambda source, key: _FakeClient([_reported("1", "가")]))
+
+    assert audit_cosmetics.main(["--env-file", str(env), "--output-dir", str(tmp_path / "out")]) == 3
+
+    message = capsys.readouterr().out
+    assert "DATA_GO_KR_SERVICE_KEY_REVIEWED" in message and "DATA_GO_KR_SERVICE_KEY" in message
+    assert "only-reported" not in message
+    # Nothing is downloaded when a requested source has no key.
+    assert not (tmp_path / "out").exists()
+
+
 def test_a_probe_reads_only_the_requested_pages(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     client = _FakeClient([_reported(str(n), f"제품 {n}") for n in range(1, 8)])
 

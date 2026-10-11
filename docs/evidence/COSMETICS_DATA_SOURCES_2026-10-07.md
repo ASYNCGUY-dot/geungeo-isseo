@@ -152,7 +152,10 @@
 - `src/claimledger/sources/functional_cosmetics.py`: 두 API의 응답 파서와 클라이언트. 주소·사업자등록번호는 버리고 식별·효능효과 항목만 남긴다.
 - `scripts/audit_cosmetics.py`: 전체 수집, JSONL 내보내기(`build/cosmetics/`, 추적 안 함), 건수·결측·중복·이름 충돌·취하·효능효과 분포 측정.
 - `tests/test_functional_cosmetics.py`: 합성 응답 21개 테스트, 네트워크 없음.
-- 실행에는 `.env`의 `DATA_GO_KR_SERVICE_KEY`가 필요하다. 사용자가 공공데이터포털에서 위 두 API를 활용신청해야 한다. 2026-10-09 현재 키가 없어 미실행이다.
+- 실행에는 `.env`의 인증키가 필요하다. 사용자가 공공데이터포털에서 위 두 API를 활용신청해야 한다. 2026-10-09 현재 키가 없어 미실행이다.
+- 인증키 변수(2026-10-11): 두 API의 키가 같으면 `DATA_GO_KR_SERVICE_KEY` 하나만 채운다. 포털이 API마다 다른 키를 보여 주면
+  `DATA_GO_KR_SERVICE_KEY_REPORTED`(보고품목)와 `DATA_GO_KR_SERVICE_KEY_REVIEWED`(심사품목)에 각각 넣는다. API별 변수가 공용 변수보다 우선한다.
+  포털이 계정당 키 하나를 주는지 API마다 주는지는 확인하지 못했다(처음에는 하나라고 가정해 칸을 하나만 만들었다).
 
 ```powershell
 .venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env" --max-pages 1
