@@ -33,22 +33,20 @@ from pathlib import Path
 
 import httpx
 
+from claimledger.cosmetics_official import COSMETIC_EFFICACY_VERSION, parse_cosmetic_efficacy
 from claimledger.errors import DataSourceError
 from claimledger.sources.functional_cosmetics import (
+    EXPORT_FIELDS,
     REPORTED,
     SOURCES,
     CosmeticsSource,
     FunctionalCosmetic,
     FunctionalCosmeticsClient,
-    doc_paragraphs,
+    export_stem,
+    load_cosmetics_export,
 )
 
 _KEY_NAME = "DATA_GO_KR_SERVICE_KEY"
-_EXPORT_FIELDS = (
-    "record_id", "item_name", "company", "registered_on", "effect_text", "effect_code", "effect_name",
-    "effect_doc_unreadable", "whitening", "wrinkle", "sunscreen", "spf", "pa", "withdrawn", "notice_class",
-    "effect_doc",
-)
 _REQUIRED_FIELDS = ("item_name", "company", "registered_on", "statement")
 # Analysis only: list markers and parenthesised details (SPF, colour) are removed to count forms.
 _MARKER = re.compile(r"^\s*(?:[-–·•*○▶]\s*\.?|\(?\d{1,2}\s*[.)。]|[①-⑳])\s*")
@@ -194,6 +192,12 @@ def measure(source: CosmeticsSource, total: int, items: list[FunctionalCosmetic]
             str(top): sum(1 for cores in cores_by_row if set(cores) <= set(ranked[:top])) for top in _TOP_CORES
         },
     }
+    efficacies = [parse_cosmetic_efficacy(item.effect_text, item.effect_name) for item in items]
+    report["efficacy_version"] = COSMETIC_EFFICACY_VERSION
+    report["efficacy_status"] = dict(sorted(Counter(efficacy.status.value for efficacy in efficacies).items()))
+    report["efficacy_functions"] = dict(sorted(Counter(
+        function.value for efficacy in efficacies for function in efficacy.functions
+    ).items()))
     if source is REPORTED:
         report["withdrawn_rows"] = sum(1 for item in items if item.withdrawn)
         report["effect_codes"] = dict(sorted(Counter(item.effect_code for item in items if item.effect_code).items()))
@@ -205,47 +209,16 @@ def measure(source: CosmeticsSource, total: int, items: list[FunctionalCosmetic]
     return report
 
 
-def _stem(directory: Path, source: CosmeticsSource) -> Path:
-    return directory / f"functional-cosmetics-{source.key}"
-
-
-def load_export(source: CosmeticsSource, directory: Path) -> tuple[int, list[FunctionalCosmetic]]:
-    """Rows of an earlier export, with the efficacy document read again by the current reader."""
-    stem = _stem(directory, source)
-    try:
-        previous = json.loads(stem.with_suffix(".audit.json").read_text(encoding="utf-8"))
-        rows = [
-            json.loads(line)
-            for line in stem.with_suffix(".jsonl").read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
-        retrieved_at = datetime.fromisoformat(previous["retrieved_at"])
-        total = int(previous["total_count"])
-    except (OSError, ValueError, KeyError) as error:
-        raise DataSourceError(f"{source.key} export in {directory} cannot be read: {type(error).__name__}") from None
-    items = []
-    for row in rows:
-        lines = doc_paragraphs(row["effect_doc"])
-        items.append(FunctionalCosmetic(
-            **{field: row[field] for field in _EXPORT_FIELDS if field not in {"effect_text", "effect_doc_unreadable"}},
-            effect_text="\n".join(lines),
-            effect_doc_unreadable=bool(row["effect_doc"].strip()) and not lines,
-            source_id=source.source_id,
-            retrieved_at=retrieved_at,
-        ))
-    return total, items
-
-
 def write_outputs(
     source: CosmeticsSource, total: int, items: list[FunctionalCosmetic], directory: Path,
 ) -> dict:
     text = "".join(
-        json.dumps({field: getattr(item, field) for field in _EXPORT_FIELDS}, ensure_ascii=False) + "\n"
+        json.dumps({field: getattr(item, field) for field in EXPORT_FIELDS}, ensure_ascii=False) + "\n"
         for item in items
     )
     report = measure(source, total, items, text)
     directory.mkdir(parents=True, exist_ok=True)
-    stem = _stem(directory, source)
+    stem = export_stem(directory, source)
     stem.with_suffix(".jsonl").write_text(text, encoding="utf-8", newline="\n")
     stem.with_suffix(".audit.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
@@ -281,7 +254,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.from_export is None:
                 total, items = fetch(_client(source, keys[source.key]), args.page_size, args.max_pages)
             else:
-                total, items = load_export(source, directory)
+                total, items = load_cosmetics_export(directory, source)
             report = write_outputs(source, total, items, directory)
             loaded[source.key] = items
             missing = ", ".join(f"{field} {count}" for field, count in report["missing"].items())

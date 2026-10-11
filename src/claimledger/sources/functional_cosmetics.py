@@ -14,9 +14,11 @@ and business registration numbers are dropped at parse time. Unknown shapes fail
 """
 
 import html
+import json
 import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 from urllib.parse import unquote
 
@@ -50,6 +52,12 @@ REVIEWED = CosmeticsSource(
     "ITEM_PERMIT_DATE",
 )
 SOURCES = {source.key: source for source in (REPORTED, REVIEWED)}
+# Fields written to the local export by scripts/audit_cosmetics.py (kept in an ignored path).
+EXPORT_FIELDS = (
+    "record_id", "item_name", "company", "registered_on", "effect_text", "effect_code", "effect_name",
+    "effect_doc_unreadable", "whitening", "wrinkle", "sunscreen", "spf", "pa", "withdrawn", "notice_class",
+    "effect_doc",
+)
 # Gateway errors (key, quota, unknown service) carry an upper-case reason code. On 2026-10-09 they
 # came as JSON with HTTP 403 or 400; the XML form is kept for the older gateway. Only the code is
 # echoed, never free text.
@@ -259,7 +267,50 @@ def _parse_row(
         raise DataSourceError(f"{source.source_id} row {index} lacks {source.id_field} or a name") from None
 
 
+def export_stem(directory: Path, source: CosmeticsSource) -> Path:
+    return directory / f"functional-cosmetics-{source.key}"
+
+
+def load_cosmetics_export(
+    directory: Path, source: CosmeticsSource,
+) -> tuple[int, list[FunctionalCosmetic]]:
+    """Rows of a local export, with the efficacy document read again by the current reader.
+
+    The retrieval time and the total count come from the audit report written with the export.
+    """
+    stem = export_stem(directory, source)
+    try:
+        previous = json.loads(stem.with_suffix(".audit.json").read_text(encoding="utf-8"))
+        rows = [
+            json.loads(line)
+            for line in stem.with_suffix(".jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        retrieved_at = datetime.fromisoformat(previous["retrieved_at"])
+        total = int(previous["total_count"])
+        items = []
+        for row in rows:
+            lines = doc_paragraphs(row["effect_doc"])
+            items.append(FunctionalCosmetic(
+                **{
+                    field: row[field]
+                    for field in EXPORT_FIELDS
+                    if field not in {"effect_text", "effect_doc_unreadable"}
+                },
+                effect_text="\n".join(lines),
+                effect_doc_unreadable=bool(row["effect_doc"].strip()) and not lines,
+                source_id=source.source_id,
+                retrieved_at=retrieved_at,
+            ))
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        raise DataSourceError(
+            f"{source.key} export in {directory} cannot be read: {type(error).__name__}"
+        ) from None
+    return total, items
+
+
 __all__ = [
+    "EXPORT_FIELDS",
     "REPORTED",
     "REVIEWED",
     "SOURCES",
@@ -268,5 +319,7 @@ __all__ = [
     "FunctionalCosmetic",
     "FunctionalCosmeticsClient",
     "doc_paragraphs",
+    "export_stem",
+    "load_cosmetics_export",
     "parse_cosmetics_payload",
 ]

@@ -6,7 +6,17 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-11 화장품 0단계 데이터 게이트 통과 (Claude Code, 브랜치 `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-11 화장품 미백·주름개선 판정 수직 슬라이스 (Claude Code, 브랜치 `cosmetics-data-gate`)
+
+- 사용자: "그 순서로 진행해"(미백·주름개선 먼저, 자외선은 그다음). [기록](evidence/COSMETICS_WHITENING_WRINKLE_SLICE_2026-10-11.md).
+- 모듈: `cosmetics_official.py`(공식 효능효과, 허용 목록·보류 사유), `cosmetics_claims.py`(주장 추출·확인 가능한 문장 형태),
+  `cosmetics_verdict.py`(판정 순서 11단계), `cosmetics_receipt.py`, `scripts/check_cosmetic_ad.py`(내보내기로 한 건 판정, 네트워크 없음).
+- 파서 적용: 읽음 보고 185,466·심사 18,430, 보류(문구 없음·허용 목록 밖·양식 잔재·충돌)는 모두 `검증 불가`.
+- 실제 실행: 기록 `2026030398`에 문장 4개 → `확인됨` 1, `근거 불일치` 2, `검증 불가` 1.
+- **미측정**: 오인 승인율·재현율. 테스트 115개는 개발자 합성 사례다. 의료·보장 단서는 지침 원문 확인 전의 개발 정책이다.
+- 다음: 독립 재검토 → 평가세트(실제 제품 + 생성 문장 + 맹검 라벨 두 벌) → 자외선 차단. 웹·API 연결은 평가 뒤.
+
+## 이전 인계 — 2026-10-11 화장품 0단계 데이터 게이트 통과 (Claude Code, 브랜치 `cosmetics-data-gate`)
 
 - 사용자가 `.env`에 API별 키 두 개(`DATA_GO_KR_SERVICE_KEY_REPORTED`·`_REVIEWED`)를 넣어 실측 완료. [결과](evidence/COSMETICS_DATA_GATE_2026-10-11.md).
 - 전체 수집: 보고 196,608건·심사 20,728건(식별번호 중복 0). 효능효과 결측은 오래된 제품(보고 2008~2013, 심사 2001~2007)에 몰려 있고 그 밖은 1% 미만.

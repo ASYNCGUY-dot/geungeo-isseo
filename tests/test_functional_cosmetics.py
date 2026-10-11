@@ -332,6 +332,12 @@ def test_audit_measures_regularity_conflicts_and_template_remnants(
     assert report["rows_fully_covered_by_top_cores"]["1"] == 2
     assert report["names_shared_by_several_records"] == 1 and report["records_under_shared_names"] == 2
     assert report["shared_names_with_one_company"] == 0
+    # How the efficacy reader (the one the verdict uses) classifies the same rows.
+    assert report["efficacy_version"] == "cosmetic-efficacy-v1.0"
+    assert report["efficacy_status"] == {
+        "conflicting_fields": 1, "missing": 1, "readable": 2, "template_remnant": 1,
+    }
+    assert report["efficacy_functions"] == {"whitening": 2}
 
 
 def test_an_export_is_measured_again_without_the_network(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
