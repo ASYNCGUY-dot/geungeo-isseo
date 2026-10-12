@@ -104,7 +104,7 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
         "피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.",
     ]
     assert body["claims"][0]["reason_message"] and body["unread_text"] == []
-    assert body["rule_versions"] == ["cosmetic-claim-v1.5", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
+    assert body["rule_versions"] == ["cosmetic-claim-v1.6", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
     assert body["limitations"] and body["generated_at"]
 
 

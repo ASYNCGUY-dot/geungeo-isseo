@@ -193,6 +193,9 @@ def test_anything_outside_the_role_lists_keeps_the_sentence_unconfirmed(ad: str)
     ("미백에 도움을 주는 제품, 일상을 추천합니다.", WHITENING),
     ("미백에 도움을 주는 제품도 판매합니다.", WHITENING),
     ("미백에 도움을 주는 제품, 살펴보세요.", WHITENING),
+    # Third pass (f2936f9): a place in the reader's life or a store is where one looks at one's face.
+    ("주름개선에 도움을 주는 제품, 화장대에서 한 번 바로 확인해 보세요.", WRINKLE),
+    ("주름개선에 도움을 주는 제품, 매장에서 바로 확인해 보세요.", WRINKLE),
 ])
 def test_words_cannot_be_combined_into_content_of_their_own(ad: str, official: str) -> None:
     decisions = _decide_all(ad, official)
@@ -210,6 +213,8 @@ def test_several_invitations_cannot_add_up_to_a_promise() -> None:
     for ad in (
         "주름개선에 도움을 줍니다. 한 번 발라 보세요. 바로 확인해 보세요.",
         "주름개선에 도움을 줍니다. 사용 전 확인해 보세요. 한 번 써 보세요. 다시 확인해 보세요.",
+        "주름개선에 도움을 줍니다. 한 번 발라 보세요. 화장대에서 바로 확인해 보세요.",
+        "주름개선에 도움을 줍니다. 사용 전 화장대에서 확인해 보세요. 한 번 써 보세요. 화장대에서 다시 확인해 보세요.",
     ):
         decisions = _decide_all(ad, WRINKLE)
         assert [decision.reason for decision in decisions] == [R.AD_TEXT_NOT_FULLY_READ]
@@ -252,6 +257,10 @@ def test_an_invitation_sentence_is_read_and_does_not_block_a_confirmation() -> N
     "사용 전 확인해 보세요.",
     "다시 확인해 보세요.",
     "꾸준히 판매 중입니다.",
+    "화장대에서 바로 확인해 보세요.",
+    "일상에서 바로 확인해 보세요.",
+    "저녁 루틴에서 바로 확인하세요.",
+    "매장에서 바로 살펴보세요.",
 ])
 def test_other_text_beside_a_claim_still_blocks_the_confirmation(neighbour: str) -> None:
     for ad in (f"미백에 도움을 줍니다. {neighbour}", f"{neighbour} 미백에 도움을 줍니다."):

@@ -33,24 +33,27 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.5"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.6"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
-# Cues on whitespace-free NFKC, casefolded text. A wrinkle cue after "입술" is the lip function,
-# and "선크림" inside "주름개선크림" is not a sunscreen.
-_FUNCTION_CUES: tuple[tuple[CosmeticFunction, re.Pattern[str]], ...] = (
-    (CosmeticFunction.WHITENING, re.compile(r"미백|화이트닝|멜라닌|기미|주근깨")),
-    (CosmeticFunction.WRINKLE, re.compile(r"(?<!입술)(?<!입술의)주름|링클")),
-    (CosmeticFunction.LIP_WRINKLE, re.compile(r"입술(?:의)?주름")),
-    (CosmeticFunction.SUNSCREEN, re.compile(r"자외선|spf|(?<!개)선크림|(?<!개)선블록|썬크림|썬블록")),
-    (CosmeticFunction.HAIR_DYE, re.compile(r"염모|염색")),
-    (CosmeticFunction.HAIR_BLEACH, re.compile(r"탈색")),
-    (CosmeticFunction.HAIR_REMOVAL, re.compile(r"제모")),
-    (CosmeticFunction.HAIR_LOSS, re.compile(r"탈모")),
-    (CosmeticFunction.ACNE, re.compile(r"여드름")),
-    (CosmeticFunction.SKIN_BARRIER, re.compile(r"피부장벽|가려움")),
-    (CosmeticFunction.STRETCH_MARK, re.compile(r"튼살")),
+# Cues on whitespace-free NFKC, casefolded text: for each kind a pattern of single words, which
+# must lie inside one word of the sentence ("후기 적립금" is not "기적"), and a pattern of phrases,
+# which may run over several ("3일 만에", "피부 재생"). A wrinkle cue after "입술" is the lip
+# function, and "선크림" inside "주름개선크림" is not a sunscreen.
+_Cues = tuple[re.Pattern[str] | None, re.Pattern[str] | None]
+_FUNCTION_CUES: tuple[tuple[CosmeticFunction, re.Pattern[str] | None, re.Pattern[str] | None], ...] = (
+    (CosmeticFunction.WHITENING, re.compile(r"미백|화이트닝|멜라닌|기미|주근깨"), None),
+    (CosmeticFunction.WRINKLE, re.compile(r"(?<!입술)(?<!입술의)주름|링클"), None),
+    (CosmeticFunction.LIP_WRINKLE, None, re.compile(r"입술(?:의)?주름")),
+    (CosmeticFunction.SUNSCREEN, re.compile(r"자외선|spf|(?<!개)선크림|(?<!개)선블록|썬크림|썬블록"), None),
+    (CosmeticFunction.HAIR_DYE, re.compile(r"염모|염색"), None),
+    (CosmeticFunction.HAIR_BLEACH, re.compile(r"탈색"), None),
+    (CosmeticFunction.HAIR_REMOVAL, re.compile(r"제모"), None),
+    (CosmeticFunction.HAIR_LOSS, re.compile(r"탈모"), None),
+    (CosmeticFunction.ACNE, re.compile(r"여드름"), None),
+    (CosmeticFunction.SKIN_BARRIER, re.compile(r"가려움"), re.compile(r"피부장벽")),
+    (CosmeticFunction.STRETCH_MARK, re.compile(r"튼살"), None),
 )
 # Words with an everyday sense count only in their medical or absolute one: "저자극 처방" is a
 # formulation, "재생 플라스틱" a material, "링클 필러 크림" a product type, "부작용이 있으면" a caution,
@@ -62,24 +65,27 @@ _VERBAL = (
     r"(?:합니다|한다|해요|해줍|해주|해드|해서|했|하는|하고|하며|하여|하세요"
     r"|됩니다|된다|돼요|됐|되는|되고|되며|되어|시켜|시킵|시키)"
 )
-_STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
+_STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Pattern[str] | None], ...] = (
     (
         ExpressionStrength.TREATMENT_PREVENTION,
         re.compile(
             r"치료(?!를?받)|완치|특효|낫게|낫는|낫습|질병|질환|항염|염증|아토피|피부염|습진|건선|흉터"
-            r"|약효|보톡스|시술|필러(?:를|을)?(?:맞|시술|주사|효과|대신)"
+            r"|약효|보톡스|시술"
+        ),
+        re.compile(
+            r"필러(?:를|을)?(?:맞|시술|주사|효과|대신)"
             rf"|{_PRESCRIBER}(?:의|가|이|에서)?처방|처방받"
             rf"|{_REGROWN}(?:의|을|를)?재생|재생(?:크림|효과|력|케어|시켜|시킵|시키)"
         ),
     ),
     (
         ExpressionStrength.GUARANTEE,
+        re.compile(r"보장|100%|100퍼|백퍼|확실|반드시|무조건|완벽|단번에|기적|영구|무부작용"),
         re.compile(
-            r"보장|100%|100퍼|백퍼|확실|반드시|무조건|완벽|단번에|하루만에|기적|영구"
-            r"|\d+(?:일|주|개월)만에|부작용(?:이|은|도|걱정)?(?:전혀|하나도|일절)?(?:없|제로)|무부작용"
+            r"하루만에|\d+(?:일|주|개월)만에|부작용(?:이|은|도|걱정)?(?:전혀|하나도|일절)?(?:없|제로)"
         ),
     ),
-    (ExpressionStrength.SUPPORT, re.compile(r"도움|기능성")),
+    (ExpressionStrength.SUPPORT, re.compile(r"도움|기능성"), None),
     (
         ExpressionStrength.IMPROVEMENT,
         re.compile(
@@ -87,15 +93,19 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
             r"|사라지|사라집|사라져|사라졌|사라진|제거|지워|지우는|지웁|펴주|펴줍|펴집|펴져|펴지|하얗게|하얘"
             r"|밝아|환해|엷게|옅게|옅어지|옅어집|옅어져|완화|줄여|줄어|감소"
         ),
+        None,
     ),
-    (ExpressionStrength.POSSIBILITY, re.compile(r"수있")),
+    (ExpressionStrength.POSSIBILITY, None, re.compile(r"수있")),
 )
 _STRONG = frozenset({
     ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE, ExpressionStrength.TREATMENT_PREVENTION,
 })
 
-# Other words that hold the letters of a cue: "정기적", "교환해", "살펴주세요".
-_INNOCENT = re.compile(r"정기적|주기적|장기적|단기적|시기적절|교환해|전환해|변환해|순환해|살펴주|살펴줍")
+# Other words that hold the letters of a cue: "정기적", "교환해", "살펴주세요", "보습진정".
+_INNOCENT = re.compile(
+    r"정기적|주기적|장기적|단기적|시기적절|교환해|전환해|변환해|순환해|반환해|소환해|귀환해"
+    r"|살펴주|살펴줍|보습진정|취향상|방향상"
+)
 # A denial. "없애다" and "없어지다" are effects, "밖에 없다" means "only", and "않으면" or "없으면" set
 # a condition ("사라지지 않으면 환불").
 _DENIAL = re.compile(
@@ -108,14 +118,17 @@ _RHETORICAL = re.compile(r"(?:꿈|거짓말|거짓|과장|농담|우연)(?:이|�
 # "놓치지 마세요", "무단 전재 금지" and "카톡 상담 환영" follow claims in ordinary advertising.
 _CAUTION = re.compile(
     r"사용하지마|사용하지말|바르지마|바르지말|믿지마|사용을?(?:중지|중단|자제|삼가|피하|피해|금)|사용금지"
-    r"|피해서|피해주|피하세|피하십|피하고|(?:전문의|의사|약사|피부과)(?:등)?(?:와|과|에게|의)?(?:상담|상의)"
-    r"|상담할것|있(?:는|으신|을)(?:분|경우|부위)|주의하세요|주의하십시오"
+    r"|피해서|피해주|피하세|피하십|부위(?:는|를|은)?피하|(?:전문의|의사|약사|피부과)(?:등)?(?:와|과|에게|의)?(?:상담|상의)"
+    r"|상담할것|있(?:는|으신|을)(?:분|경우|부위)"
 )
-# A condition names a state ("염증이 생기면", "시술 후에는"): a disease word before it is no claim.
-# An effect word before it still is one ("사라지지 않으면 환불").
-_CONDITION = re.compile(
-    r"있으면|있다면|있을경우|생기면|생긴다면|생길경우|나타나면|계속되면|보이면|심해지면"
-    r"|않으면|않을경우|않을시|후에는|후에"
+# A disease word names a state, not a claim, when the sentence goes straight on to "after it" or
+# "having had it" ("시술 후에는", "시술 받은 날"), or to a condition within a few letters and before
+# any comma ("염증이 생기면", "아토피 피부라면"). Farther away the condition is about something else
+# ("완치 크림, 마음에 들지 않으면 환불").
+_STATE_AFTER = re.compile(r"(?:를|을)?받은(?!듯)|후(?!기)")
+_STATE_NEAR = re.compile(
+    r"[^,]{0,6}?(?:있으면|있다면|있을경우|있을때|생기면|생긴다면|생길경우|생겼을때|생겼다면|나타나면"
+    r"|계속되면|보이면|심해지면|않으면|않을경우|않을시|남았다면|라면)"
 )
 _QUESTION = re.compile(r"\?[.!。]*$")
 # The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
@@ -197,10 +210,16 @@ _WHEN = _any(
     "지금 ?바로", "지금", "바로", "오늘 ?부터", "오늘", "이제", "먼저", "꼭", "다시", "한 ?번", "매일", "꾸준히",
     "천천히", "편하게", "가볍게", "간편하게", "미리", "드디어", "(?:구매|사용|결제) ?전(?:에)?",
 )
+_AT = r"(?:에서|에|으로|로)"
+# The page and the shop, where a reader can look something up.
+_PAGE_NOUN = _any(
+    "상세 ?페이지", "이 ?페이지", "페이지", "온라인", "공식몰", "쇼핑몰", "홈페이지", "여기", "이곳", "아래", "하단",
+    "링크",
+)
+_PAGE = _PAGE_NOUN + _AT
 _PLACE = _any(
-    "장바구니", "상세 ?페이지", "이 ?페이지", "페이지", "온라인", "오프라인", "매장", "공식몰", "쇼핑몰", "홈페이지",
-    "여기", "이곳", "아래", "하단", "링크", "화장대", "파우치", _ROUTINE, "일상", "고객 ?센터", "무료 ?배송",
-) + r"(?:에서|에|으로|로)"
+    _PAGE_NOUN, "장바구니", "오프라인", "매장", "화장대", "파우치", _ROUTINE, "일상", "고객 ?센터", "무료 ?배송",
+) + _AT
 _INFORMATION = (
     r"(?:자세한 )?" + _any("상세 ?정보", "상세 ?설명", "상세 ?페이지", "상세 ?안내", "안내", "정보", "내용")
     + r"(?:을|를|은|는)"
@@ -219,9 +238,10 @@ _ACTION = (
     rf"|(?:시작|마무리|완성|구매|주문|저장|공유|문의|방문|구경|추가|사용|결제){_POLITE}"
     r"|만나세요|담으세요|더하세요|챙기세요|둘러보세요|(?:보러 ?|구경하러 ?|놀러 ?)?오세요"
 )
-# Looking something up needs the thing looked at, the page or its information: a bare "바로 확인해
-# 보세요" after "한 번 발라 보세요" promises a result at once.
+# Looking something up needs the page or its information, and nothing else beside it: "바로 확인해
+# 보세요" or "화장대에서 바로 확인해 보세요" after "한 번 발라 보세요" promises a result at once.
 _LOOK = rf"(?:(?:확인해|살펴|읽어|참고해) ?{_ENDING}|(?:확인|참고){_POLITE}|살펴보세요)"
+_LOOKED_AT = rf"(?:{_PAGE}|{_INFORMATION})"
 # What the seller says of the product: a recommendation or introduction with no argument, or that
 # it is in stock, with a place and one of a few neutral adverbs at most.
 _SAYS = (
@@ -235,7 +255,7 @@ _STOCKED = (
 )
 _INVITATION = re.compile(
     rf"(?:{_ARGUMENT} ){{0,5}}(?:{_ACTION})"
-    rf"|(?:{_ARGUMENT} ){{0,4}}(?:{_PLACE}|{_INFORMATION}),? (?:{_ARGUMENT} ){{0,4}}{_LOOK}"
+    rf"|(?:{_WHEN},? ){{0,2}}{_LOOKED_AT},? (?:(?:{_WHEN}|{_LOOKED_AT}),? ){{0,3}}{_LOOK}"
     rf"|{_SAYS}"
     rf"|(?:{_NEWLY} )?(?:{_PLACE} )?(?:{_STOCKED})"
 )
@@ -261,7 +281,7 @@ class CosmeticClaim(BaseModel):
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.5"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.6"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -397,22 +417,21 @@ def _classify(sentence: str) -> _Reading:
 
     innocent = flagged(_INNOCENT, inside_a_word=True)
 
-    def is_cue(match: re.Match[str]) -> bool:
-        """Not the letters of another word, and not letters that only meet across two words."""
-        start, end = match.span()
-        if any(innocent[start:end]):
-            return False
-        # "후[기 적]립금" starts and ends inside a word; "단[3일 만에]" ends with one and is a cue.
-        return not any(begins[start + 1 : end]) or begins[start] or end == size or begins[end]
+    def cues(patterns: Sequence[re.Pattern[str] | None]) -> list[re.Match[str]]:
+        """Matches that are not the letters of another word; a single-word cue lies in one word."""
+        words, phrases = patterns
+        found = []
+        for pattern, one_word in ((words, True), (phrases, False)):
+            for match in pattern.finditer(compact) if pattern is not None else ():
+                start, end = match.span()
+                if not any(innocent[start:end]) and not (one_word and any(begins[start + 1 : end])):
+                    found.append(match)
+        return found
 
     function_matches = [
-        (function, match)
-        for function, pattern in _FUNCTION_CUES for match in pattern.finditer(compact) if is_cue(match)
+        (function, match) for function, *patterns in _FUNCTION_CUES for match in cues(patterns)
     ]
-    strength_matches = [
-        (level, match)
-        for level, pattern in _STRENGTH_CUES for match in pattern.finditer(compact) if is_cue(match)
-    ]
+    strength_matches = [(level, match) for level, *patterns in _STRENGTH_CUES for match in cues(patterns)]
     in_cue = [False] * size
     for _, match in (*function_matches, *strength_matches):
         in_cue[match.start() : match.end()] = [True] * (match.end() - match.start())
@@ -428,29 +447,33 @@ def _classify(sentence: str) -> _Reading:
     not_asserted_before = max(not_asserted_before, max((m.start() for m in _CAUTION.finditer(compact)), default=-1))
     if _QUESTION.search(compact):
         not_asserted_before = size
-    condition = max((match.start() for match in _CONDITION.finditer(compact)), default=-1)
 
     def asserted(kind: CosmeticFunction | ExpressionStrength, match: re.Match[str]) -> bool:
         if match.end() <= not_asserted_before:
             return False
-        return not (kind is ExpressionStrength.TREATMENT_PREVENTION and match.end() <= condition)
+        if kind is not ExpressionStrength.TREATMENT_PREVENTION:
+            return True
+        return not (_STATE_AFTER.match(compact, match.end()) or _STATE_NEAR.match(compact, match.end()))
 
     stated = [(function, match) for function, match in function_matches if asserted(function, match)]
     functions = {function for function, _ in stated}
     function_cues = [_literal(sentence, positions, match) for _, match in stated]
     live = {
         level: [match for candidate, match in strength_matches if candidate is level and asserted(level, match)]
-        for level, _ in _STRENGTH_CUES
+        for level, *_ in _STRENGTH_CUES
     }
     support, improvement = live[ExpressionStrength.SUPPORT], live[ExpressionStrength.IMPROVEMENT]
     if support and improvement:
-        # "…기능성 화장품으로 기미가 사라집니다": an effect verb with its own function word after the
-        # support word is the claim. "…기능성 화장품, 포장을 강화했습니다" has none.
+        # "…기능성 화장품으로 기미가 사라집니다": an effect verb right after its own function word,
+        # past the support word, is the claim. "…기능성 화장품, 미백 라인 포장을 강화했습니다" is not.
         after_support = max(match.end() for match in support)
-        named_again = min((match.start() for _, match in stated if match.start() >= after_support), default=size)
-        if named_again <= max(match.start() for match in improvement):
+        named = [False] * (size + 1)
+        for _, match in stated:
+            if match.start() >= after_support:
+                named[match.end()] = True
+        if any(any(named[max(match.start() - 3, 0) : match.start() + 1]) for match in improvement):
             live[ExpressionStrength.SUPPORT] = []
-    strength = next((level for level, _ in _STRENGTH_CUES if live[level]), None)
+    strength = next((level for level, *_ in _STRENGTH_CUES if live[level]), None)
     strength_cues = [_literal(sentence, positions, match) for match in live[strength]] if strength else []
     denied = [
         (match.start(), _literal(sentence, positions, match), kind)
