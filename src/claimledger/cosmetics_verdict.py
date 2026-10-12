@@ -3,8 +3,8 @@
 Only whitening and wrinkle improvement are judged. `confirmed` requires a user-confirmed product
 whose official efficacy was read completely, a sentence that is one of the allowlisted forms, a
 strength no higher than the official "도움을 준다", and an advertisement in which every other
-sentence is an allowlisted form or the recognized disclaimer. General cosmetics are not in the MFDS
-lists and can never be confirmed here.
+sentence is an allowlisted form, the recognized disclaimer or an invitation in the closed vocabulary.
+General cosmetics are not in the MFDS lists and can never be confirmed here.
 """
 
 from collections.abc import Sequence
@@ -81,7 +81,7 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.2"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.3"] = COSMETIC_CLAIM_VERSION
     verdict_version: Literal["cosmetic-verdict-v1.2"] = COSMETIC_VERDICT_VERSION
 
 
@@ -151,7 +151,8 @@ def decide_cosmetic_ad(
     """Decide every claim of one advertisement.
 
     A sentence is confirmed only when every other sentence of the advertisement is an allowlisted
-    form or the recognized disclaimer. Anything else beside it may change what it says, and a
+    form, the recognized disclaimer or an invitation to use or buy read in the closed vocabulary
+    (those are not listed as unread). Anything else beside it may change what it says, and a
     keyword verdict on that neighbour ("(피부과 시술 병행 시)" is flagged for "시술") does not show
     that it was understood.
     """

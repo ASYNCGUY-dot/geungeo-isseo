@@ -417,5 +417,5 @@ def test_decomposed_hangul_is_read_like_composed_text() -> None:
     decision = _decide(ad, _product(sentence=WRINKLE))
 
     assert decision.verdict is Verdict.MISMATCH and decision.claim.text == "주름을 확실하게 없애줍니다."
-    plain = "﻿" + unicodedata.normalize("NFD", "미백에 도움을 줍니다.")
+    plain = "\ufeff" + unicodedata.normalize("NFD", "미백에 도움을 줍니다.")
     assert _decide(plain, _product(sentence=WHITENING)).verdict is Verdict.CONFIRMED

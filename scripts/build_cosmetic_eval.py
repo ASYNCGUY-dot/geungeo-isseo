@@ -98,6 +98,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     sample.add_argument("--manifest", type=Path, required=True)
     sample.add_argument("--generation-sheet", type=Path, required=True)
     sample.add_argument("--ads-template", type=Path, required=True)
+    sample.add_argument(
+        "--exclude-manifest", type=Path, action="append", default=[],
+        help="manifest of an earlier set whose records are not sampled again",
+    )
 
     sheet = commands.add_parser("sheet", help="write the blind labeling sheet")
     sheet.add_argument("--manifest", type=Path, required=True)
@@ -170,6 +174,7 @@ def _claim(rng: random.Random, claim_type: str, judged: tuple[CosmeticFunction, 
 
 def sample_items(
     records: dict[str, dict[str, FunctionalCosmetic]], seed: int, prefix: str,
+    excluded: frozenset[tuple[str, str]] = frozenset(),
 ) -> tuple[list[dict], dict[str, int]]:
     rng = random.Random(seed)
     pools: dict[str, dict[str, list[tuple[str, tuple[CosmeticFunction, ...]]]]] = {
@@ -177,6 +182,8 @@ def sample_items(
     }
     for key in SOURCES:
         for record_id in sorted(records[key]):
+            if (key, record_id) in excluded:
+                continue
             stratum, judged = stratum_of(records[key][record_id])
             pools[stratum][key].append((record_id, judged))
     chosen: list[dict] = []
@@ -249,6 +256,7 @@ def _labeling_sheet(
         "   기간·속도 약속('7일 만에')이 해당합니다. '도움을 줍니다', '도움을 줄 수 있습니다'는 공식 수준 이내입니다.",
         "6. 주어가 제품이 아니라 성분이거나, 대상자·조건·비교·인증처럼 공식 효능효과에 없는 내용이 붙어 있으면 `unverifiable`.",
         "   공식 효능효과는 제품에 대한 것이라 성분이 그 효과를 낸다는 주장은 이 자료로 확인할 수 없습니다.",
+        "   사용 방법이나 횟수를 효과의 조건으로 건 문장('꾸준히 바르면 …에 도움을 줍니다', '하루 두 번 바르면 …')도 조건이 붙은 것입니다.",
         "7. 그 외(제품의 공식 효능효과에 있는 기능을, 공식 수준 이내로, 덧붙인 내용 없이 말함)는 `confirmed`(확인됨).",
         "",
         "labels.csv의 label 칸에 confirmed / mismatch / unverifiable 중 하나를 쓰고, note에 근거를 한 줄로 적습니다.",
@@ -314,7 +322,9 @@ def _write_csv(path: Path, fields: Sequence[str], rows: list[dict]) -> None:
 
 def _sample(args: argparse.Namespace) -> int:
     records = _load(args.export_dir)
-    items, frame = sample_items(records, args.seed, args.case_prefix)
+    earlier = [json.loads(path.read_text(encoding="utf-8")) for path in args.exclude_manifest]
+    excluded = frozenset((item["source"], item["record_id"]) for manifest in earlier for item in manifest["items"])
+    items, frame = sample_items(records, args.seed, args.case_prefix, excluded)
     sources = {}
     for key, source in SOURCES.items():
         audit = json.loads(export_stem(args.export_dir, source).with_suffix(".audit.json").read_text(encoding="utf-8"))
@@ -331,6 +341,7 @@ def _sample(args: argparse.Namespace) -> int:
         "engine_versions": [COSMETIC_CLAIM_VERSION, COSMETIC_EFFICACY_VERSION, COSMETIC_VERDICT_VERSION],
         "allocation": ALLOCATION,
         "frame_counts": frame,
+        **({"excluded_evals": [manifest["eval_id"] for manifest in earlier]} if earlier else {}),
         "items": items,
     })
     args.generation_sheet.parent.mkdir(parents=True, exist_ok=True)

@@ -217,7 +217,7 @@ def test_score_reports_agreement_recall_and_false_clearance(tmp_path: Path) -> N
     assert by_id["D"]["actual_verdict"] == "unverifiable" and by_id["D"]["reason_code"] == "CLAIM_SCOPE_UNRESOLVED"
     assert by_id["E"]["outcome"] == "claim_count_error" and by_id["E"]["actual_verdict"] == "unverifiable"
     assert by_id["F"]["actual_verdict"] == "unverifiable" and by_id["F"]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
-    assert summary["rule_versions"] == ["cosmetic-claim-v1.2", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
+    assert summary["rule_versions"] == ["cosmetic-claim-v1.3", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
 
 
 def test_a_false_clearance_fails_the_gate(tmp_path: Path) -> None:
@@ -233,3 +233,35 @@ def test_a_false_clearance_fails_the_gate(tmp_path: Path) -> None:
 ])
 def test_unknown_records_are_input_errors(tmp_path: Path, case: dict) -> None:
     assert _score(tmp_path, [case])[0] == 3
+
+
+def test_a_later_sample_can_leave_out_the_records_of_an_earlier_one(tmp_path: Path) -> None:
+    first = _sample(tmp_path)
+    used = {(item["source"], item["record_id"]) for item in first["items"]}
+    arguments = [
+        "sample", "--export-dir", str(tmp_path / "export"), "--seed", "11", "--eval-id", "cosmetic-eval-v2",
+        "--case-prefix", "CD", "--manifest", str(tmp_path / "second.json"),
+        "--generation-sheet", str(tmp_path / "generation-2.md"), "--ads-template", str(tmp_path / "ads-2.csv"),
+    ]
+    # The same seed would pick the same records again.
+    assert build_cosmetic_eval.main(arguments) == 0
+    again = json.loads((tmp_path / "second.json").read_text(encoding="utf-8"))
+    assert {(item["source"], item["record_id"]) for item in again["items"]} == used
+
+    assert build_cosmetic_eval.main([*arguments, "--exclude-manifest", str(tmp_path / "manifest.json")]) == 0
+    second = json.loads((tmp_path / "second.json").read_text(encoding="utf-8"))
+    assert not used & {(item["source"], item["record_id"]) for item in second["items"]}
+    assert second["excluded_evals"] == ["cosmetic-eval-v1"] and second["items"][0]["case_id"] == "CD-001"
+    assert "excluded_evals" not in first
+
+
+def test_the_labeling_sheet_says_how_to_read_a_condition_on_the_effect(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path)
+    assert build_cosmetic_eval.main([
+        "sheet", "--manifest", str(tmp_path / "manifest.json"), "--ads", str(_ads(tmp_path, manifest)),
+        "--export-dir", str(tmp_path / "export"), "--labeling-sheet", str(tmp_path / "labeling.md"),
+        "--labels-template", str(tmp_path / "labels.csv"),
+    ]) == 0
+    sheet = (tmp_path / "labeling.md").read_text(encoding="utf-8")
+    # The two labelers of v1 split on exactly this.
+    assert "꾸준히 바르면" in sheet and "조건이 붙은 것" in sheet

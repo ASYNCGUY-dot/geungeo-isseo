@@ -104,8 +104,23 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
         "피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.",
     ]
     assert body["claims"][0]["reason_message"] and body["unread_text"] == []
-    assert body["rule_versions"] == ["cosmetic-claim-v1.2", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
+    assert body["rule_versions"] == ["cosmetic-claim-v1.3", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
     assert body["limitations"] and body["generated_at"]
+
+
+def test_an_invitation_beside_a_claim_is_shown_as_read_text(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
+    export = str(_export(tmp_path, ROWS))
+    ad = "미백과 주름개선에 도움을 주는 제품입니다. 지금 장바구니에 담아 보세요!"
+    code, body = _run(capsys, "--export-dir", export, "--record-id", "2026030397", "--ad-text", ad, "--confirm-claims", "all")
+
+    assert code == 0 and [claim["verdict"] for claim in body["claims"]] == ["confirmed"]
+    assert body["neutral_text"] == ["지금 장바구니에 담아 보세요!"] and body["unread_text"] == []
+    # Listing the claims for confirmation shows the same split, with no verdict.
+    code, body = _run(capsys, "--export-dir", export, "--ad-text", ad + " 단 2주.")
+    assert code == 0 and "claims" not in body
+    assert body["neutral_text"] == ["지금 장바구니에 담아 보세요!"] and body["unread_text"] == ["단 2주."]
 
 
 def test_flagged_sentences_show_the_words_behind_the_verdict(

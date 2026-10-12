@@ -20,6 +20,7 @@ from claimledger.cosmetics_claims import (
     MAX_AD_TEXT_LENGTH,
     confirm_cosmetic_claims,
     extract_cosmetic_claims,
+    neutral_sentences,
     normalize_ad_text,
     unread_sentences,
 )
@@ -102,6 +103,7 @@ def _extraction(args: argparse.Namespace) -> dict:
         "extracted_claims": [
             {"claim_id": claim.claim_id, "text": claim.text} for claim in extract_cosmetic_claims(text)
         ],
+        "neutral_text": [sentence.text for sentence in neutral_sentences(text)],
         "unread_text": [sentence.text for sentence in unread_sentences(text)],
     }
 

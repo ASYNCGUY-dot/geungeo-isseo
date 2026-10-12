@@ -11,7 +11,12 @@ from datetime import datetime
 from pydantic import AwareDatetime, BaseModel
 
 from claimledger.claims_v1 import ExpressionStrength
-from claimledger.cosmetics_claims import COSMETIC_CLAIM_VERSION, normalize_ad_text, unread_sentences
+from claimledger.cosmetics_claims import (
+    COSMETIC_CLAIM_VERSION,
+    neutral_sentences,
+    normalize_ad_text,
+    unread_sentences,
+)
 from claimledger.cosmetics_official import COSMETIC_EFFICACY_VERSION, CosmeticFunction
 from claimledger.cosmetics_verdict import (
     COSMETIC_VERDICT_VERSION,
@@ -87,9 +92,9 @@ COSMETIC_LIMITATIONS: tuple[str, ...] = (
     "식약처에 보고·심사된 기능성화장품의 공식 효능효과와만 대조합니다. 목록에 없는 일반 화장품은 확인할 수 없습니다.",
     "미백과 주름개선 주장만 판정합니다. 자외선 차단 등 다른 기능은 아직 판정하지 않습니다.",
     (
-        "문장 단위로 판정합니다. 정해진 문형이나 의약품이 아니라는 고지 문구로 끝까지 읽지 못한 문장이 광고문에 "
-        "하나라도 있으면, 그 문장이 근거 불일치로 판정됐더라도 다른 문장을 확인됨으로 표시하지 않습니다. "
-        "주장으로 읽지 않은 문장은 따로 보여 줍니다."
+        "문장 단위로 판정합니다. 정해진 문형, 의약품이 아니라는 고지 문구, 정해진 어휘로만 된 구매·사용 권유로 "
+        "끝까지 읽지 못한 문장이 광고문에 하나라도 있으면, 그 문장이 근거 불일치로 판정됐더라도 다른 문장을 "
+        "확인됨으로 표시하지 않습니다. 권유로 읽은 문장과 읽지 못한 문장은 따로 보여 줍니다."
     ),
     (
         "근거 불일치는 문장에 들어 있는 단어를 보고 판정합니다. 그 단어가 다른 것을 꾸미는 문장에서는 틀릴 수 있어 "
@@ -136,6 +141,8 @@ class CosmeticReceipt(BaseModel):
     product: CosmeticReceiptProduct
     ad_text: str
     claims: tuple[CosmeticReceiptClaim, ...]
+    # Invitations to use or buy that were read completely and claim nothing.
+    neutral_text: tuple[str, ...]
     unread_text: tuple[str, ...]
     rule_versions: tuple[str, ...]
     generated_at: AwareDatetime
@@ -178,6 +185,7 @@ def build_cosmetic_receipt(
             )
             for decision in decisions
         ),
+        neutral_text=tuple(sentence.text for sentence in neutral_sentences(ad_text)),
         unread_text=tuple(sentence.text for sentence in unread_sentences(ad_text)),
         rule_versions=(COSMETIC_CLAIM_VERSION, COSMETIC_EFFICACY_VERSION, COSMETIC_VERDICT_VERSION),
         generated_at=generated_at,
