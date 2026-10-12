@@ -1,10 +1,12 @@
 """Whitening and wrinkle claims against a functional cosmetic's official efficacy (synthetic products)."""
 
+import random
 import unicodedata
 from datetime import UTC, datetime
 
 import pytest
 
+from claimledger import claims_v1, cosmetics_claims
 from claimledger.claims_v1 import ExpressionStrength
 from claimledger.cosmetics_claims import (
     MAX_AD_TEXT_LENGTH,
@@ -95,6 +97,11 @@ def test_words_before_a_denial_caution_or_question_are_set_aside() -> None:
     assert read("부작용 없는 미백 크림") == ((F.WHITENING,), ExpressionStrength.GUARANTEE, ())
     # A weak word alone does not make a claim of a sentence.
     assert extract_cosmetic_claims("도움이 되지 않습니다.") == ()
+    # A denial reaches back to the last comma only, and a condition is not a denial.
+    assert read("기미 완치, 더 이상 꿈이 아닙니다.") == ((F.WHITENING,), ExpressionStrength.TREATMENT_PREVENTION, ())
+    assert read("주름이 100% 사라지지 않으면 환불해 드립니다.") == ((F.WRINKLE,), ExpressionStrength.GUARANTEE, ())
+    # A question mark inside a link is not a question.
+    assert read("주름이 100% 사라집니다 http://shop.example/item?id=1")[2] == ()
 
 
 @pytest.mark.parametrize(("ad", "official"), [
@@ -149,6 +156,19 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     ("미백뿐 아니라 주름까지 완벽하게 제거", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름 완화가 아니라 주름 제거입니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("시술 없이도 주름이 사라집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    # Words after an exaggeration that deny or forbid something else do not take it back.
+    ("주름이 100% 사라지지 않으면 환불해 드립니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름이 완벽하게 사라집니다 놓치지 마세요!", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름을 확실하게 지워주는 크림은 이것밖에 없습니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름 개선 100% 보장, 효과 없으면 전액 환불.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름이 100% 사라집니다 http://shop.example/item?id=1", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름 완벽 제거, 카톡 상담 환영.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("기미가 있으면 완벽하게 지워드립니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    # An effect verb after "기능성" or "도움" is still an effect verb.
+    ("미백 기능성 화장품으로 기미가 사라집니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름개선에 도움을 주어 주름이 펴집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("기미가 깨끗하게 없어집니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름이 쫙 펴져요.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     # Medical wording is outside what a cosmetic may claim, whatever the product.
     ("기미를 치료하는 미백 크림", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("피부 재생으로 주름개선에 도움을 줍니다.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
@@ -156,6 +176,10 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     ("의사가 처방한 미백 크림", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("피부과 처방 그대로 담았습니다.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("보톡스 맞은 듯한 주름개선", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("기미 완치, 더 이상 꿈이 아닙니다.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("주름을 치료하는 크림, 지금 상담하세요.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("아토피 피부염 치료 효과, 거짓말이 아닙니다.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("기미 완치 크림 무료배송, 무단 전재 금지.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("필러 맞은 듯한 주름개선", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
 ])
 def test_claims_beyond_the_official_efficacy_are_mismatches(
@@ -328,7 +352,12 @@ def test_claims_outside_the_first_two_functions_are_unverifiable(
     assert decision.verdict is Verdict.UNVERIFIABLE and decision.reason is reason
 
 
-@pytest.mark.parametrize("ad", ["저자극 처방으로 만들었습니다.", "재생 플라스틱 용기를 사용했습니다."])
+@pytest.mark.parametrize("ad", [
+    "저자극 처방으로 만들었습니다.",
+    "재생 플라스틱 용기를 사용했습니다.",
+    # Advice to seek treatment is not a claim to treat.
+    "이상이 생기면 사용을 중단하고 피부과 치료를 받으세요.",
+])
 def test_a_sentence_about_formulation_or_packaging_is_not_a_claim(ad: str) -> None:
     assert extract_cosmetic_claims(ad) == ()
     assert [item.text for item in unread_sentences(ad)] == [ad]
@@ -349,6 +378,7 @@ def test_a_sentence_about_formulation_or_packaging_is_not_a_claim(ad: str) -> No
     ("피부과 시술 후에는 사용 전 의사와 상의하세요.", BOTH),
     ("상처나 흉터가 있는 부위에는 바르지 마세요.", BOTH),
     ("흉터가 남을 수 있으니 상처 부위는 피해 주세요.", BOTH),
+    ("흉터나 상처 부위는 피해서 발라 주세요.", BOTH),
     # A denied or questioned effect is not that claim, whatever the cue words say.
     ("질병 치료 목적의 제품이 아닙니다.", BOTH),
     ("이 제품은 피부 질환을 치료하지 않습니다.", BOTH),
@@ -372,7 +402,6 @@ def test_a_sentence_about_formulation_or_packaging_is_not_a_claim(ad: str) -> No
     ("미백 기능성화장품이 아닙니다.", SUN),
     ("주름개선에 도움을 주지 않습니다.", SUN),
     ("미백에는 도움을 주지 않는 제품입니다.", WRINKLE),
-    ("미백, 주름개선 기능성은 없는 제품입니다.", SUN),
     ("주름이 사라질까요?", WRINKLE),
     ("주름개선 되나요?", SUN),
     ("미백에 도움을 줄 수 있나요?", BOTH),
@@ -392,6 +421,16 @@ def test_a_denied_or_questioned_effect_is_neither_cleared_nor_condemned(ad: str,
     ("기미, 주근깨가 걱정되는 분도 사용할 수 있습니다.", WRINKLE),
     # What is left after the denial does not claim the function either.
     ("주름개선 기능성 화장품은 아니며 보습 크림입니다.", WHITENING),
+    ("미백, 주름개선 기능성은 없는 제품입니다.", SUN),
+    # Letters of a cue that fall across two words, or inside another word, are not that cue.
+    ("주름개선에 도움을 주는 제품, 후기 적립금도 드립니다.", WRINKLE),
+    ("미백에 도움을 주는 제품, 상세 정보 장바구니 아래에 있습니다.", WHITENING),
+    ("기능성 화장품 후기 미리 확인해 보세요.", WRINKLE),
+    ("기능성 화장품과 향기 미스트 세트입니다.", WRINKLE),
+    ("미백 크림 불량은 무료로 교환해 드립니다.", WHITENING),
+    ("주름개선 크림을 정기적으로 받아 보세요.", WRINKLE),
+    ("미백 크림은 주기적으로 발라 주세요.", WHITENING),
+    ("주름개선 크림은 일상의 루틴에 더해 보세요.", WRINKLE),
 ])
 def test_a_function_word_without_a_claim_does_not_condemn(ad: str, official: str) -> None:
     decisions = _decide_all(ad, _official(official))
@@ -419,3 +458,17 @@ def test_decomposed_hangul_is_read_like_composed_text() -> None:
     assert decision.verdict is Verdict.MISMATCH and decision.claim.text == "주름을 확실하게 없애줍니다."
     plain = "\ufeff" + unicodedata.normalize("NFD", "미백에 도움을 줍니다.")
     assert _decide(plain, _product(sentence=WHITENING)).verdict is Verdict.CONFIRMED
+
+
+def test_letters_across_two_words_do_not_make_a_neighbouring_sentence_a_claim() -> None:
+    # "살펴 주세요" holds the letters of the effect verb "펴주".
+    ad = "미백에 도움을 줍니다. 상세 정보를 살펴 주세요."
+    assert [decision.verdict for decision in _decide_all(ad, _product(sentence=WHITENING))] == [Verdict.CONFIRMED]
+
+
+def test_the_sentence_splitter_agrees_with_the_shared_one() -> None:
+    # The local splitter is linear; the shared one is quadratic on runs of closing marks.
+    rng = random.Random(20261012)
+    for _ in range(4000):
+        text = "".join(rng.choice("가a .!?…。\n") for _ in range(rng.randint(0, 24)))
+        assert cosmetics_claims._sentence_spans(text) == claims_v1._sentence_spans(text), repr(text)
