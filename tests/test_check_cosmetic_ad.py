@@ -80,6 +80,8 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
         "registered_on": "20250102", "source_id": "data.go.kr:15095680",
         # JSON output writes the UTC offset as "Z".
         "retrieved_at": RETRIEVED_AT.replace("+00:00", "Z"),
+        # The official wording is shown whatever the verdicts are, so a mismatch can be checked.
+        "official_statement": BOTH,
     }
     verdicts = [(claim["verdict"], claim["verdict_label"], claim["reason_code"]) for claim in body["claims"]]
     assert verdicts == [
@@ -91,8 +93,38 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
         "피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.",
     ]
     assert body["claims"][1]["official_quotes"] == [] and body["claims"][0]["reason_message"]
-    assert body["rule_versions"] == ["cosmetic-claim-v1.0", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.0"]
+    assert body["claims"][1]["strength_cues"] == ["100%"] and body["claims"][1]["function_cues"] == ["주름"]
+    assert body["unread_text"] == []
+    assert body["rule_versions"] == ["cosmetic-claim-v1.1", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.1"]
     assert body["limitations"] and body["generated_at"]
+
+
+def test_unjudged_text_is_listed_and_withholds_the_confirmation(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
+    code, body = _run(
+        capsys, "--export-dir", str(_export(tmp_path, ROWS)), "--record-id", "2026030397",
+        "--ad-text", "단 2주. 미백에 도움을 줍니다.", "--confirm-claims", "all",
+    )
+    assert code == 0 and body["unread_text"] == ["단 2주."]
+    assert [(claim["verdict"], claim["reason_code"]) for claim in body["claims"]] == [
+        ("unverifiable", "AD_TEXT_NOT_FULLY_READ"),
+    ]
+    assert body["claims"][0]["official_quotes"] == [] and body["product"]["official_statement"] == BOTH
+
+
+def test_claims_are_listed_for_confirmation_before_any_verdict(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
+    # No export is needed to see what would be judged.
+    code, body = _run(
+        capsys, "--export-dir", str(tmp_path / "absent"), "--ad-text", "단 2주. 미백에 도움을 줍니다.\n주름 100% 제거",
+    )
+    assert code == 0 and "claims" not in body and "verdict" not in json.dumps(body)
+    assert body["extracted_claims"] == [
+        {"claim_id": "C1", "text": "미백에 도움을 줍니다."}, {"claim_id": "C2", "text": "주름 100% 제거"},
+    ]
+    assert body["unread_text"] == ["단 2주."]
 
 
 def test_unconfirmed_claims_and_untrusted_records_stay_unverifiable(
@@ -118,8 +150,11 @@ def test_unconfirmed_claims_and_untrusted_records_stay_unverifiable(
     ["--record-id", "0000000000", "--ad-text", "미백에 도움을 줍니다.", "--confirm-claims", "all"],
     ["--record-id", "2026030397", "--ad-text", "미백에 도움을 줍니다.", "--confirm-claims", "C9"],
     ["--record-id", "2026030397", "--ad-text", "   ", "--confirm-claims", "all"],
-    ["--record-id", "2026030397", "--ad-text", "미백에 도움을 줍니다."],
+    ["--record-id", "2026030397"],
+    ["--ad-text", "미백에 도움을 줍니다.", "--confirm-claims", "all"],
+    ["--ad-text", "   "],
     ["--query", "  "],
+    [],
 ])
 def test_input_errors_exit_with_three_and_no_verdict(
     tmp_path: Path, capsys: pytest.CaptureFixture[str], extra: list[str],

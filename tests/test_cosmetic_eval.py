@@ -205,16 +205,19 @@ def test_score_reports_agreement_recall_and_false_clearance(tmp_path: Path) -> N
         _case("C", "rep5000", "미백에 도움을 줍니다.", "unverifiable"),
         _case("D", "rev0000", "나이아신아마이드가 미백에 도움을 줍니다.", "confirmed", source="reviewed"),
         _case("E", "rep0001", "촉촉한 사용감입니다.", "unverifiable"),
+        # Unjudged text beside a recognized sentence withholds the confirmation.
+        _case("F", "rep0002", "단 2주. 미백에 도움을 줍니다.", "mismatch"),
     ]
     code, summary = _score(tmp_path, cases, "--require-zero-false-clearance")
     assert code == 0
-    assert summary["judged_case_count"] == 5 and summary["exact_agreement_count"] == 3
+    assert summary["judged_case_count"] == 6 and summary["exact_agreement_count"] == 3
     assert summary["false_clearance_count"] == 0 and summary["confirmed_recall"] == 0.5
     assert summary["claim_extraction_error_count"] == 1
     by_id = {row["case_id"]: row for row in summary["results"]}
     assert by_id["D"]["actual_verdict"] == "unverifiable" and by_id["D"]["reason_code"] == "CLAIM_SCOPE_UNRESOLVED"
     assert by_id["E"]["outcome"] == "claim_count_error" and by_id["E"]["actual_verdict"] == "unverifiable"
-    assert summary["rule_versions"] == ["cosmetic-claim-v1.0", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.0"]
+    assert by_id["F"]["actual_verdict"] == "unverifiable" and by_id["F"]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
+    assert summary["rule_versions"] == ["cosmetic-claim-v1.1", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.1"]
 
 
 def test_a_false_clearance_fails_the_gate(tmp_path: Path) -> None:

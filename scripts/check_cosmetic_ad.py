@@ -1,9 +1,10 @@
 """Check a cosmetics advertisement against a functional cosmetic's official efficacy.
 
 Works on the local export written by scripts/audit_cosmetics.py, without the network. The product
-is never chosen automatically: --query only lists candidate records with their official efficacy,
-and a verdict needs the record number the user picked (--record-id) and an explicit confirmation
-of which extracted claims to judge (--confirm-claims all, or claim ids such as C1 C2).
+is never chosen automatically: --query only lists candidate records with their official efficacy.
+--ad-text alone lists the claims the rules would judge and the sentences they would not, with no
+verdict. A verdict needs the record number the user picked (--record-id) and an explicit
+confirmation of which extracted claims to judge (--confirm-claims all, or claim ids such as C1 C2).
 
 Exit codes: 0 done, 3 input error.
 """
@@ -14,9 +15,14 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
-from claimledger.cosmetics_claims import confirm_cosmetic_claims, extract_cosmetic_claims
+from claimledger.cosmetics_claims import (
+    confirm_cosmetic_claims,
+    extract_cosmetic_claims,
+    normalize_ad_text,
+    unread_sentences,
+)
 from claimledger.cosmetics_receipt import build_cosmetic_receipt
-from claimledger.cosmetics_verdict import ConfirmedCosmetic, decide_cosmetic_claim
+from claimledger.cosmetics_verdict import ConfirmedCosmetic, decide_cosmetic_ad
 from claimledger.errors import DataSourceError
 from claimledger.official_v2 import _compact
 from claimledger.sources.functional_cosmetics import (
@@ -64,35 +70,61 @@ def _ad_text(args: argparse.Namespace) -> str:
         raise InputError("the advertisement text is empty")
     if len(text) > MAX_AD_TEXT_LENGTH:
         raise InputError(f"the advertisement text is longer than {MAX_AD_TEXT_LENGTH} characters")
-    return text
+    return normalize_ad_text(text)
+
+
+def _candidates(args: argparse.Namespace) -> dict:
+    _, items = load_cosmetics_export(args.export_dir, SOURCES[args.source])
+    return {"candidates": [
+        {
+            "record_id": item.record_id, "item_name": item.item_name, "company": item.company,
+            "registered_on": item.registered_on, "official_statement": item.statement,
+        }
+        for item in search(items, args.query, args.limit)
+    ]}
+
+
+def _extraction(args: argparse.Namespace) -> dict:
+    """What the rules would judge and what they would not, for the user to confirm."""
+    text = _ad_text(args)
+    return {
+        "extracted_claims": [
+            {"claim_id": claim.claim_id, "text": claim.text} for claim in extract_cosmetic_claims(text)
+        ],
+        "unread_text": [sentence.text for sentence in unread_sentences(text)],
+    }
+
+
+def _receipt(args: argparse.Namespace) -> dict:
+    _, items = load_cosmetics_export(args.export_dir, SOURCES[args.source])
+    product = next((item for item in items if item.record_id == args.record_id), None)
+    if product is None:
+        raise InputError(f"record {args.record_id} is not in the {args.source} export")
+    text = _ad_text(args)
+    selected = "all" if args.confirm_claims == ["all"] else args.confirm_claims
+    claims = confirm_cosmetic_claims(extract_cosmetic_claims(text), selected)
+    confirmed = ConfirmedCosmetic(product=product, confirmed_by_user=True)
+    decisions = decide_cosmetic_ad(text, claims, confirmed)
+    return build_cosmetic_receipt(text, confirmed, decisions, datetime.now(UTC)).model_dump(mode="json")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    has_text = args.ad_text is not None or args.ad_text_file is not None
     try:
-        _, items = load_cosmetics_export(args.export_dir, SOURCES[args.source])
-        if args.record_id is None:
-            if args.query is None:
-                raise InputError("give --query to list candidates or --record-id to judge")
-            body = {"candidates": [
-                {
-                    "record_id": item.record_id, "item_name": item.item_name, "company": item.company,
-                    "registered_on": item.registered_on, "official_statement": item.statement,
-                }
-                for item in search(items, args.query, args.limit)
-            ]}
+        if args.confirm_claims is not None and args.record_id is None:
+            raise InputError("--confirm-claims needs the --record-id of the product the user confirmed")
+        if args.confirm_claims is not None:
+            body = _receipt(args)
+        elif has_text:
+            body = _extraction(args)
+        elif args.record_id is None and args.query is not None:
+            body = _candidates(args)
         else:
-            if args.confirm_claims is None:
-                raise InputError("--confirm-claims is required: 'all' or the claim ids to judge")
-            product = next((item for item in items if item.record_id == args.record_id), None)
-            if product is None:
-                raise InputError(f"record {args.record_id} is not in the {args.source} export")
-            text = _ad_text(args)
-            selected = "all" if args.confirm_claims == ["all"] else args.confirm_claims
-            claims = confirm_cosmetic_claims(extract_cosmetic_claims(text), selected)
-            confirmed = ConfirmedCosmetic(product=product, confirmed_by_user=True)
-            decisions = [decide_cosmetic_claim(claim, confirmed) for claim in claims]
-            body = build_cosmetic_receipt(text, confirmed, decisions, datetime.now(UTC)).model_dump(mode="json")
+            raise InputError(
+                "give --query to list candidates, --ad-text to list the claims to confirm, "
+                "or --record-id with --confirm-claims to judge"
+            )
     except (InputError, DataSourceError, OSError, ValueError) as error:
         print(f"error: {error}")
         return 3

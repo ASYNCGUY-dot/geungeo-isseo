@@ -36,7 +36,7 @@ from claimledger.cosmetics_official import (
 from claimledger.cosmetics_verdict import (
     COSMETIC_VERDICT_VERSION,
     ConfirmedCosmetic,
-    decide_cosmetic_claim,
+    decide_cosmetic_ad,
 )
 from claimledger.domain import Verdict
 from claimledger.errors import DataSourceError
@@ -408,7 +408,7 @@ def _judge(case: dict, records: dict[str, dict[str, FunctionalCosmetic]]) -> dic
         raise CosmeticEvalError(f"{case.get('case_id')}: unknown source, record or expected verdict") from None
     product = ConfirmedCosmetic(product=record, confirmed_by_user=True)
     claims = confirm_cosmetic_claims(extract_cosmetic_claims(case["ad_text"]), "all")
-    decisions = [decide_cosmetic_claim(claim, product) for claim in claims]
+    decisions = decide_cosmetic_ad(case["ad_text"], claims, product)
     if len(decisions) != 1:
         # No claim means no judgment was made. Several claims count as confirmed if any is.
         confirmed = any(decision.verdict is Verdict.CONFIRMED for decision in decisions)

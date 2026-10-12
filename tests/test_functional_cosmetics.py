@@ -91,6 +91,14 @@ def test_document_paragraphs_are_plain_lines() -> None:
     plain = '<DOC><SECTION><ARTICLE><PARAGRAPH tagName="p">모발의 염모(흑색)</PARAGRAPH></ARTICLE></SECTION></DOC>'
     assert doc_paragraphs(plain) == ("모발의 염모(흑색)",)
     assert doc_paragraphs("") == ()
+    # The pattern reads an empty self-closing paragraph as an opening tag; the text after it must
+    # still come out once, with or without CDATA.
+    closed = (
+        '<DOC><SECTION><ARTICLE><PARAGRAPH tagName="p" />'
+        '<PARAGRAPH tagName="p"><![CDATA[피부의 미백에 도움을 준다.]]></PARAGRAPH><PARAGRAPH tagName="p"/>'
+        '<PARAGRAPH tagName="p">피부의 주름개선에 도움을 준다.</PARAGRAPH></ARTICLE></SECTION></DOC>'
+    )
+    assert doc_paragraphs(closed) == ("피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.")
 
 
 def test_a_title_only_document_is_read_from_its_article_titles() -> None:
