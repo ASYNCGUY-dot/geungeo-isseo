@@ -79,6 +79,8 @@ def _decide_all(ad: str, official: str) -> tuple[CosmeticDecision, ...]:
     ("미백에 도움을 주는 기능성 화장품 판매 중", WHITENING),
     ("피부의 주름개선에 도움을 주는 기능성 화장품을 소개합니다.", WRINKLE),
     ("미백에 도움을 주는 기능성 화장품이 재입고되었습니다!", WHITENING),
+    ("미백에 도움을 주는 기능성 화장품, 오늘 매장에 입고되었습니다.", WHITENING),
+    ("미백에 도움을 주는 제품, 상세 정보를 살펴주세요.", WHITENING),
     # How the product got to the shop, said before it.
     ("드디어 입고된 미백에 도움을 주는 기능성 화장품을 만나보세요", WHITENING),
     ("지금 이 페이지에서 만나는 주름개선에 도움을 주는 기능성 화장품", WRINKLE),
@@ -178,6 +180,19 @@ def test_anything_outside_the_role_lists_keeps_the_sentence_unconfirmed(ad: str)
     ("미백에 도움을 주며, 피부관리를 완성합니다.", WHITENING),
     ("미백에 도움을 주는 제품, 꼭 관리를 완성해 드립니다.", WHITENING),
     ("미백에 도움을 주는 제품, 여러분께 알맞습니다.", WHITENING),
+    # Second review (90f96ce): "check" with nothing to check, after "apply once", promises a result
+    # at once; a seller statement with an argument becomes a claim of its own; "도" adds a product.
+    ("주름개선에 도움을 주는 제품, 한 번 바로 확인해 보세요.", WRINKLE),
+    ("한 번 발라 보세요, 주름개선에 도움을 줍니다, 바로 확인해 보세요.", WRINKLE),
+    ("오늘 발라 보세요, 주름개선에 도움을 줍니다, 오늘 바로 확인하세요.", WRINKLE),
+    ("이 제품 한 번 써 보세요, 미백에 도움을 줍니다, 지금 장바구니에 담아 보세요.", WHITENING),
+    ("미백에 도움을 주는 제품, 온라인에서 추천합니다.", WHITENING),
+    ("미백에 도움을 주는 제품, 꾸준히 판매 중입니다.", WHITENING),
+    ("꾸준히 판매 중인 미백 기능성 화장품입니다.", WHITENING),
+    ("먼저 출시된 미백 기능성 화장품입니다.", WHITENING),
+    ("미백에 도움을 주는 제품, 일상을 추천합니다.", WHITENING),
+    ("미백에 도움을 주는 제품도 판매합니다.", WHITENING),
+    ("미백에 도움을 주는 제품, 살펴보세요.", WHITENING),
 ])
 def test_words_cannot_be_combined_into_content_of_their_own(ad: str, official: str) -> None:
     decisions = _decide_all(ad, official)
@@ -188,6 +203,19 @@ def test_a_fully_read_natural_sentence_can_show_a_missing_function() -> None:
     ad = "피부 미백과 주름개선에 도움을 주는 이 제품으로 스킨케어를 시작해 보세요."
     (decision,) = _decide_all(ad, WRINKLE)
     assert decision.verdict is Verdict.MISMATCH and decision.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
+
+
+def test_several_invitations_cannot_add_up_to_a_promise() -> None:
+    # "Apply once. Check right away." beside a claim reads as a result at once.
+    for ad in (
+        "주름개선에 도움을 줍니다. 한 번 발라 보세요. 바로 확인해 보세요.",
+        "주름개선에 도움을 줍니다. 사용 전 확인해 보세요. 한 번 써 보세요. 다시 확인해 보세요.",
+    ):
+        decisions = _decide_all(ad, WRINKLE)
+        assert [decision.reason for decision in decisions] == [R.AD_TEXT_NOT_FULLY_READ]
+    # Checking the page is something else.
+    ad = "주름개선에 도움을 줍니다. 한 번 발라 보세요. 상세 페이지에서 확인해 보세요."
+    assert [decision.verdict for decision in _decide_all(ad, WRINKLE)] == [Verdict.CONFIRMED]
 
 
 def test_an_invitation_sentence_is_read_and_does_not_block_a_confirmation() -> None:
@@ -219,6 +247,11 @@ def test_an_invitation_sentence_is_read_and_does_not_block_a_confirmation() -> N
     "그 제품 이야기입니다.",
     "회원 후기입니다.",
     "회원이 추천합니다.",
+    # "Check" needs something to check: the page or its information.
+    "바로 확인해 보세요.",
+    "사용 전 확인해 보세요.",
+    "다시 확인해 보세요.",
+    "꾸준히 판매 중입니다.",
 ])
 def test_other_text_beside_a_claim_still_blocks_the_confirmation(neighbour: str) -> None:
     for ad in (f"미백에 도움을 줍니다. {neighbour}", f"{neighbour} 미백에 도움을 줍니다."):
@@ -230,6 +263,8 @@ def test_other_text_beside_a_claim_still_blocks_the_confirmation(neighbour: str)
 
 
 @pytest.mark.parametrize("ad", [
+    "미백" * 1250 + "," + "않" * 2499,
+    "기미" * 1666 + "," + "않" * 1667,
     "미백에 도움을 주는 제품, " + "지금 " * 400 + "효과",
     "…" * 4999 + "a",
     "미백 도움 " + "." * 4990 + "a",
