@@ -196,6 +196,9 @@ def test_anything_outside_the_role_lists_keeps_the_sentence_unconfirmed(ad: str)
     # Third pass (f2936f9): a place in the reader's life or a store is where one looks at one's face.
     ("주름개선에 도움을 주는 제품, 화장대에서 한 번 바로 확인해 보세요.", WRINKLE),
     ("주름개선에 도움을 주는 제품, 매장에서 바로 확인해 보세요.", WRINKLE),
+    # Fourth pass (3a8cf89): "구경하다" is a look as well.
+    ("주름개선에 도움을 주는 제품, 화장대에서 한 번 바로 구경해 보세요.", WRINKLE),
+    ("주름개선에 도움을 주는 제품, 일상에서 바로 둘러보세요.", WRINKLE),
 ])
 def test_words_cannot_be_combined_into_content_of_their_own(ad: str, official: str) -> None:
     decisions = _decide_all(ad, official)
@@ -208,29 +211,42 @@ def test_a_fully_read_natural_sentence_can_show_a_missing_function() -> None:
     assert decision.verdict is Verdict.MISMATCH and decision.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
 
 
-def test_several_invitations_cannot_add_up_to_a_promise() -> None:
-    # "Apply once. Check right away." beside a claim reads as a result at once.
-    for ad in (
-        "주름개선에 도움을 줍니다. 한 번 발라 보세요. 바로 확인해 보세요.",
-        "주름개선에 도움을 줍니다. 사용 전 확인해 보세요. 한 번 써 보세요. 다시 확인해 보세요.",
-        "주름개선에 도움을 줍니다. 한 번 발라 보세요. 화장대에서 바로 확인해 보세요.",
-        "주름개선에 도움을 줍니다. 사용 전 화장대에서 확인해 보세요. 한 번 써 보세요. 화장대에서 다시 확인해 보세요.",
-    ):
-        decisions = _decide_all(ad, WRINKLE)
-        assert [decision.reason for decision in decisions] == [R.AD_TEXT_NOT_FULLY_READ]
-    # Checking the page is something else.
-    ad = "주름개선에 도움을 줍니다. 한 번 발라 보세요. 상세 페이지에서 확인해 보세요."
-    assert [decision.verdict for decision in _decide_all(ad, WRINKLE)] == [Verdict.CONFIRMED]
+@pytest.mark.parametrize("ad", [
+    # "Apply once. Check right away." beside a claim reads as a result at once. Each reviewed
+    # grammar still let some pair through, so an advertisement gets one invitation, not several.
+    "주름개선에 도움을 줍니다. 한 번 발라 보세요. 바로 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 사용 전 확인해 보세요. 한 번 써 보세요. 다시 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 한 번 발라 보세요. 화장대에서 바로 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 사용 전 화장대에서 확인해 보세요. 한 번 써 보세요. 화장대에서 다시 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 여기에 한 번 발라 보세요. 여기에서 바로 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 이곳에 한 번 발라 보세요. 이곳에서 지금 바로 확인하세요.",
+    "주름개선에 도움을 줍니다. 한 번 발라 보세요. 화장대에서 바로 구경해 보세요.",
+    "주름개선에 도움을 줍니다. 한 번 발라 보세요. 상세 페이지에서 확인해 보세요.",
+    "주름개선에 도움을 줍니다. 한 번 발라 보세요. 바로 완성해 보세요.",
+    # One inside the claim sentence and one beside it are two as well.
+    "주름개선에 도움을 주는 제품, 지금 만나 보세요. 장바구니에 담아 보세요.",
+    "장바구니에 담아 보세요. 한 번 써 보세요, 주름개선에 도움을 줍니다.",
+])
+def test_several_invitations_cannot_add_up_to_a_promise(ad: str) -> None:
+    decisions = _decide_all(ad, WRINKLE)
+    assert [decision.reason for decision in decisions] == [R.AD_TEXT_NOT_FULLY_READ]
 
 
 def test_an_invitation_sentence_is_read_and_does_not_block_a_confirmation() -> None:
-    ad = "미백에 도움을 줍니다. 지금 장바구니에 담아 보세요!\n매일 저녁 루틴에 더해 보세요."
+    ad = "미백에 도움을 줍니다.\n지금 장바구니에 담아 보세요!"
     decisions = _decide_all(ad, WHITENING)
 
     assert [decision.verdict for decision in decisions] == [Verdict.CONFIRMED]
-    assert [item.text for item in neutral_sentences(ad)] == ["지금 장바구니에 담아 보세요!", "매일 저녁 루틴에 더해 보세요."]
+    assert [item.text for item in neutral_sentences(ad)] == ["지금 장바구니에 담아 보세요!"]
     assert [ad[slice(*item.span)] for item in neutral_sentences(ad)] == [item.text for item in neutral_sentences(ad)]
     assert unread_sentences(ad) == ()
+    assert [d.verdict for d in _decide_all("미백에 도움을 줍니다. 상세 페이지에서 확인해 보세요.", WHITENING)] == [
+        Verdict.CONFIRMED
+    ]
+    # A second invitation is still shown as read text, but the confirmation is withheld.
+    twice = ad + "\n매일 저녁 루틴에 더해 보세요."
+    assert [decision.reason for decision in _decide_all(twice, WHITENING)] == [R.AD_TEXT_NOT_FULLY_READ]
+    assert len(neutral_sentences(twice)) == 2 and unread_sentences(twice) == ()
 
 
 @pytest.mark.parametrize("neighbour", [

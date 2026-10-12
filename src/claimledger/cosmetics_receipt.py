@@ -82,8 +82,8 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
         "미백·주름개선에 관한 단어는 있지만 문장 전체가 무엇을 주장하는지(주체·조건·범위) 규칙으로 확정할 수 없어 보류했습니다."
     ),
     CosmeticVerdictReason.AD_TEXT_NOT_FULLY_READ: (
-        "이 문장만 보면 공식 효능효과와 같은 표현입니다. 다만 같은 광고문에 규칙이 끝까지 읽지 못한 문장이 있어 "
-        "앞뒤 문장이 뜻을 바꾸는지 확인할 수 없으므로 확인됨으로 표시하지 않았습니다."
+        "이 문장만 보면 공식 효능효과와 같은 표현입니다. 다만 같은 광고문에 규칙이 끝까지 읽지 못한 문장이 있거나 "
+        "구매·사용 권유가 둘 이상이어서, 앞뒤 문장이 뜻을 바꾸는지 확인할 수 없으므로 확인됨으로 표시하지 않았습니다."
     ),
     CosmeticVerdictReason.MATCHES_OFFICIAL_EFFICACY: "공식 효능효과와 같은 범위·강도로 표현했습니다.",
 }

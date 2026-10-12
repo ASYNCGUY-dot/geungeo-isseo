@@ -19,6 +19,7 @@ from claimledger.cosmetics_claims import (
     CosmeticClaim,
     asserted_functions,
     extract_cosmetic_claims,
+    invitation_count,
     unread_sentences,
 )
 from claimledger.cosmetics_official import (
@@ -31,7 +32,7 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.2"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.3"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 # An official function on a narrower scope neither confirms nor contradicts the general claim.
@@ -81,8 +82,8 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.6"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.2"] = COSMETIC_VERDICT_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.7"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.3"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -154,13 +155,15 @@ def decide_cosmetic_ad(
     form, the recognized disclaimer or an invitation to use or buy read in the closed vocabulary
     (those are not listed as unread). Anything else beside it may change what it says, and a
     keyword verdict on that neighbour ("(피부과 시술 병행 시)" is flagged for "시술") does not show
-    that it was understood.
+    that it was understood. The advertisement may hold one invitation: each is harmless alone, but
+    two can add up to a promise ("한 번 발라 보세요. 바로 확인해 보세요.").
     """
     unconfirmed = [claim.model_copy(update={"confirmed_by_user": False}) for claim in claims]
     if unconfirmed != list(extract_cosmetic_claims(text)):
         raise ValueError("the claims are not the ones extracted from this advertisement text")
     decisions = tuple(_decide_sentence(claim, product) for claim in claims)
-    if not unread_sentences(text) and all(asserted_functions(claim) is not None for claim in claims):
+    read = not unread_sentences(text) and all(asserted_functions(claim) is not None for claim in claims)
+    if read and invitation_count(text, claims) <= 1:
         return decisions
     return tuple(
         _decision(decision.claim, Verdict.UNVERIFIABLE, CosmeticVerdictReason.AD_TEXT_NOT_FULLY_READ)

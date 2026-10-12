@@ -217,7 +217,7 @@ def test_score_reports_agreement_recall_and_false_clearance(tmp_path: Path) -> N
     assert by_id["D"]["actual_verdict"] == "unverifiable" and by_id["D"]["reason_code"] == "CLAIM_SCOPE_UNRESOLVED"
     assert by_id["E"]["outcome"] == "claim_count_error" and by_id["E"]["actual_verdict"] == "unverifiable"
     assert by_id["F"]["actual_verdict"] == "unverifiable" and by_id["F"]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
-    assert summary["rule_versions"] == ["cosmetic-claim-v1.6", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
+    assert summary["rule_versions"] == ["cosmetic-claim-v1.7", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.3"]
 
 
 def test_a_false_clearance_fails_the_gate(tmp_path: Path) -> None:

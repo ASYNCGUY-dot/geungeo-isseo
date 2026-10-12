@@ -176,6 +176,7 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     # A cue that runs from the end of one word over the whole next word is still that cue.
     ("단3일 만에 주름 고민 끝.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("단3일 만에도 주름 고민 끝.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("주름 효과 100 % 체감.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     # A warning about something else after the claim does not take it back.
     ("주름 100% 제거, 유사품에 주의하세요.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름을 완벽하게 없애려면 강한 햇빛을 피하고 꾸준히 바르세요.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
@@ -202,6 +203,12 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     ("기미 치료 크림, 마음에 들지 않으면 환불.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("보톡스 효과 주름 크림, 재고가 있으면 바로 구매하세요.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("기미 완치 크림, 가품에 주의하세요.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    # "If it is a treatment cream", "as if treated", "after treating" are claims, not states.
+    ("주름 치료 크림이라면 단연 이 제품.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("보톡스 효과라면 이 주름 크림.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("피부과 시술 받은 것 같은 주름 케어.", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("기미 치료 후 맑아진 피부.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
+    ("아토피가 낫지 않으면 전액 환불해 드립니다.", WHITENING, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
     ("필러 맞은 듯한 주름개선", WRINKLE, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
 ])
 def test_claims_beyond_the_official_efficacy_are_mismatches(
@@ -419,6 +426,13 @@ def test_a_sentence_about_formulation_or_packaging_is_not_a_claim(ad: str) -> No
     ("염증이 생겼을 때는 병원에 가세요.", BOTH),
     ("아토피 피부라면 테스트 후 사용하세요.", BOTH),
     ("흉터가 남았다면 전문의를 찾으세요.", BOTH),
+    ("시술 직후에는 사용을 쉬어 주세요.", BOTH),
+    ("시술 당일에는 쉬어 주세요.", BOTH),
+    ("레이저 시술을 받았다면 일주일 뒤 사용하세요.", BOTH),
+    ("염증이나 붉은 반점이 생기면 병원에 가세요.", BOTH),
+    ("습진이나 두드러기가 나타나면 바로 씻어내세요.", BOTH),
+    ("염증이 심할 때는 쉬어 주세요.", BOTH),
+    ("염증이 난 곳은 피하고 발라 주세요.", BOTH),
     # A denial covers a list joined by commas.
     ("본 제품은 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.", WHITENING),
     ("이 제품은 질병의 예방, 치료를 위한 의약품이 아닙니다.", WHITENING),
@@ -497,6 +511,12 @@ def test_a_denied_or_questioned_effect_is_neither_cleared_nor_condemned(ad: str,
     ("보습진정 미백 크림입니다.", WHITENING),
     ("미백 크림의 향은 개인 취향상 다르게 느껴집니다.", WHITENING),
     ("미백 크림 반품 배송비는 반환해 드립니다.", WHITENING),
+    # Taking a pack off is a step of use, and a delivery time is not a time of the effect.
+    ("미백 기능성 화장품, 15분 뒤 미백 팩 제거 후 세안하세요.", WHITENING),
+    ("주름개선 기능성 화장품, 주름 패치 제거 후 발라 주세요.", WRINKLE),
+    ("미백 크림, 주문 후 하루 만에 도착합니다.", WHITENING),
+    ("주름개선 크림 출시 3일 만에 완판.", WRINKLE),
+    ("미백 크림 2주 만에 재입고.", WHITENING),
 ])
 def test_a_function_word_without_a_claim_does_not_condemn(ad: str, official: str) -> None:
     decisions = _decide_all(ad, _official(official))

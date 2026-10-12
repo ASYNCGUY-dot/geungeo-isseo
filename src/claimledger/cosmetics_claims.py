@@ -17,8 +17,9 @@ Around a claim form a sentence may carry an invitation to the reader ("…제품
 words and an action: when, where, what. The lists hold no subject, so nothing can bring in a third
 party or another product, and no noun that a time, an amount or an effect could attach to; "check"
 needs the page or its information as what is checked. One word outside them leaves the sentence
-unread. A sentence that is only an invitation is a neutral sentence: it is read, claims nothing,
-and does not withhold a confirmation beside it.
+unread. A sentence that is only an invitation is a neutral sentence: it is read and claims
+nothing. One invitation does not withhold a confirmation beside it; two can add up to a promise
+("한 번 발라 보세요. 바로 확인해 보세요."), so an advertisement with more than one is not confirmed.
 """
 
 import re
@@ -33,7 +34,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.6"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.7"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -80,9 +81,11 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Patte
     ),
     (
         ExpressionStrength.GUARANTEE,
-        re.compile(r"보장|100%|100퍼|백퍼|확실|반드시|무조건|완벽|단번에|기적|영구|무부작용"),
+        re.compile(r"보장|확실|반드시|무조건|완벽|단번에|기적|영구|무부작용"),
+        # A time of delivery or of selling out is not a time of the effect.
         re.compile(
-            r"하루만에|\d+(?:일|주|개월)만에|부작용(?:이|은|도|걱정)?(?:전혀|하나도|일절)?(?:없|제로)"
+            r"100%|100퍼|백퍼|(?:하루|\d+(?:일|주|개월))만에(?!도착|완판|재입고|품절|배송|매진)"
+            r"|부작용(?:이|은|도|걱정)?(?:전혀|하나도|일절)?(?:없|제로)"
         ),
     ),
     (ExpressionStrength.SUPPORT, re.compile(r"도움|기능성"), None),
@@ -90,7 +93,7 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Patte
         ExpressionStrength.IMPROVEMENT,
         re.compile(
             rf"개선(?={_VERBAL})|향상|좋아(?:지|집|져|졌)|회복|되살|강화|해결|해소|없애|없어지|없어집|없어져"
-            r"|사라지|사라집|사라져|사라졌|사라진|제거|지워|지우는|지웁|펴주|펴줍|펴집|펴져|펴지|하얗게|하얘"
+            r"|사라지|사라집|사라져|사라졌|사라진|제거(?!후|한뒤|한후)|지워|지우는|지웁|펴주|펴줍|펴집|펴져|펴지|하얗게|하얘"
             r"|밝아|환해|엷게|옅게|옅어지|옅어집|옅어져|완화|줄여|줄어|감소"
         ),
         None,
@@ -118,17 +121,19 @@ _RHETORICAL = re.compile(r"(?:꿈|거짓말|거짓|과장|농담|우연)(?:이|�
 # "놓치지 마세요", "무단 전재 금지" and "카톡 상담 환영" follow claims in ordinary advertising.
 _CAUTION = re.compile(
     r"사용하지마|사용하지말|바르지마|바르지말|믿지마|사용을?(?:중지|중단|자제|삼가|피하|피해|금)|사용금지"
-    r"|피해서|피해주|피하세|피하십|부위(?:는|를|은)?피하|(?:전문의|의사|약사|피부과)(?:등)?(?:와|과|에게|의)?(?:상담|상의)"
+    r"|피해서|피해주|피하세|피하십|(?:부위|곳)(?:는|를|은)?피하"
+    r"|(?:전문의|의사|약사|피부과)(?:등)?(?:와|과|에게|의)?(?:상담|상의)"
     r"|상담할것|있(?:는|으신|을)(?:분|경우|부위)"
 )
-# A disease word names a state, not a claim, when the sentence goes straight on to "after it" or
-# "having had it" ("시술 후에는", "시술 받은 날"), or to a condition within a few letters and before
-# any comma ("염증이 생기면", "아토피 피부라면"). Farther away the condition is about something else
-# ("완치 크림, 마음에 들지 않으면 환불").
-_STATE_AFTER = re.compile(r"(?:를|을)?받은(?!듯)|후(?!기)")
+# A disease word names a state, not a claim, in two cases. A procedure the reader has had: "시술
+# 후에는", "시술 당일", "시술 받은 날" (not "시술 받은 듯", and not "치료 후 맑아진 피부"). And a
+# symptom followed within a few letters, before any comma, by its condition: "염증이 생기면",
+# "아토피 피부라면". Farther away the condition is about something else ("완치 크림, 마음에 들지
+# 않으면 환불"); "…이라면" names the product and "낫지 않으면 환불" promises a cure.
+_HAD_PROCEDURE = re.compile(r"(?:직)?후(?!기)|당일|(?:를|을)?(?:받은(?!듯|것같|것처럼)|받았다면|받으셨다면)")
 _STATE_NEAR = re.compile(
-    r"[^,]{0,6}?(?:있으면|있다면|있을경우|있을때|생기면|생긴다면|생길경우|생겼을때|생겼다면|나타나면"
-    r"|계속되면|보이면|심해지면|않으면|않을경우|않을시|남았다면|라면)"
+    r"[^,]{0,10}?(?:있으면|있다면|있을경우|있을때|생기면|생긴다면|생길경우|생겼을때|생겼다면|나타나면"
+    r"|계속되면|보이면|심해지면|심할때|남았다면|피부라면|가라앉지않으면|진정되지않으면|호전되지않으면)"
 )
 _QUESTION = re.compile(r"\?[.!。]*$")
 # The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
@@ -234,9 +239,13 @@ _POLITE = r"(?:하세요|하십시오|해 ?보세요|해 ?주세요)"
 # What the reader is invited to do.
 _ACTION = (
     r"(?:만나|써|사용해|발라|담아|더해|추가해|챙겨|시작해|마무리해|완성해|채워|구매해|주문해|저장해|공유해|찜해"
-    rf"|둘러|구경해|들러|방문해|문의해|눌러|받아|넣어|올려) ?{_ENDING}"
-    rf"|(?:시작|마무리|완성|구매|주문|저장|공유|문의|방문|구경|추가|사용|결제){_POLITE}"
-    r"|만나세요|담으세요|더하세요|챙기세요|둘러보세요|(?:보러 ?|구경하러 ?|놀러 ?)?오세요"
+    rf"|들러|방문해|문의해|눌러|받아|넣어|올려) ?{_ENDING}"
+    rf"|(?:시작|마무리|완성|구매|주문|저장|공유|문의|방문|추가|사용|결제){_POLITE}"
+    r"|만나세요|담으세요|더하세요|챙기세요"
+)
+# Coming to browse is a look as well: with no argument, or at the page.
+_BROWSE = (
+    rf"(?:구경해|둘러) ?{_ENDING}|구경{_POLITE}|둘러보세요|(?:보러 ?|구경하러 ?|놀러 ?)?오세요"
 )
 # Looking something up needs the page or its information, and nothing else beside it: "바로 확인해
 # 보세요" or "화장대에서 바로 확인해 보세요" after "한 번 발라 보세요" promises a result at once.
@@ -256,6 +265,7 @@ _STOCKED = (
 _INVITATION = re.compile(
     rf"(?:{_ARGUMENT} ){{0,5}}(?:{_ACTION})"
     rf"|(?:{_WHEN},? ){{0,2}}{_LOOKED_AT},? (?:(?:{_WHEN}|{_LOOKED_AT}),? ){{0,3}}{_LOOK}"
+    rf"|(?:{_PAGE} )?(?:{_BROWSE})"
     rf"|{_SAYS}"
     rf"|(?:{_NEWLY} )?(?:{_PLACE} )?(?:{_STOCKED})"
 )
@@ -281,7 +291,7 @@ class CosmeticClaim(BaseModel):
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.6"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.7"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -367,11 +377,12 @@ def _invites(words: Sequence[str]) -> bool:
     return bool(words) and _INVITATION.fullmatch(" ".join(words)) is not None
 
 
-def _asserted(sentence: str) -> frozenset[CosmeticFunction] | None:
+def _asserted(sentence: str) -> tuple[frozenset[CosmeticFunction] | None, bool]:
+    """The functions a fully read sentence asserts, and whether it carries an invitation."""
     words = _words(sentence)
     stated = _matched((*_STATED_WHOLE, *_NAMED_WHOLE), "".join(words))
     if stated is not None or not 1 < len(words) <= _MAX_WORDS:
-        return stated
+        return stated, False
     for start in range(min(len(words), _MAX_LEAD_WORDS + 1)):
         lead = words[:start]
         # Before the claim: nothing, an invitation closed by a comma, or how the product arrived.
@@ -388,13 +399,18 @@ def _asserted(sentence: str) -> frozenset[CosmeticFunction] | None:
                 continue
             found = _matched(opening, core) if rest else _matched(whole, core)
             if found is not None and (not rest or _invites(rest)):
-                return found
-    return None
+                return found, after_comma or bool(rest)
+    return None, False
 
 
 def asserted_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction] | None:
     """Functions asserted by a fully recognized sentence, or None when any part of it is unread."""
-    return _asserted(claim.text)
+    return _asserted(claim.text)[0]
+
+
+def invitation_count(text: str, claims: Sequence[CosmeticClaim]) -> int:
+    """Invitations in an advertisement: its neutral sentences and those inside claim sentences."""
+    return len(neutral_sentences(text)) + sum(1 for claim in claims if _asserted(claim.text)[1])
 
 
 def _neutral(sentence: str) -> bool:
@@ -453,7 +469,9 @@ def _classify(sentence: str) -> _Reading:
             return False
         if kind is not ExpressionStrength.TREATMENT_PREVENTION:
             return True
-        return not (_STATE_AFTER.match(compact, match.end()) or _STATE_NEAR.match(compact, match.end()))
+        if match.group() == "시술" and _HAD_PROCEDURE.match(compact, match.end()):
+            return False
+        return not _STATE_NEAR.match(compact, match.end())
 
     stated = [(function, match) for function, match in function_matches if asserted(function, match)]
     functions = {function for function, _ in stated}
@@ -568,6 +586,7 @@ __all__ = [
     "asserted_functions",
     "confirm_cosmetic_claims",
     "extract_cosmetic_claims",
+    "invitation_count",
     "neutral_sentences",
     "normalize_ad_text",
     "unread_sentences",
