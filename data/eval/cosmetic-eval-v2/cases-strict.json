@@ -1,0 +1,821 @@
+{
+  "dataset_id": "cosmetic-eval-v2-strict",
+  "purpose": "frozen claim evaluation for functional cosmetics; AI-written sentences for real MFDS records",
+  "labeling": "Expected verdicts are blind AI labels (sonnet, opus), a non-confirmed label where the labelers disagree. They are not human or expert labels.",
+  "sources": {
+    "reported": {
+      "source_id": "data.go.kr:15095680",
+      "retrieved_at": "2026-10-11T05:18:59.490402+00:00",
+      "sha256": "FE8528F75D8841EC6B8AF287B436568A427B29703D46BF9AED7CCD61B9A8A176",
+      "rows": 196608
+    },
+    "reviewed": {
+      "source_id": "data.go.kr:15056939",
+      "retrieved_at": "2026-10-11T05:23:11.354666+00:00",
+      "sha256": "1604B5282EE8B331E636C86AAFD61373A482CCF3D7990FDF05354502424A1F28",
+      "rows": 20728
+    }
+  },
+  "cases": [
+    {
+      "case_id": "CD-001",
+      "source": "reviewed",
+      "record_id": "202400130",
+      "ad_text": "거칠어 보이던 피부결을 한결 정돈하는 데 도움을 주는 제품이에요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-002",
+      "source": "reviewed",
+      "record_id": "202501711",
+      "ad_text": "피부 속 염증을 완화하고 손상된 세포를 재생시켜, 칙칙한 피부는 하얗게 깊은 주름은 팽팽하게 치료해 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-003",
+      "source": "reported",
+      "record_id": "2025022375",
+      "ad_text": "매일 밤 챙겨 바르면 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-004",
+      "source": "reviewed",
+      "record_id": "201506350",
+      "ad_text": "넓어 보이는 모공이 신경 쓰이는 분들께, 이 제품은 매일의 모공 관리에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-005",
+      "source": "reviewed",
+      "record_id": "201402040",
+      "ad_text": "이 제품은 손상된 피부를 재생시키고 염증을 완화해, 미백과 주름개선까지 이끌어 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-006",
+      "source": "reviewed",
+      "record_id": "202602560",
+      "ad_text": "피부 미백과 주름 개선에 도움을 주는 이중 기능성 화장품을 만나 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-007",
+      "source": "reported",
+      "record_id": "2021026824",
+      "ad_text": "칙칙한 피부톤이 고민이라면, 피부 미백에 도움을 줄 수 있는 이 제품을 만나보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-008",
+      "source": "reviewed",
+      "record_id": "201207980",
+      "ad_text": "밤사이 레티놀이 피부 미백과 주름 개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-009",
+      "source": "reviewed",
+      "record_id": "201207199",
+      "ad_text": "데일리 스킨케어 루틴에 더하면 피부 미백에 도움이 되는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-010",
+      "source": "reported",
+      "record_id": "2020020723",
+      "ad_text": "눈가와 입가의 잔주름이 고민될 때, 피부 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-011",
+      "source": "reviewed",
+      "record_id": "201707835",
+      "ad_text": "미백과 주름개선, 두 가지 고민에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-012",
+      "source": "reported",
+      "record_id": "2022004488",
+      "ad_text": "세안 후 당기는 피부에 가볍게 펴 발라 주면 피부 보습에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-013",
+      "source": "reported",
+      "record_id": "2014011578",
+      "ad_text": "눈가와 입가의 주름이 신경 쓰인다면, 주름개선에 도움을 주는 이 제품으로 관리해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CD-014",
+      "source": "reported",
+      "record_id": "2019018923",
+      "ad_text": "이 제품은 피부 미백에 도움을 줍니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-015",
+      "source": "reported",
+      "record_id": "2026024536",
+      "ad_text": "꾸준히 사용하면 피부 미백과 주름개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-016",
+      "source": "reported",
+      "record_id": "2025079513",
+      "ad_text": "칙칙한 안색 때문에 거울 보기가 망설여진다면, 피부 미백에 도움을 줄 수 있는 이 제품을 만나 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-017",
+      "source": "reported",
+      "record_id": "2016012798",
+      "ad_text": "7일만 써보세요, 주름개선 효과를 확실하게 보장합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-018",
+      "source": "reported",
+      "record_id": "2025059199",
+      "ad_text": "아침저녁으로 꾸준히 바르면 피부 미백은 물론 주름 개선에도 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-019",
+      "source": "reviewed",
+      "record_id": "201503584",
+      "ad_text": "나이 들수록 깊어지는 주름, 주름개선에 도움을 주는 제품으로 미리 대비하세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-020",
+      "source": "reported",
+      "record_id": "2017010061",
+      "ad_text": "이 제품은 주름 개선 기능성 화장품으로 피부의 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-021",
+      "source": "reported",
+      "record_id": "2021007255",
+      "ad_text": "이 제품은 손상된 피부를 재생시켜 깊게 팬 주름을 치료합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-022",
+      "source": "reported",
+      "record_id": "2013003386",
+      "ad_text": "깊게 팬 팔자 주름을 개선하고 자글자글한 잔주름을 말끔히 지워 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-023",
+      "source": "reported",
+      "record_id": "2013024743",
+      "ad_text": "하루 두 번 가볍게 바르면 주름개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-024",
+      "source": "reviewed",
+      "record_id": "201208689",
+      "ad_text": "스킨케어 마지막 단계에 발라 주면 피부 미백과 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-025",
+      "source": "reviewed",
+      "record_id": "201304004",
+      "ad_text": "주름 걱정이 늘었다면 피부 주름개선에 도움을 주는 케어를 시작해 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-026",
+      "source": "reviewed",
+      "record_id": "202502216",
+      "ad_text": "단 7일 만에 누구나 확실하게 하얘지는 피부를 경험하게 됩니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-027",
+      "source": "reviewed",
+      "record_id": "201305439",
+      "ad_text": "피부 미백이 필요한 순간, 도움을 줄 수 있는 이 제품이 곁에 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-028",
+      "source": "reported",
+      "record_id": "2013022032",
+      "ad_text": "칙칙했던 피부는 환하게 밝아지고 눈에 띄던 주름은 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": "labelers disagree: sonnet=mismatch, opus=unverifiable"
+    },
+    {
+      "case_id": "CD-029",
+      "source": "reviewed",
+      "record_id": "202200825",
+      "ad_text": "미백 케어와 주름개선 케어를 한 번에 챙기도록 도움을 주는 제품입니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-030",
+      "source": "reviewed",
+      "record_id": "201400088",
+      "ad_text": "맑고 환한 인상을 원하는 분들을 위해 피부 미백에 도움을 주는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-031",
+      "source": "reviewed",
+      "record_id": "202500203",
+      "ad_text": "화사함도 주름 관리도 놓치고 싶지 않다면, 미백과 주름개선에 도움을 주는 이 제품을 선택하세요.",
+      "expected_verdict": "mismatch",
+      "note": "labelers disagree: sonnet=mismatch, opus=unverifiable"
+    },
+    {
+      "case_id": "CD-032",
+      "source": "reviewed",
+      "record_id": "201208009",
+      "ad_text": "2주만 써도 피부 톤이 밝아지는 것을 확실하게 약속드리며 효과가 없으면 100% 환불해 드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-033",
+      "source": "reviewed",
+      "record_id": "201305072",
+      "ad_text": "이 제품은 기미와 잡티를 치료해 피부를 하얗게 되돌려 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-034",
+      "source": "reviewed",
+      "record_id": "201210052",
+      "ad_text": "햇볕이 따가운 날 외출 전에 발라 주면 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-035",
+      "source": "reviewed",
+      "record_id": "201604774",
+      "ad_text": "이 제품으로 피부는 하얗게 개선되고 잔주름은 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-036",
+      "source": "reviewed",
+      "record_id": "201800778",
+      "ad_text": "매일 밤 꾸준히 사용하시면 피부 미백에 도움을 받으실 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-037",
+      "source": "reported",
+      "record_id": "2023019069",
+      "ad_text": "칙칙함이 고민인 분들께, 피부 미백에 도움을 줄 수 있는 데일리 제품을 추천드려요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-038",
+      "source": "reviewed",
+      "record_id": "201211438",
+      "ad_text": "이 제품 하나로 피부가 하얘지고 주름이 펴집니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-039",
+      "source": "reviewed",
+      "record_id": "201302219",
+      "ad_text": "2주면 충분합니다, 피부 미백 효과를 100% 보장해 드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-040",
+      "source": "reported",
+      "record_id": "2022009133",
+      "ad_text": "미백과 주름 개선, 두 가지 고민에 모두 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-041",
+      "source": "reported",
+      "record_id": "2016017026",
+      "ad_text": "이 제품 하나로 미백과 주름이 개선됩니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-042",
+      "source": "reviewed",
+      "record_id": "201209726",
+      "ad_text": "어두워 보이는 피부 톤이 고민인 분께 추천하는 이 제품은 피부의 미백에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-043",
+      "source": "reviewed",
+      "record_id": "201405947",
+      "ad_text": "하얀 피부를 원한다면 피부 미백에 도움을 주는 이 제품부터 시작해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-044",
+      "source": "reviewed",
+      "record_id": "201900398",
+      "ad_text": "아데노신이 눈가와 이마의 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-045",
+      "source": "reported",
+      "record_id": "2023032347",
+      "ad_text": "밤사이 깊어지는 주름 고민, 주름개선에 도움을 주는 나이트 케어로 관리하세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-046",
+      "source": "reported",
+      "record_id": "2018015253",
+      "ad_text": "웃을 때마다 눈에 밟히는 눈가 주름, 이 제품이 주름 개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-047",
+      "source": "reported",
+      "record_id": "2020001027",
+      "ad_text": "피부 미백 케어가 필요한 날, 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-048",
+      "source": "reported",
+      "record_id": "2018009183",
+      "ad_text": "화사한 메이크업 전에 바르기 좋은 이 제품은 피부 미백에 도움을 드립니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-049",
+      "source": "reviewed",
+      "record_id": "202203267",
+      "ad_text": "건조한 계절에도 피부 보습에 도움을 주는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-050",
+      "source": "reviewed",
+      "record_id": "201401112",
+      "ad_text": "야외 활동이 많은 날에도 이 제품이 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-051",
+      "source": "reported",
+      "record_id": "2026001516",
+      "ad_text": "피부 미백에 도움을 주는 제품을 찾고 있다면, 바로 이 제품입니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-052",
+      "source": "reported",
+      "record_id": "2013002778",
+      "ad_text": "환한 피부를 위한 첫걸음, 피부 미백에 도움을 주는 제품으로 시작해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-053",
+      "source": "reported",
+      "record_id": "2020025464",
+      "ad_text": "이 제품은 어두운 피부톤을 개선해 미백 피부를 완성합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-054",
+      "source": "reviewed",
+      "record_id": "201208368",
+      "ad_text": "건조한 환절기에 푸석해진 피부의 보습에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-055",
+      "source": "reviewed",
+      "record_id": "201303548",
+      "ad_text": "미백, 주름개선 두 가지 케어에 도움을 주는 이 제품으로 매일의 루틴을 완성해 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-056",
+      "source": "reported",
+      "record_id": "2015007835",
+      "ad_text": "나이가 들수록 깊어지는 주름이 걱정이라면 주름 개선에 도움을 주는 이 제품을 써 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-057",
+      "source": "reported",
+      "record_id": "2018010801",
+      "ad_text": "나이아신아마이드는 피부 미백에 도움을 줄 수 있는 대표 성분입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-058",
+      "source": "reported",
+      "record_id": "2026015977",
+      "ad_text": "이 제품을 바르면 이마와 미간에 자리 잡은 주름이 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-059",
+      "source": "reviewed",
+      "record_id": "201303207",
+      "ad_text": "하루 한 번, 피부 주름개선에 도움을 주는 가벼운 습관을 시작해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-060",
+      "source": "reported",
+      "record_id": "2020005582",
+      "ad_text": "주름 고민에 맞춰 만든 이 제품은 피부 주름 개선에 도움이 될 수 있습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-061",
+      "source": "reviewed",
+      "record_id": "202602802",
+      "ad_text": "4주 뒤 주름이 확실하게 줄어든다고 자신 있게 약속드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-062",
+      "source": "reported",
+      "record_id": "2025075325",
+      "ad_text": "이 제품은 하루 종일 메마르기 쉬운 피부의 보습에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-063",
+      "source": "reported",
+      "record_id": "2014011372",
+      "ad_text": "단 7일 만에 칙칙했던 피부가 눈에 띄게 하얘지는 것을 확실하게 약속합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-064",
+      "source": "reported",
+      "record_id": "2017017771",
+      "ad_text": "피부 진피층을 재생시켜 깊게 팬 주름을 근본부터 치료하니 시술을 받은 것처럼 팽팽해집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-065",
+      "source": "reviewed",
+      "record_id": "202301261",
+      "ad_text": "주름개선에 도움을 주는 제품으로 피부 나이 관리를 시작해 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-066",
+      "source": "reported",
+      "record_id": "2020012130",
+      "ad_text": "피부 미백과 주름 개선이 모두 고민이라면 레티놀이 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-067",
+      "source": "reviewed",
+      "record_id": "201305120",
+      "ad_text": "피부 미백에 도움을 줄 수 있어서, 사계절 내내 손이 가는 제품이에요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-068",
+      "source": "reviewed",
+      "record_id": "201305433",
+      "ad_text": "이 제품은 꾸준히 사용할 경우 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-069",
+      "source": "reviewed",
+      "record_id": "201210902",
+      "ad_text": "꾸준한 관리가 필요한 분께는 주름개선에 도움을 줄 수 있는 이 제품이 잘 맞습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-070",
+      "source": "reported",
+      "record_id": "2020007912",
+      "ad_text": "한 병으로 피부 미백과 주름 개선 모두에 도움을 줄 수 있어 바쁜 아침에도 간편합니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-071",
+      "source": "reviewed",
+      "record_id": "201605544",
+      "ad_text": "피부 미백과 주름개선에 도움을 주는 기능으로 완성한, 매일 쓰는 스킨케어 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-072",
+      "source": "reported",
+      "record_id": "2022020428",
+      "ad_text": "어두운 피부 톤과 잔주름이 함께 고민이라면, 피부 미백과 주름 개선에 도움을 줄 수 있는 이 제품을 추천해요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-073",
+      "source": "reviewed",
+      "record_id": "202602827",
+      "ad_text": "깊게 팬 눈가 주름이 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-074",
+      "source": "reviewed",
+      "record_id": "201210827",
+      "ad_text": "목과 눈가처럼 주름이 생기기 쉬운 부위에 발라 주면 주름 개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-075",
+      "source": "reported",
+      "record_id": "2016000966",
+      "ad_text": "칙칙함도 주름도 걱정이라면, 미백과 주름개선에 도움을 줄 수 있는 이 제품이 있어요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-076",
+      "source": "reported",
+      "record_id": "2021019214",
+      "ad_text": "4주 사용으로 주름 개선 효과 100% 보장, 달라지지 않으면 전액 환불해 드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-077",
+      "source": "reported",
+      "record_id": "2026007218",
+      "ad_text": "넓어 보이는 모공 관리에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-078",
+      "source": "reported",
+      "record_id": "2016002955",
+      "ad_text": "생기 없이 어두워 보이는 피부에 사용하면 미백에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-079",
+      "source": "reported",
+      "record_id": "2022023565",
+      "ad_text": "미백과 주름개선을 함께 챙기고 싶은 분께 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-080",
+      "source": "reported",
+      "record_id": "2013006845",
+      "ad_text": "주름 관리를 처음 시작하는 분들도 부담 없이 쓸 수 있고 피부 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-081",
+      "source": "reported",
+      "record_id": "2023041047",
+      "ad_text": "매끈한 피부로 가는 첫걸음, 피부결 정돈에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-082",
+      "source": "reviewed",
+      "record_id": "201302336",
+      "ad_text": "거울 속 잔주름이 하나둘 늘어 갈 때 피부 주름 개선에 도움을 드리는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-083",
+      "source": "reviewed",
+      "record_id": "201703012",
+      "ad_text": "표정 주름이 신경 쓰이는 날엔, 주름개선에 도움을 주는 이 제품을 꺼내 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-084",
+      "source": "reported",
+      "record_id": "2023040991",
+      "ad_text": "매일 저녁 얼굴 전체에 부드럽게 펴 바르면 주름 개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-085",
+      "source": "reviewed",
+      "record_id": "202402391",
+      "ad_text": "맑은 피부톤을 향한 매일의 습관, 피부 미백에 도움을 주는 제품과 함께하세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-086",
+      "source": "reviewed",
+      "record_id": "202500109",
+      "ad_text": "어둡던 피부 톤을 하얗게 바꾸고 굵은 주름까지 개선합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-087",
+      "source": "reviewed",
+      "record_id": "201210897",
+      "ad_text": "이 제품은 피부 주름개선에 도움을 주도록 만들어졌습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-088",
+      "source": "reported",
+      "record_id": "2021030294",
+      "ad_text": "레티놀은 꾸준히 사용할 때 피부 미백과 주름 개선에 도움을 줄 수 있는 성분입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-089",
+      "source": "reported",
+      "record_id": "2022011779",
+      "ad_text": "피부 미백이 고민이라면 도움을 줄 수 있는 이 제품, 한번 써보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CD-090",
+      "source": "reported",
+      "record_id": "2025038175",
+      "ad_text": "피부 톤 관리가 필요한 분들께 권하는 제품으로, 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": "labelers disagree: sonnet=mismatch, opus=unverifiable"
+    },
+    {
+      "case_id": "CD-091",
+      "source": "reported",
+      "record_id": "2023012081",
+      "ad_text": "붉어진 염증은 가라앉히고 손상된 피부는 재생시켜, 미백과 주름개선까지 병원 치료처럼 관리해 주는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-092",
+      "source": "reviewed",
+      "record_id": "201300973",
+      "ad_text": "주름 개선에 도움을 주는 기능성 화장품으로 매일의 스킨케어를 채워 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-093",
+      "source": "reported",
+      "record_id": "2014003281",
+      "ad_text": "스킨케어 루틴 중 하나만 바꿔도 주름개선에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-094",
+      "source": "reviewed",
+      "record_id": "201404104",
+      "ad_text": "쓰면 쓸수록 목주름이 옅어지고 눈가 주름은 매끈하게 펴집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-095",
+      "source": "reported",
+      "record_id": "2013001830",
+      "ad_text": "피부 미백에 도움이 되는 이 제품을 세안 직후 사용해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-096",
+      "source": "reviewed",
+      "record_id": "201301935",
+      "ad_text": "환한 피부와 주름 고민을 함께 살피고 싶은 분께, 이 제품이 미백과 주름 개선에 도움을 드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-097",
+      "source": "reported",
+      "record_id": "2021017754",
+      "ad_text": "주름개선에 도움을 줄 수 있는 이 제품, 지금 장바구니에 담아 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-098",
+      "source": "reported",
+      "record_id": "2024016682",
+      "ad_text": "하루의 끝에 이 제품을 톡톡 두드려 흡수시켜 주면 피부 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CD-099",
+      "source": "reviewed",
+      "record_id": "202503080",
+      "ad_text": "맑고 고운 피부를 위한 선택, 이 제품은 미백과 주름개선에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CD-100",
+      "source": "reported",
+      "record_id": "2023013203",
+      "ad_text": "하루 두 번 사용으로 피부의 미백 및 주름 개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CD-001,unverifiable,sonnet,규칙2: 피부결 정돈은 미백·주름개선이 아닌 다른 기능
+CD-002,mismatch,sonnet,규칙1: 염증 완화·세포 재생·치료 표현은 질병 치료 효과
+CD-003,unverifiable,sonnet,규칙6: 매일 밤 바르면이라는 사용 조건이 붙음
+CD-004,unverifiable,sonnet,규칙2: 모공 관리는 미백·주름개선이 아님
+CD-005,mismatch,sonnet,규칙1: 염증 완화와 손상 피부 재생은 의료적 효과 표현
+CD-006,confirmed,sonnet,규칙7: 미백·주름개선 모두 공식에 있고 도움 수준 이내
+CD-007,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 미백을 주장
+CD-008,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(레티놀)
+CD-009,unverifiable,sonnet,규칙6: 루틴에 더하면이라는 사용 조건이 붙음
+CD-010,mismatch,sonnet,규칙4: 공식은 모발 염색뿐인데 주름개선을 주장
+CD-011,confirmed,sonnet,규칙7: 미백·주름개선 모두 공식에 있고 도움 수준 이내
+CD-012,unverifiable,sonnet,규칙2: 보습은 미백·주름개선이 아닌 다른 기능
+CD-013,confirmed,sonnet,규칙7: 공식에 주름개선 있고 도움 수준 이내 (문서 끝 잔여어는 인정 범위에 영향 없음)
+CD-014,confirmed,sonnet,규칙7: 공식에 미백 있고 도움 수준 이내
+CD-015,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백·주름개선을 주장
+CD-016,confirmed,sonnet,규칙7: 효능효과명에 미백 있고 도움 수준 이내
+CD-017,mismatch,sonnet,규칙5: 7일·확실하게 보장은 공식 수준보다 강함
+CD-018,mismatch,sonnet,규칙4: 공식은 모발 염모뿐인데 미백·주름개선을 주장
+CD-019,confirmed,sonnet,규칙7: 공식에 주름개선 있고 도움 수준 이내
+CD-020,confirmed,sonnet,규칙7: 효능효과명에 주름개선 있고 도움 수준 이내
+CD-021,mismatch,sonnet,규칙1: 피부 재생과 주름 치료는 치료 효과 표현
+CD-022,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-023,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-024,unverifiable,sonnet,규칙6: 마지막 단계에 발라 주면이라는 사용 조건이 붙음
+CD-025,mismatch,sonnet,규칙4: 공식은 미백뿐인데 주름개선을 주장
+CD-026,mismatch,sonnet,규칙5: 7일 만에·누구나 확실하게는 공식 수준보다 강함
+CD-027,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 미백을 주장
+CD-028,mismatch,sonnet,규칙5: 밝아지고 사라집니다는 단정 표현 (미백개선 표기는 뜻이 분명해 근거로 사용)
+CD-029,confirmed,sonnet,규칙7: 미백·주름개선 모두 공식에 있고 도움 수준 이내
+CD-030,unverifiable,sonnet,규칙3: 문서에 작성 양식 안내 문구가 남아 있음
+CD-031,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백·주름개선을 주장
+CD-032,mismatch,sonnet,규칙5: 확실하게 약속·100% 환불은 공식 수준보다 강함
+CD-033,mismatch,sonnet,규칙1: 기미·잡티를 치료한다는 치료 효과 표현
+CD-034,unverifiable,sonnet,규칙2: 자외선 차단은 미백·주름개선이 아닌 다른 기능
+CD-035,mismatch,sonnet,규칙5: 하얗게 개선되고 사라집니다는 단정 표현
+CD-036,unverifiable,sonnet,규칙6: 매일 밤 꾸준히 사용하시면이라는 사용 조건이 붙음
+CD-037,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백을 주장
+CD-038,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-039,mismatch,sonnet,규칙5: 2주·100% 보장은 공식 수준보다 강함
+CD-040,unverifiable,sonnet,규칙3: 효능효과명(미백·주름개선)과 문서(자외선 차단)가 서로 다름
+CD-041,mismatch,sonnet,규칙5: 미백과 주름이 개선됩니다는 단정 표현
+CD-042,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-043,unverifiable,sonnet,규칙3: 문서에 작성 양식 안내 문구가 남아 있음
+CD-044,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(아데노신)
+CD-045,confirmed,sonnet,규칙7: 효능효과명에 주름개선 있고 도움 수준 이내
+CD-046,mismatch,sonnet,규칙4: 공식은 모발 염모뿐인데 주름개선을 주장
+CD-047,confirmed,sonnet,규칙7: 효능효과명에 미백 있고 도움 수준 이내
+CD-048,confirmed,sonnet,규칙7: 공식에 미백 있고 도움 수준 이내
+CD-049,unverifiable,sonnet,규칙2: 보습은 미백·주름개선이 아닌 다른 기능
+CD-050,unverifiable,sonnet,규칙2: 자외선 차단은 미백·주름개선이 아닌 다른 기능
+CD-051,confirmed,sonnet,규칙7: 공식에 미백 있고 도움 수준 이내
+CD-052,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-053,mismatch,sonnet,규칙5: 개선해 완성합니다는 단정 표현
+CD-054,unverifiable,sonnet,규칙2: 보습은 미백·주름개선이 아닌 다른 기능
+CD-055,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백·주름개선을 주장
+CD-056,confirmed,sonnet,규칙7: 효능효과명에 주름개선 있고 도움 수준 이내
+CD-057,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(나이아신아마이드)
+CD-058,mismatch,sonnet,규칙5: 주름이 사라집니다는 단정 표현
+CD-059,unverifiable,sonnet,규칙6: 하루 한 번이라는 사용 횟수가 효과에 붙음
+CD-060,confirmed,sonnet,규칙7: 효능효과명에 주름개선 있고 도움 수준 이내
+CD-061,mismatch,sonnet,규칙5: 4주 뒤 확실하게 줄어든다는 약속은 공식 수준보다 강함
+CD-062,unverifiable,sonnet,규칙2: 보습은 미백·주름개선이 아닌 다른 기능
+CD-063,mismatch,sonnet,규칙5: 7일 만에 확실하게 약속은 공식 수준보다 강함
+CD-064,mismatch,sonnet,규칙1: 진피 재생·치료·시술 효과 표현
+CD-065,confirmed,sonnet,규칙7: 공식에 주름개선 있고 도움 수준 이내
+CD-066,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(레티놀)
+CD-067,confirmed,sonnet,규칙7: 공식에 미백 있고 도움 수준 이내
+CD-068,unverifiable,sonnet,규칙6: 꾸준히 사용할 경우라는 사용 조건이 붙음
+CD-069,unverifiable,sonnet,규칙6: 꾸준한 관리가 필요한 분이라는 대상·조건이 붙음
+CD-070,confirmed,sonnet,규칙7: 효능효과명에 미백·주름개선 있고 도움 수준 이내
+CD-071,mismatch,sonnet,규칙4: 공식은 미백뿐인데 주름개선까지 주장
+CD-072,mismatch,sonnet,규칙4: 공식은 미백뿐인데 주름 개선까지 주장
+CD-073,mismatch,sonnet,규칙5: 주름이 사라집니다는 단정 표현
+CD-074,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-075,confirmed,sonnet,규칙7: 효능효과명에 미백·주름개선 있고 도움 수준 이내
+CD-076,mismatch,sonnet,규칙5: 4주·100% 보장은 공식 수준보다 강함
+CD-077,unverifiable,sonnet,규칙2: 모공 관리는 미백·주름개선이 아님
+CD-078,unverifiable,sonnet,규칙6: 어두워 보이는 피부에 사용하면이라는 사용 조건이 붙음
+CD-079,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 미백까지 주장
+CD-080,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-081,unverifiable,sonnet,규칙2: 피부결 정돈은 미백·주름개선이 아닌 다른 기능
+CD-082,unverifiable,sonnet,규칙3: 공식 효능효과가 비어 있음
+CD-083,mismatch,sonnet,규칙4: 공식은 백발 염색뿐인데 주름개선을 주장
+CD-084,unverifiable,sonnet,규칙6: 매일 저녁 펴 바르면이라는 사용 조건이 붙음
+CD-085,mismatch,sonnet,규칙4: 공식은 탈모 증상 완화뿐인데 미백을 주장
+CD-086,mismatch,sonnet,규칙5: 하얗게 바꾸고 개선합니다는 단정 표현
+CD-087,confirmed,sonnet,규칙7: 공식에 주름개선 있고 도움 수준 이내
+CD-088,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(레티놀)
+CD-089,confirmed,sonnet,규칙7: 효능효과명에 미백 있고 도움 수준 이내
+CD-090,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백을 주장 (띄어쓰기 오류는 인정 범위에 영향 없음)
+CD-091,mismatch,sonnet,규칙1: 염증 진정·피부 재생·병원 치료처럼이라는 의료 효과 표현
+CD-092,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 주름개선을 주장
+CD-093,unverifiable,sonnet,규칙3: 문서에 작성 양식 안내 문구가 남아 있음
+CD-094,mismatch,sonnet,규칙5: 옅어지고 펴집니다는 단정 표현
+CD-095,unverifiable,sonnet,규칙3: 문서에 작성 양식 안내 문구가 남아 있음
+CD-096,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 미백까지 주장
+CD-097,mismatch,sonnet,규칙4: 공식은 미백뿐인데 주름개선을 주장
+CD-098,unverifiable,sonnet,규칙6: 두드려 흡수시켜 주면이라는 사용 조건이 붙음
+CD-099,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 미백·주름개선을 주장
+CD-100,unverifiable,sonnet,규칙6: 하루 두 번 사용이라는 사용 횟수 조건이 붙음

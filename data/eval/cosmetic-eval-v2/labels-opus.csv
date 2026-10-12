@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CD-001,unverifiable,opus,규칙2: 주장 기능이 피부결 정돈이라 미백·주름개선이 아님
+CD-002,mismatch,opus,규칙1: 염증 완화·세포 재생·'치료'로 질병 치료 효과처럼 표현
+CD-003,unverifiable,opus,규칙6: '매일 밤 챙겨 바르면'이라는 사용 조건이 붙음
+CD-004,unverifiable,opus,규칙2: 주장 기능이 모공 관리라 미백·주름개선이 아님
+CD-005,mismatch,opus,규칙1: 피부 재생·염증 완화로 치료 효과처럼 표현
+CD-006,confirmed,opus,규칙7: 공식에 미백·주름개선이 모두 있고 '도움을 주는' 수준이며 덧붙인 조건 없음
+CD-007,mismatch,opus,규칙4: 공식(효능효과명)은 주름개선뿐이라 미백이 공식에 없음
+CD-008,unverifiable,opus,규칙6: 주어가 제품이 아니라 성분(레티놀)
+CD-009,unverifiable,opus,규칙6: '데일리 스킨케어 루틴에 더하면'이라는 사용 조건이 붙음
+CD-010,mismatch,opus,규칙4: 공식은 모발 염색뿐이라 주름개선이 공식에 없음
+CD-011,confirmed,opus,규칙7: 공식에 미백·주름개선이 모두 있고 '도움을 줄 수 있는' 수준이며 덧붙인 조건 없음
+CD-012,unverifiable,opus,규칙2: 주장 기능이 보습이라 미백·주름개선이 아님
+CD-013,unverifiable,opus,규칙3: 공식 문서 끝에 '효능효과'라는 조각이 남아 문장이 불완전함
+CD-014,confirmed,opus,규칙7: 공식에 미백이 있고 '도움을 줍니다' 수준이며 덧붙인 조건 없음
+CD-015,mismatch,opus,규칙4: 공식은 자외선 차단뿐이라 미백·주름개선이 공식에 없음
+CD-016,confirmed,opus,규칙7: 공식(효능효과명)에 미백이 있고 '도움을 줄 수 있는' 수준이며 효과에 붙은 조건 없음
+CD-017,mismatch,opus,규칙5: '7일'·'확실하게 보장'으로 기간 약속과 보장
+CD-018,mismatch,opus,규칙4: 공식은 모발의 염모뿐이라 미백·주름개선이 공식에 없음
+CD-019,confirmed,opus,규칙7: 공식에 주름개선이 있고 '도움을 주는' 수준이며 효과에 붙은 조건 없음
+CD-020,confirmed,opus,규칙7: 공식(효능효과명)에 주름개선이 있고 '도움을 줍니다' 수준이며 덧붙인 조건 없음
+CD-021,mismatch,opus,규칙1: 피부 재생·주름 '치료'로 치료 효과처럼 표현
+CD-022,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-023,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-024,unverifiable,opus,규칙6: '스킨케어 마지막 단계에 발라 주면'이라는 사용 조건이 붙음
+CD-025,mismatch,opus,규칙4: 공식은 미백뿐이라 주름개선이 공식에 없음
+CD-026,mismatch,opus,규칙5: '단 7일 만에'·'누구나 확실하게'로 기간 약속과 보장
+CD-027,mismatch,opus,규칙4: 공식은 주름개선뿐이라 미백이 공식에 없음
+CD-028,unverifiable,opus,규칙3: 공식 문구에 오기('미백개선')가 있어 무엇을 인정했는지 확실하지 않음
+CD-029,confirmed,opus,규칙7: 공식에 미백·주름개선이 모두 있고 '도움을 주는' 수준이며 효과에 붙은 조건 없음
+CD-030,unverifiable,opus,규칙3: 공식 문서에 작성 양식 안내 문구가 남아 있음
+CD-031,unverifiable,opus,"규칙3: 공식 문구에 오기('보호한다,'의 쉼표)가 있고 문장이 마무리되지 않음"
+CD-032,mismatch,opus,규칙5: '2주만'·'확실하게 약속'·'100%'로 기간 약속과 보장
+CD-033,mismatch,opus,규칙1: 기미·잡티를 '치료'한다는 질병 치료 표현
+CD-034,unverifiable,opus,규칙2: 주장 기능이 자외선 차단이라 미백·주름개선이 아님
+CD-035,mismatch,opus,규칙5: '하얗게 개선되고'·'사라집니다'로 단정
+CD-036,unverifiable,opus,규칙6: '매일 밤 꾸준히 사용하시면'이라는 사용 조건이 붙음
+CD-037,mismatch,opus,규칙4: 공식은 자외선 차단뿐이라 미백이 공식에 없음
+CD-038,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-039,mismatch,opus,규칙5: '2주면 충분'·'100% 보장'으로 기간 약속과 보장
+CD-040,unverifiable,opus,규칙3: 효능효과명(미백·주름개선)과 문서(자외선 차단)가 서로 다른 기능을 말함
+CD-041,mismatch,opus,규칙5: '개선됩니다'로 단정
+CD-042,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-043,unverifiable,opus,규칙3: 공식 문서에 작성 양식 안내 문구가 남아 있음
+CD-044,unverifiable,opus,규칙6: 주어가 제품이 아니라 성분(아데노신)
+CD-045,confirmed,opus,규칙7: 공식(효능효과명)에 주름개선이 있고 '도움을 주는' 수준이며 효과에 붙은 조건 없음
+CD-046,mismatch,opus,규칙4: 공식은 모발의 염모뿐이라 주름개선이 공식에 없음
+CD-047,confirmed,opus,규칙7: 공식(효능효과명)에 미백이 있고 '도움을 줄 수 있습니다' 수준이며 효과에 붙은 조건 없음
+CD-048,confirmed,opus,규칙7: 공식에 미백이 있고 '도움을 드립니다' 수준이며 효과에 붙은 조건 없음
+CD-049,unverifiable,opus,규칙2: 주장 기능이 보습이라 미백·주름개선이 아님
+CD-050,unverifiable,opus,규칙2: 주장 기능이 자외선 차단이라 미백·주름개선이 아님
+CD-051,confirmed,opus,규칙7: 공식에 미백이 있고 '도움을 주는' 수준이며 덧붙인 조건 없음
+CD-052,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-053,mismatch,opus,규칙5: '개선해'·'완성합니다'로 단정
+CD-054,unverifiable,opus,규칙2: 주장 기능이 보습이라 미백·주름개선이 아님
+CD-055,mismatch,opus,규칙4: 공식은 자외선 차단뿐이라 미백·주름개선이 공식에 없음
+CD-056,confirmed,opus,규칙7: 공식(효능효과명)에 주름개선이 있고 '도움을 주는' 수준이며 효과에 붙은 조건 없음
+CD-057,unverifiable,opus,규칙6: 주어가 제품이 아니라 성분(나이아신아마이드)
+CD-058,mismatch,opus,규칙5: '주름이 사라집니다'로 단정
+CD-059,unverifiable,opus,규칙6: '하루 한 번' 사용 횟수가 붙고 주어가 제품이 아닌 '습관'
+CD-060,confirmed,opus,규칙7: 공식(효능효과명)에 주름개선이 있고 '도움이 될 수 있습니다' 수준이며 덧붙인 조건 없음
+CD-061,mismatch,opus,규칙5: '4주 뒤'·'확실하게'·'약속'으로 기간 약속과 보장
+CD-062,unverifiable,opus,규칙2: 주장 기능이 보습이라 미백·주름개선이 아님
+CD-063,mismatch,opus,규칙5: '단 7일 만에'·'확실하게 약속'으로 기간 약속과 보장
+CD-064,mismatch,opus,규칙1: 진피층 재생·주름 '치료'·시술 효과처럼 표현
+CD-065,confirmed,opus,규칙7: 공식에 주름개선이 있고 '도움을 주는' 수준이며 효과에 붙은 조건 없음
+CD-066,unverifiable,opus,규칙6: 주어가 제품이 아니라 성분(레티놀)
+CD-067,confirmed,opus,규칙7: 공식에 미백이 있고 '도움을 줄 수 있어서' 수준이며 효과에 붙은 조건 없음
+CD-068,unverifiable,opus,규칙6: '꾸준히 사용할 경우'라는 사용 조건이 붙음
+CD-069,unverifiable,opus,규칙6: '꾸준한 관리가 필요한 분께 잘 맞는다'는 대상자 내용이 붙음
+CD-070,confirmed,opus,규칙7: 공식(효능효과명)에 미백·주름개선이 모두 있고 '도움을 줄 수 있어' 수준이며 효과에 붙은 조건 없음
+CD-071,mismatch,opus,규칙4: 공식은 미백뿐이라 주름개선이 공식에 없음
+CD-072,mismatch,opus,규칙4: 공식(효능효과명)은 미백뿐이라 주름개선이 공식에 없음
+CD-073,mismatch,opus,규칙5: '주름이 사라집니다'로 단정
+CD-074,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-075,confirmed,opus,규칙7: 공식(효능효과명)에 미백·주름개선이 모두 있고 '도움을 줄 수 있는' 수준이며 효과에 붙은 조건 없음
+CD-076,mismatch,opus,규칙5: '4주 사용'·'100% 보장'으로 기간 약속과 보장
+CD-077,unverifiable,opus,규칙2: 주장 기능이 모공 관리라 미백·주름개선이 아님
+CD-078,unverifiable,opus,규칙6: '어두워 보이는 피부에 사용하면'이라는 사용 조건이 붙음
+CD-079,mismatch,opus,규칙4: 공식(효능효과명)은 주름개선뿐이라 미백이 공식에 없음
+CD-080,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-081,unverifiable,opus,규칙2: 주장 기능이 피부결 정돈이라 미백·주름개선이 아님
+CD-082,unverifiable,opus,규칙3: 공식 효능효과가 비어 있음
+CD-083,mismatch,opus,규칙4: 공식은 백발 염색뿐이라 주름개선이 공식에 없음
+CD-084,unverifiable,opus,규칙6: '매일 저녁 얼굴 전체에 펴 바르면'이라는 사용 조건이 붙음
+CD-085,mismatch,opus,규칙4: 공식은 탈모 증상 완화뿐이라 미백이 공식에 없음
+CD-086,mismatch,opus,규칙5: '하얗게 바꾸고'·'개선합니다'로 단정
+CD-087,confirmed,opus,규칙7: 공식에 주름개선이 있고 '도움을 주도록' 수준이며 덧붙인 조건 없음
+CD-088,unverifiable,opus,규칙6: 주어가 제품이 아니라 성분(레티놀)이고 '꾸준히 사용할 때' 조건도 붙음
+CD-089,confirmed,opus,규칙7: 공식(효능효과명)에 미백이 있고 '도움을 줄 수 있는' 수준이며 효과에 붙은 조건 없음
+CD-090,unverifiable,opus,규칙3: 공식 문구에 오기('자외선으로 부터' 띄어쓰기)가 있음
+CD-091,mismatch,opus,규칙1: 염증 완화·피부 재생·'병원 치료처럼'으로 치료 효과처럼 표현
+CD-092,mismatch,opus,규칙4: 공식은 자외선 차단뿐이라 주름개선이 공식에 없음
+CD-093,unverifiable,opus,규칙3: 공식 문서에 작성 양식 안내 문구가 남아 있음
+CD-094,mismatch,opus,규칙5: '옅어지고'·'펴집니다'로 단정
+CD-095,unverifiable,opus,규칙3: 공식 문서에 작성 양식 안내 문구가 남아 있음
+CD-096,mismatch,opus,규칙4: 공식은 주름개선뿐이라 미백이 공식에 없음
+CD-097,mismatch,opus,규칙4: 공식(효능효과명)은 미백뿐이라 주름개선이 공식에 없음
+CD-098,unverifiable,opus,규칙6: '하루의 끝에 두드려 흡수시켜 주면'이라는 사용 조건이 붙음
+CD-099,mismatch,opus,규칙4: 공식은 자외선 차단뿐이라 미백·주름개선이 공식에 없음
+CD-100,unverifiable,opus,규칙3: 효능효과명에는 없는 자외선 차단이 문서에만 있어 둘이 다름; '하루 두 번' 사용 횟수 조건(규칙6)도 붙음

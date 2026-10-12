@@ -1,0 +1,30 @@
+[
+  {
+    "case_id": "CD-013",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CD-028",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CD-031",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CD-090",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  }
+]
