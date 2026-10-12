@@ -3,8 +3,8 @@
 Only whitening and wrinkle improvement are judged. `confirmed` requires a user-confirmed product
 whose official efficacy was read completely, a sentence that is one of the allowlisted forms, a
 strength no higher than the official "도움을 준다", and an advertisement in which every other
-sentence was read completely or flagged. General cosmetics are not in the MFDS lists and can never
-be confirmed here.
+sentence is an allowlisted form or the recognized disclaimer. General cosmetics are not in the MFDS
+lists and can never be confirmed here.
 """
 
 from collections.abc import Sequence
@@ -17,10 +17,7 @@ from claimledger.claims_v1 import STRENGTH_RANK, ExpressionStrength
 from claimledger.cosmetics_claims import (
     COSMETIC_CLAIM_VERSION,
     CosmeticClaim,
-    asks,
     asserted_functions,
-    cautions,
-    denies,
     extract_cosmetic_claims,
     unread_sentences,
 )
@@ -34,7 +31,7 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.1"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.2"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 # An official function on a narrower scope neither confirms nor contradicts the general claim.
@@ -84,8 +81,8 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.1"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.1"] = COSMETIC_VERDICT_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.2"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.2"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -105,13 +102,13 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
         return _decision(claim, unverifiable, reason.PRODUCT_IDENTITY_UNCONFIRMED)
     if not claim.confirmed_by_user:
         return _decision(claim, unverifiable, reason.CLAIM_UNCONFIRMED)
-    if denies(claim) or asks(claim) or cautions(claim):
-        return _decision(claim, unverifiable, reason.CLAIM_NOT_PLAINLY_ASSERTED)
     if claim.strength is ExpressionStrength.TREATMENT_PREVENTION:
         return _decision(claim, mismatch, reason.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE)
     candidates = frozenset(claim.function_candidates)
     if not candidates:
-        return _decision(claim, unverifiable, reason.CLAIM_OUTSIDE_RULE_SCOPE)
+        # With cues set aside, every function word stood before a denial, a caution or a question.
+        held = reason.CLAIM_NOT_PLAINLY_ASSERTED if claim.set_aside_cues else reason.CLAIM_OUTSIDE_RULE_SCOPE
+        return _decision(claim, unverifiable, held)
     if not candidates <= JUDGED_FUNCTIONS:
         return _decision(claim, unverifiable, reason.FUNCTION_RULE_NOT_READY)
     if claim.strength is None:
@@ -129,13 +126,18 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
 
     official = efficacy.functions
     asserted = asserted_functions(claim)
+    exceeds = STRENGTH_RANK[claim.strength] > STRENGTH_RANK[_OFFICIAL_STRENGTH]
     # A sentence that was not fully read is judged on its keywords only when none of them is official.
     absent = (asserted if asserted is not None else candidates) - official
     if absent and (asserted is not None or not candidates & official):
-        if any(_NARROWER.get(function, frozenset()) & official for function in absent):
+        if any(not _NARROWER.get(function, frozenset()) & official for function in absent):
+            # A function word with "수 있" alone does not say that the product has the function.
+            if asserted is None and STRENGTH_RANK[claim.strength] < STRENGTH_RANK[_OFFICIAL_STRENGTH]:
+                return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
+            return _decision(claim, mismatch, reason.FUNCTION_NOT_IN_OFFICIAL_EFFICACY)
+        if not exceeds:
             return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
-        return _decision(claim, mismatch, reason.FUNCTION_NOT_IN_OFFICIAL_EFFICACY)
-    if STRENGTH_RANK[claim.strength] > STRENGTH_RANK[_OFFICIAL_STRENGTH]:
+    if exceeds:
         return _decision(claim, mismatch, reason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL)
     if asserted is None:
         return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
@@ -143,28 +145,21 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
     return _decision(claim, Verdict.CONFIRMED, reason.MATCHES_OFFICIAL_EFFICACY, quoted)
 
 
-def _settled(decision: CosmeticDecision) -> bool:
-    """Whether the sentence was read completely or flagged, so it cannot quietly change another one."""
-    return decision.verdict is Verdict.MISMATCH or asserted_functions(decision.claim) is not None
-
-
 def decide_cosmetic_ad(
     text: str, claims: Sequence[CosmeticClaim], product: ConfirmedCosmetic | None,
 ) -> tuple[CosmeticDecision, ...]:
     """Decide every claim of one advertisement.
 
-    A sentence is confirmed only when every other sentence of the advertisement is a recognized
-    form, a disclaimer or a flagged mismatch: text the rules did not judge ("단 2주.", "라고는 할 수
-    없습니다.") may change what the recognized sentence says.
+    A sentence is confirmed only when every other sentence of the advertisement is an allowlisted
+    form or the recognized disclaimer. Anything else beside it may change what it says, and a
+    keyword verdict on that neighbour ("(피부과 시술 병행 시)" is flagged for "시술") does not show
+    that it was understood.
     """
-
-    def identity(items: Sequence[CosmeticClaim]) -> list[tuple[str, tuple[int, int], str]]:
-        return [(item.claim_id, item.span, item.text) for item in items]
-
-    if identity(claims) != identity(extract_cosmetic_claims(text)):
+    unconfirmed = [claim.model_copy(update={"confirmed_by_user": False}) for claim in claims]
+    if unconfirmed != list(extract_cosmetic_claims(text)):
         raise ValueError("the claims are not the ones extracted from this advertisement text")
     decisions = tuple(_decide_sentence(claim, product) for claim in claims)
-    if not unread_sentences(text) and all(_settled(decision) for decision in decisions):
+    if not unread_sentences(text) and all(asserted_functions(claim) is not None for claim in claims):
         return decisions
     return tuple(
         _decision(decision.claim, Verdict.UNVERIFIABLE, CosmeticVerdictReason.AD_TEXT_NOT_FULLY_READ)

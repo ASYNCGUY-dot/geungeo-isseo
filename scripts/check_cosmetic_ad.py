@@ -11,11 +11,13 @@ Exit codes: 0 done, 3 input error.
 
 import argparse
 import json
+import sys
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 
 from claimledger.cosmetics_claims import (
+    MAX_AD_TEXT_LENGTH,
     confirm_cosmetic_claims,
     extract_cosmetic_claims,
     normalize_ad_text,
@@ -30,8 +32,6 @@ from claimledger.sources.functional_cosmetics import (
     FunctionalCosmetic,
     load_cosmetics_export,
 )
-
-MAX_AD_TEXT_LENGTH = 5000
 
 
 class InputError(ValueError):
@@ -66,11 +66,22 @@ def search(items: Sequence[FunctionalCosmetic], query: str, limit: int) -> list[
 
 def _ad_text(args: argparse.Namespace) -> str:
     text = args.ad_text_file.read_text(encoding="utf-8") if args.ad_text_file else (args.ad_text or "")
+    text = normalize_ad_text(text)
     if not text.strip():
         raise InputError("the advertisement text is empty")
     if len(text) > MAX_AD_TEXT_LENGTH:
         raise InputError(f"the advertisement text is longer than {MAX_AD_TEXT_LENGTH} characters")
-    return normalize_ad_text(text)
+    return text
+
+
+def _emit(body: dict) -> None:
+    text = json.dumps(body, ensure_ascii=False, indent=2)
+    try:
+        text.encode(sys.stdout.encoding or "utf-8")
+    except (UnicodeEncodeError, LookupError):
+        # A console that cannot show a character still gets valid JSON.
+        text = json.dumps(body, indent=2)
+    print(text)
 
 
 def _candidates(args: argparse.Namespace) -> dict:
@@ -128,7 +139,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (InputError, DataSourceError, OSError, ValueError) as error:
         print(f"error: {error}")
         return 3
-    print(json.dumps(body, ensure_ascii=False, indent=2))
+    _emit(body)
     return 0
 
 

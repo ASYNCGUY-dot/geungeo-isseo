@@ -18,6 +18,7 @@ from claimledger.cosmetics_verdict import (
     ConfirmedCosmetic,
     CosmeticDecision,
     CosmeticVerdictReason,
+    decide_cosmetic_ad,
 )
 from claimledger.domain import Verdict
 from claimledger.receipt import PUBLIC_VERDICT_LABELS, STRENGTH_LABELS
@@ -41,7 +42,7 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
     CosmeticVerdictReason.PRODUCT_IDENTITY_UNCONFIRMED: "제품이 확정되지 않았습니다.",
     CosmeticVerdictReason.CLAIM_UNCONFIRMED: "사용자가 확인하지 않은 주장입니다.",
     CosmeticVerdictReason.CLAIM_NOT_PLAINLY_ASSERTED: (
-        "효과를 부정하거나 묻는 문장, 또는 사용상 주의를 안내하는 문장이어서 무엇을 주장하는지 규칙으로 확정하지 않았습니다."
+        "효과를 나타내는 단어가 부정·금지·주의 표현이나 물음표 앞에 있어, 그 효과를 주장한 것으로 보지 않았습니다."
     ),
     CosmeticVerdictReason.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE: (
         "질병 치료나 의료 시술의 효과처럼 읽히는 표현입니다. 화장품의 공식 효능효과는 이런 표현을 담지 않습니다."
@@ -73,10 +74,10 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
         "공식 효능효과('도움을 준다')보다 강한 표현입니다."
     ),
     CosmeticVerdictReason.CLAIM_SCOPE_UNRESOLVED: (
-        "일부 단어는 공식 효능효과와 맞지만 문장 전체의 주체·조건·범위를 확인할 수 없어 보류했습니다."
+        "미백·주름개선에 관한 단어는 있지만 문장 전체가 무엇을 주장하는지(주체·조건·범위) 규칙으로 확정할 수 없어 보류했습니다."
     ),
     CosmeticVerdictReason.AD_TEXT_NOT_FULLY_READ: (
-        "이 문장만 보면 공식 효능효과와 같은 표현입니다. 다만 같은 광고문에 규칙이 판정하지 못한 문장이 있어 "
+        "이 문장만 보면 공식 효능효과와 같은 표현입니다. 다만 같은 광고문에 규칙이 끝까지 읽지 못한 문장이 있어 "
         "앞뒤 문장이 뜻을 바꾸는지 확인할 수 없으므로 확인됨으로 표시하지 않았습니다."
     ),
     CosmeticVerdictReason.MATCHES_OFFICIAL_EFFICACY: "공식 효능효과와 같은 범위·강도로 표현했습니다.",
@@ -86,12 +87,13 @@ COSMETIC_LIMITATIONS: tuple[str, ...] = (
     "식약처에 보고·심사된 기능성화장품의 공식 효능효과와만 대조합니다. 목록에 없는 일반 화장품은 확인할 수 없습니다.",
     "미백과 주름개선 주장만 판정합니다. 자외선 차단 등 다른 기능은 아직 판정하지 않습니다.",
     (
-        "문장 단위로 판정합니다. 판정하지 못한 문장이 하나라도 있으면 다른 문장도 확인됨으로 표시하지 않으며, "
+        "문장 단위로 판정합니다. 정해진 문형이나 의약품이 아니라는 고지 문구로 끝까지 읽지 못한 문장이 광고문에 "
+        "하나라도 있으면, 그 문장이 근거 불일치로 판정됐더라도 다른 문장을 확인됨으로 표시하지 않습니다. "
         "주장으로 읽지 않은 문장은 따로 보여 줍니다."
     ),
     (
         "근거 불일치는 문장에 들어 있는 단어를 보고 판정합니다. 그 단어가 다른 것을 꾸미는 문장에서는 틀릴 수 있어 "
-        "판정에 쓴 단어를 함께 보여 줍니다."
+        "판정에 쓴 단어를 함께 보여 줍니다. 부정·주의 표현이나 물음표 앞의 단어는 판정에 쓰지 않습니다."
     ),
     "성분의 함량·안전성과 개인 피부에 대한 효과는 판단하지 않습니다.",
     "제품은 사용자가 확정한 기록 기준입니다. 같은 이름의 다른 보고 기록이 있을 수 있습니다.",
@@ -124,6 +126,7 @@ class CosmeticReceiptClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_label: str | None
     strength_cues: tuple[str, ...]
+    set_aside_cues: tuple[str, ...]
     official_quotes: tuple[str, ...]
 
 
@@ -147,6 +150,9 @@ def build_cosmetic_receipt(
 ) -> CosmeticReceipt:
     row = product.product
     ad_text = normalize_ad_text(ad_text)
+    decisions = tuple(decisions)
+    if decisions != decide_cosmetic_ad(ad_text, [decision.claim for decision in decisions], product):
+        raise ValueError("the decisions are not the ones made for this advertisement text and product")
     return CosmeticReceipt(
         product=CosmeticReceiptProduct(
             record_id=row.record_id, item_name=row.item_name, company=row.company,
@@ -167,6 +173,7 @@ def build_cosmetic_receipt(
                 strength=decision.claim.strength,
                 strength_label=STRENGTH_LABELS[decision.claim.strength] if decision.claim.strength else None,
                 strength_cues=decision.claim.strength_cues,
+                set_aside_cues=decision.claim.set_aside_cues,
                 official_quotes=tuple(sentence.text for sentence in decision.official_sentences),
             )
             for decision in decisions

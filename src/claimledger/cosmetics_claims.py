@@ -7,20 +7,24 @@ The medical and guarantee cues are a conservative development policy, not a lega
 
 A sentence that is neither a claim nor a recognized disclaimer is kept as unread text: nothing in
 it was judged, and a confirmation is withheld while such text stands beside a recognized sentence.
+A cue that stands before a denial, a caution to the reader or a question mark is set aside: Korean
+puts what is denied before the denial, so that cue may be the thing denied.
 """
 
 import re
 import unicodedata
 from collections.abc import Iterable, Sequence
-from typing import Literal
+from typing import Literal, NamedTuple
 
 from pydantic import BaseModel
 
-from claimledger.claims_v1 import _DISCLAIMER, ExpressionStrength, _literal, _sentence_spans
+from claimledger.claims_v1 import ExpressionStrength, _literal, _sentence_spans
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.1"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.2"
+# The sentence splitter is quadratic on long runs of one character.
+MAX_AD_TEXT_LENGTH = 5000
 
 # Cues on whitespace-free NFKC, casefolded text. A wrinkle cue after "입술" is the lip function,
 # and "선크림" inside "주름개선크림" is not a sunscreen.
@@ -39,7 +43,7 @@ _FUNCTION_CUES: tuple[tuple[CosmeticFunction, re.Pattern[str]], ...] = (
 )
 # Words with an everyday sense count only in their medical or absolute one: "저자극 처방" is a
 # formulation, "재생 플라스틱" a material, "링클 필러 크림" a product type, "부작용이 있으면" a caution,
-# and "즉시 흡수" is not an effect.
+# "향이 좋아요" a liking, and "즉시 흡수" is not an effect.
 _PRESCRIBER = r"(?:의사|전문의|피부과|병원|의원|약사|약국|한의사|한의원)"
 _REGROWN = r"(?:피부|세포|진피|조직|상처|모발|모근|콜라겐)"
 # "개선" is a strength only as a verb: "주름개선" and "주름 개선 효과" name the function.
@@ -68,22 +72,30 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
     (
         ExpressionStrength.IMPROVEMENT,
         re.compile(
-            rf"개선(?={_VERBAL})|향상|좋아|회복|되살|강화|해결|해소|없애|사라지|사라집|제거|지워|펴주|펴줍|펴집"
-            r"|하얗게|하얘|밝아|환해|엷게|옅게|완화|줄여|줄어|감소"
+            rf"개선(?={_VERBAL})|향상|좋아(?:지|집|져|졌)|회복|되살|강화|해결|해소|없애|사라지|사라집|제거"
+            r"|지워|펴주|펴줍|펴집|하얗게|하얘|밝아|환해|엷게|옅게|완화|줄여|줄어|감소"
         ),
     ),
     (ExpressionStrength.POSSIBILITY, re.compile(r"수있")),
 )
+_STRONG = frozenset({
+    ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE, ExpressionStrength.TREATMENT_PREVENTION,
+})
 
-# A sentence that denies an effect ("치료 목적의 제품이 아닙니다", "없애지는 못합니다") is not that
-# claim. Only predicate forms count: "끈적이지 않고" and "뿐 아니라" deny nothing about the effect.
-_DENIAL = re.compile(
-    r"아닙니다|아니에요|아니예요|아니다|아님|않습니다|않아요|않는다|않음|않지만"
-    r"|못합니다|못해요|못한다|못함|못하지만|수없|수는없|수도없"
+# A denial ("아닙니다", "않는", "없는", "못합니다"), a prohibition or caution to the reader ("마세요",
+# "사용을 중지", "상담", "…이 있는 부위") or a question mark. A cue before one of these is not asserted.
+# "없애다" and "없어지다" are effects, not denials.
+_NON_ASSERTION = re.compile(
+    r"\?"
+    r"|않|아니|아닌|아닙|아님|못(?:하|해|한|함|합)|없(?!애|앨|앱|앴|어지|어집|어져|어졌)"
+    r"|말것|마세요|마십시오|금지|다릅니다|달라요|다르다"
+    r"|사용을?(?:중지|중단|자제|삼가|피하|피해)|피해주|피하세|피하십|상담|상의"
+    r"|있(?:는|으신|을)(?:분|경우|부위)|있으면|생기면"
 )
-# A caution to the reader ("전문의와 상담하세요", "사용을 중지할 것") names a condition without claiming
-# to treat it.
-_CAUTION = re.compile(r"상담하세요|상담하십시오|상담하시기|상담할것|사용을(?:중지|중단|자제|삼가)|사용하지마")
+# The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
+_DISCLAIMER = re.compile(
+    r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이(?:아닙니다|아니에요|아니다|아님)[.!。]?"
+)
 _DOT = "[ᆞ·・‧⋅∙]"
 _SUBJECT = r"(?:(?:본제품|이제품|본품)(?:은|는|이|가))?"
 _EFFECT: dict[CosmeticFunction, str] = {
@@ -93,6 +105,7 @@ _EFFECT: dict[CosmeticFunction, str] = {
 _JOIN = rf"(?:과|와|및|[,/]|{_DOT})"
 _HELP = r"에도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다|준다))?"
 _CATEGORY = r"기능성(?:화장품)?(?:입니다|이에요|예요)?"
+# One closing mark at most: "…" and "..." announce a continuation.
 _END = r"[.!。]?"
 _WHITENING, _WRINKLE = _EFFECT[CosmeticFunction.WHITENING], _EFFECT[CosmeticFunction.WRINKLE]
 _BOTH = rf"(?:{_WHITENING}{_JOIN}{_WRINKLE}|{_WRINKLE}{_JOIN}{_WHITENING})"
@@ -119,8 +132,10 @@ class CosmeticClaim(BaseModel):
     function_cues: tuple[str, ...]
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
+    # Cue words before a denial, a caution or a question: they propose nothing.
+    set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.1"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.2"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -130,9 +145,19 @@ class UnreadSentence(BaseModel):
     span: tuple[int, int]
 
 
+class _Reading(NamedTuple):
+    functions: tuple[CosmeticFunction, ...]
+    function_cues: tuple[str, ...]
+    strength: ExpressionStrength | None
+    strength_cues: tuple[str, ...]
+    set_aside: tuple[str, ...]
+    # A function word or a strong word was set aside, so the sentence stays visible as a claim.
+    substance_set_aside: bool
+
+
 def normalize_ad_text(text: str) -> str:
-    """Compose decomposed Hangul (NFD) so that cues match; spans index the returned text."""
-    return unicodedata.normalize("NFC", text)
+    """Drop a leading byte order mark and compose decomposed Hangul (NFD); spans index the result."""
+    return unicodedata.normalize("NFC", text.removeprefix("﻿"))
 
 
 def asserted_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction] | None:
@@ -144,58 +169,60 @@ def asserted_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction] | No
     return None
 
 
-def denies(claim: CosmeticClaim) -> bool:
-    """Whether the sentence contains a denial, so a cue in it may be what is being denied."""
-    return _DENIAL.search(_compact(claim.text)[0]) is not None
-
-
-def asks(claim: CosmeticClaim) -> bool:
-    """Whether the sentence is a question: it asserts nothing."""
-    return "?" in _compact(claim.text)[0]
-
-
-def cautions(claim: CosmeticClaim) -> bool:
-    """Whether the sentence tells the reader when to stop or seek advice."""
-    return _CAUTION.search(_compact(claim.text)[0]) is not None
-
-
-def _classify(sentence: str) -> tuple[
-    tuple[CosmeticFunction, ...], tuple[str, ...], ExpressionStrength | None, tuple[str, ...]
-]:
+def _classify(sentence: str) -> _Reading:
     compact, positions = _compact(sentence)
-    functions: list[CosmeticFunction] = []
-    function_cues: list[str] = []
-    for function, pattern in _FUNCTION_CUES:
-        for match in pattern.finditer(compact):
-            if function not in functions:
-                functions.append(function)
-            function_cues.append(_literal(sentence, positions, match))
-    ordered = tuple(function for function in CosmeticFunction if function in functions)
+    function_matches = [
+        (function, match) for function, pattern in _FUNCTION_CUES for match in pattern.finditer(compact)
+    ]
+    strength_matches = [
+        (level, match) for level, pattern in _STRENGTH_CUES for match in pattern.finditer(compact)
+    ]
+    cue_spans = [match.span() for _, match in (*function_matches, *strength_matches)]
+    # A denial inside a cue ("부작용 없는") belongs to that cue.
+    markers = [
+        marker.start() for marker in _NON_ASSERTION.finditer(compact)
+        if not any(start < marker.end() and marker.start() < end for start, end in cue_spans)
+    ]
+    last_marker = max(markers, default=-1)
 
+    def asserted(match: re.Match[str]) -> bool:
+        return match.end() > last_marker
+
+    functions = {function for function, match in function_matches if asserted(match)}
+    function_cues = [_literal(sentence, positions, match) for _, match in function_matches if asserted(match)]
     strength: ExpressionStrength | None = None
     strength_cues: list[str] = []
-    for candidate, pattern in _STRENGTH_CUES:
-        matches = list(pattern.finditer(compact))
-        if matches:
-            strength = candidate
-            strength_cues = [_literal(sentence, positions, match) for match in matches]
+    for level, _ in _STRENGTH_CUES:
+        found = [match for candidate, match in strength_matches if candidate is level and asserted(match)]
+        if found:
+            strength, strength_cues = level, [_literal(sentence, positions, match) for match in found]
             break
-    return ordered, tuple(dict.fromkeys(function_cues)), strength, tuple(strength_cues)
+    denied = [
+        (match.start(), _literal(sentence, positions, match), kind)
+        for kind, match in (*function_matches, *strength_matches) if not asserted(match)
+    ]
+    return _Reading(
+        functions=tuple(function for function in CosmeticFunction if function in functions),
+        function_cues=tuple(dict.fromkeys(function_cues)),
+        strength=strength,
+        strength_cues=tuple(strength_cues),
+        set_aside=tuple(dict.fromkeys(literal for _, literal, _ in sorted(denied, key=lambda item: item[0]))),
+        substance_set_aside=any(isinstance(kind, CosmeticFunction) or kind in _STRONG for _, _, kind in denied),
+    )
 
 
 def _read(text: str) -> tuple[tuple[CosmeticClaim, ...], tuple[UnreadSentence, ...]]:
     text = normalize_ad_text(text)
+    if len(text) > MAX_AD_TEXT_LENGTH:
+        raise ValueError(f"the advertisement text is longer than {MAX_AD_TEXT_LENGTH} characters")
     claims: list[CosmeticClaim] = []
     unread: list[UnreadSentence] = []
     for start, end in _sentence_spans(text):
         sentence = text[start:end]
         if _DISCLAIMER.fullmatch(_compact(sentence)[0]):
             continue
-        functions, function_cues, strength, strength_cues = _classify(sentence)
-        strong = strength is not None and strength in {
-            ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE, ExpressionStrength.TREATMENT_PREVENTION,
-        }
-        if not functions and not strong:
+        reading = _classify(sentence)
+        if not reading.functions and reading.strength not in _STRONG and not reading.substance_set_aside:
             unread.append(UnreadSentence(text=sentence, span=(start, end)))
             continue
         claims.append(
@@ -203,10 +230,11 @@ def _read(text: str) -> tuple[tuple[CosmeticClaim, ...], tuple[UnreadSentence, .
                 claim_id=f"C{len(claims) + 1}",
                 text=sentence,
                 span=(start, end),
-                function_candidates=functions,
-                function_cues=function_cues,
-                strength=strength,
-                strength_cues=strength_cues,
+                function_candidates=reading.functions,
+                function_cues=reading.function_cues,
+                strength=reading.strength,
+                strength_cues=reading.strength_cues,
+                set_aside_cues=reading.set_aside,
             )
         )
     return tuple(claims), tuple(unread)
@@ -236,13 +264,11 @@ def confirm_cosmetic_claims(
 
 __all__ = [
     "COSMETIC_CLAIM_VERSION",
+    "MAX_AD_TEXT_LENGTH",
     "CosmeticClaim",
     "UnreadSentence",
-    "asks",
     "asserted_functions",
-    "cautions",
     "confirm_cosmetic_claims",
-    "denies",
     "extract_cosmetic_claims",
     "normalize_ad_text",
     "unread_sentences",

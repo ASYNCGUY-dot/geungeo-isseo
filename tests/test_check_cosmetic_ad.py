@@ -1,13 +1,27 @@
 """End-to-end check of a cosmetics advertisement against an exported MFDS list (synthetic export)."""
 
+import io
 import json
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 
-from claimledger.cosmetics_receipt import COSMETIC_REASON_MESSAGES
-from claimledger.cosmetics_verdict import CosmeticVerdictReason
-from claimledger.sources.functional_cosmetics import EXPORT_FIELDS, REPORTED, load_cosmetics_export
+from claimledger.cosmetics_claims import confirm_cosmetic_claims, extract_cosmetic_claims
+from claimledger.cosmetics_receipt import COSMETIC_REASON_MESSAGES, build_cosmetic_receipt
+from claimledger.cosmetics_verdict import (
+    ConfirmedCosmetic,
+    CosmeticVerdictReason,
+    decide_cosmetic_ad,
+)
+from claimledger.domain import Verdict
+from claimledger.sources.functional_cosmetics import (
+    EXPORT_FIELDS,
+    REPORTED,
+    FunctionalCosmetic,
+    load_cosmetics_export,
+)
 from scripts import check_cosmetic_ad
 
 RETRIEVED_AT = "2026-10-11T05:18:59.490402+00:00"
@@ -68,13 +82,14 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
     tmp_path: Path, capsys: pytest.CaptureFixture[str],
 ) -> None:
     ad = tmp_path / "ad.txt"
-    ad.write_text("미백과 주름개선에 도움을 줍니다.\n주름을 100% 없애줍니다.\n피부 재생 크림", encoding="utf-8")
+    # Editors on Windows may save the file with a byte order mark.
+    ad.write_text("미백과 주름개선에 도움을 줍니다.\n본 제품은 의약품이 아닙니다.", encoding="utf-8-sig")
     code, body = _run(
         capsys, "--export-dir", str(_export(tmp_path, ROWS)), "--record-id", "2026030397",
         "--ad-text-file", str(ad), "--confirm-claims", "all",
     )
 
-    assert code == 0
+    assert code == 0 and body["ad_text"].startswith("미백과")
     assert body["product"] == {
         "record_id": "2026030397", "item_name": "합성 리프팅 크림", "company": "합성 화장품",
         "registered_on": "20250102", "source_id": "data.go.kr:15095680",
@@ -84,19 +99,65 @@ def test_a_confirmed_record_gets_a_receipt_with_reasons_and_quotes(
         "official_statement": BOTH,
     }
     verdicts = [(claim["verdict"], claim["verdict_label"], claim["reason_code"]) for claim in body["claims"]]
-    assert verdicts == [
-        ("confirmed", "확인됨", "MATCHES_OFFICIAL_EFFICACY"),
-        ("mismatch", "근거 불일치", "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"),
-        ("mismatch", "근거 불일치", "MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE"),
-    ]
+    assert verdicts == [("confirmed", "확인됨", "MATCHES_OFFICIAL_EFFICACY")]
     assert body["claims"][0]["official_quotes"] == [
         "피부의 미백에 도움을 준다.", "피부의 주름개선에 도움을 준다.",
     ]
-    assert body["claims"][1]["official_quotes"] == [] and body["claims"][0]["reason_message"]
-    assert body["claims"][1]["strength_cues"] == ["100%"] and body["claims"][1]["function_cues"] == ["주름"]
-    assert body["unread_text"] == []
-    assert body["rule_versions"] == ["cosmetic-claim-v1.1", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.1"]
+    assert body["claims"][0]["reason_message"] and body["unread_text"] == []
+    assert body["rule_versions"] == ["cosmetic-claim-v1.2", "cosmetic-efficacy-v1.0", "cosmetic-verdict-v1.2"]
     assert body["limitations"] and body["generated_at"]
+
+
+def test_flagged_sentences_show_the_words_behind_the_verdict(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
+    code, body = _run(
+        capsys, "--export-dir", str(_export(tmp_path, ROWS)), "--record-id", "2026030397", "--confirm-claims", "all",
+        "--ad-text", "미백과 주름개선에 도움을 줍니다. 주름을 100% 없애줍니다. 피부 재생 크림. 주름을 없애주지는 않습니다.",
+    )
+
+    assert code == 0
+    assert [(claim["verdict"], claim["reason_code"]) for claim in body["claims"]] == [
+        # A flagged neighbour was not read completely, so the recognized sentence is not confirmed.
+        ("unverifiable", "AD_TEXT_NOT_FULLY_READ"),
+        ("mismatch", "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"),
+        ("mismatch", "MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE"),
+        ("unverifiable", "CLAIM_NOT_PLAINLY_ASSERTED"),
+    ]
+    assert all(claim["official_quotes"] == [] for claim in body["claims"])
+    assert body["claims"][1]["strength_cues"] == ["100%"] and body["claims"][1]["function_cues"] == ["주름"]
+    assert body["claims"][2]["strength_cues"] == ["피부 재생"]
+    assert body["claims"][3]["set_aside_cues"] == ["주름", "없애"] and body["claims"][3]["function_cues"] == []
+    assert body["product"]["official_statement"] == BOTH
+
+
+def test_a_receipt_is_refused_for_decisions_made_on_another_text() -> None:
+    row = FunctionalCosmetic(
+        record_id="SYNTHETIC-1", item_name="합성 테스트 크림", company="합성 화장품", registered_on="20250102",
+        effect_text="", effect_name=BOTH, source_id="data.go.kr:15095680", retrieved_at=datetime(2026, 10, 12, tzinfo=UTC),
+    )
+    product, now = ConfirmedCosmetic(product=row, confirmed_by_user=True), datetime.now(UTC)
+    alone = "미백에 도움을 줍니다."
+    decisions = decide_cosmetic_ad(alone, confirm_cosmetic_claims(extract_cosmetic_claims(alone), "all"), product)
+
+    assert build_cosmetic_receipt(alone, product, decisions, now).claims[0].verdict is Verdict.CONFIRMED
+    with pytest.raises(ValueError):
+        build_cosmetic_receipt("미백에 도움을 줍니다. 라고는 할 수 없습니다.", product, decisions, now)
+    other = ConfirmedCosmetic(product=row.model_copy(update={"effect_name": ""}), confirmed_by_user=True)
+    with pytest.raises(ValueError):
+        build_cosmetic_receipt(alone, other, decisions, now)
+
+
+def test_output_stays_valid_json_on_a_console_that_cannot_show_a_character(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    raw = io.BytesIO()
+    console = io.TextIOWrapper(raw, encoding="cp949")
+    monkeypatch.setattr(sys, "stdout", console)
+    code = check_cosmetic_ad.main(["--ad-text", "미백에 도움을 줍니다. ✨"])
+    console.flush()
+
+    assert code == 0 and json.loads(raw.getvalue().decode("cp949"))["unread_text"] == ["✨"]
 
 
 def test_unjudged_text_is_listed_and_withholds_the_confirmation(
@@ -153,6 +214,7 @@ def test_unconfirmed_claims_and_untrusted_records_stay_unverifiable(
     ["--record-id", "2026030397"],
     ["--ad-text", "미백에 도움을 줍니다.", "--confirm-claims", "all"],
     ["--ad-text", "   "],
+    ["--ad-text", "가" * 5001],
     ["--query", "  "],
     [],
 ])
