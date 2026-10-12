@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CC-001,mismatch,sonnet,규칙5 기간 약속과 100% 보장은 공식 수준(도움을 준다) 초과
+CC-002,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-003,mismatch,sonnet,규칙4 주름개선은 공식(미백만)에 없음
+CC-004,mismatch,sonnet,규칙4 주름개선은 공식(자외선 차단만)에 없음
+CC-005,unverifiable,sonnet,규칙6 주어가 제품이 아니라 성분
+CC-006,mismatch,sonnet,규칙4 미백은 공식(입술 주름개선만)에 없음
+CC-007,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-008,unverifiable,sonnet,규칙2 모공 관리는 판정 대상 기능이 아님
+CC-009,unverifiable,sonnet,규칙3 문서에 양식 안내 문구가 남아 있음
+CC-010,confirmed,sonnet,규칙7 공식에 주름개선 있고 공식 수준 이내
+CC-011,mismatch,sonnet,규칙4 공식은 모발의 염모뿐이라 주름개선이 없음
+CC-012,unverifiable,sonnet,규칙2 모공 관리는 판정 대상 기능이 아님
+CC-013,unverifiable,sonnet,규칙6 주어가 제품이 아니라 성분
+CC-014,unverifiable,sonnet,규칙3 문서에 양식 안내 문구가 남아 있음
+CC-015,mismatch,sonnet,규칙5 기간 약속과 100% 보장은 공식 수준 초과
+CC-016,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-017,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-018,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-019,unverifiable,sonnet,규칙2 탄력은 판정 대상 기능이 아님
+CC-020,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-021,unverifiable,sonnet,규칙2 탄력은 판정 대상 기능이 아님
+CC-022,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-023,mismatch,sonnet,규칙5 동시에 개선합니다는 단정 표현
+CC-024,unverifiable,sonnet,규칙3 효능효과명(주름개선)과 문서(자외선 차단)가 서로 다른 기능
+CC-025,mismatch,sonnet,규칙5 100% 확실은 보장 표현
+CC-026,mismatch,sonnet,규칙5 개선합니다는 단정 표현
+CC-027,unverifiable,sonnet,규칙3 효능효과명(미백만)과 문서(미백·주름개선·자외선 차단)가 서로 다름
+CC-028,unverifiable,sonnet,규칙6 주어가 제품이 아니라 성분
+CC-029,mismatch,sonnet,규칙1 기미·잡티 치료는 질병 치료 표현
+CC-030,mismatch,sonnet,규칙5 사라집니다 등 단정 표현
+CC-031,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-032,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-033,mismatch,sonnet,규칙4 미백·주름개선이 공식(자외선 차단만)에 없음 (규칙5 보장도 해당)
+CC-034,unverifiable,sonnet,규칙2 탄력은 판정 대상 기능이 아님
+CC-035,mismatch,sonnet,규칙5 하얗게 개선합니다는 단정 표현
+CC-036,mismatch,sonnet,규칙4 공식은 탈모 증상 완화뿐이라 미백이 없음
+CC-037,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-038,unverifiable,sonnet,규칙6 입가라는 부위 한정이 공식(피부 주름개선)에 없는 내용
+CC-039,mismatch,sonnet,규칙5 말끔히 사라집니다는 단정 표현
+CC-040,mismatch,sonnet,규칙4 미백이 공식(자외선 차단만)에 없음
+CC-041,unverifiable,sonnet,규칙2 탄력은 판정 대상 기능이 아님
+CC-042,mismatch,sonnet,규칙5 개선합니다는 단정 표현
+CC-043,mismatch,sonnet,규칙1 피부 재생·염증 완화는 의약적 효과 표현이라 규칙2보다 앞
+CC-044,mismatch,sonnet,규칙4 주름개선이 공식(미백만)에 없음
+CC-045,mismatch,sonnet,규칙4 미백이 공식(주름개선만)에 없음
+CC-046,confirmed,sonnet,규칙7 공식명에 주름개선 있고 공식 수준 이내
+CC-047,confirmed,sonnet,규칙7 공식명에 미백·주름개선 모두 있고 공식 수준 이내
+CC-048,mismatch,sonnet,규칙1 피부과 시술처럼 조직 재생은 의료 시술 효과 표현
+CC-049,mismatch,sonnet,규칙4 미백이 공식(주름개선만)에 없음
+CC-050,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내 (개인 소감은 효능 주장 아님)
+CC-051,mismatch,sonnet,규칙1 기미·잡티 치료는 질병 치료 표현
+CC-052,confirmed,sonnet,규칙7 공식 문구는 도움을 줍니다로 완전한 문장이고 미백 있음
+CC-053,mismatch,sonnet,규칙5 기간 약속과 확실 약속은 공식 수준 초과
+CC-054,unverifiable,sonnet,규칙2 피부결 정돈은 판정 대상 기능이 아님
+CC-055,mismatch,sonnet,규칙4 공식은 모발 염색뿐이라 미백이 없음
+CC-056,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-057,unverifiable,sonnet,규칙3 양식 안내 문구가 남아 있고 주름 문구도 불완전
+CC-058,mismatch,sonnet,규칙1 기미·잡티 치료는 질병 치료 표현
+CC-059,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음 (규칙5보다 앞)
+CC-060,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-061,confirmed,sonnet,규칙7 공식명에 주름개선 있고 공식 수준 이내
+CC-062,mismatch,sonnet,규칙5 기간 약속과 보장은 공식 수준 초과
+CC-063,mismatch,sonnet,규칙5 100% 확실은 보장 표현
+CC-064,mismatch,sonnet,규칙4 공식은 모발의 염모뿐이라 미백·주름개선이 없음
+CC-065,mismatch,sonnet,규칙4 미백이 공식(주름개선만)에 없음
+CC-066,confirmed,sonnet,규칙7 공식명에 주름개선 있고 공식 수준 이내
+CC-067,unverifiable,sonnet,규칙2 탄력은 판정 대상 기능이 아님
+CC-068,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-069,unverifiable,sonnet,규칙3 문서에 오기(자외선 문구 뒤에 효능효과 단어가 남음)
+CC-070,confirmed,sonnet,규칙7 공식명에 주름개선 있고 공식 수준 이내
+CC-071,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-072,mismatch,sonnet,규칙5 개선해 줍니다는 단정 표현
+CC-073,confirmed,sonnet,규칙7 공식명에 미백·주름개선 모두 있고 공식 수준 이내
+CC-074,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음 (규칙5보다 앞)
+CC-075,mismatch,sonnet,규칙4 주름개선이 공식(미백만)에 없음
+CC-076,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-077,unverifiable,sonnet,규칙6 40대 이후라는 대상자가 공식에 없는 내용
+CC-078,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-079,confirmed,sonnet,규칙7 공식에 미백·주름개선 모두 있고 공식 수준 이내
+CC-080,mismatch,sonnet,규칙5 모두 개선됩니다는 단정 표현
+CC-081,unverifiable,sonnet,규칙6 주어가 제품이 아니라 성분
+CC-082,unverifiable,sonnet,규칙3 효능효과명과 문서가 모두 비어 있음
+CC-083,unverifiable,sonnet,규칙2 보습은 판정 대상 기능이 아님
+CC-084,unverifiable,sonnet,규칙2 보습은 판정 대상 기능이 아님
+CC-085,mismatch,sonnet,규칙4 주름개선이 공식(자외선 차단만)에 없음
+CC-086,confirmed,sonnet,규칙7 공식명에 미백 있고 공식 수준 이내
+CC-087,mismatch,sonnet,규칙4 주름개선이 공식(자외선 차단만)에 없음
+CC-088,confirmed,sonnet,규칙7 공식에 미백 있고 공식 수준 이내
+CC-089,mismatch,sonnet,규칙4 주름개선이 공식(미백만)에 없음
+CC-090,confirmed,sonnet,규칙7 공식에 주름개선 있고 공식 수준 이내
+CC-091,unverifiable,sonnet,규칙3 문서에 양식 안내 문구가 남아 있음
+CC-092,confirmed,sonnet,규칙7 공식에 주름개선 있고 공식 수준 이내
+CC-093,confirmed,sonnet,규칙7 공식에 주름개선 있고 공식 수준 이내
+CC-094,mismatch,sonnet,규칙4 주름개선이 공식(자외선 차단만)에 없음
+CC-095,mismatch,sonnet,규칙1 기미·잡티 치료는 질병 치료 표현
+CC-096,mismatch,sonnet,규칙4 미백이 공식(주름개선만)에 없음
+CC-097,mismatch,sonnet,규칙4 공식은 모발 염색뿐이라 미백·주름개선이 없음
+CC-098,mismatch,sonnet,규칙4 공식은 모발의 염모뿐이라 미백이 없음
+CC-099,confirmed,sonnet,규칙7 공식명에 주름개선 있고 공식 수준 이내
+CC-100,unverifiable,sonnet,규칙6 주어가 제품이 아니라 성분
