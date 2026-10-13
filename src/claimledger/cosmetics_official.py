@@ -11,10 +11,6 @@ Three kinds of official data never count as evidence:
 - a document that still carries the reporting form's instruction ("해당하는 효능효과 이외에는 모두
   삭제하시기 바랍니다"): the listed functions may be the unedited form,
 - an efficacy sentence and a document that name different functions.
-
-A statement that was not read completely still shows one thing when every line of it is about
-another function (a sunscreen index with a misspelt label, a hair dye in wording outside the forms):
-it grants neither whitening nor wrinkle improvement. Nothing else is taken from it.
 """
 
 import re
@@ -26,7 +22,7 @@ from pydantic import BaseModel
 
 from claimledger.official_v2 import _compact
 
-COSMETIC_EFFICACY_VERSION = "cosmetic-efficacy-v1.1"
+COSMETIC_EFFICACY_VERSION = "cosmetic-efficacy-v1.0"
 
 
 class CosmeticFunction(StrEnum):
@@ -66,10 +62,7 @@ class CosmeticEfficacy(BaseModel):
 
     status: EfficacyStatus
     sentences: tuple[OfficialSentence, ...] = ()
-    # Unrecognized wording only: every line is about another function and none could be a
-    # whitening or wrinkle sentence.
-    grants_no_whitening_or_wrinkle: bool = False
-    version: Literal["cosmetic-efficacy-v1.1"] = COSMETIC_EFFICACY_VERSION
+    version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
 
     @property
     def functions(self) -> frozenset[CosmeticFunction]:
@@ -108,11 +101,6 @@ _SENTENCES: tuple[tuple[CosmeticFunction, re.Pattern[str]], ...] = (
 _LIST_MARKER = re.compile(rf"(?:[-–*•]\.?|{_DOT}|\(?\d{{1,2}}[.)]|[①-⑳])")
 _SENTENCE_END = re.compile(r"[.。]*")
 _TEMPLATE_NOTE = "삭제하시기바랍니다"
-# A line about sun protection, hair dye, bleach, hair removal or their oxidants.
-_OTHER_FUNCTION = re.compile(r"자외선|spf|염색|염모|탈색|탈염|제모|산화제|산화보조제")
-# What a line granting whitening or wrinkle improvement would hold: the function, or the "도움을
-# 준다" every such sentence ends in, which still stands beside a misspelt function word.
-_MAY_GRANT_JUDGED = re.compile(r"미백|주름|화이트|링클|white|wrinkle|멜라닌|기미|주근깨|색소|도움|준다|줍니다")
 
 
 def _read(text: str, source: Literal["document", "effect_name"]) -> tuple[OfficialSentence, ...] | None:
@@ -139,13 +127,6 @@ def _read(text: str, source: Literal["document", "effect_name"]) -> tuple[Offici
     return tuple(sentences) or None
 
 
-def _other_functions_only(*fields: str) -> bool:
-    lines = [compact for field in fields for line in field.split("\n") if (compact := _compact(line)[0])]
-    return bool(lines) and all(
-        _OTHER_FUNCTION.search(line) and not _MAY_GRANT_JUDGED.search(line) for line in lines
-    )
-
-
 def parse_cosmetic_efficacy(effect_text: str, effect_name: str) -> CosmeticEfficacy:
     """Read a row's efficacy document (`effect_text`) and efficacy sentence (`effect_name`)."""
     document, sentence = effect_text.strip(), effect_name.strip()
@@ -159,10 +140,7 @@ def parse_cosmetic_efficacy(effect_text: str, effect_name: str) -> CosmeticEffic
         if text
     }
     if any(sentences is None for sentences in read.values()):
-        return CosmeticEfficacy(
-            status=EfficacyStatus.UNRECOGNIZED_WORDING,
-            grants_no_whitening_or_wrinkle=_other_functions_only(document, sentence),
-        )
+        return CosmeticEfficacy(status=EfficacyStatus.UNRECOGNIZED_WORDING)
     if len(read) == 2 and Counter(item.function for item in read["document"]) != Counter(
         item.function for item in read["effect_name"]
     ):

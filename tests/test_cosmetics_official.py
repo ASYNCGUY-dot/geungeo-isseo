@@ -110,61 +110,6 @@ def test_wording_outside_the_allowlist_holds_the_whole_product(statement: str) -
         assert efficacy.functions == frozenset() and efficacy.sentences == ()
 
 
-@pytest.mark.parametrize("statement", [
-    # Misspelt indexes and wording outside the forms, seen in the export.
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++)",
-    "자외선으로부터 피부를 보호한다,(SPF50+,PA+++)",
-    "자외선으로부터 피부를 보호한다(SPF50+PA+++).효능효과",
-    "1。자외선으로부터 피부를 보호한다.(SPF 17)",
-    "모발의 염색(갈색)",
-    "백발의 염색(황갈색)",
-    "모발(백모)의 염색 (진갈색)",
-    "염모제의 산화제",
-    "탈색제, 탈염제의 산화보조제",
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++)\n유첨 : 자외선 차단지수(SPF) 평가시험 자료",
-])
-def test_an_unread_statement_about_other_functions_grants_neither_judged_function(statement: str) -> None:
-    for efficacy in (parse_cosmetic_efficacy(statement, ""), parse_cosmetic_efficacy("", statement)):
-        assert efficacy.status is EfficacyStatus.UNRECOGNIZED_WORDING and efficacy.functions == frozenset()
-        assert efficacy.grants_no_whitening_or_wrinkle
-
-
-@pytest.mark.parametrize("statement", [
-    # The function is named, in whatever wording.
-    "피부의 미백개선에 도움을 준다.",
-    "자외선으로부터 피부를 보호하고 미백에 도움을 준다.",
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++)\n피부의 주름개선에 도움은 준다.",
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++)\n화이트닝",
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++), 멜라닌 색소 침착 방지",
-    # A misspelt function word still stands beside "도움을 준다".
-    "자외선으로부터 피부를 보호한다. 피부의 미벡에 도움을 준다.",
-    "자외선으로부터 피부를 보호한다. 피부의 주룸개선에 도웅을 준다.",
-    "피부의 자외선 차단에 도움을 준다(SPF 10)",
-    "탈모 증상에 완화에 도움을 준다",
-    # A line that names no function at all says nothing about what was granted.
-    "효능효과",
-    "기심사 품목과 주성분 종류와 분량이 동일하며 제형이 변경된 제품임",
-    "자외선으로부터 피부를 보호한다. (SFP40, PA+++)\n별첨 참조",
-    "모발의 염색(갈색)\n1호(자연흑갈색)",
-])
-def test_an_unread_statement_that_may_grant_a_judged_function_is_not_marked(statement: str) -> None:
-    for efficacy in (parse_cosmetic_efficacy(statement, ""), parse_cosmetic_efficacy("", statement)):
-        assert efficacy.status is EfficacyStatus.UNRECOGNIZED_WORDING
-        assert not efficacy.grants_no_whitening_or_wrinkle
-
-
-def test_the_mark_is_only_for_wording_that_was_not_read() -> None:
-    sunscreen = "자외선으로부터 피부를 보호한다."
-    # A readable statement lists its functions; held data of the other kinds proves nothing.
-    assert not parse_cosmetic_efficacy("", sunscreen).grants_no_whitening_or_wrinkle
-    assert not parse_cosmetic_efficacy("", "").grants_no_whitening_or_wrinkle
-    template = parse_cosmetic_efficacy(f"{sunscreen}\n※ 해당하는 효능효과 이외에는 모두 삭제하시기 바랍니다.", "")
-    assert template.status is EfficacyStatus.TEMPLATE_REMNANT and not template.grants_no_whitening_or_wrinkle
-    # Both fields count: the readable sentence beside an unread document names whitening.
-    beside = parse_cosmetic_efficacy("자외선으로부터 피부를 보호한다. (SFP40, PA+++)", WHITENING)
-    assert beside.status is EfficacyStatus.UNRECOGNIZED_WORDING and not beside.grants_no_whitening_or_wrinkle
-
-
 def test_missing_efficacy_is_its_own_status() -> None:
     efficacy = parse_cosmetic_efficacy("  ", "")
     assert efficacy.status is EfficacyStatus.MISSING and efficacy.functions == frozenset()
