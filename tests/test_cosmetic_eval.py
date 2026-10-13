@@ -24,6 +24,8 @@ KINDS = {
     "held_template": ("", f"{WHITENING}\n{TEMPLATE}"),
     "held_unrecognized": ("", "피부의 미백에 도움은 준다."),
     "held_conflicting": (WHITENING, SUN),
+    # No judged function at all, for the allocation that judges sun protection.
+    "hair": ("", "모발의 염모"),
 }
 
 
@@ -118,6 +120,58 @@ def test_the_second_allocation_probes_wrong_mismatches(tmp_path: Path) -> None:
     sheet = (tmp_path / "generation.md").read_text(encoding="utf-8")
     assert "함께 쓰는 다른 제품" in sheet and "메이크업 효과" in sheet
     for hidden in ("bystander", "makeup", "held", "stratum", "absent", WHITENING):
+        assert hidden not in sheet
+
+
+def test_the_third_allocation_covers_sunscreen_and_its_index(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path, "--allocation", "claims-v3")
+    allocation = build_cosmetic_eval.ALLOCATIONS["claims-v3"]
+    items = manifest["items"]
+
+    assert manifest["allocation_id"] == "claims-v3" and manifest["allocation"] == allocation
+    assert len(items) == 100 == sum(sum(counts.values()) for counts in allocation.values())
+    counts: dict[tuple[str, str], int] = {}
+    for item in items:
+        counts[(item["stratum"], item["claim_type"])] = counts.get((item["stratum"], item["claim_type"]), 0) + 1
+    assert counts == {(stratum, kind): count for stratum, kinds in allocation.items() for kind, count in kinds.items()}
+
+    with_sun = {"sun_only", "sun_with_judged"}
+    for item in items:
+        kind, stratum = item["claim_type"], item["stratum"]
+        if kind in {"index_same", "index_higher", "index_lower"}:
+            assert stratum in with_sun and item["topic"] == ["sunscreen"]
+        elif kind == "sun_absent":
+            assert stratum not in with_sun and item["topic"] == ["sunscreen"] and item["index"].startswith("SPF")
+        else:
+            assert item["index"] is None
+        if kind == "absent" and stratum == "sun_only":
+            assert set(item["topic"]) & {"whitening", "wrinkle"}
+        if kind == "official" and stratum == "sun_only":
+            assert item["topic"] == ["sunscreen"]
+    # Every synthetic sunscreen row says SPF50+ PA++++: the same index is stated as it is, a higher
+    # one adds what the record lacks and a lower one drops the SPF.
+    stated = {kind: {item["index"] for item in items if item["claim_type"] == kind} for kind in ("index_same", "index_higher", "index_lower")}
+    assert stated == {
+        "index_same": {"SPF50+ PA++++"}, "index_higher": {"SPF50+ PA++++ 지속내수성"}, "index_lower": {"SPF30 PA++++"},
+    }
+
+    sheet = (tmp_path / "generation.md").read_text(encoding="utf-8")
+    assert "지수: 문장에 'SPF50+ PA++++ 지속내수성'" in sheet and "자외선 차단" in sheet
+    for hidden in ("sun_only", "sun_with_judged", "index_higher", "sun_absent", "held", "stratum", WHITENING):
+        assert hidden not in sheet
+
+
+def test_the_labeling_sheet_of_the_third_allocation_explains_the_index(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path, "--allocation", "claims-v3")
+    assert build_cosmetic_eval.main([
+        "sheet", "--manifest", str(tmp_path / "manifest.json"), "--ads", str(_ads(tmp_path, manifest)),
+        "--export-dir", str(tmp_path / "export"), "--labeling-sheet", str(tmp_path / "labeling.md"),
+        "--labels-template", str(tmp_path / "labels.csv"),
+    ]) == 0
+    sheet = (tmp_path / "labeling.md").read_text(encoding="utf-8")
+    assert "'자외선 차단'" in sheet and "공식 지수보다 높" in sheet and "공식 지수보다 낮" in sheet
+    assert "별도 SPF 항목" in sheet and SUN in sheet
+    for hidden in ("sun_only", "index_higher", "sun_absent", "claim_type", "stratum"):
         assert hidden not in sheet
 
 
