@@ -1,8 +1,10 @@
 """Advertisement claims about functional cosmetics: extraction and the wording that may be confirmed.
 
 Keyword cues only propose what a sentence is about. A claim can be confirmed only when the whole
-sentence is one of a few allowlisted forms about whitening or wrinkle improvement, with no subject
-other than the product itself: the official efficacy belongs to the product, not to an ingredient.
+sentence is one of a few allowlisted forms about whitening, wrinkle improvement or sun protection,
+with no subject other than the product itself: the official efficacy belongs to the product, not to
+an ingredient. A sunscreen form may carry its index ("SPF50+ PA++++") before or after the claim; the
+index a sentence states is kept as written and compared with the official one by the verdict rules.
 The medical and guarantee cues are a conservative development policy, not a legal determination.
 
 A sentence that is neither a claim nor a recognized disclaimer is kept as unread text: nothing in
@@ -28,6 +30,7 @@ nothing. One invitation does not withhold a confirmation beside it; two can add 
 ("한 번 발라 보세요. 바로 확인해 보세요."), so an advertisement with more than one is not confirmed.
 """
 
+import itertools
 import re
 import unicodedata
 from collections.abc import Iterable, Sequence
@@ -40,7 +43,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.11"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.12"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -49,11 +52,19 @@ _CLOSING_MARKS = ".!?。…"
 # which may run over several ("3일 만에", "피부 재생"). A wrinkle cue after "입술" is the lip
 # function, and "선크림" inside "주름개선크림" is not a sunscreen.
 _Cues = tuple[re.Pattern[str] | None, re.Pattern[str] | None]
+# A kind of product that is a sunscreen, and the labels of its index: they name the product, not
+# an effect claimed beside another one.
+_SUN_PRODUCT = r"(?<!개)[선썬](?:크림|블록|스틱|쿠션|로션|젤|밤)"
+_SUN_LABEL = re.compile(rf"{_SUN_PRODUCT}|spf|pa:?\+{{1,4}}")
 _FUNCTION_CUES: tuple[tuple[CosmeticFunction, re.Pattern[str] | None, re.Pattern[str] | None], ...] = (
     (CosmeticFunction.WHITENING, re.compile(r"미백|화이트닝|멜라닌|기미|주근깨"), None),
     (CosmeticFunction.WRINKLE, re.compile(r"(?<!입술)(?<!입술의)주름|링클"), None),
     (CosmeticFunction.LIP_WRINKLE, None, re.compile(r"입술(?:의)?주름")),
-    (CosmeticFunction.SUNSCREEN, re.compile(r"자외선|spf|(?<!개)선크림|(?<!개)선블록|썬크림|썬블록"), None),
+    (
+        CosmeticFunction.SUNSCREEN,
+        re.compile(rf"자외선|spf|uv차단|{_SUN_PRODUCT}"),
+        re.compile(r"(?<![a-z])pa:?\+{1,4}"),
+    ),
     (CosmeticFunction.HAIR_DYE, re.compile(r"염모|염색"), None),
     (CosmeticFunction.HAIR_BLEACH, re.compile(r"탈색"), None),
     (CosmeticFunction.HAIR_REMOVAL, re.compile(r"제모"), None),
@@ -142,6 +153,11 @@ _STATE_NEAR = re.compile(
     r"|계속되면|보이면|심해지면|심할때|남았다면|피부라면|가라앉지않으면|진정되지않으면|호전되지않으면)"
 )
 _QUESTION = re.compile(r"\?[.!。]*$")
+# The index a sentence states: SPF value, PA grade, water resistance. "워터프루프" claims water
+# resistance without naming one of its two official grades.
+_AD_SPF = re.compile(r"spf:?(\d{1,3}\+?)")
+_AD_PA = re.compile(r"(?<![a-z])pa:?(\+{1,4})")
+_AD_WATER = re.compile(r"지속내수성|내수성|워터프루프")
 # The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
 _DISCLAIMER = re.compile(
     r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이(?:아닙니다|아니에요|아니다|아님)[.!。]?"
@@ -151,18 +167,36 @@ _DOT = "[ᆞ·・‧⋅∙]"
 _SUBJECT = r"(?:(?:본제품|이제품|본품|해당제품|본상품|이상품|해당상품)(?:은|는|이|가))?"
 _WHITENING = r"(?:피부(?:의)?)?미백"
 _WRINKLE = r"(?:피부(?:의)?)?주름개선"
+_SUN = r"자외선차단"
 _JOIN = rf"(?:과|와|및|[,/]|{_DOT})"
+_EFFECT_NAMES = {
+    CosmeticFunction.WHITENING: _WHITENING, CosmeticFunction.WRINKLE: _WRINKLE, CosmeticFunction.SUNSCREEN: _SUN,
+}
+_COUNT_WORDS = {1: "", 2: r"(?:2중|이중)?", 3: r"(?:3중|삼중)?"}
+
+
+def _effects() -> tuple[tuple[frozenset[CosmeticFunction], str, str], ...]:
+    """Every set of the judged functions, named in any order."""
+    effects = []
+    for size in (1, 2, 3):
+        for functions in itertools.combinations(_EFFECT_NAMES, size):
+            orders = "|".join(
+                rf"{_JOIN}?".join(_EFFECT_NAMES[function] for function in order)
+                for order in itertools.permutations(functions)
+            )
+            every = "(?:모두)?" if size > 1 else ""
+            effects.append((frozenset(functions), rf"(?:{orders}){every}(?:관리|케어)?", _COUNT_WORDS[size]))
+    return tuple(effects)
+
+
 # The effect a form names, the functions it asserts, and the word that may stand before "기능성".
-# "미백 관리" and "미백 케어" say no more than "미백"; "이중 기능성" needs both functions named.
-_EFFECTS: tuple[tuple[frozenset[CosmeticFunction], str, str], ...] = (
-    (frozenset({CosmeticFunction.WHITENING}), rf"{_WHITENING}(?:관리|케어)?", ""),
-    (frozenset({CosmeticFunction.WRINKLE}), rf"{_WRINKLE}(?:관리|케어)?", ""),
-    (
-        frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE}),
-        rf"(?:{_WHITENING}{_JOIN}?{_WRINKLE}|{_WRINKLE}{_JOIN}?{_WHITENING})(?:모두)?(?:관리|케어)?",
-        r"(?:2중|이중)?",
-    ),
-)
+# "미백 관리" and "미백 케어" say no more than "미백"; "이중 기능성" needs two functions named and
+# "3중 기능성" three.
+_EFFECTS = _effects()
+# The index a sunscreen form may carry, before or after the claim.
+_AD_INDEX = r"\(?spf:?\d{1,3}\+?(?:[,/]?pa:?\+{1,4})?(?:,?(?:지속)?내수성)?\)?"
+# The official sunscreen sentence in an advertisement's voice.
+_PROTECTS = r"자외선으로부터피부를보호(?:합니다|해줍니다|해요|한다|함|하는데도움을(?:줍니다|줄수있습니다|준다))"
 # "도움이 되다" says the same as "도움을 주다".
 _HELP = (
     r"에도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다|준다)"
@@ -172,7 +206,7 @@ _HELP = (
 # names, right before "에 도움" or "기능성". The chain is looked for in the letters before that word.
 # "도움" and "기능성" must each be one word ("주름에도 움직임", "기능 성분" are not), and the phrase
 # must stand on one line: a line break joins the end of one line to the start of the next.
-_NAME = r"(?:피부(?:의)?)?(?:미백|화이트닝|멜라닌|기미|주근깨|주름|링클)(?:개선|완화|관리|케어|효과)?"
+_NAME = r"(?:피부(?:의)?)?(?:미백|화이트닝|멜라닌|기미|주근깨|주름|링클|자외선차단)(?:개선|완화|관리|케어|효과)?"
 _HELP_WORD = re.compile(r"에(?:도)?(도움)|(?:2중|이중)?(기능성)")
 _HELPED_CHAIN = re.compile(rf"(?:{_NAME}{_JOIN}?)*{_NAME}\Z")
 _MAX_CHAIN = 40
@@ -195,12 +229,16 @@ _STATED = (
 
 
 def _forms(
-    tail: str, counted: bool = False,
+    tail: str, counted: bool = False, whole: bool = True,
 ) -> tuple[tuple[frozenset[CosmeticFunction], re.Pattern[str]], ...]:
-    return tuple(
-        (functions, re.compile(rf"{_SUBJECT}{effect}{count if counted else ''}{tail}"))
-        for functions, effect, count in _EFFECTS
-    )
+    forms = []
+    for functions, effect, count in _EFFECTS:
+        form = rf"{_SUBJECT}{effect}{count if counted else ''}{tail}"
+        if CosmeticFunction.SUNSCREEN in functions:
+            # An index after the claim closes the sentence, so it does not follow an opening.
+            form = rf"(?:{_AD_INDEX})?{form}" + (rf"(?:{_AD_INDEX})?" if whole else "")
+        forms.append((functions, re.compile(form)))
+    return tuple(forms)
 
 
 # Sentences and sentence openings, matched on the words run together without the one closing mark.
@@ -210,11 +248,17 @@ _NAMED_WHOLE = (
     *_forms(rf"{_DESCRIBES}{_PRODUCT}{_COPULA}?"),
 )
 _NAMED_OPENING = (
-    *_forms(rf"{_DESCRIBES}{_PRODUCT}{_LINK}"),
-    *_forms(rf"기능성(?:화장품|제품){_LINK}", counted=True),
+    *_forms(rf"{_DESCRIBES}{_PRODUCT}{_LINK}", whole=False),
+    *_forms(rf"기능성(?:화장품|제품){_LINK}", counted=True, whole=False),
 )
-_STATED_WHOLE = _forms(_HELP)
-_STATED_OPENING = _forms(_STATED)
+_STATED_WHOLE = (
+    *_forms(_HELP),
+    (
+        frozenset({CosmeticFunction.SUNSCREEN}),
+        re.compile(rf"(?:{_AD_INDEX})?{_SUBJECT}{_PROTECTS}(?:{_AD_INDEX})?"),
+    ),
+)
+_STATED_OPENING = _forms(_STATED, whole=False)
 
 
 def _any(*phrases: str) -> str:
@@ -304,8 +348,13 @@ class CosmeticClaim(BaseModel):
     strength_cues: tuple[str, ...]
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
+    # The sunscreen index the sentence states, as written: SPF values ("50+"), PA grades ("++++")
+    # and water resistance words. More than one value of a kind leaves the claimed one unknown.
+    spf: tuple[str, ...] = ()
+    pa: tuple[str, ...] = ()
+    water: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.11"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.12"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -334,6 +383,9 @@ class _Reading(NamedTuple):
     substance_set_aside: bool
     # Functions named as what is helped, when one phrase names them and nothing beside it differs.
     helped: frozenset[CosmeticFunction]
+    spf: tuple[str, ...]
+    pa: tuple[str, ...]
+    water: tuple[str, ...]
 
 
 def normalize_ad_text(text: str) -> str:
@@ -511,7 +563,8 @@ def _classify(sentence: str) -> _Reading:
     if len(phrases) == 1:
         ((first, last, broken),) = phrases
         inside = {function for function, match in stated if first <= match.start() and match.end() <= last}
-        if not broken and all(function in inside for function, _ in stated):
+        # A sunscreen named as the kind of product ("…에 도움을 주는 SPF50+ 선크림") is no other claim.
+        if not broken and all(function in inside or _SUN_LABEL.fullmatch(match.group()) for function, match in stated):
             helped = inside
     live = {
         level: [match for candidate, match in strength_matches if candidate is level and asserted(level, match)]
@@ -542,6 +595,13 @@ def _classify(sentence: str) -> _Reading:
         set_aside=tuple(dict.fromkeys(literal for _, literal, _ in sorted(denied, key=lambda item: item[0]))),
         substance_set_aside=any(isinstance(kind, CosmeticFunction) or kind in _STRONG for _, _, kind in denied),
         helped=frozenset(helped),
+        **{
+            name: tuple(dict.fromkeys(
+                match.group(match.lastindex or 0) for match in pattern.finditer(compact)
+                if match.end() > not_asserted_before
+            ))
+            for name, pattern in (("spf", _AD_SPF), ("pa", _AD_PA), ("water", _AD_WATER))
+        },
     )
 
 
@@ -573,6 +633,9 @@ def _read_normalized(
                 strength=reading.strength,
                 strength_cues=reading.strength_cues,
                 set_aside_cues=reading.set_aside,
+                spf=reading.spf,
+                pa=reading.pa,
+                water=reading.water,
             )
         )
     return tuple(claims), tuple(unread), tuple(neutral)

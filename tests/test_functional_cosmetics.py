@@ -341,7 +341,7 @@ def test_audit_measures_regularity_conflicts_and_template_remnants(
     assert report["names_shared_by_several_records"] == 1 and report["records_under_shared_names"] == 2
     assert report["shared_names_with_one_company"] == 0
     # How the efficacy reader (the one the verdict uses) classifies the same rows.
-    assert report["efficacy_version"] == "cosmetic-efficacy-v1.0"
+    assert report["efficacy_version"] == "cosmetic-efficacy-v1.2"
     assert report["efficacy_status"] == {
         "conflicting_fields": 1, "missing": 1, "readable": 2, "template_remnant": 1,
     }

@@ -53,10 +53,10 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
         "질병 치료나 의료 시술의 효과처럼 읽히는 표현입니다. 화장품의 공식 효능효과는 이런 표현을 담지 않습니다."
     ),
     CosmeticVerdictReason.CLAIM_OUTSIDE_RULE_SCOPE: (
-        "판정 규칙이 다루는 기능(미백, 주름개선)에 해당하는 주장을 찾지 못했습니다."
+        "판정 규칙이 다루는 기능(미백, 주름개선, 자외선 차단)에 해당하는 주장을 찾지 못했습니다."
     ),
     CosmeticVerdictReason.FUNCTION_RULE_NOT_READY: (
-        "이 기능은 아직 판정 규칙이 없습니다. 현재는 미백과 주름개선만 판정합니다."
+        "이 기능은 아직 판정 규칙이 없습니다. 현재는 미백, 주름개선, 자외선 차단만 판정합니다."
     ),
     CosmeticVerdictReason.CLAIM_STRENGTH_UNCLEAR: "효과를 어느 정도로 말하는지 읽을 수 없습니다.",
     CosmeticVerdictReason.OFFICIAL_RECORD_WITHDRAWN: (
@@ -78,8 +78,24 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
     CosmeticVerdictReason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL: (
         "공식 효능효과('도움을 준다')보다 강한 표현입니다."
     ),
+    CosmeticVerdictReason.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL: (
+        "광고의 자외선 차단 지수(SPF·PA·내수성)가 공식 효능효과에 적힌 지수보다 높거나, 공식 지수에 없는 항목입니다."
+    ),
+    CosmeticVerdictReason.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL: (
+        "광고의 자외선 차단 지수가 공식 효능효과의 지수보다 낮습니다. 과장은 아니지만 공식 기록과 같은 값이 아니어서 "
+        "확인됨으로 표시하지 않았습니다."
+    ),
+    CosmeticVerdictReason.SUNSCREEN_INDEX_UNCLEAR: (
+        "한 문장에 자외선 차단 지수가 둘 이상 있어 어느 값을 주장하는지 확정할 수 없습니다."
+    ),
+    CosmeticVerdictReason.OFFICIAL_SUNSCREEN_INDEX_MISSING: (
+        "공식 효능효과 문구에 자외선 차단 지수가 없어 광고의 지수와 대조할 수 없습니다."
+    ),
+    CosmeticVerdictReason.OFFICIAL_SUNSCREEN_INDEX_CONFLICTING: (
+        "공식 기록 안에서 효능효과 문구의 지수와 별도 SPF·PA 항목의 값이 서로 달라, 어느 값과도 대조하지 않았습니다."
+    ),
     CosmeticVerdictReason.CLAIM_SCOPE_UNRESOLVED: (
-        "미백·주름개선에 관한 단어는 있지만 문장 전체가 무엇을 주장하는지(주체·조건·범위) 규칙으로 확정할 수 없어 보류했습니다."
+        "미백·주름개선·자외선 차단에 관한 단어는 있지만 문장 전체가 무엇을 주장하는지(주체·조건·범위) 규칙으로 확정할 수 없어 보류했습니다."
     ),
     CosmeticVerdictReason.AD_TEXT_NOT_FULLY_READ: (
         "이 문장만 보면 공식 효능효과와 같은 표현입니다. 다만 같은 광고문에 규칙이 끝까지 읽지 못한 문장이 있거나 "
@@ -90,7 +106,11 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
 COSMETIC_LIMITATIONS: tuple[str, ...] = (
     "이 결과는 광고 사전점검이며 공식 심의 통과나 법적 판단이 아닙니다.",
     "식약처에 보고·심사된 기능성화장품의 공식 효능효과와만 대조합니다. 목록에 없는 일반 화장품은 확인할 수 없습니다.",
-    "미백과 주름개선 주장만 판정합니다. 자외선 차단 등 다른 기능은 아직 판정하지 않습니다.",
+    "미백, 주름개선, 자외선 차단 주장만 판정합니다. 다른 기능은 아직 판정하지 않습니다.",
+    (
+        "자외선 차단 지수는 공식 효능효과 문구에 적힌 값과만 대조합니다. 광고의 지수가 더 높으면 근거 불일치, 같으면 일치, "
+        "낮으면 검증 불가입니다. 표시 지수의 허용 범위에 관한 고시 조문은 확인하지 못해 규칙에 쓰지 않았습니다."
+    ),
     (
         "문장 단위로 판정합니다. 정해진 문형, 의약품이 아니라는 고지 문구, 정해진 어휘로만 된 구매·사용 권유로 "
         "끝까지 읽지 못한 문장이 광고문에 하나라도 있으면, 그 문장이 근거 불일치로 판정됐더라도 다른 문장을 "
@@ -132,6 +152,8 @@ class CosmeticReceiptClaim(BaseModel):
     strength_label: str | None
     strength_cues: tuple[str, ...]
     set_aside_cues: tuple[str, ...]
+    # The sunscreen index read from the sentence, as written.
+    index_cues: tuple[str, ...]
     official_quotes: tuple[str, ...]
 
 
@@ -181,6 +203,11 @@ def build_cosmetic_receipt(
                 strength_label=STRENGTH_LABELS[decision.claim.strength] if decision.claim.strength else None,
                 strength_cues=decision.claim.strength_cues,
                 set_aside_cues=decision.claim.set_aside_cues,
+                index_cues=(
+                    *(f"SPF{value}" for value in decision.claim.spf),
+                    *(f"PA{value}" for value in decision.claim.pa),
+                    *decision.claim.water,
+                ),
                 official_quotes=tuple(sentence.text for sentence in decision.official_sentences),
             )
             for decision in decisions

@@ -263,7 +263,7 @@ def test_unreadable_claims_are_not_confirmed(ad: str) -> None:
     # The neighbour is extracted but held.
     ("단 2주 만에. 미백에 도움을 줍니다.", BOTH),
     ("미백에 도움을 줍니다. 부작용이 전혀 없습니다.", BOTH),
-    ("미백에 도움을 줍니다. 자외선 차단에 도움을 줍니다.", BOTH),
+    ("미백에 도움을 줍니다. 탈모 증상 완화에 도움을 줍니다.", BOTH),
     ("미백에 도움을 줍니다. 정말 100% 미백이 될까요?", WHITENING),
     # The neighbour is flagged, for a reason that says nothing about the recognized sentence: a
     # condition, a subject or a denial of it hides behind the cue word (independent review, P1).
@@ -402,15 +402,15 @@ def test_identity_and_claim_confirmation_gates() -> None:
 
 
 @pytest.mark.parametrize(("ad", "reason"), [
-    ("자외선 차단에 도움을 줍니다.", R.FUNCTION_RULE_NOT_READY),
-    ("미백과 자외선 차단에 도움을 줍니다.", R.FUNCTION_RULE_NOT_READY),
-    ("주름개선 선크림", R.FUNCTION_RULE_NOT_READY),
+    ("미백과 탈모 증상 완화에 도움을 줍니다.", R.FUNCTION_RULE_NOT_READY),
     ("입술 주름개선에 도움을 줍니다.", R.FUNCTION_RULE_NOT_READY),
     ("탈모 증상 완화에 도움을 줍니다.", R.FUNCTION_RULE_NOT_READY),
     ("피부 탄력을 확실하게 높여 줍니다.", R.CLAIM_OUTSIDE_RULE_SCOPE),
     ("미백 크림", R.CLAIM_STRENGTH_UNCLEAR),
     # "주름개선" names the function: on its own it is neither a strength nor a sunscreen ("선크림").
     ("주름개선 화장품", R.CLAIM_STRENGTH_UNCLEAR),
+    # A sunscreen named only as the kind of product claims nothing that can be compared.
+    ("주름개선 선크림", R.CLAIM_STRENGTH_UNCLEAR),
     ("주름개선 크림", R.CLAIM_STRENGTH_UNCLEAR),
     ("주름 개선 효과", R.CLAIM_STRENGTH_UNCLEAR),
     # Words with an everyday meaning do not condemn a sentence about something else.
@@ -420,7 +420,7 @@ def test_identity_and_claim_confirmation_gates() -> None:
     ("저자극 처방의 미백 크림", R.CLAIM_STRENGTH_UNCLEAR),
     ("재생 플라스틱 용기에 담은 미백 크림", R.CLAIM_STRENGTH_UNCLEAR),
 ])
-def test_claims_outside_the_first_two_functions_are_unverifiable(
+def test_claims_outside_the_judged_functions_are_unverifiable(
     ad: str, reason: CosmeticVerdictReason,
 ) -> None:
     document = f"{WHITENING}\n{WRINKLE}\n{SUN}\n{LIP}"
