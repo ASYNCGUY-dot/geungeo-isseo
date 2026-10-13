@@ -40,7 +40,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.10"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.11"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -305,7 +305,7 @@ class CosmeticClaim(BaseModel):
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.10"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.11"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -497,23 +497,21 @@ def _classify(sentence: str) -> _Reading:
     stated = [(function, match) for function, match in function_matches if asserted(function, match)]
     functions = {function for function, _ in stated}
     function_cues = [_literal(sentence, positions, match) for _, match in stated]
-    phrases: list[tuple[int, int]] = []
+    phrases: list[tuple[int, int, bool]] = []
     for word in _HELP_WORD.finditer(compact):
         core_start, core_end = word.span(word.lastindex)
         offset = max(word.start() - _MAX_CHAIN, 0)
         chain = _HELPED_CHAIN.search(compact[offset : word.start()])
         if chain is None or any(begins[core_start + 1 : core_end]):
             continue
-        span = (offset + chain.start(), word.start())
-        if "\n" in sentence[positions[span[0]] : positions[core_end - 1]]:
-            continue
-        if any(span[0] <= match.start() and match.end() <= span[1] for _, match in stated):
-            phrases.append(span)
+        first, last = offset + chain.start(), word.start()
+        if any(first <= match.start() and match.end() <= last for _, match in stated):
+            phrases.append((first, last, "\n" in sentence[positions[first] : positions[core_end - 1]]))
     helped: set[CosmeticFunction] = set()
     if len(phrases) == 1:
-        ((first, last),) = phrases
+        ((first, last, broken),) = phrases
         inside = {function for function, match in stated if first <= match.start() and match.end() <= last}
-        if all(function in inside for function, _ in stated):
+        if not broken and all(function in inside for function, _ in stated):
             helped = inside
     live = {
         level: [match for candidate, match in strength_matches if candidate is level and asserted(level, match)]

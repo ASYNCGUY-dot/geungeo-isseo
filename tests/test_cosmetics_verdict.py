@@ -373,6 +373,7 @@ def test_functions_named_as_what_is_helped() -> None:
     assert helped("미백 크림과 주름 크림을 함께 쓰면 도움이 됩니다.") == frozenset()
     assert helped("눈가 주름에도 움직임이 자연스러운 미백 기능성 쿠션입니다.") == frozenset()
     assert helped("추천 피부 고민: 탄력, 미백\n주름개선 기능성 화장품") == frozenset()
+    assert helped("미백에\n도움을 주는 세럼과 미백·주름개선 기능성 크림 세트") == frozenset()
     # Before a denial nothing is claimed, and letters across two words are not a function word.
     assert helped("미백과 주름개선에 도움을 주지는 않습니다.") == frozenset()
     assert helped("이미 백과 사전 같은 설명서, 주름개선에 도움을 줍니다.") == {F.WRINKLE}
@@ -584,6 +585,9 @@ def test_a_denied_or_questioned_effect_is_neither_cleared_nor_condemned(ad: str,
     ("주름개선 기능성 화장품, 미백 기능 성적서는 준비 중입니다.", WRINKLE),
     # A phrase that runs over a line break joins two separate lines.
     ("추천 피부 고민: 탄력, 미백\n주름개선 기능성 화장품", WRINKLE),
+    # … and such a phrase still counts as a second phrase beside a whole one.
+    ("미백에\n도움을 주는 세럼과 미백·주름개선 기능성 크림 세트", WRINKLE),
+    ("주름개선\n기능성 화장품, 미백과 주름개선에 도움을 주는 앰플 증정", WRINKLE),
     # "개선해" with nothing after it is not read as a verb: it cannot be told from the product
     # that was improved, a wish, a request or a word that begins with "해".
     ("깊은 주름을 개선해 탄탄한 피부로 가꿉니다.", WRINKLE),

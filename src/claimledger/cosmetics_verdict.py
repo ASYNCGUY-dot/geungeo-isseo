@@ -85,7 +85,7 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.10"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.11"] = COSMETIC_CLAIM_VERSION
     verdict_version: Literal["cosmetic-verdict-v1.5"] = COSMETIC_VERDICT_VERSION
 
 
