@@ -1,11 +1,11 @@
 """Verdicts for advertisement claims about a confirmed functional cosmetic.
 
-Only whitening and wrinkle improvement are judged. A mismatch for a function the product lacks
-needs less than a confirmation: it is enough that the sentence names that function as what is
-helped. `confirmed` requires a user-confirmed product
+Only whitening and wrinkle improvement are judged. `confirmed` requires a user-confirmed product
 whose official efficacy was read completely, a sentence that is one of the allowlisted forms, a
 strength no higher than the official "도움을 준다", and an advertisement in which every other
 sentence is an allowlisted form, the recognized disclaimer or an invitation in the closed vocabulary.
+A mismatch for a function the product lacks needs less: it is enough that the sentence names that
+function as what is helped.
 General cosmetics are not in the MFDS lists and can never be confirmed here.
 """
 
@@ -85,7 +85,7 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.9"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.10"] = COSMETIC_CLAIM_VERSION
     verdict_version: Literal["cosmetic-verdict-v1.5"] = COSMETIC_VERDICT_VERSION
 
 

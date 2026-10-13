@@ -154,9 +154,9 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     # Stronger than "도움을 준다".
     ("주름을 개선합니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름 개선해 줍니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
-    # "개선해" closing its word is the verb of the function word right before it.
-    ("깊은 주름을 개선해 탄탄한 피부로 가꿉니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
-    ("기미 개선해 맑은 피부로 가꿉니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    # An effect word right after "개선" is still read: "개선 해결", "개선 해소".
+    ("주름 개선 해결책을 제시합니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("칙칙함 개선 해소에 좋은 미백 크림.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름개선됩니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름이 좋아집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("즉시 주름이 사라집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
@@ -372,6 +372,7 @@ def test_functions_named_as_what_is_helped() -> None:
     assert helped("미백 기능성 화장품으로 미백에 도움을 줍니다.") == frozenset()
     assert helped("미백 크림과 주름 크림을 함께 쓰면 도움이 됩니다.") == frozenset()
     assert helped("눈가 주름에도 움직임이 자연스러운 미백 기능성 쿠션입니다.") == frozenset()
+    assert helped("추천 피부 고민: 탄력, 미백\n주름개선 기능성 화장품") == frozenset()
     # Before a denial nothing is claimed, and letters across two words are not a function word.
     assert helped("미백과 주름개선에 도움을 주지는 않습니다.") == frozenset()
     assert helped("이미 백과 사전 같은 설명서, 주름개선에 도움을 줍니다.") == {F.WRINKLE}
@@ -581,8 +582,19 @@ def test_a_denied_or_questioned_effect_is_neither_cleared_nor_condemned(ad: str,
     ("눈가 주름에도 움직임이 자연스러운 미백 기능성 쿠션입니다.", WHITENING),
     ("미백 기능 성분 무첨가, 주름개선 기능성 화장품.", WRINKLE),
     ("주름개선 기능성 화장품, 미백 기능 성적서는 준비 중입니다.", WRINKLE),
-    # "개선" before a word that begins with "해" names the function, "must improve" names a need,
-    # and an improvement of anything but the function word before it is not a claim.
+    # A phrase that runs over a line break joins two separate lines.
+    ("추천 피부 고민: 탄력, 미백\n주름개선 기능성 화장품", WRINKLE),
+    # "개선해" with nothing after it is not read as a verb: it cannot be told from the product
+    # that was improved, a wish, a request or a word that begins with "해".
+    ("깊은 주름을 개선해 탄탄한 피부로 가꿉니다.", WRINKLE),
+    ("주름 크림 개선해 돌아왔어요.", WRINKLE),
+    ("미백 세럼 개선해 리뉴얼 출시.", WHITENING),
+    ("주름은 개선해 나가야 할 숙제입니다.", WRINKLE),
+    ("주름을 개선해 보려고 이것저것 써 보신 분들께 권합니다.", WRINKLE),
+    ("주름을 개선해 달라는 요청이 많았습니다.", WRINKLE),
+    ("닥터에스 주름개선해양콜라겐크림 50ml.", WRINKLE),
+    ("#주름개선해양콜라겐 #탄력크림", WRINKLE),
+    ("피부 고민 키워드: 탄력, 주름\n개선해 온 펌프 용기를 소개합니다", WRINKLE),
     ("주름개선 해양 콜라겐 크림.", WRINKLE),
     ("주름개선 해당 제품은 3개월 이내 제조 상품입니다.", WRINKLE),
     ("주름개선 해외 배송 가능 상품.", WRINKLE),

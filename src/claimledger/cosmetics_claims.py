@@ -40,7 +40,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.9"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.10"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -72,10 +72,6 @@ _VERBAL = (
     r"(?:합니다|한다|해요|해줍|해주|해드|해서|했|하는|하고|하며|하여|하세요"
     r"|됩니다|된다|돼요|됐|되는|되고|되며|되어|시켜|시킵|시키)"
 )
-# "개선해" closing its word is a verb as well ("주름을 개선해 탄탄한 피부로"), but only of the
-# function word right before it: "용기를 개선해" is about something else, "주름개선 해양 콜라겐"
-# is two words, "개선해야" names a need and "개선해도" a concession.
-_BARE_VERB = "개선해"
 _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Pattern[str] | None], ...] = (
     (
         ExpressionStrength.TREATMENT_PREVENTION,
@@ -102,8 +98,7 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Patte
     (
         ExpressionStrength.IMPROVEMENT,
         re.compile(
-            rf"개선(?={_VERBAL})|{_BARE_VERB}(?!야|도)"
-            r"|향상|좋아(?:지|집|져|졌)|회복|되살|강화|해결|해소|없애|없어지|없어집|없어져"
+            rf"개선(?={_VERBAL})|향상|좋아(?:지|집|져|졌)|회복|되살|강화|해결|해소|없애|없어지|없어집|없어져"
             r"|사라지|사라집|사라져|사라졌|사라진|제거(?!후|한뒤|한후)|지워|지우는|지웁|펴주|펴줍|펴집|펴져|펴지|하얗게|하얘"
             r"|밝아|환해|엷게|옅게|옅어지|옅어집|옅어져|완화|줄여|줄어|감소"
         ),
@@ -174,8 +169,9 @@ _HELP = (
     r"|이(?:될수(?:있음|있습니다|있어요)|됨|됩니다|돼요|된다))?"
 )
 # A function as what is helped, or as what the product is functional for: its name, or a chain of
-# names, right before "에 도움" or "기능성". The chain is looked for in the letters before that word,
-# and "도움" and "기능성" must each be one word ("주름에도 움직임", "기능 성분" are not).
+# names, right before "에 도움" or "기능성". The chain is looked for in the letters before that word.
+# "도움" and "기능성" must each be one word ("주름에도 움직임", "기능 성분" are not), and the phrase
+# must stand on one line: a line break joins the end of one line to the start of the next.
 _NAME = r"(?:피부(?:의)?)?(?:미백|화이트닝|멜라닌|기미|주근깨|주름|링클)(?:개선|완화|관리|케어|효과)?"
 _HELP_WORD = re.compile(r"에(?:도)?(도움)|(?:2중|이중)?(기능성)")
 _HELPED_CHAIN = re.compile(rf"(?:{_NAME}{_JOIN}?)*{_NAME}\Z")
@@ -309,7 +305,7 @@ class CosmeticClaim(BaseModel):
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.9"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.10"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -472,12 +468,7 @@ def _classify(sentence: str) -> _Reading:
     function_matches = [
         (function, match) for function, *patterns in _FUNCTION_CUES for match in cues(patterns)
     ]
-    function_ends = {match.end() for _, match in function_matches}
-    strength_matches = [
-        (level, match) for level, *patterns in _STRENGTH_CUES for match in cues(patterns)
-        # A particle at most stands between the function word and its verb: "주름을 개선해".
-        if match.group() != _BARE_VERB or any(match.start() - gap in function_ends for gap in range(3))
-    ]
+    strength_matches = [(level, match) for level, *patterns in _STRENGTH_CUES for match in cues(patterns)]
     in_cue = [False] * size
     for _, match in (*function_matches, *strength_matches):
         in_cue[match.start() : match.end()] = [True] * (match.end() - match.start())
@@ -514,6 +505,8 @@ def _classify(sentence: str) -> _Reading:
         if chain is None or any(begins[core_start + 1 : core_end]):
             continue
         span = (offset + chain.start(), word.start())
+        if "\n" in sentence[positions[span[0]] : positions[core_end - 1]]:
+            continue
         if any(span[0] <= match.start() and match.end() <= span[1] for _, match in stated):
             phrases.append(span)
     helped: set[CosmeticFunction] = set()
