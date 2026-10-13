@@ -60,11 +60,11 @@ def _export(tmp_path: Path) -> Path:
     return directory
 
 
-def _sample(tmp_path: Path) -> dict:
+def _sample(tmp_path: Path, *extra: str) -> dict:
     code = build_cosmetic_eval.main([
         "sample", "--export-dir", str(_export(tmp_path)), "--seed", "11",
         "--manifest", str(tmp_path / "manifest.json"), "--generation-sheet", str(tmp_path / "generation.md"),
-        "--ads-template", str(tmp_path / "ads.csv"),
+        "--ads-template", str(tmp_path / "ads.csv"), *extra,
     ])
     assert code == 0
     return json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
@@ -89,6 +89,36 @@ def test_sample_allocates_strata_and_claim_types_deterministically(tmp_path: Pat
     }
     assert {item["source"] for item in items} == {"reported", "reviewed"}
     assert manifest["sources"]["reported"]["sha256"] == "A" * 64 and manifest["seed"] == 11
+    assert manifest["allocation_id"] == "claims-v1" and manifest["allocation"] == build_cosmetic_eval.ALLOCATION
+
+
+def test_the_second_allocation_probes_wrong_mismatches(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path, "--allocation", "claims-v2")
+    allocation = build_cosmetic_eval.ALLOCATIONS["claims-v2"]
+    items = manifest["items"]
+
+    assert manifest["allocation_id"] == "claims-v2" and manifest["allocation"] == allocation
+    assert len(items) == 100 == sum(sum(counts.values()) for counts in allocation.values())
+    counts: dict[tuple[str, str], int] = {}
+    for item in items:
+        counts[(item["stratum"], item["claim_type"])] = counts.get((item["stratum"], item["claim_type"]), 0) + 1
+    assert counts == {(stratum, kind): count for stratum, kinds in allocation.items() for kind, count in kinds.items()}
+
+    asides = [item for item in items if item["claim_type"] == "bystander"]
+    assert asides and all(item["stratum"] in {"whitening_only", "wrinkle_only"} for item in asides)
+    for item in asides:
+        # The product's own function is the topic; the other one is only named beside it.
+        own = {"whitening_only": "whitening", "wrinkle_only": "wrinkle"}[item["stratum"]]
+        assert item["topic"] == [own] and item["style"] == "support"
+        assert item["aside"] == {"whitening": "주름개선", "wrinkle": "미백"}[own]
+    makeup = [item for item in items if item["claim_type"] == "makeup"]
+    assert makeup and all(item["topic"] == [] and item["style"] == "makeup" for item in makeup)
+    assert all(item["aside"] is None for item in items if item["claim_type"] != "bystander")
+
+    sheet = (tmp_path / "generation.md").read_text(encoding="utf-8")
+    assert "함께 쓰는 다른 제품" in sheet and "메이크업 효과" in sheet
+    for hidden in ("bystander", "makeup", "held", "stratum", "absent", WHITENING):
+        assert hidden not in sheet
 
 
 def test_topics_follow_the_claim_type(tmp_path: Path) -> None:
@@ -96,6 +126,7 @@ def test_topics_follow_the_claim_type(tmp_path: Path) -> None:
         topic, stratum, kind = set(item["topic"]), item["stratum"], item["claim_type"]
         if kind == "out_of_scope":
             assert not topic and item["topic_text"] in build_cosmetic_eval.OUT_OF_SCOPE_TOPICS
+            assert item["aside"] is None
             continue
         assert topic and topic <= {"whitening", "wrinkle"}
         if kind == "absent":

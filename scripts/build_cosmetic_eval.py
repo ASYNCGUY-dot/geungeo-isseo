@@ -5,7 +5,8 @@ Four steps keep the sentence writer, the labelers and the engine apart:
 - sample: real records from the local MFDS export are stratified by how the efficacy reader sees
   them (both functions, one function, with sunscreen, another function only, and the four kinds of
   held data) and given a claim type with a fixed seed. The generation sheet names only the subject,
-  the topic and the wording style.
+  the topic and the wording style. The second allocation adds two claim types that should not be
+  mismatches: the other function named beside the claim, and the cover of make-up.
 - sheet: the labeling sheet shows each sentence with the record's official efficacy fields as
   published, without stratum or claim type. Product text stays in an ignored path.
 - cases: two label files are merged. Agreed labels form the main case file; the strict file keeps
@@ -61,6 +62,22 @@ ALLOCATION: dict[str, dict[str, int]] = {
     "held_unrecognized": {"official": 4, "exaggerated": 1},
     "held_conflicting": {"official": 2},
 }
+# Sentences that name a function without claiming it for the product ("bystander") or speak of
+# make-up cover ("makeup") show whether a mismatch is given where nothing contradicts the record.
+ALLOCATIONS: dict[str, dict[str, dict[str, int]]] = {
+    "claims-v1": ALLOCATION,
+    "claims-v2": {
+        "both": {"official": 12, "exaggerated": 7, "medical": 4, "ingredient": 4, "out_of_scope": 4, "makeup": 3},
+        "whitening_only": {"official": 3, "absent": 4, "exaggerated": 3, "bystander": 2},
+        "wrinkle_only": {"official": 3, "absent": 4, "exaggerated": 3, "bystander": 2},
+        "with_sunscreen": {"official": 4, "exaggerated": 2, "medical": 1, "out_of_scope": 1, "makeup": 2},
+        "other_function": {"absent": 9, "out_of_scope": 3},
+        "held_missing": {"official": 6, "exaggerated": 2},
+        "held_template": {"official": 4, "medical": 1},
+        "held_unrecognized": {"official": 4, "exaggerated": 1},
+        "held_conflicting": {"official": 2},
+    },
+}
 _HELD = {
     EfficacyStatus.MISSING: "held_missing",
     EfficacyStatus.TEMPLATE_REMNANT: "held_template",
@@ -69,6 +86,8 @@ _HELD = {
 }
 TOPIC_TEXT = {(W,): "피부 미백", (R,): "피부 주름개선", (W, R): "피부 미백과 주름개선"}
 OUT_OF_SCOPE_TOPICS = ("자외선 차단", "피부 보습", "피부 탄력", "모공 관리", "피부결 정돈")
+MAKEUP_TOPIC = "바른 직후의 톤업·커버"
+ASIDE_TEXT = {W: "미백", R: "주름개선"}
 INGREDIENTS = {(W,): "나이아신아마이드", (R,): "아데노신", (W, R): "레티놀"}
 MEDICAL_HINTS = {(W,): "기미·잡티 치료", (R,): "피부 재생", (W, R): "피부 재생·염증 완화"}
 STYLE_TEXT = {
@@ -76,6 +95,7 @@ STYLE_TEXT = {
     "improvement": "효과를 단정하는 표현('~을 개선합니다', '~이 사라집니다' 등)",
     "guarantee": "효과를 보장하거나 기간을 약속하는 표현('100%', '확실하게', '7일 만에' 등)",
     "medical": "질병 치료나 의료 시술의 효과처럼 말하는 표현",
+    "makeup": "바른 직후 피부 톤이 밝아 보이거나 잡티가 가려지는 메이크업 효과로 말하는 표현(미백 기능이나 피부 자체의 변화로 말하지 않음)",
 }
 AD_FIELDS = ("case_id", "ad_text")
 LABEL_FIELDS = ("case_id", "label", "labeler", "note")
@@ -95,6 +115,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     sample.add_argument("--seed", type=int, required=True)
     sample.add_argument("--eval-id", default="cosmetic-eval-v1")
     sample.add_argument("--case-prefix", default="CC")
+    sample.add_argument("--allocation", choices=sorted(ALLOCATIONS), default="claims-v1")
     sample.add_argument("--manifest", type=Path, required=True)
     sample.add_argument("--generation-sheet", type=Path, required=True)
     sample.add_argument("--ads-template", type=Path, required=True)
@@ -154,8 +175,16 @@ def stratum_of(item: FunctionalCosmetic) -> tuple[str, tuple[CosmeticFunction, .
 def _claim(rng: random.Random, claim_type: str, judged: tuple[CosmeticFunction, ...]) -> dict:
     """Topic, subject, style and hint for one case."""
     subsets = [(W,), (R,), (W, R)]
+    plain = {"subject": "제품", "style": "support", "hint": None, "aside": None}
     if claim_type == "out_of_scope":
-        return {"topic": [], "topic_text": rng.choice(OUT_OF_SCOPE_TOPICS), "subject": "제품", "style": "support", "hint": None}
+        return {"topic": [], "topic_text": rng.choice(OUT_OF_SCOPE_TOPICS), **plain}
+    if claim_type == "makeup":
+        return {"topic": [], "topic_text": MAKEUP_TOPIC, **plain, "style": "makeup"}
+    if claim_type == "bystander":
+        # The product's own function is claimed; the one it lacks is only named beside it.
+        (own,) = judged
+        (other,) = {W, R} - {own}
+        return {"topic": [own.value], "topic_text": TOPIC_TEXT[judged], **plain, "aside": ASIDE_TEXT[other]}
     if claim_type == "absent":
         topic = rng.choice([subset for subset in subsets if set(subset) - set(judged)])
     elif judged:
@@ -169,16 +198,18 @@ def _claim(rng: random.Random, claim_type: str, judged: tuple[CosmeticFunction, 
         "subject": INGREDIENTS[topic] if claim_type == "ingredient" else "제품",
         "style": style,
         "hint": MEDICAL_HINTS[topic] if claim_type == "medical" else None,
+        "aside": None,
     }
 
 
 def sample_items(
     records: dict[str, dict[str, FunctionalCosmetic]], seed: int, prefix: str,
     excluded: frozenset[tuple[str, str]] = frozenset(),
+    allocation: dict[str, dict[str, int]] = ALLOCATION,
 ) -> tuple[list[dict], dict[str, int]]:
     rng = random.Random(seed)
     pools: dict[str, dict[str, list[tuple[str, tuple[CosmeticFunction, ...]]]]] = {
-        stratum: {key: [] for key in SOURCES} for stratum in ALLOCATION
+        stratum: {key: [] for key in SOURCES} for stratum in allocation
     }
     for key in SOURCES:
         for record_id in sorted(records[key]):
@@ -187,11 +218,11 @@ def sample_items(
             stratum, judged = stratum_of(records[key][record_id])
             pools[stratum][key].append((record_id, judged))
     chosen: list[dict] = []
-    for stratum, allocation in ALLOCATION.items():
+    for stratum, claim_types in allocation.items():
         for queue in pools[stratum].values():
             rng.shuffle(queue)
         turn = 0
-        for claim_type, count in allocation.items():
+        for claim_type, count in claim_types.items():
             for _ in range(count):
                 if not any(pools[stratum].values()):
                     raise CosmeticEvalError(f"not enough {stratum} records for {claim_type}")
@@ -206,7 +237,7 @@ def sample_items(
                 })
     rng.shuffle(chosen)
     items = [{"case_id": f"{prefix}-{index:03d}", **item} for index, item in enumerate(chosen, start=1)]
-    frame = {stratum: sum(len(queue) for queue in pools[stratum].values()) + sum(ALLOCATION[stratum].values()) for stratum in ALLOCATION}
+    frame = {stratum: sum(len(queue) for queue in pools[stratum].values()) + sum(allocation[stratum].values()) for stratum in allocation}
     return items, frame
 
 
@@ -220,6 +251,7 @@ def _generation_sheet(eval_id: str, items: list[dict]) -> str:
         "- 지정된 주제 하나만 말합니다. 다른 효과·성분·제품명·브랜드명을 덧붙이지 않습니다.",
         "- 지정된 표현 방식의 강도를 지킵니다. 그 안에서는 실제 쇼핑몰·상세페이지·SNS 광고처럼 자연스럽게, 사례마다 어휘와 문장 구조를 바꿔 씁니다.",
         "- 의료 표현 사례는 괄호 안의 예시와 비슷한 내용을 문장에 넣습니다.",
+        "- 표현 방식 칸에 '함께 언급'이 적힌 사례만 예외로, 적힌 낱말을 지시대로 문장에 넣습니다.",
         "- 결과는 ads.csv의 ad_text 칸에 씁니다. 쉼표가 들어가면 큰따옴표로 감쌉니다.",
         "",
         "| case_id | 주어 | 주제 | 표현 방식 |",
@@ -227,6 +259,11 @@ def _generation_sheet(eval_id: str, items: list[dict]) -> str:
     ]
     for item in items:
         style = STYLE_TEXT[item["style"]] + (f" (예: {item['hint']})" if item["hint"] else "")
+        if item.get("aside"):
+            style += (
+                f" 함께 언급: '{item['aside']}'이라는 말을 이 제품의 효과가 아니라 함께 쓰는 다른 제품·라인의 이름이나"
+                " 읽는 사람의 고민으로만 넣습니다."
+            )
         lines.append(f"| {item['case_id']} | {item['subject']} | {item['topic_text']} | {style} |")
     return "\n".join(lines) + "\n"
 
@@ -324,7 +361,7 @@ def _sample(args: argparse.Namespace) -> int:
     records = _load(args.export_dir)
     earlier = [json.loads(path.read_text(encoding="utf-8")) for path in args.exclude_manifest]
     excluded = frozenset((item["source"], item["record_id"]) for manifest in earlier for item in manifest["items"])
-    items, frame = sample_items(records, args.seed, args.case_prefix, excluded)
+    items, frame = sample_items(records, args.seed, args.case_prefix, excluded, ALLOCATIONS[args.allocation])
     sources = {}
     for key, source in SOURCES.items():
         audit = json.loads(export_stem(args.export_dir, source).with_suffix(".audit.json").read_text(encoding="utf-8"))
@@ -339,7 +376,8 @@ def _sample(args: argparse.Namespace) -> int:
         "seed": args.seed,
         "sources": sources,
         "engine_versions": [COSMETIC_CLAIM_VERSION, COSMETIC_EFFICACY_VERSION, COSMETIC_VERDICT_VERSION],
-        "allocation": ALLOCATION,
+        "allocation_id": args.allocation,
+        "allocation": ALLOCATIONS[args.allocation],
         "frame_counts": frame,
         **({"excluded_evals": [manifest["eval_id"] for manifest in earlier]} if earlier else {}),
         "items": items,
