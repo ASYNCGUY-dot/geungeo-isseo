@@ -1,0 +1,79 @@
+[
+  {
+    "case_id": "CE-010",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-025",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-026",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CE-036",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-039",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CE-063",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-064",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-065",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CE-075",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CE-080",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CE-082",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  }
+]
