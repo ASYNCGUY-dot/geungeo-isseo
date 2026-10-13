@@ -13,6 +13,7 @@ from claimledger.cosmetics_claims import (
     asserted_functions,
     confirm_cosmetic_claims,
     extract_cosmetic_claims,
+    helped_functions,
     unread_sentences,
 )
 from claimledger.cosmetics_official import CosmeticFunction
@@ -142,9 +143,24 @@ def test_the_official_quote_comes_from_the_document_when_that_is_the_source() ->
     ("눈가 주름 케어에 도움을 드립니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     # A lip-wrinkle product does not cover whitening at all.
     ("미백과 주름개선에 도움을 줍니다.", LIP, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # In a sentence that was not fully read, a function named as what is helped is claimed, even
+    # beside an official one.
+    ("매일 저녁 마지막 단계에 발라 주면 미백과 주름개선에 도움을 줄 수 있습니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("피부 미백과 주름개선에 도움을 주는 이 제품으로 스킨케어를 업그레이드해 보세요.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("미백과 주름개선에 도움을 줄 수 있어, 매일 쓰기 좋은 제품입니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("환한 피부와 주름 고민을 함께 살피고 싶은 분께, 이 제품이 미백과 주름 개선에 도움을 드립니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("주름개선은 물론 미백에도 도움을 주는 데일리 크림입니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("눈가 주름 완화와 기미 케어에 도움이 되는 촉촉한 크림입니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("촉촉하게 스며드는 미백·주름개선 이중 기능성 화장품으로 하루를 마무리합니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # The skin turning white beside a guarantee is a whitening claim without the word "미백".
+    ("단 7일 만에 누구나 확실하게 하얘지는 피부를 경험하게 됩니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("칙칙했던 피부가 눈에 띄게 하얘지는 것을 확실하게 약속합니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("2주 만에 피부를 하얗게 바꿔 드립니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     # Stronger than "도움을 준다".
     ("주름을 개선합니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름 개선해 줍니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("어두운 피부톤을 개선해 미백 피부를 완성합니다.", WHITENING, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("깊은 주름을 개선해 탄탄한 피부로 가꿉니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름개선됩니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("주름이 좋아집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("즉시 주름이 사라집니다.", WRINKLE, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
@@ -339,6 +355,54 @@ def test_official_data_that_cannot_be_trusted_never_clears_or_condemns(
         assert decision.verdict is Verdict.UNVERIFIABLE and decision.reason is reason
 
 
+@pytest.mark.parametrize("product", [
+    _product(document="자외선으로부터 피부를 보호한다. (SFP40, PA+++)"),
+    _product(sentence="모발의 염색(갈색)"),
+])
+def test_an_unread_statement_about_other_functions_shows_a_judged_function_is_absent(
+    product: ConfirmedCosmetic,
+) -> None:
+    for ad in (
+        "미백에 도움을 줍니다.",
+        "주름개선 기능성 화장품입니다.",
+        "미백 효과 100% 보장",
+        "피부 미백과 주름개선에 도움을 주는 이 제품으로 스킨케어를 업그레이드해 보세요.",
+    ):
+        decision = _decide(ad, product)
+        assert decision.verdict is Verdict.MISMATCH
+        assert decision.reason is R.FUNCTION_NOT_NAMED_IN_UNREAD_EFFICACY and decision.official_sentences == ()
+    # What is no claim to the function, or is judged before the record is read, stays as it was.
+    assert _decide("미백 제품과 함께 사용할 수 있습니다.", product).reason is R.CLAIM_SCOPE_UNRESOLVED
+    assert _decide("미백 기능성은 없는 제품입니다.", product).reason is R.CLAIM_NOT_PLAINLY_ASSERTED
+    assert _decide("자외선 차단과 미백에 도움을 줍니다.", product).reason is R.FUNCTION_RULE_NOT_READY
+    assert _decide("기미를 치료하는 미백 크림", product).reason is R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE
+
+
+def test_functions_named_as_what_is_helped() -> None:
+    def helped(ad: str) -> frozenset[F]:
+        (claim,) = extract_cosmetic_claims(ad)
+        return helped_functions(claim)
+
+    assert helped("피부 미백, 주름개선에 도움을 줍니다.") == {F.WHITENING, F.WRINKLE}
+    assert helped("주름개선은 물론 미백에도 도움을 줍니다.") == {F.WHITENING}
+    assert helped("미백·주름개선 2중 기능성 화장품입니다.") == {F.WHITENING, F.WRINKLE}
+    assert helped("미백 세럼과 함께 쓰면 주름개선에 도움을 줍니다.") == {F.WRINKLE}
+    assert helped("주름개선에 도움을 주는 제품, 미백 라인과 함께 써 보세요.") == {F.WRINKLE}
+    assert helped("미백 크림과 주름 크림을 함께 쓰면 도움이 됩니다.") == frozenset()
+    # Before a denial nothing is claimed, and letters across two words are not a function word.
+    assert helped("미백과 주름개선에 도움을 주지는 않습니다.") == frozenset()
+    assert helped("이미 백과 사전 같은 설명서, 주름개선에 도움을 줍니다.") == {F.WRINKLE}
+
+
+def test_whiter_skin_is_a_whitening_claim_only_beside_a_guarantee() -> None:
+    (guaranteed,) = extract_cosmetic_claims("단 7일 만에 확실하게 하얘지는 피부.")
+    assert guaranteed.function_candidates == (F.WHITENING,) and guaranteed.function_cues == ("하얘지는 피부",)
+    assert guaranteed.strength is ExpressionStrength.GUARANTEE
+
+    (plain,) = extract_cosmetic_claims("바르는 즉시 피부가 하얘지는 톤업 크림입니다.")
+    assert plain.function_candidates == () and plain.strength is ExpressionStrength.IMPROVEMENT
+
+
 def test_identity_and_claim_confirmation_gates() -> None:
     ad = "미백에 도움을 줍니다."
     claims = extract_cosmetic_claims(ad)
@@ -511,6 +575,23 @@ def test_a_denied_or_questioned_effect_is_neither_cleared_nor_condemned(ad: str,
     ("보습진정 미백 크림입니다.", WHITENING),
     ("미백 크림의 향은 개인 취향상 다르게 느껴집니다.", WHITENING),
     ("미백 크림 반품 배송비는 반환해 드립니다.", WHITENING),
+    # A function named beside the help, not as what is helped, is not claimed for the product.
+    ("미백 세럼과 함께 쓰면 주름개선에 도움을 줍니다.", WRINKLE),
+    ("미백 라인 다음 단계에 쓰기 좋은, 주름개선에 도움을 주는 크림입니다.", WRINKLE),
+    ("주름이 고민인 분께, 미백에 도움을 드립니다.", WHITENING),
+    ("미백과 주름개선에 도움을 주는 제품은 아닙니다.", WRINKLE),
+    ("미백에도 도움이 되나요?", WRINKLE),
+    ("이미 백과 사전처럼 두꺼운 설명서, 주름개선에 도움을 주는 크림입니다.", WRINKLE),
+    # "Must improve" names a need, and an improvement of the packaging is not one of the skin.
+    ("주름을 개선해야 할 때 꺼내는 주름개선 기능성 화장품입니다.", WRINKLE),
+    ("용기를 개선해 더 편해진 미백 기능성 화장품입니다.", WHITENING),
+    # Whiter skin with no guarantee may be the cover of a tone-up cream, and a guarantee beside
+    # something else that is white says nothing of the skin.
+    ("바르는 즉시 피부가 하얘지는 톤업 크림입니다.", WHITENING),
+    ("피부가 하얗게 뜨지 않고 완벽하게 밀착됩니다.", WHITENING),
+    ("각질이 하얗게 일어나는 날에도 완벽하게 밀착됩니다.", WHITENING),
+    ("하얀 거품이 노폐물을 확실하게 씻어 냅니다.", WHITENING),
+    ("하얀 피부에도 확실하게 어울리는 색상입니다.", WRINKLE),
     # Taking a pack off is a step of use, and a delivery time is not a time of the effect.
     ("미백 기능성 화장품, 15분 뒤 미백 팩 제거 후 세안하세요.", WHITENING),
     ("주름개선 기능성 화장품, 주름 패치 제거 후 발라 주세요.", WRINKLE),

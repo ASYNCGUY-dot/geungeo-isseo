@@ -8,6 +8,11 @@ The medical and guarantee cues are a conservative development policy, not a lega
 A sentence that is neither a claim nor a recognized disclaimer is kept as unread text: nothing in
 it was judged, and a confirmation is withheld while such text stands beside a recognized sentence.
 
+In a sentence that is not such a form, two readings still say which function is claimed. A
+function named as what is helped ("미백과 주름개선에 도움을 …", "미백 기능성") is claimed whatever
+else the sentence holds. And the skin turning white ("하얘지는 피부") is a whitening claim beside a
+guarantee; without one it may be the cover of a tone-up cream.
+
 A cue is set aside when it is not asserted: a denial, a caution to the reader or a closing question
 mark reaches every cue before it, because Korean puts what is denied before the denial, and a
 condition ("염증이 생기면 …") reaches the disease words before it. What follows is still read.
@@ -34,7 +39,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.7"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.8"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -61,9 +66,10 @@ _FUNCTION_CUES: tuple[tuple[CosmeticFunction, re.Pattern[str] | None, re.Pattern
 # "치료를 받으세요" advice, and "즉시 흡수" is not an effect.
 _PRESCRIBER = r"(?:의사|전문의|피부과|병원|의원|약사|약국|한의사|한의원)"
 _REGROWN = r"(?:피부|세포|진피|조직|상처|모발|모근|콜라겐)"
-# "개선" is a strength only as a verb: "주름개선" and "주름 개선 효과" name the function.
+# "개선" is a strength only as a verb: "주름개선" and "주름 개선 효과" name the function, and
+# "개선해야" a need.
 _VERBAL = (
-    r"(?:합니다|한다|해요|해줍|해주|해드|해서|했|하는|하고|하며|하여|하세요"
+    r"(?:합니다|한다|해(?!야)|했|하는|하고|하며|하여|하세요"
     r"|됩니다|된다|돼요|됐|되는|되고|되며|되어|시켜|시킵|시키)"
 )
 _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str] | None, re.Pattern[str] | None], ...] = (
@@ -136,6 +142,15 @@ _STATE_NEAR = re.compile(
     r"|계속되면|보이면|심해지면|심할때|남았다면|피부라면|가라앉지않으면|진정되지않으면|호전되지않으면)"
 )
 _QUESTION = re.compile(r"\?[.!。]*$")
+# The skin turning white is what "미백" means. Only a change counts ("하얀 피부에도 어울리는" is a
+# state), and only of the skin ("각질이 하얗게 일어나는", "하얗게 뜨는" are something else).
+_SKIN = r"(?:피부톤|피부|얼굴|안색|살결)"
+_DEGREE = r"(?:눈에띄게|몰라보게|한층|한결|더욱|훨씬|점점|확실히|확실하게|완전히)?"
+_TURNS_WHITE = re.compile(
+    rf"{_SKIN}(?:가|이|는|은|도)?{_DEGREE}(?:하얘지|하얘져|하얘집|하얘졌|하얗게(?:변|되|돼|바뀌|바뀝))"
+    rf"|{_SKIN}(?:를|을)?{_DEGREE}(?:하얗게|희게)(?:만들|가꾸|가꿔|바꾸|바꿔)"
+    rf"|(?:하얘지는|하얘진){_SKIN}"
+)
 # The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
 _DISCLAIMER = re.compile(
     r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이(?:아닙니다|아니에요|아니다|아님)[.!。]?"
@@ -162,6 +177,12 @@ _HELP = (
     r"에도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다|준다)"
     r"|이(?:될수(?:있음|있습니다|있어요)|됨|됩니다|돼요|된다))?"
 )
+# A function as what is helped, or as what the product is functional for: its name, or a chain of
+# names, right before "에 도움" or "기능성". The chain is looked for in the letters before that word.
+_NAME = r"(?:피부(?:의)?)?(?:미백|화이트닝|멜라닌|기미|주근깨|주름|링클)(?:개선|완화|관리|케어|효과)?"
+_HELP_WORD = re.compile(r"에(?:도)?도움|(?:2중|이중)?기능성")
+_HELPED_CHAIN = re.compile(rf"(?:{_NAME}{_JOIN}?)*{_NAME}\Z")
+_MAX_CHAIN = 40
 _COPULA = r"(?:입니다|이에요|예요)"
 # "…에 도움을 주는 제품": the claim describes the product named after it. Only general words for
 # the product: a kind such as "토너" cannot be checked against the record.
@@ -291,7 +312,7 @@ class CosmeticClaim(BaseModel):
     # Cue words before a denial, a caution or a question: they propose nothing.
     set_aside_cues: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.7"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.8"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -318,6 +339,8 @@ class _Reading(NamedTuple):
     set_aside: tuple[str, ...]
     # A function word or a strong word was set aside, so the sentence stays visible as a claim.
     substance_set_aside: bool
+    # Functions named as what is helped.
+    helped: frozenset[CosmeticFunction]
 
 
 def normalize_ad_text(text: str) -> str:
@@ -408,6 +431,11 @@ def asserted_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction] | No
     return _asserted(claim.text)[0]
 
 
+def helped_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction]:
+    """Functions the sentence names as what is helped, whether or not the rest of it was read."""
+    return _classify(claim.text).helped
+
+
 def invitation_count(text: str, claims: Sequence[CosmeticClaim]) -> int:
     """Invitations in an advertisement: its neutral sentences and those inside claim sentences."""
     return len(neutral_sentences(text)) + sum(1 for claim in claims if _asserted(claim.text)[1])
@@ -476,6 +504,12 @@ def _classify(sentence: str) -> _Reading:
     stated = [(function, match) for function, match in function_matches if asserted(function, match)]
     functions = {function for function, _ in stated}
     function_cues = [_literal(sentence, positions, match) for _, match in stated]
+    helped: set[CosmeticFunction] = set()
+    for word in _HELP_WORD.finditer(compact):
+        offset = max(word.start() - _MAX_CHAIN, 0)
+        if chain := _HELPED_CHAIN.search(compact[offset : word.start()]):
+            first = offset + chain.start()
+            helped.update(function for function, match in stated if first <= match.start() and match.end() <= word.start())
     live = {
         level: [match for candidate, match in strength_matches if candidate is level and asserted(level, match)]
         for level, *_ in _STRENGTH_CUES
@@ -493,6 +527,11 @@ def _classify(sentence: str) -> _Reading:
             live[ExpressionStrength.SUPPORT] = []
     strength = next((level for level, *_ in _STRENGTH_CUES if live[level]), None)
     strength_cues = [_literal(sentence, positions, match) for match in live[strength]] if strength else []
+    if strength is ExpressionStrength.GUARANTEE:
+        white = [match for match in _TURNS_WHITE.finditer(compact) if match.end() > not_asserted_before]
+        if white:
+            functions.add(CosmeticFunction.WHITENING)
+            function_cues += [_literal(sentence, positions, match) for match in white]
     denied = [
         (match.start(), _literal(sentence, positions, match), kind)
         for kind, match in (*function_matches, *strength_matches) if not asserted(kind, match)
@@ -504,6 +543,7 @@ def _classify(sentence: str) -> _Reading:
         strength_cues=tuple(strength_cues),
         set_aside=tuple(dict.fromkeys(literal for _, literal, _ in sorted(denied, key=lambda item: item[0]))),
         substance_set_aside=any(isinstance(kind, CosmeticFunction) or kind in _STRONG for _, _, kind in denied),
+        helped=frozenset(helped),
     )
 
 
@@ -586,6 +626,7 @@ __all__ = [
     "asserted_functions",
     "confirm_cosmetic_claims",
     "extract_cosmetic_claims",
+    "helped_functions",
     "invitation_count",
     "neutral_sentences",
     "normalize_ad_text",

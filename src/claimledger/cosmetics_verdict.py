@@ -1,6 +1,8 @@
 """Verdicts for advertisement claims about a confirmed functional cosmetic.
 
-Only whitening and wrinkle improvement are judged. `confirmed` requires a user-confirmed product
+Only whitening and wrinkle improvement are judged. A mismatch for a function the product lacks
+needs less than a confirmation: the sentence names the function as claimed, and the official
+statement, even one that was not read completely, grants no such function. `confirmed` requires a user-confirmed product
 whose official efficacy was read completely, a sentence that is one of the allowlisted forms, a
 strength no higher than the official "도움을 준다", and an advertisement in which every other
 sentence is an allowlisted form, the recognized disclaimer or an invitation in the closed vocabulary.
@@ -19,6 +21,7 @@ from claimledger.cosmetics_claims import (
     CosmeticClaim,
     asserted_functions,
     extract_cosmetic_claims,
+    helped_functions,
     invitation_count,
     unread_sentences,
 )
@@ -32,7 +35,7 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.3"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.4"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 # An official function on a narrower scope neither confirms nor contradicts the general claim.
@@ -53,6 +56,7 @@ class CosmeticVerdictReason(StrEnum):
     OFFICIAL_EFFICACY_CONFLICTING = "OFFICIAL_EFFICACY_CONFLICTING"
     OFFICIAL_EFFICACY_UNRECOGNIZED = "OFFICIAL_EFFICACY_UNRECOGNIZED"
     FUNCTION_NOT_IN_OFFICIAL_EFFICACY = "FUNCTION_NOT_IN_OFFICIAL_EFFICACY"
+    FUNCTION_NOT_NAMED_IN_UNREAD_EFFICACY = "FUNCTION_NOT_NAMED_IN_UNREAD_EFFICACY"
     EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL = "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
     CLAIM_SCOPE_UNRESOLVED = "CLAIM_SCOPE_UNRESOLVED"
     AD_TEXT_NOT_FULLY_READ = "AD_TEXT_NOT_FULLY_READ"
@@ -81,9 +85,9 @@ class CosmeticDecision(BaseModel):
     verdict: Verdict
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
-    efficacy_version: Literal["cosmetic-efficacy-v1.0"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.7"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.3"] = COSMETIC_VERDICT_VERSION
+    efficacy_version: Literal["cosmetic-efficacy-v1.1"] = COSMETIC_EFFICACY_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.8"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.4"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -122,22 +126,35 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
         # The sentence beside a document that could not be read cannot be checked against it.
         return _decision(claim, unverifiable, reason.OFFICIAL_EFFICACY_UNRECOGNIZED)
     efficacy = parse_cosmetic_efficacy(row.effect_text, row.effect_name)
-    if efficacy.status is not EfficacyStatus.READABLE:
+    readable = efficacy.status is EfficacyStatus.READABLE
+    if not readable and not efficacy.grants_no_whitening_or_wrinkle:
         return _decision(claim, unverifiable, _HELD[efficacy.status])
 
+    # Empty for a statement that was not read completely but is about other functions only.
     official = efficacy.functions
     asserted = asserted_functions(claim)
     exceeds = STRENGTH_RANK[claim.strength] > STRENGTH_RANK[_OFFICIAL_STRENGTH]
-    # A sentence that was not fully read is judged on its keywords only when none of them is official.
-    absent = (asserted if asserted is not None else candidates) - official
-    if absent and (asserted is not None or not candidates & official):
+    # A sentence that was not fully read is judged on its keywords when none of them is official,
+    # and otherwise on the functions it names as what is helped ("미백과 주름개선에 도움을 …").
+    if asserted is not None:
+        claimed = asserted
+    elif not candidates & official:
+        claimed = candidates
+    else:
+        claimed = helped_functions(claim)
+    absent = claimed - official
+    if absent:
         if any(not _NARROWER.get(function, frozenset()) & official for function in absent):
             # A function word with "수 있" alone does not say that the product has the function.
             if asserted is None and STRENGTH_RANK[claim.strength] < STRENGTH_RANK[_OFFICIAL_STRENGTH]:
                 return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
-            return _decision(claim, mismatch, reason.FUNCTION_NOT_IN_OFFICIAL_EFFICACY)
+            lacking = reason.FUNCTION_NOT_IN_OFFICIAL_EFFICACY if readable else reason.FUNCTION_NOT_NAMED_IN_UNREAD_EFFICACY
+            return _decision(claim, mismatch, lacking)
         if not exceeds:
             return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
+    if not readable:
+        # Nothing but the absence of a function is taken from a statement that was not read.
+        return _decision(claim, unverifiable, _HELD[efficacy.status])
     if exceeds:
         return _decision(claim, mismatch, reason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL)
     if asserted is None:

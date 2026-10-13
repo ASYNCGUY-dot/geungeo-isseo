@@ -75,6 +75,10 @@ COSMETIC_REASON_MESSAGES: dict[CosmeticVerdictReason, str] = {
     CosmeticVerdictReason.FUNCTION_NOT_IN_OFFICIAL_EFFICACY: (
         "이 제품의 공식 효능효과에 없는 기능을 말하고 있습니다."
     ),
+    CosmeticVerdictReason.FUNCTION_NOT_NAMED_IN_UNREAD_EFFICACY: (
+        "공식 효능효과 문구를 규칙이 끝까지 읽지는 못했습니다. 다만 문구의 모든 줄이 다른 기능(자외선 차단, 염모 등)에 "
+        "관한 것이고 미백·주름개선을 가리키는 말이 없어, 광고가 말한 기능은 공식 효능효과에 없는 것으로 봤습니다."
+    ),
     CosmeticVerdictReason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL: (
         "공식 효능효과('도움을 준다')보다 강한 표현입니다."
     ),
