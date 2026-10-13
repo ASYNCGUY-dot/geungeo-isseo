@@ -1,0 +1,1720 @@
+{
+  "eval_id": "cosmetic-eval-v4",
+  "question": "What verdict should the advertisement sentence get against the record's official efficacy?",
+  "labeling": "Two blind AI labelers label the frozen sentences later; see the evidence record.",
+  "seed": 20261015,
+  "sources": {
+    "reported": {
+      "source_id": "data.go.kr:15095680",
+      "retrieved_at": "2026-10-11T05:18:59.490402+00:00",
+      "sha256": "FE8528F75D8841EC6B8AF287B436568A427B29703D46BF9AED7CCD61B9A8A176",
+      "rows": 196608
+    },
+    "reviewed": {
+      "source_id": "data.go.kr:15056939",
+      "retrieved_at": "2026-10-11T05:23:11.354666+00:00",
+      "sha256": "1604B5282EE8B331E636C86AAFD61373A482CCF3D7990FDF05354502424A1F28",
+      "rows": 20728
+    }
+  },
+  "engine_versions": [
+    "cosmetic-claim-v1.12",
+    "cosmetic-efficacy-v1.2",
+    "cosmetic-verdict-v1.6"
+  ],
+  "allocation_id": "claims-v3",
+  "allocation": {
+    "sun_only": {
+      "official": 5,
+      "index_same": 6,
+      "index_higher": 6,
+      "index_lower": 4,
+      "absent": 5,
+      "exaggerated": 3
+    },
+    "sun_with_judged": {
+      "official": 5,
+      "index_same": 4,
+      "index_higher": 4,
+      "exaggerated": 2,
+      "medical": 1,
+      "makeup": 2
+    },
+    "both": {
+      "official": 6,
+      "exaggerated": 3,
+      "sun_absent": 3,
+      "ingredient": 2,
+      "out_of_scope": 2,
+      "medical": 2
+    },
+    "whitening_only": {
+      "official": 2,
+      "absent": 3,
+      "sun_absent": 2,
+      "bystander": 1
+    },
+    "wrinkle_only": {
+      "official": 2,
+      "absent": 3,
+      "sun_absent": 2,
+      "bystander": 1
+    },
+    "other_function": {
+      "absent": 4,
+      "sun_absent": 2
+    },
+    "held_missing": {
+      "official": 4
+    },
+    "held_template": {
+      "official": 3
+    },
+    "held_unrecognized": {
+      "official": 4
+    },
+    "held_conflicting": {
+      "official": 2
+    }
+  },
+  "frame_counts": {
+    "sun_only": 26332,
+    "sun_with_judged": 30974,
+    "both": 71774,
+    "whitening_only": 15275,
+    "wrinkle_only": 24166,
+    "other_function": 35099,
+    "held_missing": 12612,
+    "held_template": 243,
+    "held_unrecognized": 507,
+    "held_conflicting": 18
+  },
+  "excluded_evals": [
+    "cosmetic-eval-v1",
+    "cosmetic-eval-v2",
+    "cosmetic-eval-v3"
+  ],
+  "items": [
+    {
+      "case_id": "CF-001",
+      "source": "reviewed",
+      "record_id": "202600381",
+      "stratum": "sun_only",
+      "claim_type": "index_lower",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF25 PA+++"
+    },
+    {
+      "case_id": "CF-002",
+      "source": "reviewed",
+      "record_id": "200709986",
+      "stratum": "held_unrecognized",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-003",
+      "source": "reviewed",
+      "record_id": "201208305",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-004",
+      "source": "reported",
+      "record_id": "2026021605",
+      "stratum": "both",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF30 PA++"
+    },
+    {
+      "case_id": "CF-005",
+      "source": "reviewed",
+      "record_id": "201210097",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF25 PA++"
+    },
+    {
+      "case_id": "CF-006",
+      "source": "reviewed",
+      "record_id": "201801189",
+      "stratum": "sun_with_judged",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-007",
+      "source": "reviewed",
+      "record_id": "201507264",
+      "stratum": "sun_with_judged",
+      "claim_type": "medical",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "medical",
+      "hint": "기미·잡티 치료",
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-008",
+      "source": "reported",
+      "record_id": "2018013750",
+      "stratum": "whitening_only",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-009",
+      "source": "reported",
+      "record_id": "2013011003",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF35 PA+++"
+    },
+    {
+      "case_id": "CF-010",
+      "source": "reported",
+      "record_id": "2014002668",
+      "stratum": "both",
+      "claim_type": "exaggerated",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "guarantee",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-011",
+      "source": "reported",
+      "record_id": "2024047222",
+      "stratum": "held_unrecognized",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-012",
+      "source": "reported",
+      "record_id": "2025000317",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-013",
+      "source": "reviewed",
+      "record_id": "201303399",
+      "stratum": "sun_only",
+      "claim_type": "exaggerated",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "guarantee",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-014",
+      "source": "reported",
+      "record_id": "2013001410",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF20 PA++"
+    },
+    {
+      "case_id": "CF-015",
+      "source": "reviewed",
+      "record_id": "201707259",
+      "stratum": "both",
+      "claim_type": "ingredient",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "나이아신아마이드",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-016",
+      "source": "reviewed",
+      "record_id": "201705475",
+      "stratum": "other_function",
+      "claim_type": "absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-017",
+      "source": "reviewed",
+      "record_id": "201300299",
+      "stratum": "sun_with_judged",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-018",
+      "source": "reviewed",
+      "record_id": "201305085",
+      "stratum": "whitening_only",
+      "claim_type": "absent",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-019",
+      "source": "reported",
+      "record_id": "2019008592",
+      "stratum": "whitening_only",
+      "claim_type": "absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-020",
+      "source": "reviewed",
+      "record_id": "201707131",
+      "stratum": "sun_with_judged",
+      "claim_type": "makeup",
+      "topic": [],
+      "topic_text": "바른 직후의 톤업·커버",
+      "subject": "제품",
+      "style": "makeup",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-021",
+      "source": "reported",
+      "record_id": "2024020685",
+      "stratum": "other_function",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-022",
+      "source": "reviewed",
+      "record_id": "201607049",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA+++"
+    },
+    {
+      "case_id": "CF-023",
+      "source": "reported",
+      "record_id": "2016017448",
+      "stratum": "sun_with_judged",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-024",
+      "source": "reviewed",
+      "record_id": "201602332",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-025",
+      "source": "reported",
+      "record_id": "2018005070",
+      "stratum": "sun_only",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-026",
+      "source": "reported",
+      "record_id": "2017018515",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+"
+    },
+    {
+      "case_id": "CF-027",
+      "source": "reviewed",
+      "record_id": "201308683",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA+"
+    },
+    {
+      "case_id": "CF-028",
+      "source": "reported",
+      "record_id": "2021017642",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++ 지속내수성"
+    },
+    {
+      "case_id": "CF-029",
+      "source": "reviewed",
+      "record_id": "201507936",
+      "stratum": "sun_only",
+      "claim_type": "absent",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-030",
+      "source": "reported",
+      "record_id": "2023040163",
+      "stratum": "sun_only",
+      "claim_type": "index_lower",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF30 PA++++"
+    },
+    {
+      "case_id": "CF-031",
+      "source": "reviewed",
+      "record_id": "201208199",
+      "stratum": "sun_with_judged",
+      "claim_type": "exaggerated",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "improvement",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-032",
+      "source": "reported",
+      "record_id": "2013022791",
+      "stratum": "held_template",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백·주름개선·자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-033",
+      "source": "reviewed",
+      "record_id": "202203731",
+      "stratum": "wrinkle_only",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF35 PA+++"
+    },
+    {
+      "case_id": "CF-034",
+      "source": "reviewed",
+      "record_id": "202300738",
+      "stratum": "other_function",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-035",
+      "source": "reported",
+      "record_id": "2026027598",
+      "stratum": "both",
+      "claim_type": "out_of_scope",
+      "topic": [],
+      "topic_text": "모공 관리",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-036",
+      "source": "reviewed",
+      "record_id": "201902418",
+      "stratum": "other_function",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF35 PA+++"
+    },
+    {
+      "case_id": "CF-037",
+      "source": "reviewed",
+      "record_id": "201907699",
+      "stratum": "sun_only",
+      "claim_type": "absent",
+      "topic": [
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 주름개선과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-038",
+      "source": "reviewed",
+      "record_id": "201309821",
+      "stratum": "sun_only",
+      "claim_type": "index_lower",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF30 PA+++"
+    },
+    {
+      "case_id": "CF-039",
+      "source": "reported",
+      "record_id": "2025062831",
+      "stratum": "whitening_only",
+      "claim_type": "absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-040",
+      "source": "reported",
+      "record_id": "2018020035",
+      "stratum": "sun_only",
+      "claim_type": "exaggerated",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "improvement",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-041",
+      "source": "reviewed",
+      "record_id": "201403706",
+      "stratum": "sun_only",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-042",
+      "source": "reported",
+      "record_id": "2016016067",
+      "stratum": "sun_with_judged",
+      "claim_type": "exaggerated",
+      "topic": [
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 주름개선과 자외선 차단",
+      "subject": "제품",
+      "style": "guarantee",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-043",
+      "source": "reviewed",
+      "record_id": "202502710",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-044",
+      "source": "reported",
+      "record_id": "2013006183",
+      "stratum": "held_missing",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-045",
+      "source": "reviewed",
+      "record_id": "202502208",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA+++"
+    },
+    {
+      "case_id": "CF-046",
+      "source": "reported",
+      "record_id": "2013013194",
+      "stratum": "held_missing",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-047",
+      "source": "reported",
+      "record_id": "2026016337",
+      "stratum": "wrinkle_only",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-048",
+      "source": "reported",
+      "record_id": "2025017733",
+      "stratum": "sun_only",
+      "claim_type": "exaggerated",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "guarantee",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-049",
+      "source": "reviewed",
+      "record_id": "202402056",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-050",
+      "source": "reported",
+      "record_id": "2025026376",
+      "stratum": "other_function",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF35 PA+++"
+    },
+    {
+      "case_id": "CF-051",
+      "source": "reported",
+      "record_id": "2026018194",
+      "stratum": "sun_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-052",
+      "source": "reported",
+      "record_id": "2024002148",
+      "stratum": "sun_only",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-053",
+      "source": "reviewed",
+      "record_id": "201302153",
+      "stratum": "wrinkle_only",
+      "claim_type": "bystander",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": "미백",
+      "index": null
+    },
+    {
+      "case_id": "CF-054",
+      "source": "reported",
+      "record_id": "2025005218",
+      "stratum": "held_unrecognized",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-055",
+      "source": "reviewed",
+      "record_id": "202402203",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA+++"
+    },
+    {
+      "case_id": "CF-056",
+      "source": "reported",
+      "record_id": "2021018274",
+      "stratum": "sun_with_judged",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 주름개선과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-057",
+      "source": "reported",
+      "record_id": "2025053115",
+      "stratum": "wrinkle_only",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-058",
+      "source": "reviewed",
+      "record_id": "202400257",
+      "stratum": "whitening_only",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-059",
+      "source": "reviewed",
+      "record_id": "201707288",
+      "stratum": "both",
+      "claim_type": "medical",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "medical",
+      "hint": "기미·잡티 치료",
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-060",
+      "source": "reported",
+      "record_id": "2017023810",
+      "stratum": "sun_only",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-061",
+      "source": "reviewed",
+      "record_id": "202601595",
+      "stratum": "sun_only",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-062",
+      "source": "reviewed",
+      "record_id": "201303472",
+      "stratum": "whitening_only",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-063",
+      "source": "reviewed",
+      "record_id": "201300539",
+      "stratum": "whitening_only",
+      "claim_type": "bystander",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": "주름개선",
+      "index": null
+    },
+    {
+      "case_id": "CF-064",
+      "source": "reviewed",
+      "record_id": "202501389",
+      "stratum": "sun_only",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-065",
+      "source": "reported",
+      "record_id": "2016007459",
+      "stratum": "held_template",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-066",
+      "source": "reported",
+      "record_id": "2024035847",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-067",
+      "source": "reviewed",
+      "record_id": "201305325",
+      "stratum": "wrinkle_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백·주름개선·자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-068",
+      "source": "reviewed",
+      "record_id": "201304512",
+      "stratum": "held_missing",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 주름개선과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-069",
+      "source": "reported",
+      "record_id": "2022006052",
+      "stratum": "both",
+      "claim_type": "exaggerated",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "guarantee",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-070",
+      "source": "reviewed",
+      "record_id": "201301438",
+      "stratum": "sun_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-071",
+      "source": "reported",
+      "record_id": "2021012195",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++"
+    },
+    {
+      "case_id": "CF-072",
+      "source": "reported",
+      "record_id": "2018000140",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-073",
+      "source": "reviewed",
+      "record_id": "201208700",
+      "stratum": "wrinkle_only",
+      "claim_type": "official",
+      "topic": [
+        "wrinkle"
+      ],
+      "topic_text": "피부 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-074",
+      "source": "reported",
+      "record_id": "2025048777",
+      "stratum": "both",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-075",
+      "source": "reported",
+      "record_id": "2023016971",
+      "stratum": "sun_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백·주름개선·자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-076",
+      "source": "reviewed",
+      "record_id": "201301191",
+      "stratum": "held_missing",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-077",
+      "source": "reviewed",
+      "record_id": "201500669",
+      "stratum": "held_template",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-078",
+      "source": "reported",
+      "record_id": "2024006558",
+      "stratum": "held_conflicting",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백·주름개선·자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-079",
+      "source": "reviewed",
+      "record_id": "201301959",
+      "stratum": "both",
+      "claim_type": "out_of_scope",
+      "topic": [],
+      "topic_text": "피부 탄력",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-080",
+      "source": "reported",
+      "record_id": "2021018491",
+      "stratum": "held_conflicting",
+      "claim_type": "official",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-081",
+      "source": "reported",
+      "record_id": "2023017413",
+      "stratum": "sun_only",
+      "claim_type": "index_lower",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF25 PA++"
+    },
+    {
+      "case_id": "CF-082",
+      "source": "reviewed",
+      "record_id": "201801244",
+      "stratum": "held_unrecognized",
+      "claim_type": "official",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-083",
+      "source": "reported",
+      "record_id": "2017005516",
+      "stratum": "sun_with_judged",
+      "claim_type": "official",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-084",
+      "source": "reviewed",
+      "record_id": "201802064",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++ 지속내수성"
+    },
+    {
+      "case_id": "CF-085",
+      "source": "reported",
+      "record_id": "2026023355",
+      "stratum": "both",
+      "claim_type": "medical",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "medical",
+      "hint": "기미·잡티 치료",
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-086",
+      "source": "reported",
+      "record_id": "2019017973",
+      "stratum": "other_function",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-087",
+      "source": "reported",
+      "record_id": "2018001799",
+      "stratum": "sun_with_judged",
+      "claim_type": "makeup",
+      "topic": [],
+      "topic_text": "바른 직후의 톤업·커버",
+      "subject": "제품",
+      "style": "makeup",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-088",
+      "source": "reported",
+      "record_id": "2025061206",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++ 지속내수성"
+    },
+    {
+      "case_id": "CF-089",
+      "source": "reviewed",
+      "record_id": "202200539",
+      "stratum": "both",
+      "claim_type": "exaggerated",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "제품",
+      "style": "improvement",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-090",
+      "source": "reported",
+      "record_id": "2026017974",
+      "stratum": "whitening_only",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-091",
+      "source": "reported",
+      "record_id": "2015011632",
+      "stratum": "wrinkle_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening"
+      ],
+      "topic_text": "피부 미백",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-092",
+      "source": "reported",
+      "record_id": "2026025544",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF25 PA+++"
+    },
+    {
+      "case_id": "CF-093",
+      "source": "reported",
+      "record_id": "2013006967",
+      "stratum": "sun_only",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++"
+    },
+    {
+      "case_id": "CF-094",
+      "source": "reviewed",
+      "record_id": "201400321",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-095",
+      "source": "reviewed",
+      "record_id": "202002661",
+      "stratum": "both",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF35 PA+++"
+    },
+    {
+      "case_id": "CF-096",
+      "source": "reviewed",
+      "record_id": "202600298",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_higher",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA+++"
+    },
+    {
+      "case_id": "CF-097",
+      "source": "reviewed",
+      "record_id": "201210885",
+      "stratum": "both",
+      "claim_type": "sun_absent",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    },
+    {
+      "case_id": "CF-098",
+      "source": "reported",
+      "record_id": "2020000777",
+      "stratum": "both",
+      "claim_type": "ingredient",
+      "topic": [
+        "whitening",
+        "wrinkle"
+      ],
+      "topic_text": "피부 미백과 주름개선",
+      "subject": "레티놀",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-099",
+      "source": "reported",
+      "record_id": "2026024166",
+      "stratum": "wrinkle_only",
+      "claim_type": "absent",
+      "topic": [
+        "whitening",
+        "sunscreen"
+      ],
+      "topic_text": "피부 미백과 자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": null
+    },
+    {
+      "case_id": "CF-100",
+      "source": "reported",
+      "record_id": "2026017246",
+      "stratum": "sun_with_judged",
+      "claim_type": "index_same",
+      "topic": [
+        "sunscreen"
+      ],
+      "topic_text": "자외선 차단",
+      "subject": "제품",
+      "style": "support",
+      "hint": null,
+      "aside": null,
+      "index": "SPF50+ PA++++"
+    }
+  ]
+}
