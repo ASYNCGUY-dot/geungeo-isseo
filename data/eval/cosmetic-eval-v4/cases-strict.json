@@ -1,0 +1,821 @@
+{
+  "dataset_id": "cosmetic-eval-v4-strict",
+  "purpose": "frozen claim evaluation for functional cosmetics; AI-written sentences for real MFDS records",
+  "labeling": "Expected verdicts are blind AI labels (sonnet, opus), a non-confirmed label where the labelers disagree. They are not human or expert labels.",
+  "sources": {
+    "reported": {
+      "source_id": "data.go.kr:15095680",
+      "retrieved_at": "2026-10-11T05:18:59.490402+00:00",
+      "sha256": "FE8528F75D8841EC6B8AF287B436568A427B29703D46BF9AED7CCD61B9A8A176",
+      "rows": 196608
+    },
+    "reviewed": {
+      "source_id": "data.go.kr:15056939",
+      "retrieved_at": "2026-10-11T05:23:11.354666+00:00",
+      "sha256": "1604B5282EE8B331E636C86AAFD61373A482CCF3D7990FDF05354502424A1F28",
+      "rows": 20728
+    }
+  },
+  "cases": [
+    {
+      "case_id": "CF-001",
+      "source": "reviewed",
+      "record_id": "202600381",
+      "ad_text": "이 제품은 SPF25 PA+++ 기준으로 출퇴근길 같은 짧은 일상 외출의 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-002",
+      "source": "reviewed",
+      "record_id": "200709986",
+      "ad_text": "매일 아침 꾸준히 바르면 피부 미백과 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-003",
+      "source": "reviewed",
+      "record_id": "201208305",
+      "ad_text": "하루 종일 야외 일정이 잡힌 날에는 SPF50+ PA++++ 표기의 이 제품이 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-004",
+      "source": "reported",
+      "record_id": "2026021605",
+      "ad_text": "가벼운 외출이 잦은 일상에는 SPF30 PA++ 제품으로 자외선 차단에 도움을 받아 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-005",
+      "source": "reviewed",
+      "record_id": "201210097",
+      "ad_text": "동네 산책처럼 가벼운 일정에는 SPF25 PA++ 제품을 발라 자외선 차단에 도움을 받으세요.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-006",
+      "source": "reviewed",
+      "record_id": "201801189",
+      "ad_text": "눈가와 입가가 신경 쓰일 때 바르면 피부 주름 개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-007",
+      "source": "reviewed",
+      "record_id": "201507264",
+      "ad_text": "이 제품은 기미와 잡티를 치료하는 미백 시술 효과를 집에서 그대로 누리게 해 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-008",
+      "source": "reported",
+      "record_id": "2018013750",
+      "ad_text": "세안 후 스킨케어 단계에서 사용하면 피부 미백에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-009",
+      "source": "reported",
+      "record_id": "2013011003",
+      "ad_text": "SPF35 PA+++ 스펙을 갖춘 이 제품은 한낮 외출 때 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-010",
+      "source": "reported",
+      "record_id": "2014002668",
+      "ad_text": "딱 7일 만에 피부가 100% 하얘지는 확실한 미백 효과를 약속합니다!",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-011",
+      "source": "reported",
+      "record_id": "2024047222",
+      "ad_text": "출근 준비 중에 챙겨 바르면 피부 미백과 자외선 차단에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-012",
+      "source": "reported",
+      "record_id": "2025000317",
+      "ad_text": "햇볕이 강한 한낮에도 SPF50+ PA++++로 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-013",
+      "source": "reviewed",
+      "record_id": "201303399",
+      "ad_text": "이 제품 하나면 햇빛 아래에서도 자외선을 100% 확실하게 차단합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-014",
+      "source": "reported",
+      "record_id": "2013001410",
+      "ad_text": "실내 생활이 많은 분께 권하는 SPF20 PA++ 제품으로, 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-015",
+      "source": "reviewed",
+      "record_id": "201707259",
+      "ad_text": "나이아신아마이드는 꾸준히 사용할 때 피부 미백에 도움을 줄 수 있는 성분입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-016",
+      "source": "reviewed",
+      "record_id": "201705475",
+      "ad_text": "외출 전 마지막 단계에 발라 주면 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-017",
+      "source": "reviewed",
+      "record_id": "201300299",
+      "ad_text": "캠핑이나 등산처럼 햇빛 아래 오래 머무는 날에는 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-018",
+      "source": "reviewed",
+      "record_id": "201305085",
+      "ad_text": "피부 주름 개선에 도움을 주는 기능성 제품이라 저녁 관리 단계에 더하기 좋습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-019",
+      "source": "reported",
+      "record_id": "2019008592",
+      "ad_text": "메이크업 직전에 바르면 자외선 차단에 도움을 주는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-020",
+      "source": "reviewed",
+      "record_id": "201707131",
+      "ad_text": "바르자마자 피부 톤이 한결 밝아 보이고 잡티까지 자연스럽게 가려지는 톤업 메이크업 효과를 경험해 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-021",
+      "source": "reported",
+      "record_id": "2024020685",
+      "ad_text": "저녁 스킨케어 마지막 단계에 더하면 피부 미백과 주름개선에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-022",
+      "source": "reviewed",
+      "record_id": "201607049",
+      "ad_text": "주말 피크닉을 계획했다면 자외선 차단에 도움을 주는 이 제품(SPF50+ PA+++)을 가방에 넣어 두세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-023",
+      "source": "reported",
+      "record_id": "2016017448",
+      "ad_text": "피부 미백 관리를 이제 막 시작하려는 분께 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-024",
+      "source": "reviewed",
+      "record_id": "201602332",
+      "ad_text": "피부 미백과 주름 개선에 동시에 도움을 줄 수 있는 이중 기능성 제품입니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-025",
+      "source": "reported",
+      "record_id": "2018005070",
+      "ad_text": "아이와 공원에 나가는 주말 오후, 자외선 차단에 도움을 주는 이 제품을 가방에 챙겨 두세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-026",
+      "source": "reported",
+      "record_id": "2017018515",
+      "ad_text": "SPF50+ 제품으로 야외에서 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-027",
+      "source": "reviewed",
+      "record_id": "201308683",
+      "ad_text": "실내외를 오가는 하루에는 SPF50+ PA+ 사양의 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-028",
+      "source": "reported",
+      "record_id": "2021017642",
+      "ad_text": "러닝처럼 땀이 나는 야외 운동을 앞둔 날, 이 제품은 SPF50+ PA++++ 지속내수성으로 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-029",
+      "source": "reviewed",
+      "record_id": "201507936",
+      "ad_text": "눈가와 입가 주름이 신경 쓰이는 분들께 이 제품은 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-030",
+      "source": "reported",
+      "record_id": "2023040163",
+      "ad_text": "출퇴근길에 쓰기 좋은 SPF30 PA++++ 제품으로 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-031",
+      "source": "reviewed",
+      "record_id": "201208199",
+      "ad_text": "이 제품은 피부 미백을 개선하고 자외선까지 차단합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-032",
+      "source": "reported",
+      "record_id": "2013022791",
+      "ad_text": "한 번에 피부 미백, 주름 개선, 자외선 차단에 도움을 주는 삼중 기능성 화장품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-033",
+      "source": "reviewed",
+      "record_id": "202203731",
+      "ad_text": "도심 나들이 중 자외선 차단이 필요한 순간, SPF35 PA+++ 지수의 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-034",
+      "source": "reviewed",
+      "record_id": "202300738",
+      "ad_text": "미백과 주름, 두 가지가 모두 고민인 분께 피부 미백과 주름 개선에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-035",
+      "source": "reported",
+      "record_id": "2026027598",
+      "ad_text": "세안 후 스킨케어 단계에 더하면 모공 관리에 도움을 주는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-036",
+      "source": "reviewed",
+      "record_id": "201902418",
+      "ad_text": "산책이나 장보기처럼 가벼운 야외 활동 전에 SPF35 PA+++의 이 제품을 바르면 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-037",
+      "source": "reviewed",
+      "record_id": "201907699",
+      "ad_text": "피부 주름개선과 자외선 차단, 두 가지를 한꺼번에 챙기고 싶은 분께 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-038",
+      "source": "reviewed",
+      "record_id": "201309821",
+      "ad_text": "이 제품은 SPF30 PA+++ 기능성 화장품으로서 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-039",
+      "source": "reported",
+      "record_id": "2025062831",
+      "ad_text": "햇빛이 강한 날에는 이 제품으로 자외선 차단에 도움을 받아 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-040",
+      "source": "reported",
+      "record_id": "2018020035",
+      "ad_text": "얇게 펴 바르는 순간 피부에 닿는 자외선을 차단합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-041",
+      "source": "reviewed",
+      "record_id": "201403706",
+      "ad_text": "러닝이나 자전거처럼 야외 운동을 하기 전에 바르면 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-042",
+      "source": "reported",
+      "record_id": "2016016067",
+      "ad_text": "2주 만에 주름이 확실하게 개선되고 자외선까지 100% 차단되는 효과를 보장합니다!",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-043",
+      "source": "reviewed",
+      "record_id": "202502710",
+      "ad_text": "나이가 들수록 눈에 띄는 주름이 고민이라면 피부 주름개선에 도움을 주는 이 제품을 만나 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-044",
+      "source": "reported",
+      "record_id": "2013006183",
+      "ad_text": "자외선 차단과 피부 미백에 도움을 줄 수 있어 낮 시간대 관리용으로 추천합니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-045",
+      "source": "reviewed",
+      "record_id": "202502208",
+      "ad_text": "여행 일정 내내 SPF50+ PA+++ 단계의 이 제품이 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-046",
+      "source": "reported",
+      "record_id": "2013013194",
+      "ad_text": "야외 활동이 많은 계절에 자외선으로부터 피부를 보호하는 데 도움을 주는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-047",
+      "source": "reported",
+      "record_id": "2026016337",
+      "ad_text": "SPF50+ PA++++ 등급을 내세운 이 제품은 강한 햇살 아래에서 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-048",
+      "source": "reported",
+      "record_id": "2025017733",
+      "ad_text": "어떤 햇빛 아래서도 자외선을 100% 완벽하게 차단해 준다고 확실하게 보장합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-049",
+      "source": "reviewed",
+      "record_id": "202402056",
+      "ad_text": "피부 미백과 주름개선, 이 제품 하나로 함께 도움을 받아 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-050",
+      "source": "reported",
+      "record_id": "2025026376",
+      "ad_text": "매일 쓰는 데일리용으로 SPF35 PA+++를 갖춰 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-051",
+      "source": "reported",
+      "record_id": "2026018194",
+      "ad_text": "여름이 지나고 달라진 피부가 신경 쓰인다면 피부 미백에 도움을 주는 이 제품을 써 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-052",
+      "source": "reported",
+      "record_id": "2024002148",
+      "ad_text": "자외선 차단에 도움을 주는 기능성 화장품이니 외출 전에 꼼꼼히 발라 주세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-053",
+      "source": "reviewed",
+      "record_id": "201302153",
+      "ad_text": "미백이 고민이라 따로 관리하는 분들도 함께 바르는 이 제품은 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-054",
+      "source": "reported",
+      "record_id": "2025005218",
+      "ad_text": "꾸준한 사용으로 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": "labelers disagree: sonnet=mismatch, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-055",
+      "source": "reviewed",
+      "record_id": "202402203",
+      "ad_text": "SPF50+ PA+++ 데일리 아이템인 이 제품은 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-056",
+      "source": "reported",
+      "record_id": "2021018274",
+      "ad_text": "피부 주름 개선과 자외선 차단에 도움을 주는 이중 기능성 화장품입니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-057",
+      "source": "reported",
+      "record_id": "2025053115",
+      "ad_text": "밤마다 얼굴 전체에 바르는 이 제품은 피부 주름개선에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=unverifiable, opus=confirmed"
+    },
+    {
+      "case_id": "CF-058",
+      "source": "reviewed",
+      "record_id": "202400257",
+      "ad_text": "등산이나 골프처럼 햇볕 아래 오래 머무는 날에는 SPF50+ PA++++인 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-059",
+      "source": "reviewed",
+      "record_id": "201707288",
+      "ad_text": "병원에 가지 않아도 기미·잡티가 치료되는 미백 케어를 집에서 받아 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-060",
+      "source": "reported",
+      "record_id": "2017023810",
+      "ad_text": "창가 자리에서 일하는 분들도 바르면 자외선으로부터 피부를 보호하는 데 도움을 받을 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-061",
+      "source": "reviewed",
+      "record_id": "202601595",
+      "ad_text": "SPF50+ PA++++, 자외선 차단에 도움을 주는 이 제품으로 여름 낮 외출을 준비하세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-062",
+      "source": "reviewed",
+      "record_id": "201303472",
+      "ad_text": "피부 미백에 도움을 주는 제품을 찾고 있다면 이 제품을 눈여겨보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-063",
+      "source": "reviewed",
+      "record_id": "201300539",
+      "ad_text": "주름개선 라인과 짝을 이뤄 쓰는 이 제품은 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=unverifiable, opus=confirmed"
+    },
+    {
+      "case_id": "CF-064",
+      "source": "reviewed",
+      "record_id": "202501389",
+      "ad_text": "운전할 때나 산책할 때 발라 두면 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-065",
+      "source": "reported",
+      "record_id": "2016007459",
+      "ad_text": "피부 미백 케어와 자외선 차단을 동시에 챙기고 싶다면 이 제품이 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-066",
+      "source": "reported",
+      "record_id": "2024035847",
+      "ad_text": "거울 속 주름이 눈에 들어오기 시작했다면 피부 주름 개선에 도움을 주는 이 제품을 써 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-067",
+      "source": "reviewed",
+      "record_id": "201305325",
+      "ad_text": "피부 미백, 주름개선, 자외선 차단까지 세 가지 관리에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-068",
+      "source": "reviewed",
+      "record_id": "201304512",
+      "ad_text": "낮 동안 바르는 이 제품은 자외선으로부터 피부를 보호하고 피부 주름을 개선하는 데 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-069",
+      "source": "reported",
+      "record_id": "2022006052",
+      "ad_text": "단 7일 만에 피부 미백, 확실하게 약속드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-070",
+      "source": "reviewed",
+      "record_id": "201301438",
+      "ad_text": "피부 미백에 도움을 주면서 자외선으로부터 피부를 보호하는 데에도 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-071",
+      "source": "reported",
+      "record_id": "2021012195",
+      "ad_text": "이 제품은 SPF50+ PA++ 수준으로 휴일 근교 나들이의 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-072",
+      "source": "reported",
+      "record_id": "2018000140",
+      "ad_text": "피부 미백에 도움을 줄 수 있는 기능성 화장품, 지금 만나 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-073",
+      "source": "reviewed",
+      "record_id": "201208700",
+      "ad_text": "웃을 때 접히는 잔주름이 신경 쓰인다면 피부 주름개선에 도움을 줄 수 있는 이 제품을 써 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-074",
+      "source": "reported",
+      "record_id": "2025048777",
+      "ad_text": "피부 미백과 주름 개선에 도움을 주는 제품이라 하나로 두 가지 관리를 시작하기 좋습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-075",
+      "source": "reported",
+      "record_id": "2023016971",
+      "ad_text": "바쁜 아침 한 단계로 끝내고 싶은 분들께는 피부 미백, 주름개선, 자외선 차단에 도움을 줄 수 있는 이 제품이 어울립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-076",
+      "source": "reviewed",
+      "record_id": "201301191",
+      "ad_text": "외출이 잦은 분께 피부 미백과 자외선 차단에 도움을 줄 수 있는 이 제품을 권해 드립니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-077",
+      "source": "reviewed",
+      "record_id": "201500669",
+      "ad_text": "아침저녁으로 바르면 피부 미백에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-078",
+      "source": "reported",
+      "record_id": "2024006558",
+      "ad_text": "피부 미백과 주름 개선은 물론 자외선 차단에도 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-079",
+      "source": "reviewed",
+      "record_id": "201301959",
+      "ad_text": "탄력이 아쉬운 요즘, 이 제품은 피부 탄력에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-080",
+      "source": "reported",
+      "record_id": "2021018491",
+      "ad_text": "밤마다 바르는 습관으로 피부 미백과 주름 개선에 도움을 받아 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-081",
+      "source": "reported",
+      "record_id": "2023017413",
+      "ad_text": "마트나 카페에 다녀오는 짧은 외출에는 SPF25 PA++ 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-082",
+      "source": "reviewed",
+      "record_id": "201801244",
+      "ad_text": "자전거 라이딩을 즐기는 분들의 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-083",
+      "source": "reported",
+      "record_id": "2017005516",
+      "ad_text": "피부 미백에 도움을 주는 이 제품을 이번 시즌 스킨케어 파우치에 넣어 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CF-084",
+      "source": "reviewed",
+      "record_id": "201802064",
+      "ad_text": "여름휴가 가방에 챙기기 좋은 SPF50+ PA++++ 지속내수성 제품으로 자외선으로부터 피부를 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-085",
+      "source": "reported",
+      "record_id": "2026023355",
+      "ad_text": "이 제품은 기미와 잡티를 치료하는 처방 수준의 미백 케어로 피부과 시술을 대신합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-086",
+      "source": "reported",
+      "record_id": "2019017973",
+      "ad_text": "아침저녁 스킨케어에 사용하면 주름 개선과 피부 미백에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-087",
+      "source": "reported",
+      "record_id": "2018001799",
+      "ad_text": "이 제품은 바르는 즉시 안색이 화사해 보이고 잡티가 자연스럽게 가려지는 톤업 효과를 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-088",
+      "source": "reported",
+      "record_id": "2025061206",
+      "ad_text": "SPF50+ PA++++ 지속내수성 기능성 화장품으로, 해변이나 수영장에서도 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-089",
+      "source": "reviewed",
+      "record_id": "202200539",
+      "ad_text": "바르면 피부 미백이 개선되고 깊은 주름이 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-090",
+      "source": "reported",
+      "record_id": "2026017974",
+      "ad_text": "이 제품은 SPF50+ PA++++ 자외선 차단 기능성 화장품으로 피부를 자외선으로부터 보호하는 데 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-091",
+      "source": "reported",
+      "record_id": "2015011632",
+      "ad_text": "미백 루틴의 첫걸음으로 이 제품이 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-092",
+      "source": "reported",
+      "record_id": "2026025544",
+      "ad_text": "잠깐의 외출이 대부분인 날에도 자외선으로부터 피부를 보호하는 데 도움을 줄 수 있도록 SPF25 PA+++로 만들었습니다.",
+      "expected_verdict": "unverifiable",
+      "note": "labelers disagree: sonnet=confirmed, opus=unverifiable"
+    },
+    {
+      "case_id": "CF-093",
+      "source": "reported",
+      "record_id": "2013006967",
+      "ad_text": "해가 쨍한 오후 약속 전에 SPF50+ PA++ 라벨의 이 제품을 바르면 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-094",
+      "source": "reviewed",
+      "record_id": "201400321",
+      "ad_text": "자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이니 캠핑이나 야외 페스티벌에 갈 때 챙겨 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-095",
+      "source": "reviewed",
+      "record_id": "202002661",
+      "ad_text": "가을 햇살이 좋은 날에는 SPF35 PA+++를 표기한 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-096",
+      "source": "reviewed",
+      "record_id": "202600298",
+      "ad_text": "야구장 관람석처럼 볕이 그대로 드는 자리에서도 SPF50+ PA+++ 표시의 이 제품은 자외선으로부터 피부를 보호하는 데 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-097",
+      "source": "reviewed",
+      "record_id": "201210885",
+      "ad_text": "골프장에서 보내는 긴 하루에는 SPF50+ PA++++ 제품이 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-098",
+      "source": "reported",
+      "record_id": "2020000777",
+      "ad_text": "레티놀은 피부 미백과 주름 개선에 도움을 줄 수 있는 성분입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CF-099",
+      "source": "reported",
+      "record_id": "2026024166",
+      "ad_text": "피부 미백과 자외선 차단을 함께 신경 쓰는 분들께 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CF-100",
+      "source": "reported",
+      "record_id": "2026017246",
+      "ad_text": "볕이 유난히 뜨겁다는 예보가 뜬 날, 피부를 자외선으로부터 보호하는 데 도움을 주는 SPF50+ PA++++ 제품을 꺼내 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    }
+  ]
+}

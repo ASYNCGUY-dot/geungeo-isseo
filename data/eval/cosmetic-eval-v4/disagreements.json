@@ -1,0 +1,93 @@
+[
+  {
+    "case_id": "CF-005",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-006",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-008",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-009",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-012",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-017",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-041",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-045",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-054",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-057",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CF-063",
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "confirmed"
+    }
+  },
+  {
+    "case_id": "CF-064",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CF-092",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  }
+]
