@@ -14,6 +14,7 @@ Three kinds of official data never count as evidence:
 
 A sunscreen sentence carries its index in brackets (SPF, PA grade, water resistance). The index is
 kept as written in an allowlisted form; a misspelt label ("SFP40") leaves the statement unread.
+Two fields that give the same function with different indexes conflict like two different functions.
 """
 
 import re
@@ -25,7 +26,7 @@ from pydantic import BaseModel
 
 from claimledger.official_v2 import _compact
 
-COSMETIC_EFFICACY_VERSION = "cosmetic-efficacy-v1.2"
+COSMETIC_EFFICACY_VERSION = "cosmetic-efficacy-v1.3"
 
 
 class CosmeticFunction(StrEnum):
@@ -79,7 +80,7 @@ class CosmeticEfficacy(BaseModel):
 
     status: EfficacyStatus
     sentences: tuple[OfficialSentence, ...] = ()
-    version: Literal["cosmetic-efficacy-v1.2"] = COSMETIC_EFFICACY_VERSION
+    version: Literal["cosmetic-efficacy-v1.3"] = COSMETIC_EFFICACY_VERSION
 
     @property
     def functions(self) -> frozenset[CosmeticFunction]:
@@ -175,8 +176,8 @@ def parse_cosmetic_efficacy(effect_text: str, effect_name: str) -> CosmeticEffic
     }
     if any(sentences is None for sentences in read.values()):
         return CosmeticEfficacy(status=EfficacyStatus.UNRECOGNIZED_WORDING)
-    if len(read) == 2 and Counter(item.function for item in read["document"]) != Counter(
-        item.function for item in read["effect_name"]
+    if len(read) == 2 and Counter((item.function, item.index) for item in read["document"]) != Counter(
+        (item.function, item.index) for item in read["effect_name"]
     ):
         return CosmeticEfficacy(status=EfficacyStatus.CONFLICTING_FIELDS)
     return CosmeticEfficacy(

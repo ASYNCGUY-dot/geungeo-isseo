@@ -35,10 +35,10 @@ TRIPLE = f"{WHITENING}\n{WRINKLE}\n{SUN50}"
 WHITENING_SUN = f"{WHITENING}\n{SUN50}"
 
 
-def _product(document: str, **fields: object) -> ConfirmedCosmetic:
+def _product(document: str, sentence: str = "", item_name: str = "합성 테스트 크림", **fields: object) -> ConfirmedCosmetic:
     product = FunctionalCosmetic(
-        record_id="SYNTHETIC-1", item_name="합성 테스트 선크림", company="합성 테스트 업체",
-        registered_on="20250102", effect_text=document, effect_name="",
+        record_id="SYNTHETIC-1", item_name=item_name, company="합성 테스트 업체",
+        registered_on="20250102", effect_text=document, effect_name=sentence,
         source_id="data.go.kr:15095680", retrieved_at=AT, **fields,
     )
     return ConfirmedCosmetic(product=product, confirmed_by_user=True)
@@ -70,13 +70,37 @@ def test_the_official_index_is_read_from_the_sunscreen_sentence() -> None:
     assert parse_cosmetic_efficacy(f"{PROTECTS} (SFP40, PA+++)", "").sunscreen_index is None
 
 
-def test_the_index_of_an_advertisement_is_read_with_its_literals() -> None:
-    (claim,) = extract_cosmetic_claims("SPF50+ PA++++ 지속내수성 선크림입니다.")
-    assert claim.function_candidates == (F.SUNSCREEN,)
-    assert (claim.spf, claim.pa, claim.water) == (("50+",), ("++++",), ("지속내수성",))
+def test_official_fields_with_different_indexes_hold_the_product() -> None:
+    # The same function in both fields, but 50+ in one and 30 in the other (independent review, P1).
+    efficacy = parse_cosmetic_efficacy(SUN50, SUN30)
+    assert efficacy.status is EfficacyStatus.CONFLICTING_FIELDS and efficacy.sunscreen_index is None
+    assert parse_cosmetic_efficacy(SUN50, PROTECTS).status is EfficacyStatus.CONFLICTING_FIELDS
+    assert parse_cosmetic_efficacy(SUN50, f"{PROTECTS} (SPF50+, PA++++)").status is EfficacyStatus.READABLE
 
-    (spaced,) = extract_cosmetic_claims("자외선 차단 지수 SPF 30, PA ++ 제품입니다.")
-    assert (spaced.spf, spaced.pa, spaced.water) == (("30",), ("++",), ())
+    held = _decide("SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", SUN50, sentence=SUN30)
+    assert held.verdict is Verdict.UNVERIFIABLE and held.reason is R.OFFICIAL_EFFICACY_CONFLICTING
+
+
+def test_the_index_of_an_advertisement_is_read_word_by_word() -> None:
+    def index(ad: str) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+        (claim,) = extract_cosmetic_claims(ad)
+        return claim.spf, claim.pa, claim.water
+
+    assert index("SPF50+ PA++++ 지속내수성 선크림입니다.") == (("50+",), ("++++",), ("지속내수성",))
+    assert index("자외선 차단 지수 SPF 30, PA ++ 제품입니다.") == (("30",), ("++",), ())
+    assert index("(SPF50+/PA+++) 자외선 차단 기능성 화장품입니다.") == (("50+",), ("+++",), ())
+    # A number or a plus sign of the next word is not part of the index (independent review).
+    assert index("데일리 선크림 SPF30 50ml.") == (("30",), (), ())
+    assert index("SPF35 01호 화사한 베이지 쿠션, 자외선 차단.") == (("35",), (), ())
+    # A lone "+" or digit in the next word may belong to the value ("SPF50 +", "SPF 5 0"): the
+    # value is not known, so it is kept as unread.
+    assert index("선크림 SPF50+ PA+++ + 선스틱 증정.") == (("50+",), ("?",), ())
+    assert index("SPF30 + 수분크림 세트, 자외선 차단.") == (("?",), (), ())
+    assert index("SPF 5 0 + 자외선 차단.") == (("?",), (), ())
+    assert index("UVA PA++++ 차단 선크림.") == ((), ("++++",), ())
+    # A label whose value cannot be read is kept as unread, so nothing is compared.
+    assert index("비비크림 SPF47+++ 자외선 차단.") == (("?",), (), ())
+    assert index("PA+++++ 선크림.") == ((), ("?",), ())
     # An index before a denial is not claimed.
     (denied,) = extract_cosmetic_claims("SPF50+ PA++++ 제품은 아닙니다.")
     assert (denied.spf, denied.pa) == ((), ()) and denied.function_candidates == ()
@@ -90,12 +114,14 @@ def test_the_index_of_an_advertisement_is_read_with_its_literals() -> None:
     ("자외선 차단 기능성 화장품입니다.", SUN30),
     # A product whose sentence carries no index still has the function.
     ("자외선 차단 기능성 화장품입니다.", PROTECTS),
-    # The same index as the official one, before or after the claim.
+    # The same index as the official one, before or after the claim, or with the kind of product.
     ("자외선으로부터 피부를 보호합니다(SPF50+, PA++++).", SUN50),
     ("SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", SUN50),
     ("SPF30 PA++ 자외선 차단 기능성 화장품입니다.", SUN30),
     ("SPF 30 자외선 차단 기능성 화장품입니다.", SUN30_NO_GRADE),
     ("자외선 차단 기능성 화장품입니다 (SPF30/PA++, 내수성).", SUN30_RESISTANT),
+    ("SPF50+ PA++++ 선크림입니다.", SUN50),
+    ("자외선 차단 지수 SPF50+ PA++++", SUN50),
     # Part of the official index is no more than the official index.
     ("SPF50+ 자외선 차단 기능성 화장품입니다.", SUN50),
     ("SPF30 PA++ 자외선 차단 기능성 화장품입니다.", SUN30_RESISTANT),
@@ -116,24 +142,29 @@ def test_the_confirmation_quotes_the_official_sunscreen_sentence() -> None:
 
 
 @pytest.mark.parametrize(("ad", "document", "reason"), [
-    # The product was not reported for sun protection, or is advertised for more than that.
+    # The product was not reported for sun protection: a fully read sentence says it has it.
     ("자외선 차단에 도움을 줍니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("자외선으로부터 피부를 보호합니다.", f"{WHITENING}\n{WRINKLE}", R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("SPF50+ PA++++ 선크림입니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("미백·주름개선·자외선 차단 3중 기능성 화장품입니다.", WHITENING_SUN, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # … or names sun protection as what is helped, or blocks "100%".
+    ("자외선 차단에 도움을 주는 크림으로 하루를 시작하세요.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("미백과 자외선 차단에 도움을 주는 제품으로 매일 가볍게 관리하세요.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("자외선을 100% 차단합니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # A sunscreen advertised for a function it was not reported for.
     ("미백과 주름개선에 도움을 주는 선크림입니다.", SUN50, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("미백에 도움을 주는 SPF50+ 선크림으로 하루를 시작합니다.", SUN50, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
-    # A higher index than the official one.
+    ("미백·주름개선 기능성 선크림으로 하루를 시작합니다.", SUN50, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # A higher index than the official one, in a sentence that was read completely.
     ("SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", SUN30, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
-    ("SPF50 선크림으로 매일 가볍게 마무리합니다.", SUN30, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
     ("자외선으로부터 피부를 보호합니다(SPF30, PA+++).", SUN30, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
     ("SPF50+ 선크림입니다.", f"{PROTECTS}(SPF50, PA+++)", R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
+    ("SPF50+ PA++++", SUN30, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
     # A grade or water resistance the official index does not hold.
     ("SPF30 PA++ 자외선 차단 기능성 화장품입니다.", SUN30_NO_GRADE, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
     ("SPF50+ PA++++ 지속내수성 선크림입니다.", SUN50, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
     ("SPF30 PA++ 지속내수성 선크림입니다.", SUN30_RESISTANT, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
-    ("땀과 물에 강한 워터프루프 SPF50+ 선크림입니다.", SUN50, R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
-    # Stronger than the official sentence.
+    # Stronger than the official sentence: an absolute word on the blocking itself.
     ("자외선을 100% 차단합니다.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("자외선을 완벽하게 막아 주는 SPF50+ PA++++ 선크림.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     # Medical wording stays outside what a cosmetic may claim.
@@ -151,16 +182,20 @@ def test_sunscreen_claims_beyond_the_official_efficacy_are_mismatches(
     # A lower index is no overstatement, but it is not what the record says either.
     ("SPF30 PA++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
     ("SPF50+ PA+++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
+    # "SPF50 +" may be 50 or 50+: it confirms neither.
+    ("SPF50 + PA++++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF50 + PA++++ 자외선 차단 기능성 화장품입니다.", f"{PROTECTS}(SPF50, PA++++)", R.SUNSCREEN_INDEX_UNCLEAR),
     # The official sentence has no index to compare with.
     ("SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", PROTECTS, R.OFFICIAL_SUNSCREEN_INDEX_MISSING),
     ("SPF50+ 선크림입니다.", PROTECTS, R.OFFICIAL_SUNSCREEN_INDEX_MISSING),
     # Two values in one sentence: which one is claimed is not known.
-    ("SPF30에서 SPF50+로 달라진 선크림입니다.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
-    ("SPF50+ PA++++ 선크림과 SPF30 PA++ 선로션 세트.", SUN30, R.SUNSCREEN_INDEX_UNCLEAR),
-    # "Waterproof" beside an official water resistance is not one of its two grades.
-    ("워터프루프 SPF30 PA++ 선크림입니다.", SUN30_RESISTANT, R.CLAIM_SCOPE_UNRESOLVED),
-    # The same index in a sentence that was not read completely.
+    ("SPF30 PA++ 자외선 차단 기능성 화장품입니다 (SPF50+, PA++++).", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
+    # An index in a sentence that was not read completely is not compared: it may belong to a
+    # comparison, a recommendation or another product.
     ("가볍게 발리는 SPF50+ PA++++ 선크림으로 하루를 시작합니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF50 선크림으로 매일 가볍게 마무리합니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("땀과 물에 강한 워터프루프 SPF50+ 선크림입니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF30에서 SPF50+로 달라진 선크림입니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
     # A product kind alone claims nothing that can be compared.
     ("선크림 전 단계에 가볍게 발라 주세요.", WHITENING, R.CLAIM_STRENGTH_UNCLEAR),
     ("선크림 전 단계에 가볍게 발라 주세요.", SUN50, R.CLAIM_STRENGTH_UNCLEAR),
@@ -173,6 +208,55 @@ def test_sunscreen_claims_that_cannot_be_compared_are_unverifiable(
 ) -> None:
     decision = _decide(ad, document)
     assert decision.verdict is Verdict.UNVERIFIABLE and decision.reason is reason
+
+
+@pytest.mark.parametrize(("ad", "document"), [
+    # Advice to use a sunscreen with a product that is none (retinol and whitening care).
+    ("낮에는 SPF30 이상의 자외선 차단제를 함께 사용하세요.", WRINKLE),
+    ("아침에는 SPF50+ 선크림과 함께 사용하세요.", WHITENING),
+    ("SPF50+ 선크림 전 단계에 사용하세요.", WHITENING),
+    ("PA++++는 가장 높은 등급입니다.", WHITENING),
+    ("자외선 차단제를 반드시 함께 사용하세요.", WHITENING),
+    ("자외선 차단제와 함께 사용하면 도움이 됩니다.", WHITENING),
+    ("자외선이 강한 여름철 피부 보습에 도움을 줍니다.", WHITENING),
+    ("자외선 차단 용기로 성분 보존에 도움을 줍니다.", WRINKLE),
+    ("선크림 전 단계에 사용하면 흡수에 도움이 됩니다.", WHITENING),
+    # A comparison, a recommendation or another product's index.
+    ("SPF50+ 제품보다 순한 데일리 선크림입니다.", SUN30),
+    ("SPF50+보다 낮지만 매일 쓰기에는 충분합니다.", SUN30),
+    ("야외에서는 SPF50+ 제품을, 실내에서는 이 제품을 쓰세요.", SUN30),
+    ("SPF50+ PA++++ 선스틱과 함께 쓰면 좋은 데일리 선크림.", SUN30),
+    ("야외 활동에는 PA+++ 이상 제품을 권장합니다.", SUN30),
+    ("SPF50+ PA++++ 선크림을 덧바르면 자외선 차단에 도움이 됩니다.", SUN30),
+    # The volume, the shade number or a gift after the index.
+    ("데일리 선크림 SPF30 50ml.", SUN30),
+    ("SPF30 24시간 촉촉한 선크림.", SUN30),
+    ("선크림 SPF50+ PA+++ + 선스틱 증정.", f"{PROTECTS}(SPF50+, PA+++)"),
+    # Water resistance of something else, in a sentence about another function.
+    ("워터프루프 마스카라와 함께 써도 좋은 미백 기능성 아이크림.", TRIPLE),
+    ("내수성 좋은 파우치에 담아 드리는 미백 기능성 크림.", TRIPLE),
+    ("내수성이 뛰어난 용기에 담은 SPF50+ 선크림.", SUN50),
+    # Effect verbs and absolute words that are not about the sun protection.
+    ("자외선 차단제를 반드시 함께 사용하세요.", SUN50),
+    ("이지워시 선크림.", SUN50),
+    ("세안제로 쉽게 지워지는 이지워시 선크림.", SUN50),
+    ("밀림 현상을 개선했습니다, 데일리 선크림.", SUN50),
+    ("피부 톤이 밝아 보이는 톤업 선크림.", SUN50),
+    ("눈시림 걱정을 줄여 주는 순한 선크림.", SUN50),
+    ("동백 퍼펙트 내추럴 썬크림.", SUN50),
+    ("100% 무기자차 선크림입니다.", SUN50),
+    ("완벽한 밀착력의 SPF50+ PA++++ 선크림.", SUN50),
+    # A help phrase that belongs to another product beside the sunscreen.
+    ("미백에 도움을 주는 세럼 다음에 바르는 SPF50+ 선크림.", SUN50),
+    ("미백 기능성 토너 증정, SPF50+ PA++++ 선크림.", SUN50),
+    ("미백·주름개선 기능성 앰플과 함께 쓰는 선크림.", SUN50),
+    # The letters of a product kind inside another word.
+    ("생선젤라틴 콜라겐으로 탄력에 도움을 줍니다.", WHITENING),
+    ("우선크림부터 바르면 흡수에 도움이 됩니다.", WRINKLE),
+])
+def test_a_sunscreen_word_without_a_claim_does_not_condemn(ad: str, document: str) -> None:
+    decisions = _decide_all(ad, _product(document))
+    assert all(decision.verdict is Verdict.UNVERIFIABLE for decision in decisions)
 
 
 def test_the_separate_index_items_of_the_record_must_agree_with_the_sentence() -> None:
@@ -191,6 +275,38 @@ def test_the_separate_index_items_of_the_record_must_agree_with_the_sentence() -
     # A claim without an index does not depend on the items.
     function_only = _decide("자외선 차단 기능성 화장품입니다.", SUN50, spf="45", pa="4")
     assert function_only.verdict is Verdict.CONFIRMED
+
+
+@pytest.mark.parametrize("fields", [
+    # Items seen in the export that are no plain value (independent review, P1): nothing is taken
+    # from an item that was not read, so it cannot agree with the sentence either.
+    {"spf": "SPF38,PA++", "pa": "2"},
+    {"spf": "54.1", "pa": "2"},
+    {"spf": "33-41", "pa": "2"},
+    {"spf": "SPF+", "pa": "2"},
+    {"spf": "47", "pa": "²"},
+    {"spf": "47", "pa": "++"},
+])
+def test_an_index_item_that_was_not_read_withholds_the_confirmation(fields: dict[str, str]) -> None:
+    held = _decide("SPF47 PA++ 자외선 차단 기능성 화장품입니다.", f"{PROTECTS}(SPF47, PA ++)", **fields)
+    assert held.verdict is Verdict.UNVERIFIABLE and held.reason is R.OFFICIAL_SUNSCREEN_INDEX_CONFLICTING
+
+
+@pytest.mark.parametrize("fields", [
+    {"spf": "50+", "pa": "3"},
+    {"spf": "", "pa": "2"},
+    {"item_name": "합성 마일드 선크림 SPF50+ PA++++"},
+    {"sunscreen": True},
+])
+def test_a_record_that_names_sun_protection_elsewhere_is_not_called_without_it(fields: dict[str, object]) -> None:
+    # The efficacy sentence has no sun protection, but the record's own items or name say otherwise.
+    held = _decide("자외선 차단 기능성 화장품입니다.", WHITENING, **fields)
+    assert held.verdict is Verdict.UNVERIFIABLE and held.reason is R.OFFICIAL_SUNSCREEN_RECORD_CONFLICTING
+    # A PA item of 0 says "no grade", and other functions are judged as before.
+    plain = _decide("자외선 차단 기능성 화장품입니다.", WHITENING, pa="0")
+    assert plain.verdict is Verdict.MISMATCH and plain.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
+    other = _decide("주름개선에 도움을 줍니다.", WHITENING, **fields)
+    assert other.verdict is Verdict.MISMATCH and other.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
 
 
 def test_an_unread_neighbour_withholds_a_sunscreen_confirmation() -> None:

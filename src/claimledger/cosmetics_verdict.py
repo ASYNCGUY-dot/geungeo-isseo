@@ -7,11 +7,16 @@ is an allowlisted form, the recognized disclaimer or an invitation in the closed
 A mismatch for a function the product lacks needs less: it is enough that the sentence names that
 function as what is helped.
 
-A sunscreen index is compared part by part with the official one. A higher SPF or PA grade, or a
-water resistance the record does not hold, is a mismatch; a lower one is no overstatement but not
-what the record says either, and is held. The reported list also carries the SPF and the PA grade as
-separate items: where they are filled and disagree with the sentence, the index is confirmed against
-neither, and only a value above both is a mismatch.
+A sunscreen index is compared part by part with the official one, and only in a sentence that was
+read completely: elsewhere it may belong to a comparison, a recommendation or another product. A
+higher SPF or PA grade, or a water resistance the record does not hold, is a mismatch; a lower one
+is no overstatement but not what the record says either, and is held. The reported list also carries
+the SPF and the PA grade as separate items: where one is filled and disagrees with the sentence, or
+cannot be read, the index is confirmed against neither, and only a value above both is a mismatch.
+
+Outside the forms a sunscreen word is a claim only as what is helped or with an absolute word on
+the blocking itself, and effect verbs ("지워", "밝아") say nothing about sun protection. A record
+whose own name or index items speak of sun protection is not called a product without it.
 General cosmetics are not in the MFDS lists and can never be confirmed here.
 """
 
@@ -27,6 +32,7 @@ from claimledger.cosmetics_claims import (
     COSMETIC_CLAIM_VERSION,
     CosmeticClaim,
     asserted_functions,
+    blocks_absolutely,
     extract_cosmetic_claims,
     helped_functions,
     invitation_count,
@@ -43,11 +49,12 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.6"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.7"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE, CosmeticFunction.SUNSCREEN})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 _WATER_RANK = {"": 0, "내수성": 1, "지속내수성": 2}
 _SPF_ITEM = re.compile(r"(?:spf)?(\d{1,3})(\+?)")
+_SUN_IN_NAME = re.compile(r"spf|자외선|[선썬](?:크림|블록|스틱|쿠션|로션|젤|밤)|sun")
 # An official function on a narrower scope neither confirms nor contradicts the general claim.
 _NARROWER = {CosmeticFunction.WRINKLE: frozenset({CosmeticFunction.LIP_WRINKLE})}
 
@@ -72,6 +79,7 @@ class CosmeticVerdictReason(StrEnum):
     SUNSCREEN_INDEX_UNCLEAR = "SUNSCREEN_INDEX_UNCLEAR"
     OFFICIAL_SUNSCREEN_INDEX_MISSING = "OFFICIAL_SUNSCREEN_INDEX_MISSING"
     OFFICIAL_SUNSCREEN_INDEX_CONFLICTING = "OFFICIAL_SUNSCREEN_INDEX_CONFLICTING"
+    OFFICIAL_SUNSCREEN_RECORD_CONFLICTING = "OFFICIAL_SUNSCREEN_RECORD_CONFLICTING"
     CLAIM_SCOPE_UNRESOLVED = "CLAIM_SCOPE_UNRESOLVED"
     AD_TEXT_NOT_FULLY_READ = "AD_TEXT_NOT_FULLY_READ"
     MATCHES_OFFICIAL_EFFICACY = "MATCHES_OFFICIAL_EFFICACY"
@@ -99,9 +107,9 @@ class CosmeticDecision(BaseModel):
     verdict: Verdict
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
-    efficacy_version: Literal["cosmetic-efficacy-v1.2"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.12"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.6"] = COSMETIC_VERDICT_VERSION
+    efficacy_version: Literal["cosmetic-efficacy-v1.3"] = COSMETIC_EFFICACY_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.13"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.7"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -113,9 +121,10 @@ def _decision(
     return CosmeticDecision(claim=claim, verdict=verdict, reason=reason, official_sentences=official_sentences)
 
 
-def _part(stated: tuple[int, ...], official: set[tuple[int, ...]]) -> str:
-    """One part of a stated index against the official values of that part."""
-    if all(stated > value for value in official):
+def _part(stated: tuple[int, ...], official: set[tuple[int, ...] | None]) -> str:
+    """One part of a stated index against the official values of that part; None is a value that was not read."""
+    known = official - {None}
+    if all(stated > value for value in known):
         return "exceeds"
     if len(official) > 1:
         return "conflicting"
@@ -127,34 +136,42 @@ def _index_reason(
 ) -> CosmeticVerdictReason | None:
     """Why the index a sentence states is not the official one; None when every stated part is."""
     reason = CosmeticVerdictReason
-    if max(len(claim.spf), len(claim.pa), len(claim.water)) > 1:
+    stated = (*claim.spf, *claim.pa, *claim.water)
+    if max(len(claim.spf), len(claim.pa), len(claim.water)) > 1 or "?" in stated:
         return reason.SUNSCREEN_INDEX_UNCLEAR
     if index is None:
         return reason.OFFICIAL_SUNSCREEN_INDEX_MISSING
     parts = []
     if claim.spf:
-        official = {(index.spf, int(index.plus))}
-        if item := _SPF_ITEM.fullmatch("".join(row.spf.casefold().split())):
-            official.add((int(item.group(1)), int(bool(item.group(2)))))
+        official: set[tuple[int, ...] | None] = {(index.spf, int(index.plus))}
+        # A filled item that is no plain value was not read: it cannot agree with the sentence.
+        if item := "".join(row.spf.casefold().split()):
+            read = _SPF_ITEM.fullmatch(item)
+            official.add((int(read.group(1)), int(bool(read.group(2)))) if read else None)
         parts.append(_part((int(claim.spf[0].rstrip("+")), int(claim.spf[0].endswith("+"))), official))
     if claim.pa:
-        official = {(index.pa,)} | ({(int(row.pa),)} if row.pa.strip().isdigit() else set())
+        official = {(index.pa,)}
+        if item := row.pa.strip():
+            official.add((int(item),) if item in {"0", "1", "2", "3", "4"} else None)
         parts.append(_part((len(claim.pa[0]),), official))
     if claim.water:
-        if claim.water[0] in _WATER_RANK:
-            parts.append(_part((_WATER_RANK[claim.water[0]],), {(_WATER_RANK[index.water],)}))
-        else:
-            # "워터프루프": more than no water resistance, but neither of the two official grades.
-            parts.append("unnamed" if index.water else "exceeds")
+        parts.append(_part((_WATER_RANK[claim.water[0]],), {(_WATER_RANK[index.water],)}))
     for outcome, found in (
         ("exceeds", reason.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL),
         ("conflicting", reason.OFFICIAL_SUNSCREEN_INDEX_CONFLICTING),
-        ("unnamed", reason.CLAIM_SCOPE_UNRESOLVED),
         ("differs", reason.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
     ):
         if outcome in parts:
             return found
     return None
+
+
+def _names_sun_protection(row: FunctionalCosmetic) -> bool:
+    """Whether the record speaks of sun protection outside its efficacy statement."""
+    return bool(
+        row.sunscreen or row.spf.strip() or row.pa.strip() not in {"", "0"}
+        or _SUN_IN_NAME.search("".join(row.item_name.casefold().split()))
+    )
 
 
 def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) -> CosmeticDecision:
@@ -175,13 +192,19 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
     if not candidates <= JUDGED_FUNCTIONS:
         return _decision(claim, unverifiable, reason.FUNCTION_RULE_NOT_READY)
     asserted = asserted_functions(claim)
+    sun = CosmeticFunction.SUNSCREEN
     stated_index = bool(claim.spf or claim.pa or claim.water)
-    sunscreen = CosmeticFunction.SUNSCREEN in candidates
-    # The official sunscreen sentence is a plain statement, and an index is a claim by itself: such
-    # a sentence needs no strength word.
-    if claim.strength is None and not (sunscreen and (stated_index or asserted is not None)):
+    absolute = sun in candidates and claim.strength is ExpressionStrength.GUARANTEE and blocks_absolutely(claim)
+    strength = claim.strength
+    if candidates == {sun} and strength in {ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE}:
+        # Effect verbs and absolute words are about whitening and wrinkles ("지워", "밝아", "100%
+        # 무기자차"); for sun protection only an absolute word on the blocking itself counts.
+        strength = ExpressionStrength.GUARANTEE if absolute else None
+    # The official sunscreen sentence is a plain statement, and a sentence with an index is held
+    # for its scope, not for its strength: such sentences need no strength word.
+    if strength is None and not (sun in candidates and (stated_index or asserted is not None)):
         return _decision(claim, unverifiable, reason.CLAIM_STRENGTH_UNCLEAR)
-    rank = STRENGTH_RANK[claim.strength or _OFFICIAL_STRENGTH]
+    rank = STRENGTH_RANK[strength or _OFFICIAL_STRENGTH]
 
     row = product.product
     if row.withdrawn:
@@ -198,13 +221,20 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
     # A sentence that was not fully read is judged on its keywords when none of them is official,
     # and otherwise on the functions its one phrase names as what is helped ("미백과 주름개선에
     # 도움을 …"); a function named any other way beside an official one may be another product's.
+    helped = helped_functions(claim)
     if asserted is not None:
         claimed = asserted
     elif not candidates & official:
-        claimed = candidates
+        # Whitening and wrinkle words with a strength word; a sunscreen word only as what is helped
+        # or with an absolute word on the blocking ("자외선 차단제를 함께 사용하세요" is advice).
+        claimed = (candidates - {sun} if strength is not None else frozenset()) | (
+            {sun} if sun in helped or absolute else frozenset()
+        )
     else:
-        claimed = helped_functions(claim)
+        claimed = helped
     absent = claimed - official
+    if absent == {sun} and _names_sun_protection(row):
+        return _decision(claim, unverifiable, reason.OFFICIAL_SUNSCREEN_RECORD_CONFLICTING)
     if absent:
         if any(not _NARROWER.get(function, frozenset()) & official for function in absent):
             # A function word with "수 있" alone does not say that the product has the function.
@@ -215,14 +245,14 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
             return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
     if exceeds:
         return _decision(claim, mismatch, reason.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL)
-    if stated_index and CosmeticFunction.SUNSCREEN in official:
+    if asserted is None:
+        return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
+    if stated_index:
         found = _index_reason(claim, efficacy.sunscreen_index, row)
         if found is reason.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL:
             return _decision(claim, mismatch, found)
         if found is not None:
             return _decision(claim, unverifiable, found)
-    if asserted is None:
-        return _decision(claim, unverifiable, reason.CLAIM_SCOPE_UNRESOLVED)
     quoted = tuple(sentence for sentence in efficacy.sentences if sentence.function in asserted)
     return _decision(claim, Verdict.CONFIRMED, reason.MATCHES_OFFICIAL_EFFICACY, quoted)
 
