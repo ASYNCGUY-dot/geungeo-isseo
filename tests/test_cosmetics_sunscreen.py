@@ -151,6 +151,8 @@ def test_the_confirmation_quotes_the_official_sunscreen_sentence() -> None:
     ("자외선 차단에 도움을 주는 크림으로 하루를 시작하세요.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("미백과 자외선 차단에 도움을 주는 제품으로 매일 가볍게 관리하세요.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("자외선을 100% 차단합니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # An absolute word elsewhere does not take away the help phrase.
+    ("본 제품은 자외선 차단에 도움을 줍니다, 확실한 보습감까지.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     # A sunscreen advertised for a function it was not reported for.
     ("미백과 주름개선에 도움을 주는 선크림입니다.", SUN50, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("미백에 도움을 주는 SPF50+ 선크림으로 하루를 시작합니다.", SUN50, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
@@ -208,6 +210,7 @@ def test_sunscreen_claims_beyond_the_official_efficacy_are_mismatches(
     ("SPF50 선크림으로 매일 가볍게 마무리합니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
     ("땀과 물에 강한 워터프루프 SPF50+ 선크림입니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
     ("SPF30에서 SPF50+로 달라진 선크림입니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
+    ("본 제품은 자외선 차단에 도움을 줍니다, 확실한 보습감까지.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
     # A product kind alone claims nothing that can be compared.
     ("선크림 전 단계에 가볍게 발라 주세요.", WHITENING, R.CLAIM_STRENGTH_UNCLEAR),
     ("선크림 전 단계에 가볍게 발라 주세요.", SUN50, R.CLAIM_STRENGTH_UNCLEAR),

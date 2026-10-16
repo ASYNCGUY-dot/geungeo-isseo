@@ -50,7 +50,7 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.8"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.9"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE, CosmeticFunction.SUNSCREEN})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 _WATER_RANK = {"": 0, "내수성": 1, "지속내수성": 2}
@@ -110,7 +110,7 @@ class CosmeticDecision(BaseModel):
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.3"] = COSMETIC_EFFICACY_VERSION
     extraction_version: Literal["cosmetic-claim-v1.14"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.8"] = COSMETIC_VERDICT_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.9"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -200,11 +200,15 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
     sun = CosmeticFunction.SUNSCREEN
     stated_index = bool(claim.spf or claim.pa or claim.water or any(form_index(claim)))
     absolute = sun in candidates and claim.strength is ExpressionStrength.GUARANTEE and blocks_absolutely(claim)
+    helped = helped_functions(claim)
     strength = claim.strength
     if candidates == {sun} and strength in {ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE}:
         # Effect verbs and absolute words are about whitening and wrinkles ("지워", "밝아", "100%
-        # 무기자차"); for sun protection only an absolute word on the blocking itself counts.
-        strength = ExpressionStrength.GUARANTEE if absolute else None
+        # 무기자차"); for sun protection only an absolute word on the blocking itself counts. A help
+        # phrase beside such a word keeps its own strength.
+        strength = (
+            ExpressionStrength.GUARANTEE if absolute else ExpressionStrength.SUPPORT if sun in helped else None
+        )
     # The official sunscreen sentence is a plain statement, and a sentence with an index is held
     # for its scope, not for its strength: such sentences need no strength word.
     if strength is None and not (sun in candidates and (stated_index or asserted is not None)):
@@ -226,7 +230,6 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
     # A sentence that was not fully read is judged on its keywords when none of them is official,
     # and otherwise on the functions its one phrase names as what is helped ("미백과 주름개선에
     # 도움을 …"); a function named any other way beside an official one may be another product's.
-    helped = helped_functions(claim)
     if asserted is not None:
         claimed = asserted
     elif not candidates & official:
