@@ -167,6 +167,8 @@ def test_the_confirmation_quotes_the_official_sunscreen_sentence() -> None:
     # Stronger than the official sentence: an absolute word on the blocking itself.
     ("자외선을 100% 차단합니다.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     ("자외선을 완벽하게 막아 주는 SPF50+ PA++++ 선크림.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("자외선으로부터 피부를 완벽하게 보호합니다.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
+    ("자외선 차단율 100%.", SUN50, R.EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL),
     # Medical wording stays outside what a cosmetic may claim.
     ("자외선으로 생긴 기미를 치료하는 SPF50+ 선크림.", SUN50, R.MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE),
 ])
@@ -182,6 +184,16 @@ def test_sunscreen_claims_beyond_the_official_efficacy_are_mismatches(
     # A lower index is no overstatement, but it is not what the record says either.
     ("SPF30 PA++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
     ("SPF50+ PA+++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
+    # A space inside the index: the form reads one value, the words another (independent review, P1).
+    ("SPF50+ PA++++ 지속 내수성 선크림입니다.", f"{PROTECTS}(SPF50+, PA++++, 내수성)", R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF50+ PA++++ 지속내수 성 자외선 차단에 도움을 줄 수 있습니다.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF50+ PA++++ 내수 성.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("S PF100 선크림입니다.", SUN30, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("S PF50+ 내수성 본 제품은 자외선으로부터 피부를 보호해 줍니다.", SUN30_RESISTANT, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("이 제품은 자외선 차단에 도움을 주는기능성 화장품 S PF50!", PROTECTS, R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF7 0+ 선크림입니다.", f"{PROTECTS}(SPF7)", R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF50 +.", f"{PROTECTS}(SPF 50)", R.SUNSCREEN_INDEX_UNCLEAR),
+    ("SPF50 +PA++++.", f"{PROTECTS}(SPF50, PA++++)", R.SUNSCREEN_INDEX_UNCLEAR),
     # "SPF50 +" may be 50 or 50+: it confirms neither.
     ("SPF50 + PA++++ 자외선 차단 기능성 화장품입니다.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
     ("SPF50 + PA++++ 자외선 차단 기능성 화장품입니다.", f"{PROTECTS}(SPF50, PA++++)", R.SUNSCREEN_INDEX_UNCLEAR),
@@ -250,6 +262,17 @@ def test_sunscreen_claims_that_cannot_be_compared_are_unverifiable(
     ("미백에 도움을 주는 세럼 다음에 바르는 SPF50+ 선크림.", SUN50),
     ("미백 기능성 토너 증정, SPF50+ PA++++ 선크림.", SUN50),
     ("미백·주름개선 기능성 앰플과 함께 쓰는 선크림.", SUN50),
+    # An absolute word on what something else blocks or protects (independent review).
+    ("자외선 100% 차단 용기에 담아 신선하게 보관했습니다.", WHITENING),
+    ("자외선 100% 차단 용기에 담아 신선하게 보관했습니다.", SUN50),
+    ("자외선 차단 100% 파우치에 담아 드립니다.", WRINKLE),
+    ("자외선을 완벽 차단하는 선글라스와 함께 쓰세요.", WHITENING),
+    ("자외선을 확실하게 막아 주는 모자를 함께 쓰세요.", SUN50),
+    ("자외선 차단율 100% 양산과 함께 쓰면 좋아요.", WHITENING),
+    ("피부를 완벽하게 보호하는 보습막, 외출 전에는 자외선 차단제도 함께 바르세요.", WHITENING),
+    # The sunscreen a help phrase describes is another product.
+    ("주름개선에 도움을 주는 선크림과 함께 쓰는 수분 크림.", SUN50),
+    ("미백에 도움을 주는 선크림 전용 클렌저.", SUN50),
     # The letters of a product kind inside another word.
     ("생선젤라틴 콜라겐으로 탄력에 도움을 줍니다.", WHITENING),
     ("우선크림부터 바르면 흡수에 도움이 됩니다.", WRINKLE),
@@ -307,6 +330,12 @@ def test_a_record_that_names_sun_protection_elsewhere_is_not_called_without_it(f
     assert plain.verdict is Verdict.MISMATCH and plain.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
     other = _decide("주름개선에 도움을 줍니다.", WHITENING, **fields)
     assert other.verdict is Verdict.MISMATCH and other.reason is R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY
+
+
+def test_a_form_whose_functions_are_not_its_cue_words_is_not_confirmed() -> None:
+    # "자 외선" is no cue word, but the form without spaces reads sun protection.
+    decision = _decide("주름개선과 자 외선 차단 기능성 화장품입니다.", TRIPLE)
+    assert decision.verdict is Verdict.UNVERIFIABLE and decision.reason is R.CLAIM_SCOPE_UNRESOLVED
 
 
 def test_an_unread_neighbour_withholds_a_sunscreen_confirmation() -> None:

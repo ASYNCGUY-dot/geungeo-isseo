@@ -34,6 +34,7 @@ from claimledger.cosmetics_claims import (
     asserted_functions,
     blocks_absolutely,
     extract_cosmetic_claims,
+    form_index,
     helped_functions,
     invitation_count,
     unread_sentences,
@@ -49,12 +50,12 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.7"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.8"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE, CosmeticFunction.SUNSCREEN})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 _WATER_RANK = {"": 0, "내수성": 1, "지속내수성": 2}
 _SPF_ITEM = re.compile(r"(?:spf)?(\d{1,3})(\+?)")
-_SUN_IN_NAME = re.compile(r"spf|자외선|[선썬](?:크림|블록|스틱|쿠션|로션|젤|밤)|sun")
+_SUN_IN_NAME = re.compile(r"spf|자외선|[선썬](?:크림|블록|스틱|쿠션|로션|젤|밤)|(?<![a-z])sun(?:screen|block|cream|stick)?(?![a-z])")
 # An official function on a narrower scope neither confirms nor contradicts the general claim.
 _NARROWER = {CosmeticFunction.WRINKLE: frozenset({CosmeticFunction.LIP_WRINKLE})}
 
@@ -108,8 +109,8 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.3"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.13"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.7"] = COSMETIC_VERDICT_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.14"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.8"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
@@ -137,7 +138,11 @@ def _index_reason(
     """Why the index a sentence states is not the official one; None when every stated part is."""
     reason = CosmeticVerdictReason
     stated = (*claim.spf, *claim.pa, *claim.water)
+    # The words and the form must read the same index: a space inside it ("지속 내수성") leaves
+    # the claimed value unknown.
     if max(len(claim.spf), len(claim.pa), len(claim.water)) > 1 or "?" in stated:
+        return reason.SUNSCREEN_INDEX_UNCLEAR
+    if form_index(claim) != (claim.spf, claim.pa, claim.water):
         return reason.SUNSCREEN_INDEX_UNCLEAR
     if index is None:
         return reason.OFFICIAL_SUNSCREEN_INDEX_MISSING
@@ -193,7 +198,7 @@ def _decide_sentence(claim: CosmeticClaim, product: ConfirmedCosmetic | None) ->
         return _decision(claim, unverifiable, reason.FUNCTION_RULE_NOT_READY)
     asserted = asserted_functions(claim)
     sun = CosmeticFunction.SUNSCREEN
-    stated_index = bool(claim.spf or claim.pa or claim.water)
+    stated_index = bool(claim.spf or claim.pa or claim.water or any(form_index(claim)))
     absolute = sun in candidates and claim.strength is ExpressionStrength.GUARANTEE and blocks_absolutely(claim)
     strength = claim.strength
     if candidates == {sun} and strength in {ExpressionStrength.IMPROVEMENT, ExpressionStrength.GUARANTEE}:

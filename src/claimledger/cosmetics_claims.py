@@ -49,7 +49,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.13"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.14"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -166,12 +166,10 @@ _QUESTION = re.compile(r"\?[.!。]*$")
 _AD_SPF = re.compile(r"spf(?: ?:? ?(\d{1,3}\+?)(?![\d+])(?! [\d+](?: |$)))?")
 _AD_PA = re.compile(r"(?<![a-z])pa ?:? ?(?:(\+{1,4})(?!\+)(?! \+)|(?=\+))")
 _AD_WATER = re.compile(r"(지속내수성|내수성)")
-# An absolute word on the blocking itself: "100% 차단", "완벽하게 막아 주는". "100% 무기자차" and
-# "완벽한 밀착력" are about something else.
-_SUN_ABSOLUTE = re.compile(
-    r"(?:100%|완벽(?:하게|히)?|확실(?:하게|히)?|철벽)(?:으로)?(?:차단|방어|막아|막는|막습|보호)"
-    r"|(?:차단|방어)(?:율|력)?(?:은|이)?100%"
-)
+# The same index read on the words run together, as the forms read it. Where the two readings
+# differ, a space fell inside the index ("지속 내수성", "S PF50", "SPF7 0+").
+_FORM_SPF = re.compile(r"spf:?(\d{1,3}\+?)")
+_FORM_PA = re.compile(r"(?<![a-z])pa:?(\+{1,4})")
 # The disclaimer every cosmetic may carry; one closing mark at most, like the claim forms.
 _DISCLAIMER = re.compile(
     r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이(?:아닙니다|아니에요|아니다|아님)[.!。]?"
@@ -211,6 +209,18 @@ _EFFECTS = _effects()
 _AD_INDEX = r"\(?spf:?\d{1,3}\+?(?:[,/]?pa:?\+{1,4})?(?:,?(?:지속)?내수성)?\)?"
 # The official sunscreen sentence in an advertisement's voice.
 _PROTECTS = r"자외선으로부터피부를보호(?:합니다|해줍니다|해요|한다|함|하는데도움을(?:줍니다|줄수있습니다|준다))"
+# An absolute word on the blocking by this product: the verb ends the sentence or describes the
+# product ("100% 차단합니다", "완벽하게 막아 주는 SPF50+ 선크림"). On anything else ("100% 차단
+# 용기", "완벽 차단하는 선글라스") and in "100% 무기자차" or "완벽한 밀착력" it says nothing of the claim.
+_ABSOLUTE_WORD = r"(?:100%|완벽(?:하게|히)?|확실(?:하게|히)?|철벽)(?:으로)?"
+_THIS_PRODUCT = rf"(?:{_AD_INDEX})?(?:{_SUN_NOUN}|제품|화장품)"
+_SENTENCE_END = r"(?=[.!。]*$)"
+_SUN_ABSOLUTE = re.compile(
+    rf"{_ABSOLUTE_WORD}(?:(?:차단|방어|보호)(?:합니다|해요|해줍니다|해드립니다|한다|함|됩니다|돼요|{_SENTENCE_END}"
+    rf"|(?:하는|해주는|해드리는){_THIS_PRODUCT})"
+    rf"|막(?:습니다|아요|아줍니다|아드립니다|는{_THIS_PRODUCT}|아주는{_THIS_PRODUCT}))"
+    rf"|(?:차단|방어)(?:율|력)?(?:은|이)?100%(?:{_SENTENCE_END}|{_THIS_PRODUCT})"
+)
 # "도움이 되다" says the same as "도움을 주다".
 _HELP = (
     r"에도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다|준다)"
@@ -224,9 +234,11 @@ _NAME = r"(?:피부(?:의)?)?(?:미백|화이트닝|멜라닌|기미|주근깨|�
 _HELP_WORD = re.compile(r"에(?:도)?(도움)|(?:2중|이중)?(기능성)")
 _HELPED_CHAIN = re.compile(rf"(?:{_NAME}{_JOIN}?)*{_NAME}\Z")
 # The sunscreen a help phrase describes, with its index: "…에 도움을 주는 SPF50+ 선크림",
-# "… 기능성 선크림". It names the product, so it is no other claim beside the phrase.
+# "… 기능성 선크림". It names the product, so it is no other claim beside the phrase, unless what
+# follows makes it another one ("선크림과 함께 쓰는 …", "선크림 전용 클렌저").
 _DESCRIBED_SUN = re.compile(
     rf"(?:을(?:주는|줄수있는|드리는)|이(?:되는|될수있는))?(?:{_AD_INDEX})?{_SUN_NOUN}"
+    r"(?=입니다|이에요|예요|으로|로|을|를|은|는|이|가|[,.!。]|$)"
 )
 _MAX_CHAIN = 40
 _COPULA = r"(?:입니다|이에요|예요)"
@@ -379,7 +391,7 @@ class CosmeticClaim(BaseModel):
     pa: tuple[str, ...] = ()
     water: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.13"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.14"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -413,6 +425,8 @@ class _Reading(NamedTuple):
     water: tuple[str, ...]
     # An absolute word on the blocking itself was asserted.
     sun_absolute: bool
+    # The index as the forms read it, on the words run together.
+    form_index: tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]
 
 
 def normalize_ad_text(text: str) -> str:
@@ -500,12 +514,22 @@ def _asserted(sentence: str) -> tuple[frozenset[CosmeticFunction] | None, bool]:
 
 def asserted_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction] | None:
     """Functions asserted by a fully recognized sentence, or None when any part of it is unread."""
-    return _asserted(claim.text)[0]
+    functions = _asserted(claim.text)[0]
+    # A form read on the words run together may hold a function whose cue word was split ("자
+    # 외선"): the words and the form disagree, so the sentence is not read.
+    if functions is not None and not functions <= set(claim.function_candidates):
+        return None
+    return functions
 
 
 def helped_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction]:
     """Functions the sentence names as what is helped, in its one such phrase; empty otherwise."""
     return _classify(claim.text).helped
+
+
+def form_index(claim: CosmeticClaim) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+    """The SPF values, PA grades and water resistance words as the forms read them."""
+    return _classify(claim.text).form_index
 
 
 def blocks_absolutely(claim: CosmeticClaim) -> bool:
@@ -642,6 +666,10 @@ def _classify(sentence: str) -> _Reading:
             for name, pattern in (("spf", _AD_SPF), ("pa", _AD_PA), ("water", _AD_WATER))
         },
         sun_absolute=any(match.end() > not_asserted_before for match in _SUN_ABSOLUTE.finditer(compact)),
+        form_index=tuple(
+            tuple(dict.fromkeys(match.group(1) for match in pattern.finditer(compact) if match.end() > not_asserted_before))
+            for pattern in (_FORM_SPF, _FORM_PA, _AD_WATER)
+        ),
     )
 
 
@@ -728,6 +756,7 @@ __all__ = [
     "blocks_absolutely",
     "confirm_cosmetic_claims",
     "extract_cosmetic_claims",
+    "form_index",
     "helped_functions",
     "invitation_count",
     "neutral_sentences",
