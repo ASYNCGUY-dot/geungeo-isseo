@@ -1,0 +1,177 @@
+[
+  {
+    "case_id": "CG-003",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-005",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-007",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-011",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-013",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-030",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-031",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-036",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-047",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-053",
+    "labels": {
+      "sonnet": "mismatch",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-056",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-057",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-059",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-062",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-066",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-068",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-069",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-072",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-074",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-083",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-087",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-093",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-094",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-097",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  },
+  {
+    "case_id": "CG-100",
+    "labels": {
+      "sonnet": "confirmed",
+      "opus": "unverifiable"
+    }
+  }
+]

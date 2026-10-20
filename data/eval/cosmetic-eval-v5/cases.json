@@ -1,0 +1,621 @@
+{
+  "dataset_id": "cosmetic-eval-v5",
+  "purpose": "frozen claim evaluation for functional cosmetics; AI-written sentences for real MFDS records",
+  "labeling": "Expected verdicts are blind AI labels (sonnet, opus), agreed labels only. They are not human or expert labels.",
+  "sources": {
+    "reported": {
+      "source_id": "data.go.kr:15095680",
+      "retrieved_at": "2026-10-11T05:18:59.490402+00:00",
+      "sha256": "FE8528F75D8841EC6B8AF287B436568A427B29703D46BF9AED7CCD61B9A8A176",
+      "rows": 196608
+    },
+    "reviewed": {
+      "source_id": "data.go.kr:15056939",
+      "retrieved_at": "2026-10-11T05:23:11.354666+00:00",
+      "sha256": "1604B5282EE8B331E636C86AAFD61373A482CCF3D7990FDF05354502424A1F28",
+      "rows": 20728
+    }
+  },
+  "cases": [
+    {
+      "case_id": "CG-001",
+      "source": "reviewed",
+      "record_id": "201701299",
+      "ad_text": "SPF50+ PA++++ 지속내수성 사양으로 한여름 야외 활동 중에도 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-002",
+      "source": "reviewed",
+      "record_id": "201304797",
+      "ad_text": "아침 스킨케어 마지막 단계에 이 크림 하나만 더하면 피부 주름개선과 자외선 차단에 함께 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-004",
+      "source": "reported",
+      "record_id": "2014001644",
+      "ad_text": "한여름 바닷가처럼 햇빛이 쨍한 날에도 SPF50+ PA++++ 지수로 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-006",
+      "source": "reviewed",
+      "record_id": "202203076",
+      "ad_text": "이 제품은 SPF50+ PA+++로, 출퇴근길 쏟아지는 햇살 아래에서 자외선 차단에 도움을 드려요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-008",
+      "source": "reported",
+      "record_id": "2026011264",
+      "ad_text": "눈가와 팔자 라인처럼 유독 신경 쓰이는 부위에 꾸준히 펴 바르면 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-009",
+      "source": "reported",
+      "record_id": "2025017447",
+      "ad_text": "SPF50+ PA++ 제품이라 주말 등산이나 캠핑처럼 오래 밖에 머무는 날에도 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-010",
+      "source": "reported",
+      "record_id": "2018019655",
+      "ad_text": "피부 미백에 도움을 주는 이 세럼을 바른 다음, 낮에는 SPF50+ PA+++ 선크림을 별도로 꼭 함께 발라 주시길 권해요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-012",
+      "source": "reviewed",
+      "record_id": "201804957",
+      "ad_text": "아침 한 단계로 피부 미백, 주름개선, 자외선 차단까지 세 가지 케어에 도움을 줄 수 있는 멀티 기능성 선크림입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-014",
+      "source": "reported",
+      "record_id": "2017006800",
+      "ad_text": "이 제품은 SPF50+ PA+++ 50ml 튜브라 가방에 쏙 넣고 다니며 수시로 덧바르기 좋고, 자외선 차단에 도움을 받을 수 있어요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-015",
+      "source": "reported",
+      "record_id": "2022007974",
+      "ad_text": "칙칙해 보이는 날이 잦다면, 꾸준히 바르는 이 제품이 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-016",
+      "source": "reviewed",
+      "record_id": "201702744",
+      "ad_text": "장보기나 동네 산책처럼 잠깐 나가는 날엔 SPF35 PA+++인 이 제품으로 자외선 차단에 도움을 받아 보세요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-017",
+      "source": "reviewed",
+      "record_id": "201402258",
+      "ad_text": "SPF35 PA+++ 스펙을 갖춘 이 제품이 하루 동안 쏟아지는 햇빛 속 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-018",
+      "source": "reviewed",
+      "record_id": "202204109",
+      "ad_text": "햇빛 아래에서 하루를 보내는 피부를 생각해, 주름개선과 자외선 차단 두 가지에 동시에 도움을 주도록 설계한 데이 크림입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-019",
+      "source": "reported",
+      "record_id": "2019018540",
+      "ad_text": "이 제품은 피부 주름개선에 도움을 주며, 낮에는 SPF35 PA+++ 자외선 차단제를 따로 챙겨 함께 발라 주세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-020",
+      "source": "reviewed",
+      "record_id": "201508524",
+      "ad_text": "창가 자리에서 일하는 날에도 아침에 한 번 꼼꼼히 펴 발라 두면 자외선 차단에 도움이 될 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-021",
+      "source": "reviewed",
+      "record_id": "201300521",
+      "ad_text": "눈가와 입가에 매일 부드럽게 펴 바르면 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-022",
+      "source": "reported",
+      "record_id": "2013006369",
+      "ad_text": "외출 전 얼굴과 목에 고르게 펴 바르는 이 선에센스는 피부 미백은 물론 자외선 차단에도 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-023",
+      "source": "reviewed",
+      "record_id": "201308941",
+      "ad_text": "저녁 스킨케어 단계에서 이 제품을 사용하면 피부 미백과 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-024",
+      "source": "reported",
+      "record_id": "2024054655",
+      "ad_text": "피부 재생을 촉진해 손상된 기미 부위를 치료하고 깊은 주름까지 회복시켜, 시술을 받은 듯한 미백·주름개선 효과를 선사합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-025",
+      "source": "reviewed",
+      "record_id": "202300441",
+      "ad_text": "SPF30 PA++++ 표기의 이 제품은 점심시간 산책처럼 짧고 잦은 야외 이동에서도 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-026",
+      "source": "reported",
+      "record_id": "2014007903",
+      "ad_text": "새로 나온 SPF13 21호 쿠션은 수정 화장을 할 때마다 톡톡 두드려 자외선 차단에 도움을 줄 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-027",
+      "source": "reviewed",
+      "record_id": "202501278",
+      "ad_text": "바닷가 물놀이 날에는 SPF50+ PA++++ 지속내수성 표기가 있는 이 제품이 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-028",
+      "source": "reported",
+      "record_id": "2024009235",
+      "ad_text": "바르자마자 얼굴빛이 한결 환해 보이고 잡티는 자연스럽게 가려져, 깔끔한 바탕 메이크업을 단번에 연출해 줘요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-029",
+      "source": "reported",
+      "record_id": "2018001915",
+      "ad_text": "햇살이 가장 강한 한낮 외출 전에 SPF50+ PA++++ 등급의 이 제품을 먼저 바르면 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-032",
+      "source": "reported",
+      "record_id": "2022019990",
+      "ad_text": "저녁에는 피부 미백과 주름개선에 도움을 주는 이 크림을, 아침에는 SPF35 PA+++ 자외선 차단제를 따로 챙겨 바르시길 추천드려요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-033",
+      "source": "reported",
+      "record_id": "2017011967",
+      "ad_text": "골프장이나 테니스장처럼 햇빛을 정면으로 받는 날에는 SPF50+ PA+++ 스펙의 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-034",
+      "source": "reported",
+      "record_id": "2013010560",
+      "ad_text": "SPF50+ PA+++를 갖춘 이 선블록은 그늘 하나 없는 골프장이나 테니스 코트에서도 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-035",
+      "source": "reviewed",
+      "record_id": "201500348",
+      "ad_text": "피부 미백과 주름개선을 함께 챙기고 싶은 분들께 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-037",
+      "source": "reported",
+      "record_id": "2025032616",
+      "ad_text": "여름철 피부 미백과 자외선 차단을 한 번에 챙기고 싶다면 이 제품이 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-038",
+      "source": "reported",
+      "record_id": "2016004315",
+      "ad_text": "피부 미백에 도움을 주는 이 앰플을 먼저 흡수시킨 뒤, 그 위에 SPF35 PA+++ 선크림을 덧발라 아침 루틴을 마무리해 보세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-039",
+      "source": "reviewed",
+      "record_id": "201907739",
+      "ad_text": "SPF50+ PA++++ 지속내수성 표기의 다른 제품을 먼저 바르고 그 위에 덧바르는 이 제품은 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-040",
+      "source": "reported",
+      "record_id": "2016015873",
+      "ad_text": "목주름까지 신경 쓰인다면 얼굴에서 목까지 이어 바르기만 해도 주름개선과 자외선 차단에 도움을 받을 수 있는 이 선크림을 써 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-041",
+      "source": "reported",
+      "record_id": "2013007818",
+      "ad_text": "실내 위주로 지내는 날에는 SPF10 PA++ 설계의 이 제품이 가벼운 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-042",
+      "source": "reported",
+      "record_id": "2023033633",
+      "ad_text": "자기 전 마지막 단계에서 이마와 미간에 톡톡 두드려 흡수시키면 피부 주름개선에 도움을 드릴 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-043",
+      "source": "reported",
+      "record_id": "2021017491",
+      "ad_text": "이 제품은 모공 관리에 도움을 주며, 외출 전에는 SPF50+ PA+++ 자외선 차단제를 함께 바르시길 권해 드립니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-044",
+      "source": "reviewed",
+      "record_id": "201209274",
+      "ad_text": "SPF35 PA+++ 메이크업 베이스 전 단계에 쓰기 좋은 이 세럼은 피부 미백과 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-045",
+      "source": "reported",
+      "record_id": "2016001340",
+      "ad_text": "하루 케어에 한 단계만 더하면 피부 미백, 주름개선, 자외선 차단 세 가지에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-046",
+      "source": "reviewed",
+      "record_id": "202300466",
+      "ad_text": "이 선크림은 SPF50+ PA++++ 지속내수성 제품이라 계곡 물놀이나 땀나는 야외 운동 중에도 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-048",
+      "source": "reported",
+      "record_id": "2023043707",
+      "ad_text": "아침엔 이 제품으로 자외선 차단에 도움을 받고, 한낮 외출 전에는 그 위에 SPF50+ PA++ 선스틱을 한 번 더 덧발라 주세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-049",
+      "source": "reported",
+      "record_id": "2016006689",
+      "ad_text": "여행 짐을 쌀 때 챙겨 두면 SPF50+ PA++ 표기의 이 제품이 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-050",
+      "source": "reported",
+      "record_id": "2020008372",
+      "ad_text": "바쁜 아침 기초 단계를 줄이고 싶다면 피부 미백과 주름개선, 자외선 차단에 두루 도움을 주는 이 3중 기능성 선크림을 만나 보세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-051",
+      "source": "reported",
+      "record_id": "2016015514",
+      "ad_text": "피부 미백과 자외선 차단 두 가지에 도움을 주는 이 제품으로 여름 준비를 시작하세요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-052",
+      "source": "reviewed",
+      "record_id": "202005303",
+      "ad_text": "피부 미백과 주름개선에 도움을 주는 이 크림을 쓰시는 동안에는 햇빛 강한 낮에 SPF50+ PA++++ 자외선 차단제를 함께 바르는 것을 권장합니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-054",
+      "source": "reported",
+      "record_id": "2014004307",
+      "ad_text": "SPF50+를 담은 이 선스프레이는 정수리나 등처럼 손이 닿기 어려운 곳까지 뿌려 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-055",
+      "source": "reported",
+      "record_id": "2013001282",
+      "ad_text": "나이 들수록 신경 쓰이는 표정 주름에는 이 제품이 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-058",
+      "source": "reviewed",
+      "record_id": "202500892",
+      "ad_text": "피부 미백에 도움을 주는 이 토너패드로 저녁 루틴을 채우고, 외출하는 날엔 SPF50+ PA++++ 선크림을 꼭 함께 챙겨 발라 주세요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-060",
+      "source": "reviewed",
+      "record_id": "202502666",
+      "ad_text": "이 크림은 깊게 팬 주름을 확실하게 개선하고 한여름 강렬한 자외선까지 완벽하게 차단합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-061",
+      "source": "reviewed",
+      "record_id": "202600137",
+      "ad_text": "아침저녁 세안 후 한 번씩 바르면 피부 미백에 도움을 줄 수 있는 제품입니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-063",
+      "source": "reported",
+      "record_id": "2024025024",
+      "ad_text": "피부 주름개선과 자외선 차단, 이 제품은 두 가지 모두에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-064",
+      "source": "reported",
+      "record_id": "2025027117",
+      "ad_text": "SPF30 PA++의 이 선로션은 등굣길이나 가벼운 외출 때 부담 없이 발라 자외선 차단에 도움을 받기 좋습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-065",
+      "source": "reported",
+      "record_id": "2018001349",
+      "ad_text": "한 번 바르면 자외선을 100% 확실하게 차단해 드립니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-067",
+      "source": "reported",
+      "record_id": "2013016014",
+      "ad_text": "아침 한 단계로 피부 미백, 주름개선, 자외선 차단 각각에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-070",
+      "source": "reviewed",
+      "record_id": "201304687",
+      "ad_text": "칙칙한 톤과 잔주름이 한꺼번에 고민인 분께 이 이중 기능성 크림이 피부 미백과 주름개선에 도움을 드릴 수 있어요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-071",
+      "source": "reported",
+      "record_id": "2021023670",
+      "ad_text": "SPF25 PA++ 사양의 이 제품은 평일 낮 시간대 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-073",
+      "source": "reviewed",
+      "record_id": "201211507",
+      "ad_text": "야외 근무가 잦은 날에도 피부 주름개선과 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-075",
+      "source": "reviewed",
+      "record_id": "201704809",
+      "ad_text": "매일 쓰는 데일리 케어로 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-076",
+      "source": "reviewed",
+      "record_id": "202107623",
+      "ad_text": "아침저녁 얼굴 전체에 얇게 펴 바르는 이 브라이트닝 에센스는 꾸준히 쓸수록 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-077",
+      "source": "reviewed",
+      "record_id": "201208915",
+      "ad_text": "바르면 피부는 하얗게 미백되고 얼굴 주름은 개선되어 사라집니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-078",
+      "source": "reported",
+      "record_id": "2020026516",
+      "ad_text": "바를수록 얼룩덜룩한 기미가 사라지고 굵은 주름이 눈에 띄게 펴지는, 미백과 주름개선을 한 번에 끝내는 크림입니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-079",
+      "source": "reviewed",
+      "record_id": "201805095",
+      "ad_text": "바르는 즉시 24시간 동안 자외선 차단을 확실히 보장합니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-080",
+      "source": "reported",
+      "record_id": "2015000400",
+      "ad_text": "자외선이 강해지는 봄부터 가을까지 외출 30분 전 얼굴과 목에 넉넉히 발라 주면 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-081",
+      "source": "reported",
+      "record_id": "2019017714",
+      "ad_text": "버스 정류장에서 기다리는 몇 분에도 SPF30 PA++ 제품이라 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-082",
+      "source": "reported",
+      "record_id": "2017008648",
+      "ad_text": "이 제품은 피부의 미백과 주름개선을 돕는 동시에 자외선으로부터 피부를 보호하는 데에도 도움을 줍니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-084",
+      "source": "reviewed",
+      "record_id": "202100339",
+      "ad_text": "피부 보습에 도움을 주는 이 수분크림을 바른 뒤, 낮에는 SPF35 PA+++ 선크림을 함께 덧발라 주시길 권해요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-085",
+      "source": "reviewed",
+      "record_id": "201503013",
+      "ad_text": "하루 한 번 이 제품을 바르는 습관이 피부 미백과 주름개선, 자외선 차단에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-086",
+      "source": "reviewed",
+      "record_id": "201301393",
+      "ad_text": "SPF50+ PA++ 지수의 이 선쿠션은 메이크업 위에 수시로 톡톡 두드려 자외선 차단에 도움을 줄 수 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-088",
+      "source": "reported",
+      "record_id": "2015004190",
+      "ad_text": "자전거로 출퇴근하는 분들을 위해 SPF50+ PA+++로 만든 이 선크림은 페달을 밟는 내내 자외선 차단에 도움을 줍니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-089",
+      "source": "reported",
+      "record_id": "2023042444",
+      "ad_text": "이 제품은 꾸준히 이어 가는 피부 미백 관리에 도움이 됩니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-090",
+      "source": "reviewed",
+      "record_id": "201206560",
+      "ad_text": "레티놀은 피부 미백과 주름개선에 도움을 줄 수 있는 성분으로, 매일 밤 루틴에 더하기 좋아요.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-091",
+      "source": "reported",
+      "record_id": "2024024601",
+      "ad_text": "매일 밤 마사지하듯 펴 바르면 피부 주름개선에 도움을 줄 수 있습니다.",
+      "expected_verdict": "unverifiable",
+      "note": ""
+    },
+    {
+      "case_id": "CG-092",
+      "source": "reported",
+      "record_id": "2025088435",
+      "ad_text": "이 세럼 한 병이면 피부 미백과 주름개선, 두 가지 케어에 도움을 받을 수 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-095",
+      "source": "reviewed",
+      "record_id": "201800853",
+      "ad_text": "얼굴 전체에 얇게 펴 바르는 이 제품은 피부 미백에 도움을 줄 수 있습니다.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-096",
+      "source": "reviewed",
+      "record_id": "201302030",
+      "ad_text": "이 제품은 SPF50+ PA++ 선밤 타입이라 손에 묻히지 않고 콧등과 광대에 쓱 문질러 자외선 차단에 도움을 줄 수 있어요.",
+      "expected_verdict": "mismatch",
+      "note": ""
+    },
+    {
+      "case_id": "CG-098",
+      "source": "reviewed",
+      "record_id": "202106047",
+      "ad_text": "피부 주름개선에 도움을 줄 수 있는 이 아이크림과 함께, 낮 시간엔 SPF50+ PA+++ 자외선 차단제를 곁들여 바르는 걸 추천해요.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    },
+    {
+      "case_id": "CG-099",
+      "source": "reported",
+      "record_id": "2026001837",
+      "ad_text": "자기 전 마지막 단계에서 쓰는 본 제품은 피부 주름개선에 도움을 줍니다.",
+      "expected_verdict": "confirmed",
+      "note": ""
+    }
+  ]
+}

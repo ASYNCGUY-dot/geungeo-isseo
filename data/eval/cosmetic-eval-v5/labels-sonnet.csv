@@ -1,0 +1,101 @@
+case_id,label,labeler,note
+CG-001,mismatch,sonnet,"규칙5: 광고의 지속내수성이 공식 문구(SPF50+, PA++++)에 없는 내수성 주장"
+CG-002,unverifiable,sonnet,규칙3: 공식 문서에 작성 양식 안내 문구('해당하는 효능효과 이외에는 모두 삭제')가 남아 있음
+CG-003,mismatch,sonnet,규칙4: 이 제품 광고에서 SPF35 PA+++ 제품의 자외선 차단을 말했으나 공식은 탈모 완화뿐; 애매: 제품을 특정하지 않은 일반 진술로 보면 규칙2/6 unverifiable
+CG-004,mismatch,sonnet,규칙5: 광고 PA++++가 공식 PA+++(문서·별도 항목 모두 3)보다 높음
+CG-005,confirmed,sonnet,규칙2·7: 비교 대상 다른 제품의 지수는 이 제품 주장이 아니고 이 제품은 공식 자외선 차단에 도움 수준 이내; 애매: 비교하며 고르는 분께 표현을 비교/대상자로 볼 여지
+CG-006,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF35보다 높음
+CG-007,confirmed,sonnet,규칙7: 공식 자외선 차단 기능을 지수 없이 도움 수준으로 말함
+CG-008,mismatch,sonnet,규칙4: 공식은 모발의 염모뿐인데 광고는 피부 주름개선을 주장함 (꾸준히 조건보다 규칙4가 앞섬)
+CG-009,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF20(문서·별도 항목 모두)보다 높음
+CG-010,confirmed,sonnet,규칙2·7: 함께 바르라고 권한 선크림 지수는 이 제품 주장이 아님; 미백 도움은 공식 효능효과명과 일치
+CG-011,confirmed,sonnet,규칙7: 공식 자외선 차단 기능을 도움 수준으로 말함(지수 없음); 창가 햇빛 상황 문구는 사용 상황 설명으로 봄
+CG-012,mismatch,sonnet,규칙4: 공식은 미백뿐인데 광고는 주름개선과 자외선 차단까지 주장함
+CG-013,mismatch,sonnet,규칙4: 광고가 SPF35 PA+++ 제품의 자외선 차단을 말했으나 공식은 주름개선뿐; 애매: 덧바르는 다른 제품으로 보면 이 제품 주장 없음(unverifiable)
+CG-014,confirmed,sonnet,"규칙7: SPF50+ PA+++가 공식(SPF50+, PA+++, 별도 항목 동일)과 같고 50ml는 용량이라 지수 아님"
+CG-015,unverifiable,sonnet,규칙6: 꾸준히 바르는 사용 조건이 효과에 붙음(공식 미백 범위 내)
+CG-016,mismatch,sonnet,규칙4: 공식은 모발의 염모뿐인데 광고는 자외선 차단을 주장함
+CG-017,mismatch,sonnet,규칙4: 공식은 미백·주름개선뿐인데 광고는 자외선 차단(SPF35 PA+++)을 주장함
+CG-018,mismatch,sonnet,규칙4: 공식은 자외선 차단(SPF10 이하)뿐인데 광고는 주름개선도 주장함
+CG-019,confirmed,sonnet,규칙2·7: 따로 바르라고 권한 자외선 차단제 지수는 이 제품 주장이 아님; 주름개선 도움은 공식 효능효과명과 일치
+CG-020,unverifiable,sonnet,규칙6: 아침에 한 번 꼼꼼히 발라 두면이라는 사용 방법·횟수 조건이 효과에 붙음(공식 SPF46 PA+++ 범위 내)
+CG-021,unverifiable,sonnet,규칙6: 매일 바르면이라는 사용 횟수 조건과 눈가·입가 부위 조건이 붙음
+CG-022,unverifiable,sonnet,규칙3: 공식 효능효과명과 문서가 모두 비어 있음
+CG-023,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 광고는 미백도 주장함
+CG-024,mismatch,sonnet,규칙1: 기미 치료·시술 효과 등 의료적 효과를 주장함
+CG-025,unverifiable,sonnet,규칙6: 광고 SPF30이 공식 SPF50+보다 낮음(PA++++는 같음)
+CG-026,unverifiable,sonnet,규칙6: 광고 SPF13은 문서 SPF13과 같지만 별도 SPF 항목 11과 달라 두 값 모두보다 높지는 않음 (21호는 호수)
+CG-027,mismatch,sonnet,"규칙5: 광고의 지속내수성이 공식 문구(SPF50+, PA++++)에 없음"
+CG-028,unverifiable,sonnet,규칙2: 얼굴빛 환해짐·잡티 가림 등 미백·주름개선·자외선 차단이 아닌 메이크업 효과 주장
+CG-029,mismatch,sonnet,규칙5: 광고 PA++++가 공식 PA+++(문서·별도 항목 3)보다 높음
+CG-030,confirmed,sonnet,규칙7: SPF50+ PA++++가 공식과 같고 70ml는 용량이라 지수 아님; 덧바르며는 사용 설명으로 봄
+CG-031,confirmed,sonnet,규칙2·7: 자외선 차단제(다른 제품) 지수는 이 제품 주장이 아님; 주름개선 도움은 공식과 일치; 애매: 먼저 펴 바르면을 사용 조건으로 보면 unverifiable
+CG-032,confirmed,sonnet,규칙2·7: 따로 바르라고 권한 자외선 차단제 지수는 이 제품 주장이 아님; 미백·주름개선은 공식과 일치
+CG-033,mismatch,sonnet,규칙4: 공식은 미백·주름개선뿐인데 광고는 자외선 차단(SPF50+ PA+++)을 주장함
+CG-034,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF40보다 높음
+CG-035,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 광고는 미백·주름개선을 주장함
+CG-036,confirmed,sonnet,"규칙7: SPF15가 공식(SPF 15, 별도 항목 동일)과 같음; 가볍게 발라 두면은 사용 상황 설명으로 봄 (애매: 사용 조건으로 볼 여지)"
+CG-037,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 광고는 미백도 주장함
+CG-038,confirmed,sonnet,규칙2·7: 덧바르라고 권한 선크림 지수는 이 제품 주장이 아님; 미백 도움은 공식 효능효과명과 일치
+CG-039,confirmed,sonnet,"규칙2·7: 먼저 바르는 다른 제품의 지수·내수성은 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식(SPF50+, PA++++) 범위 내"
+CG-040,unverifiable,sonnet,규칙3/6: 효능효과명(주름개선만)과 문서(미백·주름개선·자외선 차단)가 서로 달라 근거로 쓰기 불확실하고 목까지 이어 바르기라는 사용 부위 조건도 붙음
+CG-041,unverifiable,sonnet,규칙6: 광고 SPF10이 공식 SPF20보다 낮음(PA++는 같음)
+CG-042,unverifiable,sonnet,규칙6: 이마와 미간에 두드려 흡수시키면이라는 사용 방법·부위 조건이 효과에 붙음(공식 주름개선 범위 내)
+CG-043,unverifiable,sonnet,규칙2: 모공 관리는 미백·주름개선·자외선 차단이 아닌 기능 주장(함께 바르라고 권한 선크림 지수는 이 제품 주장 아님)
+CG-044,confirmed,sonnet,규칙2·7: 메이크업 베이스(다른 제품)의 SPF35 PA+++는 이 제품 주장이 아님; 미백·주름개선 도움은 공식과 일치
+CG-045,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 광고는 미백과 자외선 차단도 주장함
+CG-046,mismatch,sonnet,"규칙5: 광고의 지속내수성이 공식 문구(SPF50+, PA++++)에 없음"
+CG-047,confirmed,sonnet,규칙7: 미백 도움은 공식 미백과 일치; 미백 케어를 찾는다면 문구는 도입 문구로 봄 (애매: 대상자 표현으로 볼 여지)
+CG-048,confirmed,sonnet,규칙2·7: 덧바르라고 권한 선스틱 지수는 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식 범위 내(지수 없음)
+CG-049,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF30(문서·별도 항목 모두)보다 높음
+CG-050,unverifiable,sonnet,규칙3: 공식 문서에 작성 양식 안내 문구('해당하는 효능효과 이외에는 모두 삭제')가 남아 있음
+CG-051,unverifiable,sonnet,규칙3: 공식 문서에 작성 양식 안내 문구가 남아 있음
+CG-052,confirmed,sonnet,규칙2·7: 함께 바르라고 권한 자외선 차단제 지수는 이 제품 주장이 아님; 미백·주름개선 도움은 공식과 일치
+CG-053,mismatch,sonnet,규칙4: 광고가 SPF50+ PA+++ 제품의 자외선 차단을 말했으나 공식은 미백뿐; 애매: 제품을 특정하지 않은 일반 진술로 보면 unverifiable
+CG-054,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF15·별도 SPF14보다 높음
+CG-055,unverifiable,sonnet,규칙3: 공식 효능효과명과 문서가 모두 비어 있음
+CG-056,confirmed,sonnet,규칙7: SPF50+ PA+++가 공식과 같음
+CG-057,confirmed,sonnet,규칙7: SPF15 PA+가 공식과 같고 60ml는 용량이라 지수 아님
+CG-058,confirmed,sonnet,규칙2·7: 함께 바르라고 권한 선크림 지수는 이 제품 주장이 아님; 미백 도움은 공식과 일치
+CG-059,confirmed,sonnet,규칙7: 공식 자외선 차단 기능을 지수 없이 도움 수준으로 말함
+CG-060,mismatch,sonnet,규칙5: 확실하게 개선·완벽하게 차단이라는 보장성 단정 표현이 공식 수준(도움을 준다/보호한다)보다 강함
+CG-061,unverifiable,sonnet,규칙6: 아침저녁 세안 후 한 번씩 바르면이라는 사용 횟수 조건이 효과에 붙음(공식 미백 범위 내)
+CG-062,confirmed,sonnet,규칙2·7: 바닷가용 SPF50+ PA++++ 제품은 다른 제품 지수라 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식 범위 내(지수 없음); 애매: 대비 문구를 비교로 볼 여지
+CG-063,unverifiable,sonnet,규칙3: 효능효과명(주름개선)과 문서(미백)가 서로 다른 기능을 말함
+CG-064,mismatch,sonnet,규칙4: 공식은 주름개선뿐인데 광고는 자외선 차단(SPF30 PA++)을 주장함
+CG-065,mismatch,sonnet,규칙5: 자외선을 100% 확실하게 차단이라는 보장 표현이 공식 수준(보호한다)보다 강함
+CG-066,confirmed,sonnet,"규칙7: SPF32 PA++가 공식(SPF 32, PA++)과 같음"
+CG-067,unverifiable,sonnet,규칙3: 공식 문서가 미백개선이라는 오기 의심 문구뿐이라 무엇을 인정했는지 불확실(광고는 세 기능을 말함)
+CG-068,confirmed,sonnet,규칙7: SPF50+ PA++++가 공식과 같음
+CG-069,confirmed,sonnet,규칙7: SPF15가 공식 자외선 차단 문구(SPF15)와 같고 일부 지수만 말함
+CG-070,unverifiable,sonnet,규칙3: 공식 효능효과명과 문서가 모두 비어 있음
+CG-071,unverifiable,sonnet,규칙6: 광고 SPF25가 공식 SPF35·별도 SPF30보다 낮음(PA++는 같음)
+CG-072,confirmed,sonnet,규칙7: SPF15 PA+가 공식과 같음
+CG-073,unverifiable,sonnet,규칙3: 공식 효능효과명과 문서가 모두 비어 있음
+CG-074,confirmed,sonnet,규칙2·7: 비교 대상 레저용 선크림의 지수·내수성은 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식 범위 내; 애매: 달리 문구를 비교로 볼 여지
+CG-075,mismatch,sonnet,규칙4: 공식은 모발의 염모(밤색)뿐인데 광고는 피부 미백을 주장함
+CG-076,unverifiable,sonnet,규칙6: 꾸준히 쓸수록이라는 사용 조건이 효과에 붙음(공식 미백 범위 내)
+CG-077,mismatch,sonnet,규칙5: 미백되고 주름이 개선되어 사라진다는 단정 표현이 공식 수준(도움을 준다)보다 강함
+CG-078,mismatch,sonnet,규칙5: 기미가 사라지고 주름이 펴지며 한 번에 끝낸다는 단정 표현이 공식 수준보다 강함
+CG-079,mismatch,sonnet,규칙5: 24시간 확실히 보장이라는 보장·기간 약속이 공식 수준(보호한다)보다 강함
+CG-080,mismatch,sonnet,규칙4: 공식은 미백뿐인데 광고는 자외선 차단을 주장함
+CG-081,mismatch,sonnet,규칙4: 공식은 미백뿐인데 광고는 자외선 차단(SPF30 PA++)을 주장함
+CG-082,confirmed,sonnet,규칙7: 미백·주름개선·자외선 차단 모두 공식에 있고 도움/보호 수준 이내
+CG-083,confirmed,sonnet,규칙2·7: 견주는 다른 제품의 지수·내수성은 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식 범위 내; 애매: 견주어 보시는 분께를 비교/대상자로 볼 여지
+CG-084,unverifiable,sonnet,규칙2: 보습은 미백·주름개선·자외선 차단이 아닌 기능 주장(함께 바르라고 권한 선크림 지수는 이 제품 주장 아님)
+CG-085,unverifiable,sonnet,규칙3: 공식 문서의 자외선 차단 문구에 SFP32 오기가 있음(하루 한 번 바르는 습관이라는 사용 조건도 붙음)
+CG-086,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF36보다 높음
+CG-087,confirmed,sonnet,규칙7: 공식 자외선 차단 기능을 지수 없이 도움 수준으로 말함
+CG-088,mismatch,sonnet,규칙4: 공식은 미백·주름개선뿐인데 광고는 자외선 차단(SPF50+ PA+++)을 주장함
+CG-089,mismatch,sonnet,규칙4: 공식은 모발의 염모뿐인데 광고는 피부 미백을 주장함
+CG-090,unverifiable,sonnet,규칙6: 주어가 제품이 아니라 성분(레티놀)임
+CG-091,unverifiable,sonnet,규칙6: 매일 밤 마사지하듯 펴 바르면이라는 사용 방법·횟수 조건이 효과에 붙음
+CG-092,mismatch,sonnet,규칙4: 공식은 모발의 염색(오렌지)뿐인데 광고는 미백·주름개선을 주장함
+CG-093,confirmed,sonnet,규칙7: SPF30 PA++가 공식과 같음; 야외 운동 전에 챙기면은 사용 상황 설명으로 봄 (애매: 사용 조건으로 볼 여지)
+CG-094,confirmed,sonnet,규칙2·7: 비교 대상 선크림의 SPF50+ PA++는 이 제품 주장이 아님; 이 제품의 자외선 차단 도움은 공식 범위 내; 애매: 비교 후 선택 문구(비교 규칙6 읽기 가능)
+CG-095,mismatch,sonnet,규칙4: 공식은 자외선 차단뿐인데 광고는 피부 미백을 주장함
+CG-096,mismatch,sonnet,규칙5: 광고 SPF50+가 공식 SPF34보다 높음
+CG-097,confirmed,sonnet,규칙7: 주름개선 도움은 공식(미백·주름개선)에 있고 수준 이내; 걱정될 때는 도입 문구로 봄
+CG-098,confirmed,sonnet,규칙2·7: 곁들여 바르라고 권한 자외선 차단제 지수는 이 제품 주장이 아님; 주름개선 도움은 공식과 일치
+CG-099,confirmed,sonnet,규칙7: 주름개선 도움은 공식에 있고 수준 이내; 자기 전 마지막 단계는 사용 시점 설명으로 봄
+CG-100,confirmed,sonnet,"규칙7: SPF35 PA++가 공식(SPF35 PA++, 별도 항목 동일)과 같음"
