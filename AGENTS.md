@@ -107,6 +107,9 @@ C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료�
 2026-10-07 현재 엔진으로 MVP를 고정했습니다. 전체 재현 실행은 `scripts/reproduce.py`이고(로컬 통과), 보안 점검 기록은
 `docs/evidence/SECURITY_AND_REPRODUCE_2026-10-07.md`입니다. Docker 파일은 작성했지만 이 PC의 Docker Desktop이 시작되지 않아
 이미지 빌드·컨테이너 실행은 미검증입니다. Docker 설치 상태(초기화·파일 삭제)는 사용자 확인 없이 건드리지 않습니다.
+2026-10-20 사용자 결정("1번으로 진행해")으로 동결 MVP의 옆 문장 오인 승인 경로를 막았습니다(`docs/evidence/MVP_NEIGHBOUR_GATE_2026-10-20.md`,
+`claim-extract-v1.4`·`claim-verdict-v1.4`). 광고문 판정은 `decide_ad`로만 호출합니다. `확인됨`은 광고문의 다른 문장이 모두 끝까지 읽힌 기능성 문장이거나
+인식된 고지 문구일 때만 내고, 옆 문장이 단어만 보고 `근거 불일치`를 받았어도 막습니다. 발표 시점 엔진은 로컬 태그 `mvp-frozen-2026-10-07`입니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
 (`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.

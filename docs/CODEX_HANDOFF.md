@@ -6,7 +6,16 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)
+## 이번 인계 — 2026-10-20 옆 문장 오인 승인 경로 차단 (Claude Code)
+
+- 사용자: 정리 항목 중 "1번으로 진행해"(동결 MVP의 옆 문장 경로). [기록](evidence/MVP_NEIGHBOUR_GATE_2026-10-20.md).
+- `decide_ad`(`claim-verdict-v1.4`): 다른 문장이 모두 끝까지 읽힌 기능성 문장이거나 고지 문구일 때만 `확인됨`, 아니면 `AD_TEXT_NOT_FULLY_READ`.
+  기능성 문장 끝은 기호 하나까지(`claim-extract-v1.4`). API·`make_receipt.py`·`evaluate_dev_cases.py`가 이것으로 판정한다.
+- 검증: 1227 passed, 재현 실행 모든 관문 통과, 평가세트 사례별 판정이 `71f3b30`과 같음, 만든 광고 230,400개에서 `확인됨`→`검증 불가` 43,344건 외 변화 0.
+  독립 재검토 없음. 발표 시점 엔진은 로컬 태그 `mvp-frozen-2026-10-07`. push 없음.
+- 남은 것: 화장품 브랜치에 같은 수정 반영(병합 결정), Docker 복구·검증, 지침·고시 원문.
+
+## 이전 인계 — 2026-10-07 재현 실행·보안 점검, Docker 미검증 (Claude Code)
 
 - 사용자: "작업 이어서 해줘". 현재 엔진으로 MVP 고정. [기록](evidence/SECURITY_AND_REPRODUCE_2026-10-07.md).
 - `scripts/reproduce.py`: 스냅샷 해시 검증 → pytest → 귀속 평가 6벌·claim-eval-v2·v1 게이트(개발 사례는 게이트 없음). 로컬 통과(1211 passed).
