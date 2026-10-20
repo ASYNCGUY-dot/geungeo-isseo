@@ -79,7 +79,9 @@
       - [x] (10/13~10/16) 독립 재검토 두 번(오인 승인 경로 둘·잘못된 `근거 불일치` 열 종류를 막음)과 `cosmetic-eval-v4`.
             기록 [COSMETICS_SUNSCREEN_SLICE_2026-10-16.md](../../evidence/COSMETICS_SUNSCREEN_SLICE_2026-10-16.md). 최종 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`.
             **v4: 오인 승인 0/71, 잘못 낸 `근거 불일치` 0/40, `근거 불일치` 13/47 → 27/47.** 지수는 끝까지 읽은 문형에서만 비교해 자연 문장의 지수 과장 10건을 보류.
-      - [ ] (10/20 사용자 승인) 지수를 이 제품에 묶는 짧은 구절을 허용 목록으로 읽기. 엔진 `b614ee0`(`cosmetic-claim-v1.16`·`cosmetic-verdict-v1.11`),
+      - [x] (10/20, 철회) 결과: 오인 승인 0/62·잘못 낸 `근거 불일치` 0/39·지수 과장 3/12로 기준 3 실패, `1ae8eee`에서 철회(엔진은 `3b1f21a`와 같음).
+            기록 [COSMETICS_BOUND_INDEX_2026-10-20.md](../../evidence/COSMETICS_BOUND_INDEX_2026-10-20.md).
+      - (10/20 사용자 승인) 지수를 이 제품에 묶는 짧은 구절을 허용 목록으로 읽기. 엔진 `b614ee0`(`cosmetic-claim-v1.16`·`cosmetic-verdict-v1.11`),
             독립 재검토 한 번(P1 0, P2 다섯 종류를 좁혀 반영, 반영분 자체는 재검토 없음), `cosmetic-eval-v5`(배분 `claims-v4`) 문장·라벨 동결 뒤 채점 전.
             채점 전에 고정한 통과 기준(일치 라벨 파일과 엄격 파일 모두):
             1. 오인 승인 0.
