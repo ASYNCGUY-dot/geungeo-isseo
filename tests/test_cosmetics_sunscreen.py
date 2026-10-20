@@ -243,6 +243,33 @@ def test_sunscreen_claims_that_cannot_be_compared_are_unverifiable(
     ("SPF50+ PA++++ 선스틱과 함께 쓰면 좋은 데일리 선크림.", SUN30),
     ("야외 활동에는 PA+++ 이상 제품을 권장합니다.", SUN30),
     ("SPF50+ PA++++ 선크림을 덧바르면 자외선 차단에 도움이 됩니다.", SUN30),
+    # An index named after a comparison, a need or another product, with no "이 제품" bound to it.
+    ("SPF50+ 선크림이 부담스러운 날엔 이 제품을 발라 주세요.", SUN30),
+    ("SPF50+ 선크림은 무겁다면 가벼운 이 제품을 써 보세요.", SUN30),
+    ("SPF50+ 제품으로 바꾸기 전에 이 제품을 써 보세요.", SUN30),
+    ("SPF50+ 선크림 위에 덧바르는 쿠션입니다.", SUN30),
+    ("아침에는 SPF50+ 선크림으로 마무리하세요.", WHITENING),
+    ("이 제품을 바른 뒤 SPF50+ 제품을 덧발라 주세요.", WHITENING),
+    ("이 제품은 SPF50+보다 가벼운 사용감입니다.", SUN30),
+    # A condition, a concession, another subject, a direction or a comparison around a short phrase
+    # that looks like a binding one (found before the independent review).
+    ("SPF50+ 제품이라면 2시간마다 덧발라 주세요.", WHITENING),
+    ("SPF50+ 제품이라도 2시간마다 덧바르는 것이 좋습니다.", SUN30),
+    ("SPF50+ 선크림이라 답답했다면 이 제품을 써 보세요.", WHITENING),
+    ("친구가 쓰던 건 SPF50+ 제품이에요.", WHITENING),
+    ("이 제품은 SPF50+로 넘어가기 전 단계에 쓰기 좋습니다.", SUN30),
+    ("이 제품은 SPF50+의 무거움 없이 가볍게 발립니다.", SUN30),
+    ("SPF50+ 표기의 이 제품보다 가벼운 쿠션입니다.", SUN30),
+    ("SPF50+ 표기의 이 제품과 함께 쓰기 좋은 쿠션입니다.", SUN30),
+    ("SPF50+ 표기의 이 제품이랑 같이 쓰는 쿠션입니다.", SUN30),
+    ("이 제품은 SPF50+ 선크림 전용 클렌저입니다.", SUN30),
+    ("이 제품은 SPF50+ 선크림과 함께 쓰는 프라이머입니다.", WHITENING),
+    ("SPF50+ 선크림이에요? 아니요, 이 제품은 수분크림입니다.", WHITENING),
+    ("SPF50+ 선크림이에요, 이 제품은 아니고요.", WHITENING),
+    # An index word outside the bound phrase may be another thing's (found before the review).
+    ("자외선 차단에 도움을 주는 SPF50+ 제품이니 내수성 파우치에 담아 가세요.", SUN50),
+    ("SPF50+ 표기의 이 제품을 내수성 좋은 파우치에 담아 드립니다.", SUN50),
+    ("이 제품은 SPF30 수준으로, PA++++ 선스틱과 함께 쓰면 좋아요.", SUN30),
     # The volume, the shade number or a gift after the index.
     ("데일리 선크림 SPF30 50ml.", SUN30),
     ("SPF30 24시간 촉촉한 선크림.", SUN30),
@@ -283,6 +310,67 @@ def test_sunscreen_claims_that_cannot_be_compared_are_unverifiable(
 def test_a_sunscreen_word_without_a_claim_does_not_condemn(ad: str, document: str) -> None:
     decisions = _decide_all(ad, _product(document))
     assert all(decision.verdict is Verdict.UNVERIFIABLE for decision in decisions)
+
+
+EXCEEDS = R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL
+
+
+@pytest.mark.parametrize(("ad", "document", "reason"), [
+    # An index bound to this product by a short phrase is compared in a sentence that was not read
+    # completely: "INDEX 표기의 이 제품이", "이 제품은 INDEX 수준으로", "자외선 차단에 도움을 주는
+    # INDEX 제품입니다".
+    ("하루 종일 야외 일정이 잡힌 날에는 SPF50+ PA++++ 표기의 이 제품이 자외선 차단에 도움을 줄 수 있습니다.", SUN30, EXCEEDS),
+    ("해가 쨍한 오후에 SPF50+ PA++ 라벨의 이 제품을 바르면 자외선 차단에 도움을 줄 수 있습니다.", SUN30, EXCEEDS),
+    ("야구장에서도 SPF50+ PA+++ 표시의 이 제품은 자외선으로부터 피부를 보호하는 데 도움을 줄 수 있습니다.", SUN30, EXCEEDS),
+    ("실내외를 오가는 날에는 SPF50+ PA+ 사양의 이 제품이 자외선 차단에 도움을 줍니다.", SUN30_NO_GRADE, EXCEEDS),
+    ("땀이 나는 날에도 이 제품은 SPF50+ PA++++ 지속내수성으로 자외선 차단에 도움을 줄 수 있습니다.", SUN50, EXCEEDS),
+    ("이 제품은 SPF50+ PA++ 수준으로 나들이의 자외선 차단에 도움을 줍니다.", SUN30, EXCEEDS),
+    ("자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이니 캠핑에 챙겨 보세요.", SUN30, EXCEEDS),
+    ("자외선 차단에 도움을 줄 수 있는 SPF50+ 제품이라서 한여름에도 든든합니다.", SUN30, EXCEEDS),
+    ("이 제품은 SPF50+입니다, 가볍게 발라 보세요.", SUN30, EXCEEDS),
+    ("이 제품은 SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", SUN30, EXCEEDS),
+    ("본 제품은 SPF50+ 선크림이에요, 가볍게 발라 보세요.", SUN30, EXCEEDS),
+    # An index at the very start of the sentence leaves no room for another subject.
+    ("자외선 차단 지수 SPF30, PA++ 제품입니다.", SUN30_NO_GRADE, EXCEEDS),
+    ("SPF50+ PA++++ 선크림입니다, 가볍게 발라 보세요.", SUN30, EXCEEDS),
+    # … and on a product reported without sun protection the bound index claims the function.
+    ("자외선 차단이 필요한 순간, SPF35 PA+++ 지수의 이 제품이 도움을 줄 수 있습니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    ("본 제품은 SPF35 PA+++ 수준으로 데일리용에 알맞습니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
+    # The same index bound to this product is not confirmed in a sentence not read completely; a
+    # lower one is held; an index word outside the bound phrase leaves the sentence unbound.
+    ("하루 종일 야외에서도 SPF50+ PA++++ 표기의 이 제품이 자외선 차단에 도움을 줄 수 있습니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
+    ("하루 종일 야외에서도 SPF30 PA++ 표기의 이 제품이 자외선 차단에 도움을 줄 수 있습니다.", SUN50, R.SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL),
+    ("SPF30 제품보다 강한 SPF50+ 표기의 이 제품이 자외선 차단에 도움을 줍니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF30 표기의 이 제품은 SPF50+ 선크림보다 가볍습니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF50+ PA++++ 표기의 이 제품이 자외선 차단에 도움을 줍니다, SPF50+ PA++++ 표기의 이 제품이니까요.", SUN30, EXCEEDS),
+    # A space inside the bound index leaves it unclear, as in the forms.
+    ("하루 종일 야외에서도 SPF50+ PA++++ 지속 내수성 표기의 이 제품이 자외선 차단에 도움을 줍니다.", SUN50, R.SUNSCREEN_INDEX_UNCLEAR),
+    # Without "이/본/해당", or the official sentence describing the product before a copula, the
+    # product named after the index may be another one ("친구가 쓰던 건 SPF50+ 제품이에요").
+    ("가볍게 발리는 SPF50+ 선크림으로 하루를 시작하세요.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("가볍게 발리는 데일리 SPF50+ 선크림입니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF50+ 제품이라서 한여름에도 든든합니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF50+ PA++++ 지속내수성 기능성 화장품으로, 수영장에서도 자외선 차단에 도움을 줄 수 있습니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
+])
+def test_an_index_bound_to_this_product_is_compared(ad: str, document: str, reason: CosmeticVerdictReason) -> None:
+    decision = _decide(ad, document)
+    mismatches = {EXCEEDS, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY}
+    assert decision.reason is reason
+    assert decision.verdict is (Verdict.MISMATCH if reason in mismatches else Verdict.UNVERIFIABLE)
+
+
+def test_a_bound_index_respects_the_record() -> None:
+    ad = "하루 종일 야외 일정이 잡힌 날에는 SPF50+ PA++++ 표기의 이 제품이 자외선 차단에 도움을 줄 수 있습니다."
+    # The record's own items disagree with its sentence, or name sun protection beside a sentence without it.
+    held = _decide(ad, f"{PROTECTS}(SPF47, PA+++)", spf="40", pa="3")
+    assert held.verdict is Verdict.MISMATCH and held.reason is EXCEEDS
+    between = _decide("SPF45 표기의 이 제품이 자외선 차단에 도움을 줍니다.", f"{PROTECTS}(SPF47, PA+++)", spf="40", pa="3")
+    assert between.verdict is Verdict.UNVERIFIABLE and between.reason is R.OFFICIAL_SUNSCREEN_INDEX_CONFLICTING
+    named = _decide(ad, WHITENING, item_name="합성 마일드 선크림")
+    assert named.verdict is Verdict.UNVERIFIABLE and named.reason is R.OFFICIAL_SUNSCREEN_RECORD_CONFLICTING
+    # A bound index before a denial is no claim.
+    denied = _decide("SPF50+ PA++++ 표기의 이 제품이 그런 제품은 아닙니다.", SUN30)
+    assert denied.verdict is Verdict.UNVERIFIABLE
 
 
 def test_the_separate_index_items_of_the_record_must_agree_with_the_sentence() -> None:
