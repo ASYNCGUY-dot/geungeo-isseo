@@ -270,6 +270,30 @@ def test_sunscreen_claims_that_cannot_be_compared_are_unverifiable(
     ("자외선 차단에 도움을 주는 SPF50+ 제품이니 내수성 파우치에 담아 가세요.", SUN50),
     ("SPF50+ 표기의 이 제품을 내수성 좋은 파우치에 담아 드립니다.", SUN50),
     ("이 제품은 SPF30 수준으로, PA++++ 선스틱과 함께 쓰면 좋아요.", SUN30),
+    # The third independent review (9f54344): another thing's index read as this product's.
+    ("이 제품은 SPF50+ PA++++ 수준의 제품보다 가볍습니다.", SUN30),
+    ("이 제품은 SPF50+ PA++++ 수준의 제품보다 가볍습니다.", WHITENING),
+    ("이 제품은 SPF50+ PA++++ 등급의 다른 선크림과 비교해 보세요.", SUN30),
+    ("이 제품은 SPF50+ PA++++ 등급의 다른 선크림과 비교해 보세요.", WHITENING),
+    ("이 제품은 SPF50+ PA++++ 표기의 선크림 위에 덧바르는 톤업 베이스입니다.", SUN30),
+    ("이 제품은 SPF50+ PA++++ 표기의 선크림 위에 덧바르는 톤업 베이스입니다.", WHITENING),
+    ("이 제품은 SPF50+ PA++++ 수준의 무거운 선크림 대신 쓰기 좋은 수분 크림입니다.", SUN30),
+    ("이 제품은 SPF50+ PA++++ 수준의 무거운 선크림 대신 쓰기 좋은 수분 크림입니다.", WHITENING),
+    ("SPF50+ PA++++ 선크림입니다, 라고 친구가 말했어요.", SUN30),
+    ("SPF50+ PA++++ 선크림입니다, 라고 친구가 말했어요.", WHITENING),
+    ("SPF50+ PA++++ 선크림입니다만 이건 언니 거예요.", SUN30),
+    ("SPF50+ PA++++ 선크림입니다만 이건 언니 거예요.", WHITENING),
+    ("구매하시면 SPF50+ PA++++ 표기의 이 제품을 사은품으로 드립니다.", SUN30),
+    ("구매하시면 SPF50+ PA++++ 표기의 이 제품을 사은품으로 드립니다.", WHITENING),
+    ("세트 구성품 중 해당 제품은 SPF50+ PA++++ 선크림입니다.", SUN30),
+    ("세트 구성품 중 해당 제품은 SPF50+ PA++++ 선크림입니다.", WHITENING),
+    ("1+1 행사 중, 함께 드리는 해당 제품은 SPF50+ PA++++ 선크림입니다.", SUN30),
+    ("1+1 행사 중, 함께 드리는 해당 제품은 SPF50+ PA++++ 선크림입니다.", WHITENING),
+    ("'이 제품은 SPF50+ PA++++ 선크림입니다'라는 광고는 과장입니다.", SUN30),
+    ("'이 제품은 SPF50+ PA++++ 선크림입니다'라는 광고는 과장입니다.", WHITENING),
+    ("외출 전 꼭 필요한 건 자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이에요.", SUN30),
+    ("이 크림 위에는 자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이니 함께 바르세요.", SUN30),
+    ("친구가 추천한 건 자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이라서 따로 샀어요.", SUN30),
     # The volume, the shade number or a gift after the index.
     ("데일리 선크림 SPF30 50ml.", SUN30),
     ("SPF30 24시간 촉촉한 선크림.", SUN30),
@@ -327,12 +351,12 @@ EXCEEDS = R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL
     ("이 제품은 SPF50+ PA++ 수준으로 나들이의 자외선 차단에 도움을 줍니다.", SUN30, EXCEEDS),
     ("자외선 차단에 도움을 주는 SPF50+ PA++++ 제품이니 캠핑에 챙겨 보세요.", SUN30, EXCEEDS),
     ("자외선 차단에 도움을 줄 수 있는 SPF50+ 제품이라서 한여름에도 든든합니다.", SUN30, EXCEEDS),
-    ("이 제품은 SPF50+입니다, 가볍게 발라 보세요.", SUN30, EXCEEDS),
+    ("자외선 차단에 도움을 주는 SPF50+ 제품입니다.", SUN30, EXCEEDS),
+    # A copula binds only where it ends the sentence.
     ("이 제품은 SPF50+ PA++++ 자외선 차단 기능성 화장품입니다.", SUN30, EXCEEDS),
-    ("본 제품은 SPF50+ 선크림이에요, 가볍게 발라 보세요.", SUN30, EXCEEDS),
-    # An index at the very start of the sentence leaves no room for another subject.
+    ("본 제품은 SPF50+ PA++++ 등급이에요.", SUN30, EXCEEDS),
+    # An index at the very start of a sentence that it ends leaves no room for another subject.
     ("자외선 차단 지수 SPF30, PA++ 제품입니다.", SUN30_NO_GRADE, EXCEEDS),
-    ("SPF50+ PA++++ 선크림입니다, 가볍게 발라 보세요.", SUN30, EXCEEDS),
     # … and on a product reported without sun protection the bound index claims the function.
     ("자외선 차단이 필요한 순간, SPF35 PA+++ 지수의 이 제품이 도움을 줄 수 있습니다.", WHITENING, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
     ("본 제품은 SPF35 PA+++ 수준으로 데일리용에 알맞습니다.", WRINKLE, R.FUNCTION_NOT_IN_OFFICIAL_EFFICACY),
@@ -350,6 +374,9 @@ EXCEEDS = R.SUNSCREEN_INDEX_EXCEEDS_OFFICIAL
     ("가볍게 발리는 SPF50+ 선크림으로 하루를 시작하세요.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
     ("가볍게 발리는 데일리 SPF50+ 선크림입니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
     ("SPF50+ 제품이라서 한여름에도 든든합니다.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("이 제품은 SPF50+입니다, 가볍게 발라 보세요.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("본 제품은 SPF50+ 선크림이에요, 가볍게 발라 보세요.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
+    ("SPF50+ PA++++ 선크림입니다, 가볍게 발라 보세요.", SUN30, R.CLAIM_SCOPE_UNRESOLVED),
     ("SPF50+ PA++++ 지속내수성 기능성 화장품으로, 수영장에서도 자외선 차단에 도움을 줄 수 있습니다.", SUN50, R.CLAIM_SCOPE_UNRESOLVED),
 ])
 def test_an_index_bound_to_this_product_is_compared(ad: str, document: str, reason: CosmeticVerdictReason) -> None:

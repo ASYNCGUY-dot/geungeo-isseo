@@ -53,7 +53,7 @@ from claimledger.cosmetics_official import (
 from claimledger.domain import Verdict
 from claimledger.sources.functional_cosmetics import FunctionalCosmetic
 
-COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.10"
+COSMETIC_VERDICT_VERSION = "cosmetic-verdict-v1.11"
 JUDGED_FUNCTIONS = frozenset({CosmeticFunction.WHITENING, CosmeticFunction.WRINKLE, CosmeticFunction.SUNSCREEN})
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 _WATER_RANK = {"": 0, "내수성": 1, "지속내수성": 2}
@@ -112,8 +112,8 @@ class CosmeticDecision(BaseModel):
     reason: CosmeticVerdictReason
     official_sentences: tuple[OfficialSentence, ...] = ()
     efficacy_version: Literal["cosmetic-efficacy-v1.3"] = COSMETIC_EFFICACY_VERSION
-    extraction_version: Literal["cosmetic-claim-v1.15"] = COSMETIC_CLAIM_VERSION
-    verdict_version: Literal["cosmetic-verdict-v1.10"] = COSMETIC_VERDICT_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.16"] = COSMETIC_CLAIM_VERSION
+    verdict_version: Literal["cosmetic-verdict-v1.11"] = COSMETIC_VERDICT_VERSION
 
 
 def _decision(
