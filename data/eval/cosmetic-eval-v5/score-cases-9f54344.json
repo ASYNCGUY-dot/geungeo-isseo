@@ -1,0 +1,767 @@
+{
+  "case_count": 75,
+  "judged_case_count": 75,
+  "exact_agreement_count": 47,
+  "false_clearance_count": 0,
+  "false_clearance_rate": 0.0,
+  "confirmed_recall": 0.0,
+  "coverage": 0.28,
+  "claim_extraction_error_count": 0,
+  "rule_versions": [
+    "cosmetic-claim-v1.15",
+    "cosmetic-efficacy-v1.3",
+    "cosmetic-verdict-v1.10"
+  ],
+  "results": [
+    {
+      "case_id": "CG-001",
+      "source": "reviewed",
+      "record_id": "201701299",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-002",
+      "source": "reviewed",
+      "record_id": "201304797",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_TEMPLATE_REMNANT",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-004",
+      "source": "reported",
+      "record_id": "2014001644",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-006",
+      "source": "reviewed",
+      "record_id": "202203076",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-008",
+      "source": "reported",
+      "record_id": "2026011264",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-009",
+      "source": "reported",
+      "record_id": "2025017447",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-010",
+      "source": "reported",
+      "record_id": "2018019655",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-012",
+      "source": "reviewed",
+      "record_id": "201804957",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-014",
+      "source": "reported",
+      "record_id": "2017006800",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-015",
+      "source": "reported",
+      "record_id": "2022007974",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-016",
+      "source": "reviewed",
+      "record_id": "201702744",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-017",
+      "source": "reviewed",
+      "record_id": "201402258",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-018",
+      "source": "reviewed",
+      "record_id": "202204109",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_UNRECOGNIZED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-019",
+      "source": "reported",
+      "record_id": "2019018540",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-020",
+      "source": "reviewed",
+      "record_id": "201508524",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-021",
+      "source": "reviewed",
+      "record_id": "201300521",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-022",
+      "source": "reported",
+      "record_id": "2013006369",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_MISSING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-023",
+      "source": "reviewed",
+      "record_id": "201308941",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-024",
+      "source": "reported",
+      "record_id": "2024054655",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "MEDICAL_CLAIM_BEYOND_COSMETIC_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-025",
+      "source": "reviewed",
+      "record_id": "202300441",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "SUNSCREEN_INDEX_DIFFERS_FROM_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-026",
+      "source": "reported",
+      "record_id": "2014007903",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-027",
+      "source": "reviewed",
+      "record_id": "202501278",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-028",
+      "source": "reported",
+      "record_id": "2024009235",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_OUTSIDE_RULE_SCOPE",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-029",
+      "source": "reported",
+      "record_id": "2018001915",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "SUNSCREEN_INDEX_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-032",
+      "source": "reported",
+      "record_id": "2022019990",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-033",
+      "source": "reported",
+      "record_id": "2017011967",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-034",
+      "source": "reported",
+      "record_id": "2013010560",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-035",
+      "source": "reviewed",
+      "record_id": "201500348",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-037",
+      "source": "reported",
+      "record_id": "2025032616",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-038",
+      "source": "reported",
+      "record_id": "2016004315",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-039",
+      "source": "reviewed",
+      "record_id": "201907739",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-040",
+      "source": "reported",
+      "record_id": "2016015873",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_CONFLICTING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-041",
+      "source": "reported",
+      "record_id": "2013007818",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-042",
+      "source": "reported",
+      "record_id": "2023033633",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-043",
+      "source": "reported",
+      "record_id": "2021017491",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-044",
+      "source": "reviewed",
+      "record_id": "201209274",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-045",
+      "source": "reported",
+      "record_id": "2016001340",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-046",
+      "source": "reviewed",
+      "record_id": "202300466",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-048",
+      "source": "reported",
+      "record_id": "2023043707",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-049",
+      "source": "reported",
+      "record_id": "2016006689",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "SUNSCREEN_INDEX_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-050",
+      "source": "reported",
+      "record_id": "2020008372",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_TEMPLATE_REMNANT",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-051",
+      "source": "reported",
+      "record_id": "2016015514",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_TEMPLATE_REMNANT",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-052",
+      "source": "reviewed",
+      "record_id": "202005303",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-054",
+      "source": "reported",
+      "record_id": "2014004307",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-055",
+      "source": "reported",
+      "record_id": "2013001282",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_MISSING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-058",
+      "source": "reviewed",
+      "record_id": "202500892",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-060",
+      "source": "reviewed",
+      "record_id": "202502666",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-061",
+      "source": "reviewed",
+      "record_id": "202600137",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-063",
+      "source": "reported",
+      "record_id": "2024025024",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_CONFLICTING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-064",
+      "source": "reported",
+      "record_id": "2025027117",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-065",
+      "source": "reported",
+      "record_id": "2018001349",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-067",
+      "source": "reported",
+      "record_id": "2013016014",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_UNRECOGNIZED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-070",
+      "source": "reviewed",
+      "record_id": "201304687",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_MISSING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-071",
+      "source": "reported",
+      "record_id": "2021023670",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_SUNSCREEN_INDEX_CONFLICTING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-073",
+      "source": "reviewed",
+      "record_id": "201211507",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_MISSING",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-075",
+      "source": "reviewed",
+      "record_id": "201704809",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-076",
+      "source": "reviewed",
+      "record_id": "202107623",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-077",
+      "source": "reviewed",
+      "record_id": "201208915",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-078",
+      "source": "reported",
+      "record_id": "2020026516",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-079",
+      "source": "reviewed",
+      "record_id": "201805095",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_STRENGTH_UNCLEAR",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-080",
+      "source": "reported",
+      "record_id": "2015000400",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-081",
+      "source": "reported",
+      "record_id": "2019017714",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-082",
+      "source": "reported",
+      "record_id": "2017008648",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-084",
+      "source": "reviewed",
+      "record_id": "202100339",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-085",
+      "source": "reviewed",
+      "record_id": "201503013",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_UNRECOGNIZED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-086",
+      "source": "reviewed",
+      "record_id": "201301393",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "SUNSCREEN_INDEX_EXCEEDS_OFFICIAL",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-088",
+      "source": "reported",
+      "record_id": "2015004190",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-089",
+      "source": "reported",
+      "record_id": "2023042444",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-090",
+      "source": "reviewed",
+      "record_id": "201206560",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-091",
+      "source": "reported",
+      "record_id": "2024024601",
+      "expected_verdict": "unverifiable",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-092",
+      "source": "reported",
+      "record_id": "2025088435",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "OFFICIAL_EFFICACY_UNRECOGNIZED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-095",
+      "source": "reviewed",
+      "record_id": "201800853",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "mismatch",
+      "reason_code": "FUNCTION_NOT_IN_OFFICIAL_EFFICACY",
+      "claim_count": 1,
+      "outcome": "agree"
+    },
+    {
+      "case_id": "CG-096",
+      "source": "reviewed",
+      "record_id": "201302030",
+      "expected_verdict": "mismatch",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-098",
+      "source": "reviewed",
+      "record_id": "202106047",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    },
+    {
+      "case_id": "CG-099",
+      "source": "reported",
+      "record_id": "2026001837",
+      "expected_verdict": "confirmed",
+      "actual_verdict": "unverifiable",
+      "reason_code": "CLAIM_SCOPE_UNRESOLVED",
+      "claim_count": 1,
+      "outcome": "disagree"
+    }
+  ]
+}
