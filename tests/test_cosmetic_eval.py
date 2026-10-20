@@ -173,6 +173,84 @@ def test_the_labeling_sheet_of_the_third_allocation_explains_the_index(tmp_path:
     assert "별도 SPF 항목" in sheet and SUN in sheet
     for hidden in ("sun_only", "index_higher", "sun_absent", "claim_type", "stratum"):
         assert hidden not in sheet
+    assert "이 제품의 자외선 차단 주장이 아닙니다" not in sheet
+
+
+PROBES = {"sun_advice": "advice", "index_comparison": "comparison", "index_other_product": "other_product", "index_volume": "volume"}
+
+
+def test_the_fourth_allocation_probes_indexes_that_are_not_the_products(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path, "--allocation", "claims-v4")
+    allocation = build_cosmetic_eval.ALLOCATIONS["claims-v4"]
+    items = manifest["items"]
+
+    assert manifest["allocation_id"] == "claims-v4" and manifest["allocation"] == allocation
+    assert len(items) == 100 == sum(sum(counts.values()) for counts in allocation.values())
+    counts: dict[tuple[str, str], int] = {}
+    for item in items:
+        counts[(item["stratum"], item["claim_type"])] = counts.get((item["stratum"], item["claim_type"]), 0) + 1
+    assert counts == {(stratum, kind): count for stratum, kinds in allocation.items() for kind, count in kinds.items()}
+    # The index cases of the third allocation stay, with more higher indexes than before.
+    kinds = {kind for kinds in allocation.values() for kind in kinds}
+    assert {"index_same", "index_higher", "index_lower", "sun_absent", *PROBES} <= kinds
+    assert sum(kinds.get("index_higher", 0) for kinds in allocation.values()) >= 10
+
+    with_sun = {"sun_only", "sun_with_judged"}
+    own = {"whitening_only": ["whitening"], "wrinkle_only": ["wrinkle"], "both": ["whitening", "wrinkle"], "sun_only": ["sunscreen"]}
+    for item in items:
+        kind, stratum = item["claim_type"], item["stratum"]
+        assert item.get("index_role") == PROBES.get(kind)
+        if kind not in PROBES:
+            continue
+        assert item["style"] == "support" and item["index"].startswith("SPF")
+        if kind == "sun_advice":
+            # Advice to use a sunscreen beside a product reported without one.
+            assert stratum not in with_sun and item["index"] in build_cosmetic_eval.SUN_ABSENT_INDEXES
+            if stratum == "other_function":
+                assert item["topic"] == [] and item["topic_text"] in build_cosmetic_eval.OUT_OF_SCOPE_TOPICS[1:]
+            else:
+                assert item["topic"] == own[stratum]
+        elif kind == "index_other_product":
+            assert item["topic"] == own.get(stratum, ["sunscreen"])
+            if stratum not in with_sun:
+                assert item["index"] in build_cosmetic_eval.SUN_ABSENT_INDEXES
+        else:
+            assert stratum in with_sun and item["topic"] == ["sunscreen"]
+    # Every synthetic sunscreen row says SPF50+ PA++++: another product's index is a higher one, so a
+    # reading that took it for the product's own would give a mismatch; the volume follows the same index.
+    stated = {kind: {item["index"] for item in items if item["claim_type"] == kind and item["stratum"] in with_sun} for kind in PROBES}
+    assert stated == {
+        "sun_advice": set(), "index_comparison": {"SPF50+ PA++++ 지속내수성"},
+        "index_other_product": {"SPF50+ PA++++ 지속내수성"}, "index_volume": {"SPF50+ PA++++"},
+    }
+
+    sheet = (tmp_path / "generation.md").read_text(encoding="utf-8")
+    assert "함께 바르라고 권하는 자외선 차단제의 지수로만" in sheet and "비교하는 다른 제품의 지수로만" in sheet
+    assert "먼저 바르거나 덧바르는 다른 제품의 지수로만" in sheet and "용량이나 호수" in sheet
+    assert "'다른 제품의 지수'" in sheet
+    for hidden in ("sun_advice", "index_comparison", "index_other_product", "index_volume", "index_role", "stratum", WHITENING):
+        assert hidden not in sheet
+
+
+def test_the_fourth_allocation_leaves_the_earlier_sheets_as_they_were(tmp_path: Path) -> None:
+    _sample(tmp_path, "--allocation", "claims-v3")
+    sheet = (tmp_path / "generation.md").read_text(encoding="utf-8")
+    manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
+    assert "'다른 제품의 지수'" not in sheet and all("index_role" not in item for item in manifest["items"])
+
+
+def test_the_labeling_sheet_of_the_fourth_allocation_says_whose_index_it_is(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path, "--allocation", "claims-v4")
+    assert build_cosmetic_eval.main([
+        "sheet", "--manifest", str(tmp_path / "manifest.json"), "--ads", str(_ads(tmp_path, manifest)),
+        "--export-dir", str(tmp_path / "export"), "--labeling-sheet", str(tmp_path / "labeling.md"),
+        "--labels-template", str(tmp_path / "labels.csv"),
+    ]) == 0
+    sheet = (tmp_path / "labeling.md").read_text(encoding="utf-8")
+    assert "공식 지수보다 높" in sheet and "별도 SPF 항목" in sheet
+    assert "이 제품의 자외선 차단 주장이 아닙니다" in sheet and "용량·호수" in sheet
+    for hidden in ("sun_advice", "index_comparison", "index_role", "claim_type", "stratum"):
+        assert hidden not in sheet
 
 
 def test_topics_follow_the_claim_type(tmp_path: Path) -> None:

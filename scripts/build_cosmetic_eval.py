@@ -8,7 +8,10 @@ Four steps keep the sentence writer, the labelers and the engine apart:
   the topic and the wording style. The second allocation adds two claim types that should not be
   mismatches: the other function named beside the claim, and the cover of make-up. The third judges
   sun protection as well: records with a sunscreen index form their own strata, and the sheet tells
-  the writer which index to state (the official one, a higher one, a lower one).
+  the writer which index to state (the official one, a higher one, a lower one). The fourth adds
+  sentences whose index is not the product's own and should not be mismatches: a sunscreen advised
+  beside a product reported without one, the product compared with another, another product used
+  with it, and the volume or shade number right after the product's own index.
 - sheet: the labeling sheet shows each sentence with the record's official efficacy fields as
   published, without stratum or claim type. Product text stays in an ignored path.
 - cases: two label files are merged. Agreed labels form the main case file; the strict file keeps
@@ -95,8 +98,32 @@ ALLOCATIONS: dict[str, dict[str, dict[str, int]]] = {
         "held_unrecognized": {"official": 4},
         "held_conflicting": {"official": 2},
     },
+    # Indexes that are not the product's own ("sun_advice", "index_comparison",
+    # "index_other_product", "index_volume") beside more higher indexes stated for the product.
+    "claims-v4": {
+        "sun_only": {
+            "official": 4, "index_same": 5, "index_higher": 7, "index_lower": 3, "absent": 3, "exaggerated": 2,
+            "index_comparison": 3, "index_other_product": 2, "index_volume": 2,
+        },
+        "sun_with_judged": {
+            "official": 3, "index_same": 3, "index_higher": 5, "exaggerated": 1, "makeup": 1,
+            "index_comparison": 2, "index_volume": 2,
+        },
+        "both": {
+            "official": 4, "exaggerated": 2, "sun_absent": 3, "ingredient": 1, "medical": 1,
+            "sun_advice": 2, "index_other_product": 1,
+        },
+        "whitening_only": {"official": 2, "absent": 2, "sun_absent": 2, "sun_advice": 2, "index_other_product": 1},
+        "wrinkle_only": {"official": 2, "absent": 2, "sun_absent": 2, "sun_advice": 2, "index_other_product": 1},
+        "other_function": {"absent": 3, "sun_absent": 2, "sun_advice": 2},
+        "held_missing": {"official": 4},
+        "held_template": {"official": 3},
+        "held_unrecognized": {"official": 4},
+        "held_conflicting": {"official": 2},
+    },
 }
-SUN_SCHEME = "claims-v3"
+# The allocations that judge sun protection.
+SUN_SCHEMES = frozenset({"claims-v3", "claims-v4"})
 _HELD = {
     EfficacyStatus.MISSING: "held_missing",
     EfficacyStatus.TEMPLATE_REMNANT: "held_template",
@@ -111,6 +138,16 @@ TOPIC_TEXT = {
 SUN_ABSENT_INDEXES = ("SPF50+ PA++++", "SPF50+ PA+++", "SPF35 PA+++", "SPF30 PA++")
 OUT_OF_SCOPE_TOPICS = ("자외선 차단", "피부 보습", "피부 탄력", "모공 관리", "피부결 정돈")
 MAKEUP_TOPIC = "바른 직후의 톤업·커버"
+# Whose index the sentence states, for the cases whose index is not the product's own.
+INDEX_ROLE = {
+    "sun_advice": "advice", "index_comparison": "comparison", "index_other_product": "other_product", "index_volume": "volume",
+}
+INDEX_ROLE_TEXT = {
+    "advice": "'{index}'를 이 제품의 지수가 아니라, 이 제품과 함께 바르라고 권하는 자외선 차단제의 지수로만 넣습니다.",
+    "comparison": "'{index}'를 이 제품의 지수가 아니라, 이 제품과 비교하는 다른 제품의 지수로만 넣습니다.",
+    "other_product": "'{index}'를 이 제품의 지수가 아니라, 이 제품의 앞뒤로 먼저 바르거나 덧바르는 다른 제품의 지수로만 넣습니다.",
+    "volume": "문장에 이 제품의 지수 '{index}'를 그대로 넣고, 바로 뒤에 이 제품의 용량이나 호수(예: 50ml, 21호)를 붙입니다.",
+}
 ASIDE_TEXT = {W: "미백", R: "주름개선"}
 INGREDIENTS = {(W,): "나이아신아마이드", (R,): "아데노신", (W, R): "레티놀"}
 MEDICAL_HINTS = {(W,): "기미·잡티 치료", (R,): "피부 재생", (W, R): "피부 재생·염증 완화"}
@@ -239,6 +276,17 @@ def _sun_claim(
         return {**sun, "index": stated_index(index, claim_type)}
     if claim_type == "sun_absent":
         return {**sun, "index": rng.choice(SUN_ABSENT_INDEXES)}
+    if claim_type in INDEX_ROLE:
+        role = {"index_role": INDEX_ROLE[claim_type]}
+        if claim_type in {"index_comparison", "index_volume"}:
+            # Another product's index is above the record's, so taking it for the product's own
+            # gives a mismatch; the volume follows the record's own index.
+            return {**sun, "index": stated_index(index, "index_same" if claim_type == "index_volume" else "index_higher"), **role}
+        own = {"topic": [function.value for function in judged], "topic_text": TOPIC_TEXT[judged]} if judged else {
+            "topic": [], "topic_text": rng.choice(OUT_OF_SCOPE_TOPICS[1:]),
+        }
+        stated = stated_index(index, "index_higher") if index is not None else rng.choice(SUN_ABSENT_INDEXES)
+        return {**own, **plain, "index": stated, **role}
     if claim_type == "out_of_scope":
         return {"topic": [], "topic_text": rng.choice(OUT_OF_SCOPE_TOPICS[1:]), **plain}
     if claim_type == "makeup":
@@ -362,6 +410,12 @@ def _generation_sheet(eval_id: str, items: list[dict]) -> str:
         "| case_id | 주어 | 주제 | 표현 방식 |",
         "|---|---|---|---|",
     ]
+    if any(item.get("index_role") for item in items):
+        at = next(index for index, line in enumerate(lines) if "'함께 언급'" in line) + 1
+        lines[at:at] = [(
+            "- 표현 방식 칸에 '다른 제품의 지수'가 적힌 사례도 예외로, 지시대로 다른 제품(권하는 자외선 차단제, 비교하는 제품,"
+            " 함께 쓰는 제품)을 문장에 넣습니다. 그 지수가 이 제품의 지수로 읽히지 않게 씁니다."
+        )]
     for item in items:
         style = STYLE_TEXT[item["style"]] + (f" (예: {item['hint']})" if item["hint"] else "")
         if item.get("aside"):
@@ -369,7 +423,11 @@ def _generation_sheet(eval_id: str, items: list[dict]) -> str:
                 f" 함께 언급: '{item['aside']}'이라는 말을 이 제품의 효과가 아니라 함께 쓰는 다른 제품·라인의 이름이나"
                 " 읽는 사람의 고민으로만 넣습니다."
             )
-        if item.get("index"):
+        if item.get("index_role") in {"advice", "comparison", "other_product"}:
+            style += " 다른 제품의 지수: " + INDEX_ROLE_TEXT[item["index_role"]].format(index=item["index"])
+        elif item.get("index_role"):
+            style += " 지수: " + INDEX_ROLE_TEXT[item["index_role"]].format(index=item["index"])
+        elif item.get("index"):
             style += f" 지수: 문장에 '{item['index']}'를 그대로 넣습니다."
         lines.append(f"| {item['case_id']} | {item['subject']} | {item['topic_text']} | {style} |")
     return "\n".join(lines) + "\n"
@@ -416,7 +474,14 @@ def _labeling_sheet(
     eval_id: str, items: list[dict], ads: dict[str, str], records: dict[str, dict[str, FunctionalCosmetic]],
     sun: bool = False,
 ) -> str:
-    lines = [f"# {eval_id} 기대 판정 라벨지", "", *_SUN_RULES] if sun else [
+    rules = list(_SUN_RULES)
+    if any(item.get("index_role") for item in items):
+        at = rules.index("   자외선 차단은 '자외선으로부터 피부를 보호한다'는 말이나 SPF·PA 지수를 말하면 주장한 것입니다.") + 1
+        rules[at:at] = [
+            "   다만 이 제품이 아닌 다른 제품의 지수(함께 바르라고 권하는 자외선 차단제, 비교하는 제품, 먼저 바르거나 덧바르는 제품의 지수)는",
+            "   이 제품의 자외선 차단 주장이 아닙니다. 지수 뒤에 붙은 용량·호수도 지수가 아닙니다.",
+        ]
+    lines = [f"# {eval_id} 기대 판정 라벨지", "", *rules] if sun else [
         f"# {eval_id} 기대 판정 라벨지",
         "",
         "각 사례의 광고 문장 하나를, 그 제품의 식약처 기능성화장품 공식 효능효과만 보고 판정합니다.",
@@ -508,7 +573,7 @@ def _sample(args: argparse.Namespace) -> int:
     earlier = [json.loads(path.read_text(encoding="utf-8")) for path in args.exclude_manifest]
     excluded = frozenset((item["source"], item["record_id"]) for manifest in earlier for item in manifest["items"])
     items, frame = sample_items(
-        records, args.seed, args.case_prefix, excluded, ALLOCATIONS[args.allocation], sun=args.allocation == SUN_SCHEME,
+        records, args.seed, args.case_prefix, excluded, ALLOCATIONS[args.allocation], sun=args.allocation in SUN_SCHEMES,
     )
     sources = {}
     for key, source in SOURCES.items():
@@ -544,7 +609,7 @@ def _sheet(args: argparse.Namespace) -> int:
     args.labeling_sheet.parent.mkdir(parents=True, exist_ok=True)
     args.labeling_sheet.write_text(
         _labeling_sheet(
-            manifest["eval_id"], items, ads, _load(args.export_dir), sun=manifest.get("allocation_id") == SUN_SCHEME,
+            manifest["eval_id"], items, ads, _load(args.export_dir), sun=manifest.get("allocation_id") in SUN_SCHEMES,
         ),
         encoding="utf-8", newline="\n",
     )
