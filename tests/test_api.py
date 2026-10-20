@@ -121,12 +121,27 @@ def test_full_flow_produces_receipt(client: TestClient) -> None:
 
     assert evaluated.status_code == 200
     receipt = evaluated.json()
-    assert [claim["verdict"] for claim in receipt["claims"]] == ["confirmed", "mismatch"]
-    assert [claim["verdict_label"] for claim in receipt["claims"]] == ["확인됨", "근거 불일치"]
+    # "혈액순환이 좋아집니다!" is judged on a keyword and not read in full: the first claim is held.
+    assert [claim["verdict"] for claim in receipt["claims"]] == ["unverifiable", "mismatch"]
+    assert [claim["verdict_label"] for claim in receipt["claims"]] == ["검증 불가", "근거 불일치"]
+    assert receipt["claims"][0]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
     assert client.get(f"/api/v1/analyses/{analysis_id}/receipt").json() == receipt
     markdown = client.get(f"/api/v1/analyses/{analysis_id}/receipt", params={"format": "markdown"})
     assert markdown.headers["content-type"].startswith("text/markdown")
     assert "# 근거영수증" in markdown.text
+
+
+def test_a_fully_read_advertisement_is_confirmed_through_the_api(client: TestClient) -> None:
+    text = "혈중 중성지질 개선에 도움을 줄 수 있어요.\n본 제품은 의약품이 아닙니다."
+    analysis_id = client.post("/api/v1/analyses", json={"ad_text": text}).json()["analysis_id"]
+    client.put(f"/api/v1/analyses/{analysis_id}/product-confirmation", json={"report_no": "R100"})
+    client.put(f"/api/v1/analyses/{analysis_id}/claims/confirmation", json={"claim_ids": ["C1"]})
+
+    receipt = client.post(f"/api/v1/analyses/{analysis_id}/evaluate").json()
+
+    assert [(claim["verdict"], claim["reason_code"]) for claim in receipt["claims"]] == [
+        ("confirmed", "MATCHES_OFFICIAL_FUNCTION")
+    ]
 
 
 def test_unconfirmed_claims_are_reported_as_unverifiable(client: TestClient) -> None:

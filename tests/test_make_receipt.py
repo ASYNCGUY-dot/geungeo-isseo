@@ -32,9 +32,9 @@ def _write_export(path: Path) -> Path:
     return path
 
 
-def _base_args(tmp_path: Path) -> list[str]:
+def _base_args(tmp_path: Path, text: str = "눈 건강에 도움을 줄 수 있어요.\n시력이 확실하게 좋아집니다!") -> list[str]:
     ad = tmp_path / "ad.txt"
-    ad.write_text("눈 건강에 도움을 줄 수 있어요.\n시력이 확실하게 좋아집니다!", encoding="utf-8")
+    ad.write_text(text, encoding="utf-8")
     return [
         "--source-export",
         str(_write_export(tmp_path / "export.jsonl")),
@@ -57,9 +57,23 @@ def test_confirmed_report_no_writes_json_and_markdown(tmp_path: Path, capsys: py
     assert code == 0
     payload = json.loads((out / "receipt.json").read_text(encoding="utf-8"))
     assert payload["product"]["report_no"] == "200400000000010"
-    assert [claim["verdict"] for claim in payload["claims"]] == ["confirmed", "unverifiable"]
-    assert payload["claims"][1]["reason_code"] == "CLAIM_OUTSIDE_RULE_SCOPE"
+    # The claim the rules cannot read beside it withholds the first sentence's confirmation.
+    assert [claim["reason_code"] for claim in payload["claims"]] == ["AD_TEXT_NOT_FULLY_READ", "CLAIM_OUTSIDE_RULE_SCOPE"]
+    assert [claim["verdict"] for claim in payload["claims"]] == ["unverifiable", "unverifiable"]
     assert "# 근거영수증" in (out / "receipt.md").read_text(encoding="utf-8")
+    assert "검증 불가 2" in capsys.readouterr().out
+
+
+def test_a_fully_read_advertisement_is_confirmed(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    out = tmp_path / "receipt"
+    text = "눈 건강에 도움을 줄 수 있어요.\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다."
+    code = make_receipt.main(
+        _base_args(tmp_path, text) + ["--report-no", "200400000000010", "--confirm-claims", "all", "--output-dir", str(out)]
+    )
+
+    assert code == 0
+    payload = json.loads((out / "receipt.json").read_text(encoding="utf-8"))
+    assert [claim["verdict"] for claim in payload["claims"]] == ["confirmed"]
     assert "확인됨 1" in capsys.readouterr().out
 
 
@@ -105,7 +119,8 @@ def test_only_listed_claim_ids_are_confirmed(tmp_path: Path) -> None:
 
     assert code == 0
     payload = json.loads((out / "receipt.json").read_text(encoding="utf-8"))
-    assert payload["claims"][0]["verdict"] == "confirmed"
+    # An unselected claim is still part of the advertisement and still withholds the confirmation.
+    assert payload["claims"][0]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
     assert payload["claims"][1]["reason_code"] == "CLAIM_UNCONFIRMED"
 
 

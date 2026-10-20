@@ -19,7 +19,7 @@ from claimledger.claims_v1 import confirm_claims, extract_claims
 from claimledger.domain import ConfirmedProduct, ProductCandidate, Verdict
 from claimledger.evaluation import confirmed_recall, false_clearance_rate
 from claimledger.snapshot import SnapshotError, load_c003_snapshot, parse_aware_datetime
-from claimledger.verdict_v1 import decide_claim
+from claimledger.verdict_v1 import decide_ad
 
 
 class DevCase(BaseModel):
@@ -65,7 +65,7 @@ def _evaluate_case(case: DevCase, products: dict[str, ProductCandidate]) -> dict
             raise DevCaseError(f"{case.case_id}: report number {case.report_no} is not in the snapshot")
         product = ConfirmedProduct(product=products[case.report_no], confirmed_by_user=True)
     claims = confirm_claims(extract_claims(case.ad_text), "all")
-    decisions = [decide_claim(claim, product) for claim in claims]
+    decisions = list(decide_ad(case.ad_text, claims, product))
 
     if case.expected_verdict is None:
         outcome = "agree" if not decisions else "unexpected_claim"

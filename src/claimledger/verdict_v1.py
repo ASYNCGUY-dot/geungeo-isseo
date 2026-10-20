@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from enum import StrEnum
 from typing import Literal
 
@@ -9,7 +10,9 @@ from claimledger.claims_v1 import (
     STRENGTH_RANK,
     AdClaim,
     ExpressionStrength,
+    extract_claims,
     supports_confirmation,
+    unread_sentences,
 )
 from claimledger.domain import ConfirmedProduct, Verdict
 from claimledger.errors import IdentityRequiredError
@@ -24,7 +27,7 @@ from claimledger.official_v2 import (
     parse_official_function_v2,
 )
 
-CLAIM_VERDICT_VERSION = "claim-verdict-v1.3"
+CLAIM_VERDICT_VERSION = "claim-verdict-v1.4"
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
 
 
@@ -42,6 +45,7 @@ class VerdictReason(StrEnum):
     EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL = "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
     MATCHES_OFFICIAL_FUNCTION = "MATCHES_OFFICIAL_FUNCTION"
     MATCHES_UNLABELED_OFFICIAL_FUNCTION = "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
+    AD_TEXT_NOT_FULLY_READ = "AD_TEXT_NOT_FULLY_READ"
 
 
 class ClaimDecision(BaseModel):
@@ -51,8 +55,8 @@ class ClaimDecision(BaseModel):
     verdict: Verdict
     reason: VerdictReason
     official_effect: OfficialEffect | None = None
-    rule_version: Literal["claim-verdict-v1.3"] = CLAIM_VERDICT_VERSION
-    extraction_version: Literal["claim-extract-v1.3"] = CLAIM_EXTRACTION_VERSION
+    rule_version: Literal["claim-verdict-v1.4"] = CLAIM_VERDICT_VERSION
+    extraction_version: Literal["claim-extract-v1.4"] = CLAIM_EXTRACTION_VERSION
     official_parser_version: Literal["official-function-v2.11"] = OFFICIAL_FUNCTION_V2_VERSION
 
 
@@ -138,4 +142,29 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
     return _decision(claim, Verdict.CONFIRMED, match_reason, official)
 
 
-__all__ = ["CLAIM_VERDICT_VERSION", "ClaimDecision", "VerdictReason", "decide_claim"]
+def _fully_read(claim: AdClaim) -> bool:
+    return any(supports_confirmation(claim, effect) for effect in claim.effect_candidates)
+
+
+def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | None) -> tuple[ClaimDecision, ...]:
+    """Decide every claim of one advertisement.
+
+    A claim is confirmed only when every other sentence of the advertisement is a fully read support
+    statement or the recognized disclaimer. Anything else beside it may change what it says ("단 2주.",
+    "아래 문구는 사실이 아닙니다.", "하루 3캡슐이면 충분합니다."), and a keyword verdict on that neighbour
+    ("(병원 치료 병행 시)" is flagged for "치료") does not show that it was understood.
+    """
+    unconfirmed = [claim.model_copy(update={"confirmed_by_user": False}) for claim in claims]
+    if unconfirmed != list(extract_claims(text)):
+        raise ValueError("the claims are not the ones extracted from this advertisement text")
+    decisions = tuple(decide_claim(claim, product) for claim in claims)
+    if not unread_sentences(text) and all(_fully_read(claim) for claim in claims):
+        return decisions
+    return tuple(
+        _decision(decision.claim, Verdict.UNVERIFIABLE, VerdictReason.AD_TEXT_NOT_FULLY_READ)
+        if decision.verdict is Verdict.CONFIRMED else decision
+        for decision in decisions
+    )
+
+
+__all__ = ["CLAIM_VERDICT_VERSION", "ClaimDecision", "VerdictReason", "decide_ad", "decide_claim"]

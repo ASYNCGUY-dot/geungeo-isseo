@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.3"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.4"
 
 
 class ExpressionStrength(StrEnum):
@@ -76,13 +76,14 @@ _SENTENCE = re.compile(r".+?(?:[.!?。…]+(?=\s|$)|$)", re.DOTALL)
 # Keyword extraction proposes candidates; only a fully consumed, single support statement
 # may be cleared. Unparsed subjects, modifiers, quantities and conjunctions remain unresolved.
 # The allowlist below (claim-extract-v1.3) adds common wording of the same proposition: noun
-# forms end in "에", verb forms in "데", followed by the support predicate.
+# forms end in "에", verb forms in "데", followed by the support predicate. The sentence may end in
+# one plain mark (claim-extract-v1.4): an ellipsis or a run of marks may trail off into something else.
 _HELP = (
     r"도움(?:을(?:줄수(?:있음|있습니다|있어요)|줌|줍니다)|이(?:될수(?:있음|있습니다|있어요)|됩니다)"
     r"|을줄수있는(?:기능성)?원료(?:입니다|예요|이에요))?"
 )
-_SUPPORT_ENDING = rf"에{_HELP}[.!。]*"
-_VERB_ENDING = rf"데{_HELP}[.!。]*"
+_SUPPORT_ENDING = rf"에{_HELP}[.!。]?"
+_VERB_ENDING = rf"데{_HELP}[.!。]?"
 _EYE_HEALTH = r"눈(?:의)?건강(?:관리)?"
 _MACULAR = (
     r"(?:노화로인해감소될수있는)?황반색소밀도(?:를|의)?유지"
@@ -136,7 +137,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.3"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.4"] = CLAIM_EXTRACTION_VERSION
 
 
 def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
@@ -195,6 +196,28 @@ def _classify(sentence: str) -> tuple[
     return ordered_effects, tuple(dict.fromkeys(effect_cues)), strength, tuple(strength_cues)
 
 
+def _is_claim(effects: tuple[EffectKey, ...], strength: ExpressionStrength | None) -> bool:
+    strong = strength is not None and STRENGTH_RANK[strength] >= STRENGTH_RANK[ExpressionStrength.IMPROVEMENT]
+    return bool(effects) or strong
+
+
+def unread_sentences(text: str) -> tuple[tuple[int, int], ...]:
+    """Spans of the sentences that are neither a claim nor the recognized disclaimer.
+
+    Extraction drops them ("단 2주.", "아래 문구는 사실이 아닙니다."), so a claim beside them was not
+    read with everything the advertisement says about it.
+    """
+    spans = []
+    for start, end in _sentence_spans(text):
+        sentence = text[start:end]
+        if _DISCLAIMER.fullmatch(_compact(sentence)[0]):
+            continue
+        effects, _, strength, _ = _classify(sentence)
+        if not _is_claim(effects, strength):
+            spans.append((start, end))
+    return tuple(spans)
+
+
 def extract_claims(text: str) -> tuple[AdClaim, ...]:
     claims: list[AdClaim] = []
     for start, end in _sentence_spans(text):
@@ -203,10 +226,7 @@ def extract_claims(text: str) -> tuple[AdClaim, ...]:
         if _DISCLAIMER.fullmatch(compact):
             continue
         effects, effect_cues, strength, strength_cues = _classify(sentence)
-        strong = strength is not None and STRENGTH_RANK[strength] >= STRENGTH_RANK[
-            ExpressionStrength.IMPROVEMENT
-        ]
-        if not effects and not strong:
+        if not _is_claim(effects, strength):
             continue
         claims.append(
             AdClaim(
@@ -244,4 +264,5 @@ __all__ = [
     "confirm_claims",
     "extract_claims",
     "supports_confirmation",
+    "unread_sentences",
 ]
