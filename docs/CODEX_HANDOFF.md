@@ -6,7 +6,14 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-20 자외선 차단 지수 묶음 구절 시도와 다섯 번째 동결 평가 (Claude Code, 브랜치 `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-20 건강기능식품 옆 문장 경로 차단 반영 (Claude Code, 브랜치 `cosmetics-data-gate`)
+
+- 사용자: "1번으로 진행해"(동결 MVP의 옆 문장 경로) 뒤 "화장품 브랜치에도 반영해줘". [기록](evidence/MVP_NEIGHBOUR_GATE_2026-10-20.md).
+- 동결 브랜치 `phase-0-c003-data-gate`의 `eac8f59`(`decide_ad`, `claim-extract-v1.4`·`claim-verdict-v1.4`)을 cherry-pick(`40b8e0a`).
+  건강기능식품 파일만 바뀌고 화장품 파일은 그대로. 동결 브랜치 작업 트리는 `.worktrees/mvp-frozen`, 발표 시점은 태그 `mvp-frozen-2026-10-07`.
+- 검증: 전체 2024 passed, Ruff, 재현 실행 통과(평가 결과가 동결 브랜치 수정본과 사례별로 같음), 화장품 v4·v5와 실제 데이터 점검 불변. 독립 재검토 없음. push 없음.
+
+## 이전 인계 — 2026-10-20 자외선 차단 지수 묶음 구절 시도와 다섯 번째 동결 평가 (Claude Code, 브랜치 `cosmetics-data-gate`)
 
 - 사용자: "추천 방안 알려줘" 뒤 "승인"(묶음 구절 허용 목록, 사용 안내·비교 문장을 넣은 v5, 미리 정한 기준을 못 맞추면 철회). [기록](evidence/COSMETICS_BOUND_INDEX_2026-10-20.md).
 - 결과: **규칙 철회.** `cosmetic-eval-v5`(실제 기록 100건, 맹검 AI 라벨 75건 일치)에서 오인 승인 0/62(엄격 0/87), 잘못 낸 `근거 불일치` 0/39(엄격 0/61),
