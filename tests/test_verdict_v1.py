@@ -169,3 +169,52 @@ def test_confirmed_requires_target_attribution_and_official_strength(
         assert EFFECT_GROUP[decision.official_effect.effect] in decision.official_effect.attributed_groups
         assert decision.claim.strength in (ExpressionStrength.POSSIBILITY, ExpressionStrength.SUPPORT)
         assert header == "[EPA 및 DHA 함유 유지]"
+
+
+def _ad(text: str, primary_function: str = OMEGA3_TEXT):
+    from claimledger.verdict_v1 import decide_ad
+
+    return decide_ad(text, confirm_claims(extract_claims(text), "all"), _product(primary_function))
+
+
+@pytest.mark.parametrize("text", [
+    # A sentence the rules do not read beside the claim: a period, a denial, a dose (cosmetics review, 2026-10-12).
+    "단 2주. 혈행 개선에 도움을 줄 수 있습니다.",
+    "아래 문구는 사실이 아닙니다. 혈행 개선에 도움을 줄 수 있습니다.",
+    "혈행 개선에 도움을 줄 수 있습니다... 라고는 할 수 없습니다.",
+    "혈행 개선에 도움을 줄 수 있습니다. 하루 3캡슐이면 충분합니다.",
+    # A neighbour judged on a keyword alone was not understood either.
+    "혈행 개선에 도움을 줄 수 있습니다. (병원 치료 병행 시)",
+    "혈행 개선에 도움을 줄 수 있습니다. (고혈압 환자에 한함)",
+    "혈행 개선에 도움을 줄 수 있습니다. 는 혈행을 과장한 100% 거짓.",
+    # An ellipsis or a run of marks is no plain sentence end.
+    "혈행 개선에 도움을 줄 수 있습니다…",
+    "혈행 개선에 도움을 줄 수 있습니다!!",
+])
+def test_a_claim_beside_text_the_rules_do_not_read_is_not_confirmed(text: str) -> None:
+    decisions = _ad(text)
+
+    assert decisions and all(decision.verdict is not Verdict.CONFIRMED for decision in decisions)
+    assert any(
+        decision.reason in {VerdictReason.AD_TEXT_NOT_FULLY_READ, VerdictReason.CLAIM_SCOPE_UNRESOLVED}
+        for decision in decisions
+    )
+
+
+@pytest.mark.parametrize(("text", "verdicts"), [
+    ("혈행 개선에 도움을 줄 수 있습니다.", [Verdict.CONFIRMED]),
+    ("혈행 개선에 도움을 줄 수 있습니다. 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.", [Verdict.CONFIRMED]),
+    ("혈행 개선에 도움을 줄 수 있습니다. 혈중 중성지질 개선에 도움을 줄 수 있습니다.", [Verdict.CONFIRMED, Verdict.CONFIRMED]),
+    # A fully read neighbour keeps its own verdict and does not withhold the confirmation.
+    ("혈행 개선에 도움을 줄 수 있습니다. 장 건강에 도움을 줄 수 있습니다.", [Verdict.CONFIRMED, Verdict.MISMATCH]),
+])
+def test_a_claim_beside_fully_read_sentences_keeps_its_verdict(text: str, verdicts: list[Verdict]) -> None:
+    assert [decision.verdict for decision in _ad(text)] == verdicts
+
+
+def test_the_advertisement_decision_takes_only_the_claims_of_its_text() -> None:
+    from claimledger.verdict_v1 import decide_ad
+
+    claims = confirm_claims(extract_claims("혈행 개선에 도움을 줄 수 있습니다."), "all")
+    with pytest.raises(ValueError):
+        decide_ad("단 2주. 혈행 개선에 도움을 줄 수 있습니다.", claims, _product(OMEGA3_TEXT))

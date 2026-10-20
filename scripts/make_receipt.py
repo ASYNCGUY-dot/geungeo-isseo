@@ -22,7 +22,7 @@ from claimledger.receipt import (
     render_markdown,
 )
 from claimledger.snapshot import load_c003_snapshot, parse_aware_datetime
-from claimledger.verdict_v1 import decide_claim
+from claimledger.verdict_v1 import decide_ad
 
 
 class ReceiptCliError(ValueError):
@@ -93,7 +93,7 @@ def run(args: argparse.Namespace) -> int:
         claims = confirm_claims(claims, _claim_selection(args.confirm_claims))
     except ValueError as exc:
         raise ReceiptCliError(str(exc)) from exc
-    decisions = [decide_claim(claim, product) for claim in claims]
+    decisions = list(decide_ad(ad_text, claims, product))
     receipt = build_receipt(ad_text, product, decisions, generated_at)
     _write_outputs(args.output_dir, receipt_to_json(receipt), render_markdown(receipt))
 

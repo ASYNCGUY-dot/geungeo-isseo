@@ -24,7 +24,7 @@ from claimledger.claims_v1 import AdClaim, confirm_claims, extract_claims
 from claimledger.domain import ConfirmedProduct, ProductCandidate
 from claimledger.products import search_products
 from claimledger.receipt import Receipt, build_receipt, render_markdown
-from claimledger.verdict_v1 import decide_claim
+from claimledger.verdict_v1 import decide_ad
 
 MAX_AD_TEXT_LENGTH = 5000
 # 5,000 characters of advertisement text fit several times over, even with every character escaped.
@@ -280,7 +280,7 @@ def create_app(
                     user_action="select_product",
                     analysis_id=analysis_id,
                 )
-            decisions = [decide_claim(claim, analysis.product) for claim in analysis.claims]
+            decisions = list(decide_ad(analysis.ad_text, analysis.claims, analysis.product))
             analysis.receipt = build_receipt(analysis.ad_text, analysis.product, decisions, datetime.now(UTC))
             return analysis.receipt.model_dump(mode="json")
 
