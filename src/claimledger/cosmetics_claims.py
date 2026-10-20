@@ -10,8 +10,7 @@ Sunscreen words are read more narrowly than the other two functions. They stand 
 use a sunscreen with another product, in comparisons and in product names, so outside the forms a
 sunscreen word claims the function only as what is helped ("자외선 차단에 도움을 주는 …") or
 with an absolute word on the blocking itself ("자외선을 100% 차단"), and an index is compared only
-in a sentence that was read completely or where a short phrase binds it to this product ("SPF50+
-표기의 이 제품이", "이 제품은 SPF50+ 수준으로", "자외선 차단에 도움을 주는 SPF50+ 제품입니다").
+in a sentence that was read completely.
 The medical and guarantee cues are a conservative development policy, not a legal determination.
 
 A sentence that is neither a claim nor a recognized disclaimer is kept as unread text: nothing in
@@ -50,7 +49,7 @@ from claimledger.claims_v1 import ExpressionStrength, _literal
 from claimledger.cosmetics_official import CosmeticFunction
 from claimledger.official_v2 import _compact
 
-COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.16"
+COSMETIC_CLAIM_VERSION = "cosmetic-claim-v1.14"
 MAX_AD_TEXT_LENGTH = 5000
 _CLOSING_MARKS = ".!?。…"
 
@@ -210,36 +209,6 @@ _EFFECTS = _effects()
 _AD_INDEX = r"\(?spf:?\d{1,3}\+?(?:[,/]?pa:?\+{1,4})?(?:,?(?:지속)?내수성)?\)?"
 # The official sunscreen sentence in an advertisement's voice.
 _PROTECTS = r"자외선으로부터피부를보호(?:합니다|해줍니다|해요|한다|함|하는데도움을(?:줍니다|줄수있습니다|준다))"
-# An index bound to this product by a short phrase: a word for the label and "의" before "이/본/해당
-# 제품" with a case ending ("SPF50+ 표기의 이 제품이"; not "이 제품보다", "이 제품과"), the product
-# as the subject the index describes ("이 제품은 SPF50+ 수준으로", "… 지속내수성으로", "이 제품은
-# SPF50+ 선크림입니다." with the copula ending the sentence; not "SPF50+로 넘어가기 전", "SPF50+ 수준의
-# 제품보다", "SPF50+의 무거움 없이"), the official sentence describing the product the index names at
-# the very start of the sentence ("자외선 차단에 도움을 주는 SPF50+ 제품이니"; not "꼭 필요한 건 자외선
-# 차단에 도움을 주는 …"), or that product and a copula making up the whole sentence. A copula that
-# does not end the sentence may open a quotation or a contrast ("…선크림입니다, 라고 친구가 말했어요",
-# "…선크림입니다만 이건 언니 거예요"). A product named after the index otherwise
-# may be another one ("SPF50+ 선크림 위에", "친구가 쓰던 건 SPF50+ 제품이에요", "SPF50+ 제품이라면 덧발라
-# 주세요"), and a comparison or a need after the index ("SPF50+보다", "SPF30 이상") binds nothing.
-# Every index word of the sentence must lie inside such a phrase: one outside may be another
-# thing's ("… 이 제품을 내수성 파우치에 담아", "… 수준으로, PA++++ 선스틱과 함께"). A quotation mark,
-# or a gift, a set or a sample in the sentence, may make "이 제품" another item than the one
-# advertised ("SPF50+ 표기의 이 제품을 사은품으로 드립니다", "세트 구성품 중 해당 제품은 …"): no binding.
-_INDEX_CORE = r"spf:?\d{1,3}\+?(?:[,/]?pa:?\+{1,4})?(?:,?(?:지속)?내수성)?"
-_LABEL_WORD = r"(?:표기|표시|사양|라벨|지수|수준|등급)"
-_THIS = rf"(?:이|본|해당)(?:제품|화장품|{_SUN_NOUN})"
-_KIND = rf"(?:자외선차단)?(?:기능성)?(?:제품|화장품|{_SUN_NOUN})"
-_HELPS_SUN = r"(?:자외선차단에도움을(?:주는|줄수있는)|자외선으로부터피부를보호(?:하는|해주는|하는데도움을(?:주는|줄수있는)))"
-_ENDS = r"(?:입니다|이에요|예요)(?=[.!。~…]*$)"
-_BOUND_INDEX = re.compile(
-    rf"\(?{_INDEX_CORE}\)?(?:{_LABEL_WORD}(?:의|인)|의){_THIS}(?=이(?!랑|나)|가|은|는|을|를|만|도|으로|로|[,.!]|$)"
-    rf"|{_THIS}(?:은|는|이|가)\(?{_INDEX_CORE}\)?"
-    rf"(?:{_LABEL_WORD}(?:으로|로)|(?<=내수성)으로|(?:{_LABEL_WORD}|{_KIND})?{_ENDS})"
-    rf"|^{_HELPS_SUN}\(?{_INDEX_CORE}\)?{_KIND}(?:입니다|이에요|예요|이니|이라서)"
-    rf"|^(?:자외선차단지수)?\(?{_INDEX_CORE}\)?{_KIND}{_ENDS}"
-)
-_INDEX_WORD = re.compile(r"spf|(?<![a-z])pa:?\+|내수성")
-_UNBINDING = re.compile(r"['\"‘’“”「」『』]|사은품|증정|구성품|세트|[12]\+1|샘플|미니어처|키트")
 # An absolute word on the blocking by this product: the verb ends the sentence or describes the
 # product ("100% 차단합니다", "완벽하게 막아 주는 SPF50+ 선크림"). On anything else ("100% 차단
 # 용기", "완벽 차단하는 선글라스") and in "100% 무기자차" or "완벽한 밀착력" it says nothing of the claim.
@@ -422,7 +391,7 @@ class CosmeticClaim(BaseModel):
     pa: tuple[str, ...] = ()
     water: tuple[str, ...] = ()
     confirmed_by_user: bool = False
-    extraction_version: Literal["cosmetic-claim-v1.16"] = COSMETIC_CLAIM_VERSION
+    extraction_version: Literal["cosmetic-claim-v1.14"] = COSMETIC_CLAIM_VERSION
 
 
 class UnreadSentence(BaseModel):
@@ -458,8 +427,6 @@ class _Reading(NamedTuple):
     sun_absolute: bool
     # The index as the forms read it, on the words run together.
     form_index: tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]
-    # A short phrase binds the index to this product.
-    index_bound: bool
 
 
 def normalize_ad_text(text: str) -> str:
@@ -563,11 +530,6 @@ def helped_functions(claim: CosmeticClaim) -> frozenset[CosmeticFunction]:
 def form_index(claim: CosmeticClaim) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
     """The SPF values, PA grades and water resistance words as the forms read them."""
     return _classify(claim.text).form_index
-
-
-def binds_index(claim: CosmeticClaim) -> bool:
-    """Whether a short phrase binds the sentence's index to this product ("SPF50+ 표기의 이 제품")."""
-    return _classify(claim.text).index_bound
 
 
 def blocks_absolutely(claim: CosmeticClaim) -> bool:
@@ -684,10 +646,6 @@ def _classify(sentence: str) -> _Reading:
             live[ExpressionStrength.SUPPORT] = []
     strength = next((level for level, *_ in _STRENGTH_CUES if live[level]), None)
     strength_cues = [_literal(sentence, positions, match) for match in live[strength]] if strength else []
-    bound = [
-        match.span() for match in _BOUND_INDEX.finditer(compact)
-        if match.end() > not_asserted_before and not _UNBINDING.search(compact)
-    ]
     denied = [
         (match.start(), _literal(sentence, positions, match), kind)
         for kind, match in (*function_matches, *strength_matches) if not asserted(kind, match)
@@ -711,10 +669,6 @@ def _classify(sentence: str) -> _Reading:
         form_index=tuple(
             tuple(dict.fromkeys(match.group(1) for match in pattern.finditer(compact) if match.end() > not_asserted_before))
             for pattern in (_FORM_SPF, _FORM_PA, _AD_WATER)
-        ),
-        index_bound=bool(bound) and all(
-            any(start <= word.start() and word.end() <= end for start, end in bound)
-            for word in _INDEX_WORD.finditer(compact)
         ),
     )
 
@@ -799,7 +753,6 @@ __all__ = [
     "NeutralSentence",
     "UnreadSentence",
     "asserted_functions",
-    "binds_index",
     "blocks_absolutely",
     "confirm_cosmetic_claims",
     "extract_cosmetic_claims",
