@@ -23,7 +23,7 @@ Obsidian Markdown vault
 - 내부 엔진명 `ClaimLedger`, import 패키지 `claimledger`, `src/claimledger`는 유지한다.
 - 로컬 폴더와 향후 원격 저장소 슬러그는 정확히 `geungeo-isseo`다.
 - 새 프로젝트 루트는
-  `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`다.
+  `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`다.
 - 원격 저장소가 없으므로 remote 생성, push, PR, feature-to-main merge를 수행하지 않는다.
 - 과거 로그 문장은 덮어쓰지 않고 2026-08-28 이름 변경 기록을 새로 추가한다.
 - 비밀정보, ignored 라이브 export, 사람 검토 pack의 내용을 읽거나 커밋하지 않는다.
@@ -161,7 +161,7 @@ Apply these exact rules:
 Project/service: 근거있어
 Signature output: 근거영수증
 Internal engine: ClaimLedger
-Repository path: C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo
+Repository path: %USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo
 ```
 
 Expected: main에 존재하지 않는 Phase 1 코드나 측정 결과는 추가하지 않는다.
@@ -275,8 +275,8 @@ Expected: 위키 `master`에 rename과 링크 갱신 커밋이 생기고 working
 ### Task 4: 로컬 저장소 폴더 이동과 linked worktree 복구
 
 **Files:**
-- Move directory: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
-  → `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
+- Move directory: `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1`
+  → `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 - Repair: `geungeo-isseo/.git/worktrees/phase-0-c003-data-gate/*`
 - Repair: `geungeo-isseo/.worktrees/phase-0-c003-data-gate/.git`
 
@@ -290,8 +290,8 @@ Expected: 위키 `master`에 rename과 링크 갱신 커밋이 생기고 working
 Run from the parent directory:
 
 ```powershell
-$oldProjectPath = 'C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1'
-$newProjectPath = 'C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo'
+$oldProjectPath = '%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1'
+$newProjectPath = '%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo'
 [System.IO.Path]::GetFullPath($oldProjectPath)
 [System.IO.Path]::GetFullPath($newProjectPath)
 Test-Path -LiteralPath $oldProjectPath
@@ -307,7 +307,7 @@ Run:
 ```powershell
 git -C "$oldProjectPath" status --short --branch
 git -C "$oldProjectPath\.worktrees\phase-0-c003-data-gate" status --short --branch
-git -C 'C:\Users\Donga\Desktop\AI-Agent-Wiki' status --short --branch
+git -C '%USERPROFILE%\Desktop\AI-Agent-Wiki' status --short --branch
 ```
 
 Expected: main과 feature worktree, wiki 모두 변경 없음.
@@ -357,9 +357,9 @@ Expected: `280 passed`, Ruff `All checks passed!`, diff check exit `0`, feature�
 Run:
 
 ```powershell
-Test-Path -LiteralPath 'C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1'
-Test-Path -LiteralPath 'C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo'
-rg -n '_persnal V1|근거영수증 / ClaimLedger|근거영수증-claimledger|2026-08-22-근거영수증-코덱스-핸드오프' 'C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo' 'C:\Users\Donga\Desktop\AI-Agent-Wiki'
+Test-Path -LiteralPath '%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\_persnal V1'
+Test-Path -LiteralPath '%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo'
+rg -n '_persnal V1|근거영수증 / ClaimLedger|근거영수증-claimledger|2026-08-22-근거영수증-코덱스-핸드오프' '%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo' '%USERPROFILE%\Desktop\AI-Agent-Wiki'
 ```
 
 Expected: old path `False`, new path `True`. 마지막 `rg` 결과는 이전 이름과 경로를
@@ -373,7 +373,7 @@ Expected: old path `False`, new path `True`. 마지막 `rg` 결과는 이전 이
 - feature 문서·메타데이터: `7be7b33`
 - main 현재 문서: `3892928`
 - 위키 파일명·링크: `9d57f19`
-- 실제 루트: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
+- 실제 루트: `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 - 이전 `_persnal V1` 경로: 존재하지 않음
 - worktree 복구: main `3892928`, `phase-0-c003-data-gate` `7be7b33`; 두 경로 모두
   `geungeo-isseo` 아래에서 clean

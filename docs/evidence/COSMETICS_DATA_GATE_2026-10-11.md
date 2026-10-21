@@ -14,7 +14,7 @@
 ## 수집
 
 ```powershell
-.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env"
+.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env"
 .venv\Scripts\python.exe scripts\audit_cosmetics.py --from-export build\cosmetics
 ```
 

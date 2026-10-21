@@ -16,7 +16,7 @@
 1. 이번 세션에서 사용자가 한 요청
 2. 이 저장소의 현재 코드·테스트·실행 결과
 3. 공식 데이터 원문과 현재 법령·공식 문서
-4. `C:\Users\Donga\Desktop\AI-Agent-Wiki`의 프로젝트 기록
+4. `%USERPROFILE%\Desktop\AI-Agent-Wiki`의 프로젝트 기록
 5. 과거 대화 요약
 
 위키 기록은 맥락 복원용이며 현재 실행 결과를 덮어쓰는 진실로 취급하지 않습니다.
@@ -76,7 +76,7 @@
 
 의미 있는 결정, 검증 결과, 실패와 복구 방법은 다음 정본에 반영합니다.
 
-- Vault: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
+- Vault: `%USERPROFILE%\Desktop\AI-Agent-Wiki`
 - Project page: `AI-Sessions/wiki/projects/근거있어.md`
 - Continuity handoff: `AI-Sessions/conversations/2026-08-22-근거있어-코덱스-핸드오프.md`
 

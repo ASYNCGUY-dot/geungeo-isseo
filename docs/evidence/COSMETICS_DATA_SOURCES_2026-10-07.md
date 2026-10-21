@@ -158,8 +158,8 @@
   포털이 계정당 키 하나를 주는지 API마다 주는지는 확인하지 못했다(처음에는 하나라고 가정해 칸을 하나만 만들었다).
 
 ```powershell
-.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env" --max-pages 1
-.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env"
+.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env" --max-pages 1
+.venv\Scripts\python.exe scripts\audit_cosmetics.py --env-file "%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.env"
 ```
 
 첫 명령은 한 페이지만 읽어 응답 구조와 키가 맞는지 확인하는 탐침이고, 둘째 명령이 전체 수집이다.

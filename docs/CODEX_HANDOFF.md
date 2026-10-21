@@ -585,10 +585,10 @@ v2의 100개 라벨이 유효해도 광고 근거가 `NOT_MEASURED`인 동안 �
 
 ## 관련 경로
 
-- 현재 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
-- 기본 프로젝트 worktree: `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
+- 현재 worktree: `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
+- 기본 프로젝트 worktree: `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo`
 - 복습 저장소: `C:\WORK\WORK\donga-review`
-- AI Agent Wiki: `C:\Users\Donga\Desktop\AI-Agent-Wiki`
+- AI Agent Wiki: `%USERPROFILE%\Desktop\AI-Agent-Wiki`
 
 ## 다음 코덱스에 전달할 한 문장
 
