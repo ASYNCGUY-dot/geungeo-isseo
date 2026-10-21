@@ -609,8 +609,8 @@ git commit -m "feat: enforce false-clearance safety invariants"
 - Modify: `docs/CODEX_HANDOFF.md`
 - Modify: `docs/PROJECT_BRIEF.md`
 - Modify: `docs/evidence/C003_COVERAGE_REPORT.md`
-- External update: `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
-- External update: `C:\Users\Donga\Desktop\AI-Agent-Wiki\log.md`
+- External update: `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
+- External update: `%USERPROFILE%\Desktop\AI-Agent-Wiki\log.md`
 
 **Interfaces:**
 

@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- 작업 위치는 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`와 브랜치 `phase-0-c003-data-gate`다.
+- 작업 위치는 `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`와 브랜치 `phase-0-c003-data-gate`다.
 - 설계 기준 커밋은 `bdf95af docs: define C003 human review contract v2`이며, 구현은 이 계획 문서 커밋 위에서 시작한다. `main`의 `cd7095b`는 수정하지 않는다.
 - 설계 정본은 `docs/superpowers/specs/2026-08-28-c003-human-review-contract-v2-design.md`다.
 - 기존 `build/extension-review/`와 v1 `review_labels.csv`는 삭제하거나 덮어쓰지 않는다.
@@ -1282,10 +1282,10 @@ git commit -m "docs: record C003 review v2 readiness"
 ### Task 7: Synchronize the Obsidian Wiki and Perform Final QA
 
 **Files:**
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\index.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\log.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\index.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\log.md`
 
 **Interfaces:**
 - Consumes: final project commits and freshly observed test/hash/PENDING evidence.
@@ -1293,7 +1293,7 @@ git commit -m "docs: record C003 review v2 readiness"
 
 - [ ] **Step 1: Re-read wiki rules and current notes before editing**
 
-Run read-only checks from `C:\Users\Donga\Desktop\AI-Agent-Wiki`:
+Run read-only checks from `%USERPROFILE%\Desktop\AI-Agent-Wiki`:
 
 ```powershell
 Get-Content -LiteralPath 'AGENTS.md' -Raw
@@ -1338,7 +1338,7 @@ git diff --cached --check
 git commit -m "save: record ClaimLedger review contract v2"
 ```
 
-Use per-command `-c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki` if Windows ownership checks require it; do not modify global Git configuration.
+Use per-command `-c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki` if Windows ownership checks require it; do not modify global Git configuration.
 
 - [ ] **Step 4: Run final project and repository proof**
 

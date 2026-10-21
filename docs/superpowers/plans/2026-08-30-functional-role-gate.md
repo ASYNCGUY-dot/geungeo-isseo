@@ -14,7 +14,7 @@
 
 ## Global Constraints
 
-- 작업 위치는 `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`와 브랜치 `phase-0-c003-data-gate`다.
+- 작업 위치는 `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`와 브랜치 `phase-0-c003-data-gate`다.
 - 설계 정본은 `docs/superpowers/specs/2026-08-30-extension-recommendation-evidence-gates-design.md`이며 상태는 사용자 서면 승인 완료다.
 - 이번 구현 범위는 `A — functional-role-gate`뿐이다. `B — official-ad-evidence-gate`와 `C — extension-recommendation-finalization`의 코드·데이터·상태 해제는 금지한다.
 - `build/extension-review-v2/`의 네 파일, v2 라벨 100행, 역사적 v1 pack을 삭제·덮어쓰기·자동 수정하지 않는다.
@@ -49,10 +49,10 @@
 | `AGENTS.md` | 현재 첫 작업과 fail-closed 운영 규칙 |
 | `docs/CODEX_HANDOFF.md` | 실제 구현·실측·사람 검토·미구현 경계 |
 | `docs/evidence/PHASE_1_EXTENSION_REVIEW.md` | v2 완료 증거와 기능성 역할 게이트의 실제 상태·해시 |
-| `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md` | 프로젝트 정본 상태와 다음 작업 |
-| `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md` | 세션 인계 |
-| `C:\Users\Donga\Desktop\AI-Agent-Wiki\index.md` | 기존 근거있어 항목의 상태 갱신 |
-| `C:\Users\Donga\Desktop\AI-Agent-Wiki\log.md` | 날짜가 있는 저장 기록 한 줄 |
+| `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md` | 프로젝트 정본 상태와 다음 작업 |
+| `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md` | 세션 인계 |
+| `%USERPROFILE%\Desktop\AI-Agent-Wiki\index.md` | 기존 근거있어 항목의 상태 갱신 |
+| `%USERPROFILE%\Desktop\AI-Agent-Wiki\log.md` | 날짜가 있는 저장 기록 한 줄 |
 
 ## Locked Public Contracts
 
@@ -1428,10 +1428,10 @@ git commit -m "docs: record functional role review readiness"
 - Modify: `AGENTS.md`
 - Modify: `docs/CODEX_HANDOFF.md`
 - Modify: `docs/evidence/PHASE_1_EXTENSION_REVIEW.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\index.md`
-- Modify: `C:\Users\Donga\Desktop\AI-Agent-Wiki\log.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\wiki\projects\근거있어.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\AI-Sessions\conversations\2026-08-22-근거있어-코덱스-핸드오프.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\index.md`
+- Modify: `%USERPROFILE%\Desktop\AI-Agent-Wiki\log.md`
 
 **Interfaces:**
 - Consumes: every sampled product row, its machine decision, literal source fields, active rule, and human judgment.
@@ -1515,10 +1515,10 @@ Report exact fresh test count and coverage, not the pre-plan baseline.
 
 - [ ] **Step 6: Re-read and update the Obsidian wiki**
 
-From `C:\Users\Donga\Desktop\AI-Agent-Wiki`, read `AGENTS.md`, the two target notes, `index.md`, and the tail of `log.md` before editing. Use:
+From `%USERPROFILE%\Desktop\AI-Agent-Wiki`, read `AGENTS.md`, the two target notes, `index.md`, and the tail of `log.md` before editing. Use:
 
 ```powershell
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki status --short --branch
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki status --short --branch
 ```
 
 If unrelated user changes overlap any target, stop before editing that file. Update only verified project facts, the current gate status, per-group eligibility, all downstream blocks, source/rule versions, project commit IDs, and the next task. Update the existing index entry rather than adding a duplicate. Append one dated `save` line to `log.md`.
@@ -1526,16 +1526,16 @@ If unrelated user changes overlap any target, stop before editing that file. Upd
 - [ ] **Step 7: Verify and commit the wiki separately**
 
 ```powershell
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki diff --check
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki diff --name-status
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki status --short --branch
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki add -- `
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki diff --check
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki diff --name-status
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki status --short --branch
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki add -- `
   'AI-Sessions/conversations/2026-08-22-근거있어-코덱스-핸드오프.md' `
   'AI-Sessions/wiki/projects/근거있어.md' `
   'index.md' `
   'log.md'
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki diff --cached --check
-git -c safe.directory=C:/Users/Donga/Desktop/AI-Agent-Wiki commit `
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki diff --cached --check
+git -c safe.directory=%USERPROFILE%/Desktop/AI-Agent-Wiki commit `
   -m "save: record functional role evidence gate"
 ```
 

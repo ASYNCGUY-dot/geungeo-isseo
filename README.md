@@ -7,6 +7,9 @@
 우선 검수 서비스**입니다. 결정적 검증 로직과 파이썬 패키지는 내부 엔진명
 `ClaimLedger`와 `claimledger`를 유지합니다.
 
+> 이 브랜치는 2026-10-07 발표용으로 고정한 건강기능식품 MVP(태그 `mvp-frozen-2026-10-07`)와 그 뒤의 오인 승인 경로 수정입니다.
+> 기능성화장품 판정을 포함한 최신 작업과 프로젝트 소개는 `main` 브랜치에 있습니다.
+
 ## 현재 상태
 
 **귀속 범위·정확도 개선 4단계 중 1·2단계를 마쳤습니다.** 1단계 독립 AI 재검토에서 나온 P1 2건을 모두 막았습니다.
@@ -150,7 +153,7 @@
 ## 코덱스에서 이어가기
 
 1. 병합 전에는 코덱스에서
-   `C:\Users\Donga\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
+   `%USERPROFILE%\Desktop\DONGA AI LAB\DONGA KDT 3RD PROJECT\geungeo-isseo\.worktrees\phase-0-c003-data-gate`
    worktree를 엽니다.
 2. [AGENTS.md](AGENTS.md)를 먼저 읽습니다.
 3. [코덱스 핸드오프](docs/CODEX_HANDOFF.md)에서 구현 범위, 검증 결과, 미구현 경계를
@@ -283,8 +286,8 @@ MVP가 하지 않는 일:
 
 프로젝트의 정본 기록은 별도 Obsidian vault에 함께 보존합니다.
 
-- `C:\Users\Donga\Desktop\AI-Agent-Wiki`
-- 개인 메모 vault인 `JISOO.DOC`과 혼동하지 않습니다.
+- `%USERPROFILE%\Desktop\AI-Agent-Wiki`
+- 개인 메모 vault와 혼동하지 않습니다.
 - 프로젝트 코드와 현재 검증 결과가 위키의 과거 기록보다 우선합니다.
 
 ## 보안
