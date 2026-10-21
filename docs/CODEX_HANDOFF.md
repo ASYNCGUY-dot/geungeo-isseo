@@ -6,7 +6,15 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-20 건강기능식품 옆 문장 경로 차단 반영 (Claude Code, 브랜치 `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-21 GitHub 공개 저장소 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: "깃허브 비공개 저장소로 푸시 해줘", "나머지 작업 이어서 해줘", 그리고 C003 자료 공개·앞으로의 커밋만 noreply 주소·공개 전환을 결정.
+- 원격 `origin` = https://github.com/ASYNCGUY-dot/geungeo-isseo (공개). 브랜치 `main`, `cosmetics-data-gate`, `phase-0-c003-data-gate`, 태그 `mvp-frozen-2026-10-07`.
+- push 전 전체 이력 비밀정보 검사(걸린 4건은 테스트의 가짜 값), `.env` 커밋 이력 없음. `main`은 이름 변경 커밋을 `-s ours`로 병합한 뒤 최신 작업으로 빨리 감음.
+- README 맨 앞에 외부 독자용 소개와 데이터 이용 조건(공공데이터포털 두 API 제한 없음, 식품안전나라 C003 표시 없음). 문서의 사용자 폴더 경로는 `%USERPROFILE%`.
+- 작성자 이메일: 저장소 로컬 설정의 noreply 주소(전역 설정 그대로). 이전 커밋 189개에는 개인 주소가 남음(이력 재작성 안 함).
+
+## 이전 인계 — 2026-10-20 건강기능식품 옆 문장 경로 차단 반영 (Claude Code, 브랜치 `cosmetics-data-gate`)
 
 - 사용자: "1번으로 진행해"(동결 MVP의 옆 문장 경로) 뒤 "화장품 브랜치에도 반영해줘". [기록](evidence/MVP_NEIGHBOUR_GATE_2026-10-20.md).
 - 동결 브랜치 `phase-0-c003-data-gate`의 `eac8f59`(`decide_ad`, `claim-extract-v1.4`·`claim-verdict-v1.4`)을 cherry-pick(`40b8e0a`).
