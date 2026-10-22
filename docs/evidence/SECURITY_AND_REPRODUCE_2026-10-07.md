@@ -53,6 +53,19 @@ $LASTEXITCODE
   - 로그상 초기화가 지운 것: Docker Desktop 확장 기능, `~/.docker`의 buildx·cli-plugins·modules·토큰 시드, 쿠버네티스 인증서, 빌드 기록.
     설정 파일(`settings-store.json`)은 16:38:44에 다시 쓰였다. 이미지·컨테이너가 들어 있는 `docker_data.vhdx`(3.54GB)는 삭제 기록이 없고 파일도 9/17 날짜 그대로 남아 있다.
   - 초기화 뒤에도 소켓 파일은 그대로라 Docker는 여전히 시작되지 않는다. 개발 세션은 이후 Docker 설치 상태를 더 건드리지 않았다.
+- **2026-10-22 후기 — 재부팅 뒤에도 같은 상태.** 개발 세션은 Docker를 시작하지 않고 파일 상태만 읽었다.
+  - `%LOCALAPPDATA%\Docker\run`에 9/17 09:57에 만들어진 소켓 파일 네 개(`dockerEthernetVfkit`, `dockerInference`, `sailor-ingest.sock`,
+    `userAnalyticsOtlpHttp.sock`)가 10/22 09:09 재부팅 뒤에도 남아 있다. 모두 재분석 지점(ReparsePoint)이고 `fsutil reparsepoint query`도
+    `Error 1920`("The file cannot be accessed by the system")으로 실패한다. Docker Desktop은 4.87.0 그대로다.
+  - Docker 포럼에 같은 증상(Docker Desktop 4.88.1, 2026-08-27, `sailor-ingest.sock`·`dockerInference`)이 보고돼 있다. 재시작, AI 기능 끄기,
+    WSL 종료, 업데이트, 폴더 이름 변경으로 풀리지 않았고 확인된 해결책은 없다.
+  - Claude Code 이슈 anthropics/claude-code#76383(2026-07-10, 'not planned'로 닫힘)은 Claude Code 프로세스 아래에서 만든 AF_UNIX 소켓 파일이
+    이렇게 지워지지 않고 재부팅 뒤에도 남는다고 보고한다. 9/17에 Docker를 어떤 경로로 시작했는지는 확인하지 못해 원인으로 단정하지 않는다.
+  - 사용자가 해 볼 순서(이 PC의 Docker 상태를 바꿀 수 있으므로 사용자가 직접 한다).
+    1. Claude Code 밖에서, 시작 메뉴로 Docker Desktop을 연다. 오류 창이 뜨면 바로 "Quit"을 누른다. "Reset to factory defaults"는 누르지 않는다
+       (10/7에는 창이 뜬 지 120초 뒤 초기화가 선택됐다).
+    2. 그래도 같은 오류면 Docker 지원이나 GitHub 이슈에 진단 정보를 남긴다. 파일 삭제나 디스크 검사는 확인된 해결책이 아니다.
+  - WSL Ubuntu에서 리눅스 테스트를 대신 돌리는 방법도 지금은 막혀 있다. Ubuntu 26.04에는 Python 3.14.4만 있고 pip·`ensurepip`가 없다.
 - **Docker가 복구되면 실행할 명령.**
 
   ```powershell

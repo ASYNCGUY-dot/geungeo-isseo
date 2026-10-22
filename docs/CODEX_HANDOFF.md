@@ -6,7 +6,26 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-21 GitHub 공개 저장소 (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-22 남은 작업 점검: `I-0040`·Docker (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: "남은 작업 이어서 진행해줘". 코드와 판정은 바꾸지 않았다.
+- `I-0040`: 수집기를 다시 실행했지만 `INFO-110`("인증키는 확인되었으나 해당 서비스의 활용신청 내역이 없습니다")이다.
+  승인 대기가 아니라 이 키로 된 신청 기록이 없다는 뜻이므로, 사용자가 식품안전나라에서 `I-0040` 활용신청을 해야 한다.
+- Docker: 여전히 시작할 수 없다. `%LOCALAPPDATA%\Docker\run`에 9/17에 남은 소켓 파일 네 개가 오늘 09:09 재부팅 뒤에도 그대로이고,
+  속성 조회도 `Error 1920`으로 실패한다. 재부팅으로 풀리는 문제가 아니다. [기록](evidence/SECURITY_AND_REPRODUCE_2026-10-07.md)의 Docker 절에 후기와 사용자 순서를 붙였다.
+  개발 세션은 Docker를 시작하거나 파일을 지우지 않았다.
+- 리눅스 테스트를 WSL Ubuntu에서 대신 돌리는 방법도 막혔다. Ubuntu 26.04에는 Python 3.14.4만 있고(이미지는 3.12.14) pip·`ensurepip`가 없으며,
+  설치에는 sudo 암호가 필요하다. 개발 세션은 아무것도 설치하지 않았다.
+- 다음(사용자): `I-0040` 활용신청, Docker 복구, 낮은 지수 정책 변경 여부.
+
+## 이전 인계 — 2026-10-21 자외선 차단 정책의 원문 근거 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: "진행해". [기록](evidence/COSMETICS_SUNSCREEN_RULE_SOURCES_2026-10-21.md), 커밋 `03ab13a`(push).
+- 시행규칙 제2조제5호·[별표 5], 심사 규정 제13조제2항(고시 제2025-88호), 표시·광고 관리 지침(안내서-0086-07) 12·15쪽을 확보해 정책과 대조했다.
+  판정 규칙은 그대로이고 영수증 한계 문구만 고쳤다.
+- 낮은 지수는 지침상 `근거 불일치`로 바꿀 근거가 있다. 바꿀지는 사용자 결정이고 라벨지 규칙과 새 평가세트가 필요하다(v4·v5 낮은 지수 7건은 판정 불변).
+
+## 이전 인계 — 2026-10-21 GitHub 공개 저장소 (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: "깃허브 비공개 저장소로 푸시 해줘", "나머지 작업 이어서 해줘", 그리고 C003 자료 공개·앞으로의 커밋만 noreply 주소·공개 전환을 결정.
 - 원격 `origin` = https://github.com/ASYNCGUY-dot/geungeo-isseo (공개). 브랜치 `main`, `cosmetics-data-gate`, `phase-0-c003-data-gate`, 태그 `mvp-frozen-2026-10-07`.
