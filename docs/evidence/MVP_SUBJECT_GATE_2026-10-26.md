@@ -60,6 +60,14 @@
 - 대조 실행 첫 시도는 새 엔진 경로를 Git Bash 형식(`/c/...`)으로 넘겨, Windows Python이 다른 작업 트리의 수정 전 엔진을 읽고 차이 0건을 냈다.
   엔진 버전을 출력해 확인한 뒤 Windows 경로로 다시 돌린 결과가 위 숫자다.
 
+## 검증 (작업 브랜치)
+
+- 같은 커밋을 `cosmetics-data-gate`로 옮겼다(`90233fc`, 충돌 없음). 이번에는 커밋하지 않은 채 적용하고 검증한 뒤 커밋했다.
+- 전체 2034 passed, Ruff 통과, 재현 실행 통과. 평가 결과 파일 9개가 동결 브랜치의 재현 실행과 사례별로 같다.
+- 화장품 판정 모듈은 바뀐 함수를 쓰지 않는다(`claims_v1`에서 `ExpressionStrength`·`STRENGTH_RANK`·`_literal`만 가져온다). 다시 채점한
+  `cosmetic-eval-v4`는 커밋된 채점 결과와, `cosmetic-eval-v5`는 `3b1f21a` 기준 채점 결과(`score-cases*-baseline-3b1f21a.json`)와 파일째 같다.
+  v5의 `score-cases.json`·`score-cases-strict.json`은 철회한 묶음 구절 엔진(`cosmetic-claim-v1.16`)의 채점이라 비교 대상이 아니다.
+
 ## 한계
 
 - 같은 원료의 정직한 광고("오메가3는 혈행 개선에 도움을 줄 수 있습니다. 눈 건강에 도움을 줄 수 있어요.")도 보류된다. 여러 문장 광고의 `확인됨`
