@@ -140,15 +140,28 @@ class AdClaim(BaseModel):
     extraction_version: Literal["claim-extract-v1.4"] = CLAIM_EXTRACTION_VERSION
 
 
-def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
-    """Recognize a whole affirmative proposition, not just a matching effect keyword."""
+def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
     compact, _ = _compact(claim.text)
     subject = _SINGLE_SUBJECT[EFFECT_GROUP[effect]]
-    prefix = rf"(?:{_INTAKE}?(?:본제품|이제품|{subject})(?:은|는|이|가))?"
+    prefix = rf"(?:{_INTAKE}?(?P<subject>본제품|이제품|{subject})(?:은|는|이|가))?"
     body = rf"{_SINGLE_EFFECT[effect]}{_SUPPORT_ENDING}"
     if effect in _SINGLE_EFFECT_VERB:
         body = rf"(?:{body}|{_SINGLE_EFFECT_VERB[effect]}{_VERB_ENDING})"
-    return re.fullmatch(prefix + body, compact) is not None
+    return re.fullmatch(prefix + body, compact)
+
+
+def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
+    """Recognize a whole affirmative proposition, not just a matching effect keyword."""
+    return _support_match(claim, effect) is not None
+
+
+def read_subjects(claim: AdClaim) -> frozenset[str | None]:
+    """Subjects of the whole support statements the claim reads as: None where it names none.
+
+    Empty when the claim is not read as a whole statement for any of its effect candidates.
+    """
+    matches = (_support_match(claim, effect) for effect in claim.effect_candidates)
+    return frozenset(match["subject"] for match in matches if match)
 
 
 def _literal(text: str, positions: list[int], match: re.Match[str]) -> str:
@@ -263,6 +276,7 @@ __all__ = [
     "ExpressionStrength",
     "confirm_claims",
     "extract_claims",
+    "read_subjects",
     "supports_confirmation",
     "unread_sentences",
 ]
