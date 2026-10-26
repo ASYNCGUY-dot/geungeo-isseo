@@ -212,6 +212,54 @@ def test_a_claim_beside_fully_read_sentences_keeps_its_verdict(text: str, verdic
     assert [decision.verdict for decision in _ad(text)] == verdicts
 
 
+THREE_HEADERS_TEXT = (
+    "[EPA 및 DHA 함유 유지] 혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음\n"
+    "[루테인] 노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음\n"
+    "[프로바이오틱스] 유산균 증식 및 유해균 억제·배변활동 원활·장 건강에 도움을 줄 수 있음"
+)
+OMEGA3_BLOOD_TEXT = "[EPA 및 DHA 함유 유지] 혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음"
+
+
+@pytest.mark.parametrize(("text", "primary_function"), [
+    # A sentence without a subject continues the topic of the one before it: the reader takes the second
+    # sentence as said of lutein, which no official statement supports (independent review, 2026-10-26).
+    ("루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있는 원료입니다.", THREE_HEADERS_TEXT),
+    ("루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다.", THREE_HEADERS_TEXT),
+    ("프로바이오틱스는 장 건강에 도움을 줄 수 있습니다. 혈행을 개선하는 데 도움을 줄 수 있습니다.", THREE_HEADERS_TEXT),
+    ("오메가3는 혈행 개선에 도움을 줄 수 있습니다. 배변활동 원활에 도움을 줄 수 있는 원료입니다.", THREE_HEADERS_TEXT),
+    # The order does not settle whose claim the bare sentence is, and neither does a matching ingredient.
+    ("혈행 개선에 도움을 줄 수 있습니다. 루테인은 눈 건강에 도움을 줄 수 있습니다.", THREE_HEADERS_TEXT),
+    ("오메가3는 혈행 개선에 도움을 줄 수 있습니다. 혈중 중성지질 개선에 도움을 줄 수 있습니다.", THREE_HEADERS_TEXT),
+    # Without lutein in the official text the named claim is a mismatch; the bare one is still withheld.
+    ("루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있는 원료입니다.", OMEGA3_BLOOD_TEXT),
+])
+def test_a_claim_without_a_subject_beside_a_named_ingredient_is_not_confirmed(
+    text: str, primary_function: str
+) -> None:
+    claims = confirm_claims(extract_claims(text), "all")
+    alone = [decide_claim(claim, _product(primary_function)) for claim in claims]
+    assert any(decision.verdict is Verdict.CONFIRMED for decision in alone)
+
+    decisions = _ad(text, primary_function)
+
+    assert [(decision.verdict, decision.reason) for decision in decisions] == [
+        (Verdict.UNVERIFIABLE, VerdictReason.AD_TEXT_NOT_FULLY_READ)
+        if decision.verdict is Verdict.CONFIRMED
+        else (decision.verdict, decision.reason)
+        for decision in alone
+    ]
+
+
+@pytest.mark.parametrize("text", [
+    # Each named ingredient carries its own claim, and the product as subject is no ingredient's topic.
+    "루테인은 눈 건강에 도움을 줄 수 있습니다. 오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+    "이 제품은 혈행 개선에 도움을 줄 수 있습니다. 눈 건강에 도움을 줄 수 있습니다.",
+    "혈행 개선에 도움을 줄 수 있습니다. 장 건강에 도움을 줄 수 있습니다.",
+])
+def test_claims_whose_subjects_are_clear_stay_confirmed(text: str) -> None:
+    assert [decision.verdict for decision in _ad(text, THREE_HEADERS_TEXT)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
+
+
 def test_the_advertisement_decision_takes_only_the_claims_of_its_text() -> None:
     from claimledger.verdict_v1 import decide_ad
 

@@ -11,6 +11,7 @@ from claimledger.claims_v1 import (
     AdClaim,
     ExpressionStrength,
     extract_claims,
+    read_subjects,
     supports_confirmation,
     unread_sentences,
 )
@@ -27,8 +28,9 @@ from claimledger.official_v2 import (
     parse_official_function_v2,
 )
 
-CLAIM_VERDICT_VERSION = "claim-verdict-v1.4"
+CLAIM_VERDICT_VERSION = "claim-verdict-v1.5"
 _OFFICIAL_STRENGTH = ExpressionStrength.SUPPORT
+_PRODUCT_SUBJECTS = frozenset({"본제품", "이제품"})
 
 
 class VerdictReason(StrEnum):
@@ -55,7 +57,7 @@ class ClaimDecision(BaseModel):
     verdict: Verdict
     reason: VerdictReason
     official_effect: OfficialEffect | None = None
-    rule_version: Literal["claim-verdict-v1.4"] = CLAIM_VERDICT_VERSION
+    rule_version: Literal["claim-verdict-v1.5"] = CLAIM_VERDICT_VERSION
     extraction_version: Literal["claim-extract-v1.4"] = CLAIM_EXTRACTION_VERSION
     official_parser_version: Literal["official-function-v2.11"] = OFFICIAL_FUNCTION_V2_VERSION
 
@@ -142,8 +144,9 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
     return _decision(claim, Verdict.CONFIRMED, match_reason, official)
 
 
-def _fully_read(claim: AdClaim) -> bool:
-    return any(supports_confirmation(claim, effect) for effect in claim.effect_candidates)
+def _fully_read(claim: AdClaim, ingredient_named: bool) -> bool:
+    subjects = read_subjects(claim)
+    return bool(subjects) and not (ingredient_named and subjects == {None})
 
 
 def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | None) -> tuple[ClaimDecision, ...]:
@@ -152,13 +155,16 @@ def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | 
     A claim is confirmed only when every other sentence of the advertisement is a fully read support
     statement or the recognized disclaimer. Anything else beside it may change what it says ("단 2주.",
     "아래 문구는 사실이 아닙니다.", "하루 3캡슐이면 충분합니다."), and a keyword verdict on that neighbour
-    ("(병원 치료 병행 시)" is flagged for "치료") does not show that it was understood.
+    ("(병원 치료 병행 시)" is flagged for "치료") does not show that it was understood. A sentence without
+    a subject is not fully read beside one that names an ingredient: it continues that topic ("루테인은
+    눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다." claims blood flow for lutein).
     """
     unconfirmed = [claim.model_copy(update={"confirmed_by_user": False}) for claim in claims]
     if unconfirmed != list(extract_claims(text)):
         raise ValueError("the claims are not the ones extracted from this advertisement text")
     decisions = tuple(decide_claim(claim, product) for claim in claims)
-    if not unread_sentences(text) and all(_fully_read(claim) for claim in claims):
+    ingredient_named = any(read_subjects(claim) - {None} - _PRODUCT_SUBJECTS for claim in claims)
+    if not unread_sentences(text) and all(_fully_read(claim, ingredient_named) for claim in claims):
         return decisions
     return tuple(
         _decision(decision.claim, Verdict.UNVERIFIABLE, VerdictReason.AD_TEXT_NOT_FULLY_READ)

@@ -86,4 +86,4 @@ def test_receipt_explains_the_hold() -> None:
     receipt = build_receipt(MEMORY_AD, product, [decision], AT)
     assert receipt.claims[0].verdict_label == "검증 불가"
     assert "다른" in receipt.claims[0].reason_message
-    assert receipt.rule_versions[-1] == "claim-verdict-v1.4"
+    assert receipt.rule_versions[-1] == "claim-verdict-v1.5"
