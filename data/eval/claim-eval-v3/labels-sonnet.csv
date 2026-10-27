@@ -1,0 +1,243 @@
+case_id,seg_no,label,labeler,note
+C3-001,1,mismatch,sonnet,혈중 중성지질 개선 문구는 일치하나 뒤 문장의 타 브랜드 대비 우월 비교가 덧붙어 도움 수준 초과
+C3-001,2,mismatch,sonnet,다른 브랜드보다 효과가 훨씬 뛰어나다는 비교 우월 주장 도움 수준 초과 (flow상 위 주장에 붙음)
+C3-001,3,none,sonnet,의약품 아님 고지
+C3-002,1,unverifiable,sonnet,수면의 질 개선은 판정 기능 8개 밖 규칙2
+C3-002,2,none,sonnet,섭취 방법
+C3-003,1,none,sonnet,제품 형태·맛 소개
+C3-003,2,confirmed,sonnet,제품 주체의 장 건강 주장 프로바이오틱스 문구에 장 건강 있고 원재료에 프로바이오틱스 있음 (주어 없으나 제품 흐름)
+C3-004,1,mismatch,sonnet,황반변성 예방은 질병 예방 표현 규칙1
+C3-004,2,none,sonnet,의약품 아님 고지
+C3-005,1,none,sonnet,제품 형태 소개
+C3-005,2,mismatch,sonnet,장 건강은 판정 기능이나 공식 원문에는 간 건강만 있어 규칙3
+C3-006,1,none,sonnet,효과를 말하지 않는 대상자 권유
+C3-006,2,unverifiable,sonnet,앞 문장의 30~40대 직장인 대상자가 덧붙은 주장 공식 원문의 인정 범위인지 확정 불가
+C3-006,3,none,sonnet,의약품 아님 고지
+C3-007,1,none,sonnet,제품 생산 소개
+C3-007,2,mismatch,sonnet,건조한 눈 개선은 공식 원문에 없음 (마리골드는 황반색소밀도) 규칙3
+C3-008,1,mismatch,sonnet,고지혈증 예방·개선은 질병 표현 규칙1
+C3-008,2,none,sonnet,섭취 방법
+C3-008,3,none,sonnet,의약품 아님 고지
+C3-009,1,confirmed,sonnet,프로바이오틱스 단일 제품 유산균 증식·유해균 억제 문구 일치 줄바꿈은 문장 끝 아님
+C3-009,2,confirmed,sonnet,프로바이오틱스의 배변활동 원활 문구 일치
+C3-010,1,confirmed,sonnet,루테인지아잔틴복합추출물 원재료 있고 황반색소밀도 문구는 다른 원료 몫이 아님 (헤더 없는 원문이라 약간 애매)
+C3-010,2,unverifiable,sonnet,주어 없고 앞 문장 주어가 루테인이라 이어받으면 루테인 기능 아님 제품인지 불명 규칙4
+C3-010,3,none,sonnet,의약품 아님 고지
+C3-011,1,none,sonnet,제품 형태 소개
+C3-011,2,confirmed,sonnet,루테인=마리골드꽃주정추출물(지아잔틴함유) 헤더의 황반색소밀도 문구 일치 (지아잔틴함유 원료명이라 약간 애매)
+C3-011,3,none,sonnet,의약품 아님 고지
+C3-012,1,confirmed,sonnet,프로바이오틱스 장 건강 문구 일치
+C3-012,2,none,sonnet,섭취 방법
+C3-012,3,none,sonnet,의약품 아님 고지
+C3-013,1,confirmed,sonnet,루테인=마리골드꽃추출물(고시형) 황반색소밀도 문구는 이 원료 외 해당 없음 (헤더 없어 약간 애매)
+C3-013,2,none,sonnet,의약품 아님 고지
+C3-014,1,none,sonnet,제품 형태 소개
+C3-014,2,confirmed,sonnet,루테인=마리골드꽃추출물 헤더 아래 황반색소밀도 유지 문구 일치
+C3-014,3,none,sonnet,의약품 아님 고지
+C3-015,1,confirmed,sonnet,제품 흐름 마리골드꽃주정추출물(지아잔틴함유) 헤더의 황반색소밀도 문구 일치 줄바꿈은 문장 끝 아님
+C3-015,2,none,sonnet,섭취 방법
+C3-016,1,confirmed,sonnet,제품 주체 프로바이오틱스 헤더에 배변활동 원활 있고 다른 원료에는 해당 문구 없음
+C3-016,2,none,sonnet,섭취 방법
+C3-017,1,none,sonnet,제품 형태 소개
+C3-017,2,confirmed,sonnet,루테인=마리골드꽃추출물(지아잔틴함유) 헤더의 황반색소밀도 문구 일치 (지아잔틴함유 원료명이라 약간 애매)
+C3-017,3,none,sonnet,의약품 아님 고지
+C3-018,1,confirmed,sonnet,제품 주체 EPA·DHA 함유 유지 헤더에 혈중 중성지질 개선 있고 정제어유 원재료 있음
+C3-018,2,none,sonnet,의약품 아님 고지
+C3-019,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치
+C3-019,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-020,1,none,sonnet,브랜드 제조 소개
+C3-020,2,mismatch,sonnet,건조한 눈 개선은 공식 원문에 없음 (마리골드는 황반색소밀도) 규칙3
+C3-021,1,mismatch,sonnet,마리골드 황반색소밀도 유지는 맞으나 눈 건강이 좋아집니다는 도움 수준 초과 규칙5
+C3-021,2,none,sonnet,섭취 방법
+C3-021,3,none,sonnet,의약품 아님 고지
+C3-022,1,confirmed,sonnet,프로바이오틱스 유산균 증식 유해균 억제 문구 일치 원재료에 유산균 고시형
+C3-022,2,none,sonnet,의약품 아님 고지
+C3-023,1,confirmed,sonnet,오메가3 건조한 눈 개선 EPA·DHA 헤더 문구 일치
+C3-023,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 루테인 기능이라 주체 확정 불가 규칙4
+C3-023,3,none,sonnet,의약품 아님 고지
+C3-024,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 문구 일치 (헤더 없는 원문이나 혈행 개선은 이 원료만)
+C3-024,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-025,1,confirmed,sonnet,오메가3 혈행 개선 문구 일치
+C3-025,2,confirmed,sonnet,오메가3 혈중 중성지질 개선 문구 일치
+C3-025,3,none,sonnet,의약품 아님 고지
+C3-026,1,mismatch,sonnet,루테인=마리골드꽃추출물 황반색소밀도 맞으나 확실하게 지켜 드립니다는 도움 수준 초과 규칙5
+C3-026,2,none,sonnet,의약품 아님 고지
+C3-027,1,none,sonnet,제품 형태 소개
+C3-027,2,confirmed,sonnet,프로바이오틱스 배변활동 원활 문구 일치 줄바꿈은 문장 끝 아님
+C3-027,3,none,sonnet,의약품 아님 고지
+C3-028,1,mismatch,sonnet,건조한 눈 개선은 EPA·DHA 문구와 일치하나 뒤 문장의 한 달 환불 보장이 덧붙어 도움 수준 초과 규칙5
+C3-028,2,mismatch,sonnet,효과 없으면 전액 환불은 효과 보장 도움 수준 초과 (flow상 건조한 눈 개선 주장에 붙음)
+C3-028,3,none,sonnet,의약품 아님 고지
+C3-029,1,confirmed,sonnet,오메가3의 혈중 중성지질 개선 EPA·DHA 헤더 문구 일치
+C3-029,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-030,1,unverifiable,sonnet,루테인=마리골드꽃추출물 황반색소밀도 문구 일치하나 뒤 문장의 4주 기간 체감이 덧붙어 인정 범위 확정 불가
+C3-030,2,unverifiable,sonnet,4주 기간과 체감 변화는 공식 원문 범위 밖이라 확정 불가 (기능도 불분명) 완화 표현 수 있습니다라 mismatch까지는 아님
+C3-030,3,none,sonnet,의약품 아님 고지
+C3-031,1,confirmed,sonnet,제품 주체 EPA·DHA 헤더에 혈행 개선 있음
+C3-031,2,confirmed,sonnet,제품 주체 EPA·DHA 헤더에 기억력 개선 있음
+C3-032,1,unverifiable,sonnet,오메가3 혈행 개선 문구는 일치하나 뒤 문장의 8주 기간과 변화 체감이 덧붙어 인정 범위 확정 불가 (바다에서 온은 원산지 표현으로 효과 주장 아님)
+C3-032,2,unverifiable,sonnet,8주 기간과 몸의 변화 체감은 기능 불분명하고 공식 범위 밖이라 확정 불가
+C3-032,3,none,sonnet,의약품 아님 고지
+C3-033,1,confirmed,sonnet,루테인=마리골드꽃추출물(고시형) 황반색소밀도 문구 일치
+C3-033,2,none,sonnet,의약품 아님 고지
+C3-034,1,mismatch,sonnet,황반변성 진행을 막아 준다는 질병 예방 표현 규칙1
+C3-034,2,none,sonnet,섭취 방법
+C3-034,3,none,sonnet,의약품 아님 고지
+C3-035,1,confirmed,sonnet,루테인=마리골드꽃추출물(고시형) 황반색소밀도 문구 일치 줄바꿈은 문장 끝 아님
+C3-035,2,none,sonnet,의약품 아님 고지 문구
+C3-036,1,none,sonnet,제조 시설 소개
+C3-036,2,mismatch,sonnet,황반색소밀도 유지 문구는 마리골드꽃추출물 기능이나 100% 책임은 도움 수준 초과 규칙5
+C3-036,3,none,sonnet,의약품 아님 고지
+C3-037,1,none,sonnet,제품 구성 소개
+C3-037,2,confirmed,sonnet,제품 주체 EPA·DHA 헤더에 건조한 눈 개선 있음
+C3-038,1,mismatch,sonnet,황반색소밀도 문구는 일치하나 반드시 지켜 보장합니다는 도움 수준 초과 규칙5
+C3-038,2,none,sonnet,섭취 방법
+C3-039,1,confirmed,sonnet,제품 주체 프로바이오틱스 헤더에 유산균 증식 및 유해균 억제 있음 원재료에 유산균 있음
+C3-039,2,confirmed,sonnet,프로바이오틱스 장 건강 문구 일치
+C3-040,1,mismatch,sonnet,황반변성 증상 완화는 질병 완화 표현 규칙1
+C3-040,2,none,sonnet,섭취 방법
+C3-040,3,none,sonnet,의약품 아님 고지
+C3-041,1,confirmed,sonnet,루테인(고시형) 황반색소밀도 유지 문구 일치
+C3-041,2,none,sonnet,의약품 아님 고지
+C3-042,1,none,sonnet,효과를 말하지 않는 대상자 권유
+C3-042,2,unverifiable,sonnet,배변활동 원활 문구는 프로바이오틱스 기능이나 앞 문장의 대상자(앉아서 지내는 사람)가 덧붙어 인정 범위 확정 불가
+C3-042,3,none,sonnet,의약품 아님 고지
+C3-043,1,none,sonnet,효과를 말하지 않는 대상자 권유
+C3-043,2,unverifiable,sonnet,오메가3 혈행 개선 문구는 일치하나 앞 문장의 40~50대 직장인 대상자가 덧붙어 인정 범위 확정 불가
+C3-043,3,none,sonnet,의약품 아님 고지
+C3-044,1,mismatch,sonnet,루테인(마리골드꽃추출물 원재료)이나 공식 원문에 황반색소밀도 문구가 없음 규칙3
+C3-044,2,none,sonnet,섭취 방법
+C3-044,3,none,sonnet,의약품 아님 고지
+C3-045,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치
+C3-045,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-045,3,none,sonnet,의약품 아님 고지
+C3-046,1,none,sonnet,제품 맛 소개
+C3-046,2,unverifiable,sonnet,수면의 질 개선은 판정 기능 8개 밖 규칙2
+C3-046,3,none,sonnet,의약품 아님 고지
+C3-047,1,confirmed,sonnet,프로바이오틱스 유산균 증식 및 유해균 억제 문구 일치
+C3-047,2,confirmed,sonnet,프로바이오틱스 배변활동 원활 문구 일치 (명시적 주어)
+C3-048,1,confirmed,sonnet,오메가3 건조한 눈 개선 EPA·DHA 헤더 문구 일치
+C3-048,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-049,1,confirmed,sonnet,프로바이오틱스 배변활동 원활 헤더 문구 일치
+C3-049,2,unverifiable,sonnet,주어 없고 앞 문장 주어 프로바이오틱스 이어받으면 혈행 개선은 EPA·DHA 기능이라 주체 확정 불가 규칙4
+C3-050,1,confirmed,sonnet,프로바이오틱스 배변활동 원활 문구 일치 줄바꿈은 문장 끝 아님
+C3-050,2,confirmed,sonnet,주어 이어받든 제품이든 프로바이오틱스의 유산균 증식 및 유해균 억제 문구 일치
+C3-051,1,confirmed,sonnet,오메가3=하프물범유(EPA DHA) 헤더 없는 원문의 혈중 중성지질 개선 일치
+C3-051,2,none,sonnet,섭취 방법
+C3-051,3,none,sonnet,의약품 아님 고지
+C3-052,1,none,sonnet,제품 소개
+C3-052,2,confirmed,sonnet,제품 주체 마리골드꽃추출물 헤더의 황반색소밀도 문구 일치
+C3-053,1,none,sonnet,제품 형태 소개
+C3-053,2,confirmed,sonnet,제품 주체 프로바이오틱스 복합물 항목에 유산균 증식 및 유해균 억제 있음 (헤더 줄이 길어 약간 애매)
+C3-053,3,none,sonnet,의약품 아님 고지
+C3-054,1,mismatch,sonnet,혈중 중성지질 개선은 공식 원문에 없음 (EPA DHA 원재료는 있으나 원문 누락) 규칙3
+C3-054,2,none,sonnet,의약품 아님 고지
+C3-055,1,confirmed,sonnet,루테인지아잔틴복합추출물 헤더의 황반색소밀도 문구 일치
+C3-055,2,unverifiable,sonnet,주어 없고 앞 문장 주어 루테인 이어받으면 혈중 중성지질 개선은 EPA·DHA 기능이라 주체 확정 불가 규칙4
+C3-056,1,confirmed,sonnet,제품 주체 마리골드꽃추출물 헤더의 황반색소밀도 문구 일치
+C3-056,2,none,sonnet,섭취 방법
+C3-056,3,none,sonnet,의약품 아님 고지
+C3-057,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치 줄바꿈은 문장 끝 아님
+C3-057,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 루테인지아잔틴 기능이라 주체 확정 불가 규칙4
+C3-057,3,none,sonnet,의약품 아님 고지
+C3-058,1,mismatch,sonnet,황반색소밀도 문구는 일치하나 뒤 문장의 일반 눈 영양제 대비 우월 비교가 덧붙어 도움 수준 초과
+C3-058,2,mismatch,sonnet,다른 제품보다 체감 효과가 훨씬 뛰어나다는 비교 우월 주장 도움 수준 초과 (flow상 황반색소밀도 주장)
+C3-058,3,none,sonnet,의약품 아님 고지
+C3-059,1,mismatch,sonnet,프로바이오틱스 배변활동 문구는 일치하나 뒤 문장의 100% 환불 보장이 덧붙어 도움 수준 초과 규칙5
+C3-059,2,mismatch,sonnet,효과 없으면 100% 환불은 효과 보장 도움 수준 초과
+C3-059,3,none,sonnet,의약품 아님 고지
+C3-060,1,mismatch,sonnet,루테인 황반색소밀도 문구는 일치하나 뒤 문장의 100% 환불 약속이 덧붙어 도움 수준 초과 규칙5
+C3-060,2,mismatch,sonnet,효과 못 느끼면 100% 환불 약속은 효과 보장 도움 수준 초과
+C3-061,1,none,sonnet,제품 포장 소개
+C3-061,2,confirmed,sonnet,프로바이오틱스 장 건강 헤더 문구 일치
+C3-062,1,mismatch,sonnet,과민성대장증후군 증상 완화는 질병 완화 표현 규칙1
+C3-062,2,none,sonnet,의약품 아님 고지
+C3-063,1,none,sonnet,효과를 말하지 않는 대상자 권유
+C3-063,2,unverifiable,sonnet,루테인 황반색소밀도 문구는 일치하나 앞 문장의 사무직 종사자 대상자가 덧붙어 인정 범위 확정 불가
+C3-064,1,confirmed,sonnet,오메가3=정제어유 헤더 없는 원문 첫 항목에 혈행 개선 있음 다른 항목에는 없음
+C3-064,2,none,sonnet,의약품 아님 고지
+C3-065,1,mismatch,sonnet,혈행 개선은 원문에 있으나 100% 보장은 도움 수준 초과 규칙5
+C3-065,2,none,sonnet,의약품 아님 고지
+C3-066,1,confirmed,sonnet,프로바이오틱스 유산균 증식 및 유해균 억제 문구 일치
+C3-066,2,none,sonnet,섭취 방법
+C3-066,3,none,sonnet,의약품 아님 고지
+C3-067,1,mismatch,sonnet,프로바이오틱스 배변활동 원활은 원문에 있으나 원활하게 만들어 줍니다는 단정 도움 수준 초과 규칙5
+C3-067,2,none,sonnet,섭취 방법
+C3-067,3,none,sonnet,의약품 아님 고지
+C3-068,1,confirmed,sonnet,오메가3 혈행 개선 오메가-3지방산함유유지 제품 문구 일치
+C3-068,2,confirmed,sonnet,주어 이어받든 제품이든 오메가-3지방산함유유지 제품의 혈중 중성지질 개선 문구 일치
+C3-069,1,none,sonnet,제품 구성 소개
+C3-069,2,mismatch,sonnet,기억력 개선은 공식 원문에 없음 규칙3
+C3-070,1,none,sonnet,브랜드 소개
+C3-070,2,confirmed,sonnet,제품 주체 EPA·DHA 헤더에 혈중 중성지질 개선 있음
+C3-071,1,mismatch,sonnet,프로바이오틱스 배변활동 문구는 일치하나 뒤 문장의 타 제품 대비 우월 비교가 덧붙어 도움 수준 초과
+C3-071,2,mismatch,sonnet,다른 유산균 제품보다 효과가 훨씬 앞선다는 비교 우월 주장 도움 수준 초과
+C3-072,1,confirmed,sonnet,제품 주체 오메가-3지방산함유유지 제품 항목에 혈행개선 있고 원재료에 오메가3 지방산 함유 유지 있음
+C3-072,2,confirmed,sonnet,오메가3 혈중 중성지질 개선 문구 일치
+C3-073,1,mismatch,sonnet,고지혈증 예방과 치료는 질병 표현 규칙1
+C3-073,2,none,sonnet,섭취 방법
+C3-074,1,confirmed,sonnet,오메가3 기억력 개선 EPA·DHA 헤더 문구 일치
+C3-074,2,none,sonnet,섭취 방법
+C3-074,3,none,sonnet,의약품 아님 고지
+C3-075,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치
+C3-075,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-076,1,none,sonnet,제품 소개
+C3-076,2,mismatch,sonnet,혈행 개선은 원문에 있으나 혈액 흐름을 좋게 만듭니다는 단정 도움 수준 초과 규칙5
+C3-076,3,none,sonnet,의약품 아님 고지
+C3-077,1,confirmed,sonnet,오메가3 혈행 개선 문구 일치 줄바꿈은 문장 끝 아님
+C3-077,2,none,sonnet,섭취 방법
+C3-077,3,none,sonnet,의약품 아님 고지
+C3-078,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치
+C3-078,2,none,sonnet,의약품 아님 고지
+C3-079,1,none,sonnet,제품 디자인 소개
+C3-079,2,unverifiable,sonnet,수면의 질은 판정 기능 8개 밖 규칙2
+C3-079,3,none,sonnet,의약품 아님 고지
+C3-080,1,none,sonnet,제품 형태 소개
+C3-080,2,confirmed,sonnet,제품 주체 프로바이오틱스 항목에 장건강 있고 원재료에 프로바이오틱스 있음
+C3-080,3,none,sonnet,의약품 아님 고지
+C3-081,1,confirmed,sonnet,제품 주체 프로바이오틱스 제품 항목에 유산균 증식 및 유해균 억제 있음
+C3-081,2,confirmed,sonnet,프로바이오틱스 배변활동 원활 문구 일치
+C3-081,3,none,sonnet,의약품 아님 고지
+C3-082,1,confirmed,sonnet,오메가3 건조한 눈 개선 EPA·DHA 헤더 문구 일치
+C3-082,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-083,1,none,sonnet,제품 크기·맛 소개
+C3-083,2,confirmed,sonnet,루테인=마리골드꽃추출물(고시형) 황반색소밀도 헤더 문구 일치
+C3-084,1,confirmed,sonnet,오메가3 혈행 개선 EPA·DHA 헤더 문구 일치
+C3-084,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-085,1,none,sonnet,제품 형태 소개
+C3-085,2,confirmed,sonnet,오메가3 혈행개선 EPA·DHA 문구 일치
+C3-086,1,confirmed,sonnet,프로바이오틱스 장 건강 문구 일치
+C3-086,2,none,sonnet,의약품 아님 고지
+C3-087,1,confirmed,sonnet,제품 주체 프로바이오틱스 헤더에 유산균 증식 및 유해균 억제 있음
+C3-087,2,confirmed,sonnet,프로바이오틱스 배변활동 원활 문구 일치
+C3-087,3,none,sonnet,의약품 아님 고지
+C3-088,1,confirmed,sonnet,제품 주체 헤더 없는 원문의 배변활동 원활 있고 프로바이오틱스 원재료 있음
+C3-088,2,none,sonnet,의약품 아님 고지
+C3-089,1,mismatch,sonnet,배변활동 원활은 판정 기능이나 공식 원문(황반색소밀도·비타민A)에 없음 규칙3
+C3-089,2,none,sonnet,의약품 아님 고지
+C3-090,1,mismatch,sonnet,건조한 눈 개선 문구는 일치하나 뒤 문장의 타사 대비 우월 비교가 덧붙어 도움 수준 초과
+C3-090,2,mismatch,sonnet,다른 회사 제품보다 한 수 위라는 비교 우월 주장 도움 수준 초과
+C3-091,1,confirmed,sonnet,프로바이오틱스 배변활동 원활 헤더 문구 일치
+C3-091,2,confirmed,sonnet,제품 주체 프로바이오틱스 헤더에 장 건강 있음
+C3-091,3,none,sonnet,의약품 아님 고지
+C3-092,1,none,sonnet,원료 공정 소개
+C3-092,2,confirmed,sonnet,오메가3 건조한 눈 개선 헤더 없는 원문 첫 항목 일치 (눈의 피로도는 다른 원료)
+C3-093,1,mismatch,sonnet,안구건조증 치료와 완화는 질병 치료 표현 규칙1
+C3-093,2,none,sonnet,의약품 아님 고지
+C3-094,1,confirmed,sonnet,오메가3 건조한 눈 개선 EPA·DHA 헤더 문구 일치
+C3-094,2,confirmed,sonnet,오메가3 기억력 개선 EPA·DHA 헤더 문구 일치 (명시적 주어)
+C3-095,1,confirmed,sonnet,제품 주체 건조한 눈 개선이 원문에 있고 정제어유 제품
+C3-095,2,none,sonnet,의약품 아님 고지
+C3-096,1,mismatch,sonnet,루테인 황반색소밀도 문구는 일치하나 뒤 문장의 전액 환불 보장이 덧붙어 도움 수준 초과 규칙5
+C3-096,2,mismatch,sonnet,효과 없으면 전액 환불은 효과 보장 도움 수준 초과
+C3-096,3,none,sonnet,의약품 아님 고지
+C3-097,1,none,sonnet,제품 용량 소개
+C3-097,2,mismatch,sonnet,건조한 눈 개선은 공식 원문에 없음 (EPA DHA는 중성지질·혈행뿐) 규칙3
+C3-097,3,none,sonnet,의약품 아님 고지
+C3-098,1,confirmed,sonnet,오메가3 건조한 눈 개선 EPA·DHA 헤더 문구 일치
+C3-098,2,unverifiable,sonnet,주어 없고 앞 문장 주어 오메가3 이어받으면 마리골드 기능이라 주체 확정 불가 규칙4
+C3-099,1,mismatch,sonnet,유산균 증식 및 유해균 억제 문구는 일치하나 뒤 문장의 4주 후 확연한 변화 단정이 덧붙어 도움 수준 초과
+C3-099,2,mismatch,sonnet,2주·4주 기간과 확연히 달라진다는 단정 도움 수준 초과 (flow상 위 주장에 붙음)
+C3-100,1,mismatch,sonnet,루테인 황반색소밀도 문구는 일치하나 뒤 문장의 한 달 후 확실한 변화 단정이 덧붙어 도움 수준 초과
+C3-100,2,mismatch,sonnet,한 달 기간과 확실한 변화 단정 도움 수준 초과 (flow상 위 주장에 붙음)
+C3-100,3,none,sonnet,의약품 아님 고지

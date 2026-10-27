@@ -1,0 +1,34 @@
+[
+  {
+    "case_id": "C3-030",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C3-030",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C3-032",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C3-032",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  }
+]
