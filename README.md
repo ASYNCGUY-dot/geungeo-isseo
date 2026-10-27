@@ -29,6 +29,7 @@
 | 동결 평가세트 (맹검 AI 라벨, 두 라벨러 일치 사례) | 오인 승인 | `근거 불일치` 재현율 | `확인됨` 재현율 |
 |---|---|---|---|
 | 건강기능식품 `claim-eval-v2` | 0/68 | 50/58 | 2/32 |
+| 건강기능식품 `claim-eval-v3` (여러 문장 광고, 문장 단위) | 0/63 (주장 아닌 문장 0/104) | 22/42 | 3/71 |
 | 기능성화장품 `cosmetic-eval-v4` | 0/71 | 27/47 | 1/16 |
 | 기능성화장품 `cosmetic-eval-v5` | 0/62 | 18/36 | 0/13 |
 
@@ -81,7 +82,11 @@ python -m venv .venv
 - 2026-10-27 (줄을 따로 쓴 고지 문구, 동결 브랜치와 이 브랜치): "혈행 개선에 도움을 줄 수 있습니다⏎본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다"처럼
   마침표 없이 줄만 바꾼 정직한 광고가, 고지 문구의 "질병·치료" 때문에 `근거 불일치`를 받았습니다. 이제 줄 전체를 차지한 고지 문구는 따로 읽습니다
   (`claim-extract-v1.5`). 새로 `확인됨`을 받는 광고는 마침표를 찍어 쓰면 이미 `확인됨`이던 형태뿐이고, 평가세트 결과는 바뀌지 않았습니다.
-  새 평가세트와 독립 재검토는 아직입니다. [기록](docs/evidence/MVP_NOTICE_LINES_2026-10-27.md).
+  [기록](docs/evidence/MVP_NOTICE_LINES_2026-10-27.md).
+- 2026-10-27 (독립 재검토와 여러 문장 평가세트, 이 브랜치): 주어 차단과 고지 문구 분리를 독립 AI 재검토에 맡긴 결과 P1은 없었고, 줄바꿈된 주장
+  가운데 낀 고지 문구가 주장을 조각내 `근거 불일치`를 내는 P2를 고쳤습니다(`claim-extract-v1.6`, 동결 브랜치에는 아직 없음). 문장을 여러 개 쓴 광고
+  100개의 새 평가세트 `claim-eval-v3`에서 오인 승인은 0이고, 주어 차단 전 엔진은 1건을 통과시켰습니다. `확인됨` 재현율은 3/71이며, 엔진이 아는
+  고지 문구 형태가 60개 중 8개뿐인 것이 큰 원인입니다. [기록](docs/evidence/CLAIM_EVAL_V3_2026-10-27.md).
 - 2026-10-26 (건강기능식품 주어 이어받기 차단, 독립 AI 재검토 후 동결 브랜치와 이 브랜치): "루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에
   도움을 줄 수 있습니다."처럼 주어 없는 문장이 앞 문장의 원료를 이어받는 광고가 두 주장 모두 `확인됨`을 받았습니다. 이제 원료를 주어로 쓴 문장이 있으면
   주어 없는 문장 옆의 `확인됨`을 보류합니다(`claim-verdict-v1.5`). 바뀌는 판정은 `확인됨`에서 `검증 불가`로 가는 것뿐이고, 평가세트 결과와 화장품 판정은
@@ -305,6 +310,13 @@ docker compose up web
 
 ```powershell
 .venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\eval\claim-eval-v2\cases.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
+```
+
+여러 문장 광고 평가세트(`claim-eval-v3`, 문장마다 맹검 AI 라벨 두 벌, 238/242 일치)는 광고 전체를 판정하고 문장 단위로 채점합니다.
+채점에 앞서 문장을 읽었으므로 이것도 개발용입니다:
+
+```powershell
+.venv\Scripts\python.exe scripts\score_ad_eval.py --cases data\eval\claim-eval-v3\cases.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
 
 사람 검토는 2026-09-27 사용자 결정으로 생략했습니다. 지금 사용자가 할 검토 작업은 없습니다.

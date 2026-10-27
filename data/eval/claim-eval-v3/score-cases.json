@@ -1,0 +1,2663 @@
+{
+  "engine": {
+    "extraction": "claim-extract-v1.6",
+    "verdict": "claim-verdict-v1.5"
+  },
+  "case_count": 100,
+  "segment_count": 242,
+  "labeled_segment_count": 238,
+  "expected_counts": {
+    "confirmed": 71,
+    "mismatch": 42,
+    "unverifiable": 21,
+    "none": 104
+  },
+  "false_clearance_count": 0,
+  "false_clearance_claims": {
+    "count": 0,
+    "of": 63
+  },
+  "false_clearance_none": {
+    "count": 0,
+    "of": 104
+  },
+  "confirmed_recall": {
+    "count": 3,
+    "of": 71
+  },
+  "segment_agreement": {
+    "count": 108,
+    "of": 238
+  },
+  "ads": {
+    "false_cleared": 0,
+    "fully_labeled": 98,
+    "expected_all_confirmed": 45,
+    "engine_all_confirmed": 2
+  },
+  "by_scenario": {
+    "carryover": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 14
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 4
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 14
+      }
+    },
+    "honest": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 0
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 39
+      },
+      "confirmed_recall": {
+        "count": 1,
+        "of": 30
+      }
+    },
+    "modifier": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 24
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 15
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 0
+      }
+    },
+    "two_claims": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 0
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 4
+      },
+      "confirmed_recall": {
+        "count": 2,
+        "of": 24
+      }
+    },
+    "unsupported": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 25
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 42
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 3
+      }
+    }
+  },
+  "by_layout": {
+    "inline": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 17
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 24
+      },
+      "confirmed_recall": {
+        "count": 1,
+        "of": 17
+      }
+    },
+    "lines": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 13
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 31
+      },
+      "confirmed_recall": {
+        "count": 2,
+        "of": 18
+      }
+    },
+    "lines_no_period": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 14
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 23
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 19
+      }
+    },
+    "wrapped": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 19
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 26
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 17
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "C3-001",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-002",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-003",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-004",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-005",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-006",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-007",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-008",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-009",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-010",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-011",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-012",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-013",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-014",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-015",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-016",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-017",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-018",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-019",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-020",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-021",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-022",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-023",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-024",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-025",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-026",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-027",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-028",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-029",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-030",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-031",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reasons": [
+            "MATCHES_OFFICIAL_FUNCTION"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reasons": [
+            "MATCHES_OFFICIAL_FUNCTION"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-032",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-033",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-034",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-035",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-036",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-037",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-038",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-039",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-040",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-041",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-042",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-043",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-044",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-045",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-046",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-047",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-048",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-049",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-050",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-051",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-052",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-053",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-054",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-055",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-056",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-057",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-058",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-059",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_OUTSIDE_RULE_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-060",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_OUTSIDE_RULE_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-061",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-062",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-063",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-064",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-065",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-066",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-067",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_STRENGTH_UNCLEAR"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-068",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-069",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-070",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-071",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-072",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-073",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-074",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-075",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-076",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-077",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-078",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-079",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-080",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-081",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-082",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-083",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-084",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-085",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-086",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-087",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-088",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reasons": [
+            "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-089",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-090",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-091",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-092",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-093",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-094",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-095",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-096",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-097",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-098",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C3-099",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C3-100",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    }
+  ]
+}
