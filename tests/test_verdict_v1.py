@@ -260,6 +260,29 @@ def test_claims_whose_subjects_are_clear_stay_confirmed(text: str) -> None:
     assert [decision.verdict for decision in _ad(text, THREE_HEADERS_TEXT)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
 
 
+@pytest.mark.parametrize("text", [
+    # An honest advertisement with the notice on its own line: joined to the claim, the notice's
+    # "질병의 예방 및 치료" read as a disease claim (independent review, 2026-10-26).
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다",
+    "본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다\n혈행 개선에 도움을 줄 수 있습니다.",
+    "혈행 개선에\n도움을 줄 수 있습니다\n이 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다",
+])
+def test_a_claim_beside_the_notice_on_its_own_line_is_confirmed(text: str) -> None:
+    assert [decision.verdict for decision in _ad(text)] == [Verdict.CONFIRMED]
+
+
+@pytest.mark.parametrize("text", [
+    # The rest of the lines is still read in full: a dose line or a condition withholds the confirmation.
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n하루 3캡슐이면 충분합니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n(고혈압 환자에 한함)",
+    "혈행 개선에 도움을 줄 수 있는\n본 제품은 의약품이 아닙니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n그래서 본 제품은 의약품이 아닙니다",
+])
+def test_the_notice_on_its_own_line_does_not_clear_other_lines(text: str) -> None:
+    assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
+
+
 def test_the_advertisement_decision_takes_only_the_claims_of_its_text() -> None:
     from claimledger.verdict_v1 import decide_ad
 
