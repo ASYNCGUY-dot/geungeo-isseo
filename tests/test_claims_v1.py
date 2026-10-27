@@ -5,6 +5,7 @@ from claimledger.claims_v1 import (
     ExpressionStrength,
     confirm_claims,
     extract_claims,
+    unread_sentences,
 )
 from claimledger.official_v2 import EffectKey
 
@@ -66,6 +67,34 @@ def test_negated_disclaimer_is_not_a_claim() -> None:
     text = "본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다. 부작용이 없습니다."
 
     assert extract_claims(text) == ()
+
+
+@pytest.mark.parametrize(("text", "claim"), [
+    # The notice on lines of its own is a sentence even without a period (independent review, 2026-10-26).
+    ("혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다", "혈행 개선에 도움을 줄 수 있습니다"),
+    ("본 제품은 의약품이 아닙니다\n혈행 개선에 도움을 줄 수 있습니다.", "혈행 개선에 도움을 줄 수 있습니다."),
+    # Wrapping still keeps a sentence together, on either side of the notice.
+    (
+        "혈행 개선에\n도움을 줄 수 있습니다\n이 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다",
+        "혈행 개선에\n도움을 줄 수 있습니다",
+    ),
+])
+def test_the_notice_on_lines_of_its_own_is_split_from_the_claim(text: str, claim: str) -> None:
+    assert [item.text for item in extract_claims(text)] == [claim]
+    assert unread_sentences(text) == ()
+
+
+@pytest.mark.parametrize("text", [
+    # Only lines that are the whole notice are split off; other words keep the lines together.
+    "본 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n그래서 본 제품은 의약품이 아닙니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한",
+    "혈행 개선에 도움을 줄 수 있는\n본 제품은 의약품이 아닙니다 라고 합니다",
+])
+def test_lines_that_are_not_the_whole_notice_stay_together(text: str) -> None:
+    spans = [item.span for item in extract_claims(text)] + list(unread_sentences(text))
+
+    assert len(spans) <= 1
 
 
 def test_growth_is_not_gut_health_and_plain_text_is_not_a_claim() -> None:
