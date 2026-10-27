@@ -283,6 +283,24 @@ def test_the_notice_on_its_own_line_does_not_clear_other_lines(text: str) -> Non
     assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
 
 
+def test_a_notice_inside_a_wrapped_claim_keeps_the_claim_whole() -> None:
+    # Split around the notice, "혈행 개선에" read as an improvement claim and an honest advertisement got
+    # 근거 불일치 (independent review, 2026-10-27). Read whole, the claim is withheld as before the split.
+    decisions = _ad("혈행 개선에\n본 제품은 의약품이 아닙니다\n도움을 줄 수 있습니다")
+
+    assert [decision.verdict for decision in decisions] == [Verdict.UNVERIFIABLE]
+
+
+@pytest.mark.parametrize("text", [
+    # The split notice neither carries an ingredient's topic away from a subject-less claim nor ends it.
+    "루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다",
+    "본 제품은 의약품이 아닙니다\n루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다",
+    "루테인은 눈 건강에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n혈행 개선에 도움을 줄 수 있습니다",
+])
+def test_the_notice_lines_and_the_subject_gate_together(text: str) -> None:
+    assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text, THREE_HEADERS_TEXT))
+
+
 def test_the_advertisement_decision_takes_only_the_claims_of_its_text() -> None:
     from claimledger.verdict_v1 import decide_ad
 

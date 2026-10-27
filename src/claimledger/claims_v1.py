@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.5"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.6"
 
 
 class ExpressionStrength(StrEnum):
@@ -71,8 +71,9 @@ _DISCLAIMER = re.compile(
     r"(?:아닙니다|아니에요|아니다|아님)[.!。]*"
 )
 # Layout wrapping is not a sentence boundary: retain the subject and trailing qualifiers. Only the
-# recognized notice filling whole lines is split off (claim-extract-v1.5): joined to a claim without a
-# period, its "질병의 예방 및 치료" read as a disease claim.
+# recognized notice filling whole lines at the start or end of a sentence is split off
+# (claim-extract-v1.5, v1.6): joined to a claim without a period, its "질병의 예방 및 치료" read as a
+# disease claim.
 _SENTENCE = re.compile(r".+?(?:[.!?。…]+(?=\s|$)|$)", re.DOTALL)
 # A notice candidate spans at most this many lines and compact characters; longer text is no notice.
 _NOTICE_MAX_LINES = 8
@@ -142,7 +143,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.5"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.6"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
@@ -174,7 +175,10 @@ def _literal(text: str, positions: list[int], match: re.Match[str]) -> str:
 
 
 def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
-    """Split a sentence where the recognized notice fills whole lines of it; other lines stay together."""
+    """Split off the recognized notice where it fills whole lines at the start or end of a sentence.
+
+    A notice between other lines stays in the sentence: split there, the lines around it became
+    sentences of their own ("혈행 개선에" read as an improvement claim; claim-extract-v1.6)."""
     if _DISCLAIMER.fullmatch(_compact(text[start:end])[0]):
         return [(start, end)]
     lines: list[tuple[int, int]] = []
@@ -182,8 +186,7 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
     for line in text[start:end].split("\n"):
         lines.append((position, position + len(line)))
         position += len(line) + 1
-    pieces: list[tuple[int, int]] = []
-    rest: tuple[int, int] | None = None
+    pieces: list[tuple[tuple[int, int], bool]] = []
     index = 0
     while index < len(lines):
         last = None
@@ -194,17 +197,17 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
             if _DISCLAIMER.fullmatch(compact):
                 last = stop
         if last is None:
-            rest = (rest[0] if rest else lines[index][0], lines[index][1])
+            pieces.append((lines[index], False))
             index += 1
             continue
-        if rest:
-            pieces.append(rest)
-            rest = None
-        pieces.append((lines[index][0], lines[last][1]))
+        pieces.append(((lines[index][0], lines[last][1]), True))
         index = last + 1
-    if rest:
-        pieces.append(rest)
-    return pieces
+    other = [number for number, (_, notice) in enumerate(pieces) if not notice]
+    if not other:
+        return [span for span, _ in pieces]
+    first, last = other[0], other[-1]
+    middle = (pieces[first][0][0], pieces[last][0][1])
+    return [span for span, _ in pieces[:first]] + [middle] + [span for span, _ in pieces[last + 1 :]]
 
 
 def _sentence_spans(text: str) -> list[tuple[int, int]]:
