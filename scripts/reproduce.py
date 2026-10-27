@@ -2,7 +2,8 @@
 
 The C003 snapshot is not tracked, so its SHA-256 is compared with an evaluation manifest first; a
 missing or different file stops the run. Then the unit tests, the attribution evaluation sets and
-the independent claim-level set run with their zero-error gates. The development cases are scored
+the claim-level sets (one sentence per case, and advertisements of several sentences) run with their
+zero-error gates. The development cases are scored
 without a gate: five of their labels record the policy before headerless attribution.
 
 Exit codes: 0 every gate passed, 1 a gate failed, 3 input error.
@@ -74,6 +75,15 @@ def steps(source_export: Path, retrieved_at: str, output_dir: Path, skip_tests: 
             ],
             True,
         ))
+    planned.append(Step(
+        "claim-eval-v3 (advertisements of several sentences)",
+        [
+            python, str(ROOT / "scripts" / "score_ad_eval.py"),
+            "--cases", str(ROOT / "data" / "eval" / "claim-eval-v3" / "cases.json"), *source,
+            "--output", str(output_dir / "claim-eval-v3.json"), "--require-zero-false-clearance",
+        ],
+        True,
+    ))
     planned.append(Step(
         "claim-eval-v2 (independent)",
         [

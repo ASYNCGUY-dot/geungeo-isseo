@@ -50,6 +50,9 @@ def test_all_gates_run_with_the_manifest_retrieval_time(tmp_path: Path) -> None:
     assert any("-m pytest" in call for call in joined)
     claim = [call for call in joined if "claim-eval-v2/cases.json" in call]
     assert len(claim) == 1 and "--require-zero-false-clearance" in claim[0] and RETRIEVED_AT in claim[0]
+    ads = [call for call in joined if "claim-eval-v3/cases.json" in call]
+    assert len(ads) == 1 and "score_ad_eval.py" in ads[0] and "--require-zero-false-clearance" in ads[0]
+    assert RETRIEVED_AT in ads[0]
     attribution = [call for call in joined if "score_attribution_eval.py" in call]
     assert len(attribution) == 6 and all("--require-zero-false-attribution" in call for call in attribution)
     dev = [call for call in joined if "core-mvp-dev-v1.json" in call]
