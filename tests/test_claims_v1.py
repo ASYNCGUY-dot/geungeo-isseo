@@ -78,6 +78,12 @@ def test_negated_disclaimer_is_not_a_claim() -> None:
         "혈행 개선에\n도움을 줄 수 있습니다\n이 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다",
         "혈행 개선에\n도움을 줄 수 있습니다",
     ),
+    (
+        "본 제품은 의약품이 아닙니다\n혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다",
+        "혈행 개선에 도움을 줄 수 있습니다",
+    ),
+    # A notice line holds at most 48 characters without spaces.
+    ("혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다" + "!" * 25, "혈행 개선에 도움을 줄 수 있습니다"),
 ])
 def test_the_notice_on_lines_of_its_own_is_split_from_the_claim(text: str, claim: str) -> None:
     assert [item.text for item in extract_claims(text)] == [claim]
@@ -95,6 +101,18 @@ def test_lines_that_are_not_the_whole_notice_stay_together(text: str) -> None:
     spans = [item.span for item in extract_claims(text)] + list(unread_sentences(text))
 
     assert len(spans) <= 1
+
+
+@pytest.mark.parametrize("text", [
+    # A notice between lines of one sentence is not split off: the lines around it became sentences of
+    # their own, and "혈행 개선에" read as an improvement claim (independent review, 2026-10-27).
+    "혈행 개선에\n본 제품은 의약품이 아닙니다\n도움을 줄 수 있습니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n눈 건강에 도움을 줄 수 있습니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다" + "!" * 26,
+])
+def test_a_notice_between_lines_or_too_long_stays_in_the_sentence(text: str) -> None:
+    assert [item.span for item in extract_claims(text)] == [(0, len(text))]
+    assert unread_sentences(text) == ()
 
 
 def test_growth_is_not_gut_health_and_plain_text_is_not_a_claim() -> None:
