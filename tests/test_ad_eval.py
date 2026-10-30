@@ -317,3 +317,38 @@ def test_false_clearance_counts_sentences_labeled_as_no_claim(tmp_path: Path) ->
     broken["segments"][0]["span"] = [0, 3]
     code, _ = _score(tmp_path, [broken])
     assert code == 3
+
+
+def test_score_reports_how_each_context_sentence_was_read(tmp_path: Path) -> None:
+    claim = "오메가3는 혈행 개선에 도움을 줄 수 있습니다."
+    cases = [
+        _case("A", "inline", [claim, NOTICE + "."], ["confirmed", "none"]),
+        _case("B", "inline", [claim, "하루 한 번 드세요.", "본 제품은 의약품이 아닙니다 ※."], ["confirmed", "none", "none"]),
+        _case("C", "lines_no_period", [claim, "질병의 예방 및 치료에 쓰는 의약품이 아닙니다."], ["confirmed", "none"]),
+    ]
+    roles = {"A": ["claim", "notice"], "B": ["claim", "usage", "notice"], "C": ["claim", "notice"]}
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"items": [
+        {"case_id": case_id, "segments": [
+            {"seg_no": number, "role": "claim"} if kind == "claim" else {"seg_no": number, "role": "context", "kind": kind}
+            for number, kind in enumerate(kinds, start=1)
+        ]}
+        for case_id, kinds in roles.items()
+    ]}, ensure_ascii=False), encoding="utf-8")
+
+    code, summary = _score(tmp_path, cases, "--manifest", str(manifest))
+
+    assert code == 0
+    readings = {row["case_id"]: [segment["reading"] for segment in row["segments"]] for row in summary["results"]}
+    # A sentence is read as a claim, left unread (it withholds its neighbours' confirmation) or set aside as
+    # the notice; the notice joined to a claim by lines without periods is read as part of that claim.
+    assert readings == {"A": ["claim", "notice"], "B": ["claim", "unread", "unread"], "C": ["claim", "claim"]}
+    assert summary["by_context_kind"]["notice"] == {
+        "count": 3, "reading": {"claim": 1, "notice": 1, "unread": 1}, "actual": {"mismatch": 1, "none": 2},
+    }
+    assert summary["by_context_kind"]["usage"]["reading"] == {"unread": 1}
+    # 근거 불일치 on sentences labeled confirmed or none: the joined claim and notice of C.
+    assert summary["wrong_mismatch"] == {"count": 2, "of": 7}
+
+    _, without = _score(tmp_path, cases)
+    assert "by_context_kind" not in without

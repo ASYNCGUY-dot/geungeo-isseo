@@ -5,17 +5,25 @@ claims no function, null where the labelers disagreed). The whole advertisement 
 `decide_ad`; a sentence takes the verdict of the claims whose spans overlap it, `confirmed` if any of
 them is confirmed, so a confirmation that reaches a sentence labeled otherwise is a false clearance.
 A sentence no claim overlaps gets `none`. Expected labels are blind AI labels, not human ground truth.
+Each sentence also records how the rules read it: as (part of) a claim, as a sentence left unread
+(it withholds its neighbours' confirmation) or set aside as the notice. With --manifest, the readings
+and verdicts of the context sentences are counted per kind from the sample's sentence roles.
 
 Exit codes: 0 scored, 1 false clearance found with --require-zero-false-clearance, 3 input error.
 """
 
 import argparse
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Sequence
 from pathlib import Path
 
-from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION, confirm_claims, extract_claims
+from claimledger.claims_v1 import (
+    CLAIM_EXTRACTION_VERSION,
+    confirm_claims,
+    extract_claims,
+    unread_sentences,
+)
 from claimledger.domain import ConfirmedProduct, Verdict
 from claimledger.snapshot import SnapshotError, load_c003_snapshot, parse_aware_datetime
 from claimledger.verdict_v1 import CLAIM_VERDICT_VERSION, decide_ad
@@ -34,6 +42,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source-export", type=Path, required=True)
     parser.add_argument("--source-retrieved-at", required=True)
     parser.add_argument("--output", type=Path, help="write the summary JSON here as well")
+    parser.add_argument("--manifest", type=Path, help="sample manifest whose sentence roles group the context sentences")
     parser.add_argument("--require-zero-false-clearance", action="store_true")
     return parser.parse_args(argv)
 
@@ -51,16 +60,24 @@ def _validate(case: dict) -> None:
 def _score_case(case: dict, product: ConfirmedProduct) -> dict:
     claims = confirm_claims(extract_claims(case["ad_text"]), "all")
     decisions = list(decide_ad(case["ad_text"], claims, product))
+    unread = unread_sentences(case["ad_text"])
     segments = []
     for segment in case["segments"]:
         start, end = segment["span"]
         overlapping = [item for item in decisions if item.claim.span[0] < end and item.claim.span[1] > start]
         verdicts = {item.verdict for item in overlapping}
         actual = next((verdict.value for verdict in _RANK if verdict in verdicts), "none")
+        if any(item.span[0] < end and item.span[1] > start for item in claims):
+            reading = "claim"
+        elif any(span[0] < end and span[1] > start for span in unread):
+            reading = "unread"
+        else:
+            reading = "notice"
         segments.append({
             "seg_no": segment["seg_no"],
             "expected": segment["expected"],
             "actual": actual,
+            "reading": reading,
             "reasons": sorted({item.reason.value for item in overlapping}),
         })
     return {"case_id": case["case_id"], "scenario": case.get("scenario"), "layout": case.get("layout"), "segments": segments}
@@ -71,7 +88,8 @@ def _ratio(count: int, of: int) -> dict:
 
 
 def _metrics(rows: list[tuple[str, str]]) -> dict:
-    """False clearance and confirmed recall over (expected, actual) pairs of labeled sentences."""
+    """False clearance, confirmed recall and wrong 근거 불일치 (on sentences labeled confirmed or none) over
+    (expected, actual) pairs of labeled sentences."""
     claims = [actual for expected, actual in rows if expected in {"mismatch", "unverifiable"}]
     nones = [actual for expected, actual in rows if expected == "none"]
     confirmed = [actual for expected, actual in rows if expected == "confirmed"]
@@ -80,10 +98,31 @@ def _metrics(rows: list[tuple[str, str]]) -> dict:
         "false_clearance_claims": _ratio(claims.count("confirmed"), len(claims)),
         "false_clearance_none": _ratio(nones.count("confirmed"), len(nones)),
         "confirmed_recall": _ratio(confirmed.count("confirmed"), len(confirmed)),
+        "wrong_mismatch": _ratio((confirmed + nones).count("mismatch"), len(confirmed) + len(nones)),
     }
 
 
-def score(cases: Sequence[dict], products: dict[str, ConfirmedProduct]) -> dict:
+def _by_context_kind(results: list[dict], roles: dict[tuple[str, int], str]) -> dict:
+    """Readings and verdicts of the context sentences, per kind of the sample's sentence roles."""
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for row in results:
+        for segment in row["segments"]:
+            kind = roles.get((row["case_id"], segment["seg_no"]))
+            if kind is not None:
+                grouped[kind].append(segment)
+    return {
+        kind: {
+            "count": len(segments),
+            "reading": dict(sorted(Counter(segment["reading"] for segment in segments).items())),
+            "actual": dict(sorted(Counter(segment["actual"] for segment in segments).items())),
+        }
+        for kind, segments in sorted(grouped.items())
+    }
+
+
+def score(
+    cases: Sequence[dict], products: dict[str, ConfirmedProduct], roles: dict[tuple[str, int], str] | None = None,
+) -> dict:
     results = []
     for case in cases:
         _validate(case)
@@ -127,6 +166,7 @@ def score(cases: Sequence[dict], products: dict[str, ConfirmedProduct]) -> dict:
         },
         "by_scenario": {key: _metrics(value) for key, value in sorted(by["scenario"].items())},
         "by_layout": {key: _metrics(value) for key, value in sorted(by["layout"].items())},
+        **({"by_context_kind": _by_context_kind(results, roles)} if roles is not None else {}),
         "results": results,
     }
 
@@ -140,7 +180,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             product.report_no: ConfirmedProduct(product=product, confirmed_by_user=True)
             for product in load_c003_snapshot(args.source_export, retrieved_at)
         }
-        summary = score(cases, products)
+        roles = None
+        if args.manifest is not None:
+            items = json.loads(args.manifest.read_text(encoding="utf-8"))["items"]
+            roles = {
+                (item["case_id"], segment["seg_no"]): segment["kind"]
+                for item in items for segment in item["segments"] if segment["role"] == "context"
+            }
+        summary = score(cases, products, roles)
     except (AdScoreError, SnapshotError, OSError, ValueError, KeyError, TypeError) as exc:
         print(f"error: {exc}")
         return 3
