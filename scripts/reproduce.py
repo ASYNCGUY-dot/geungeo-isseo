@@ -75,15 +75,17 @@ def steps(source_export: Path, retrieved_at: str, output_dir: Path, skip_tests: 
             ],
             True,
         ))
-    planned.append(Step(
-        "claim-eval-v3 (advertisements of several sentences)",
-        [
-            python, str(ROOT / "scripts" / "score_ad_eval.py"),
-            "--cases", str(ROOT / "data" / "eval" / "claim-eval-v3" / "cases.json"), *source,
-            "--output", str(output_dir / "claim-eval-v3.json"), "--require-zero-false-clearance",
-        ],
-        True,
-    ))
+    for eval_id in ("claim-eval-v4", "claim-eval-v3"):
+        folder = ROOT / "data" / "eval" / eval_id
+        planned.append(Step(
+            f"{eval_id} (advertisements of several sentences)",
+            [
+                python, str(ROOT / "scripts" / "score_ad_eval.py"),
+                "--cases", str(folder / "cases.json"), "--manifest", str(folder / "manifest.json"), *source,
+                "--output", str(output_dir / f"{eval_id}.json"), "--require-zero-false-clearance",
+            ],
+            True,
+        ))
     planned.append(Step(
         "claim-eval-v2 (independent)",
         [

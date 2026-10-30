@@ -6,7 +6,18 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-27 독립 재검토, `claim-extract-v1.6`, 여러 문장 평가세트 `claim-eval-v3` (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-10-30 고지 문구 변형 시도·철회와 `claim-eval-v4` (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: 추천("`main` 정리 후 고지 문구 인식 확대, 틀린 고발을 없애는 작업으로")에 "진행해". [기록](evidence/MVP_NOTICE_VARIANTS_2026-10-30.md),
+  [계획·채점 전 기준](superpowers/plans/2026-10-30-notice-variants.md).
+- `main` 정리: 다른 세션의 포트폴리오 커밋 두 개를 이 브랜치에 병합(`95db576`)하고 원격 `main`을 그대로 앞당김(덮어쓰기 없음).
+- 변형 문형 `claim-extract-v1.7`(`3dd7762`), 재검토 수정 v1.8(`52b19c2`). 독립 재검토 P1 0건, P2 1건(공백 줄이 고지 문구를 "가운데"로 만듦, v1.6부터).
+- `claim-eval-v4`(광고 100개, 맹검 라벨 240/240 일치): v1.8 오인 승인 0, 틀린 `근거 불일치` 45 → 35, 고지 문구로 뗀 것 33/60(기준 40), 고지 문구의
+  `근거 불일치` 24(기준 16 이하) → **철회**. 현재 `claim-extract-v1.9`(`4f95b55`) = v1.6 + 빈 줄 수정. 216,000·192,960개 묶음이 v1.6과 같음.
+- 채점기: `--manifest`로 맥락 문장 종류별 `reading`(claim·unread·notice)과 판정, `wrong_mismatch`를 보고. 재현 실행에 v4 관문 추가.
+- 남은 것(사용자 결정): 동결 브랜치에 빈 줄 수정 반영, 두 절을 이은 고지 문구가 필요하면 LLM 구조화 별도 계획. `I-0040`·Docker는 사용자 조치.
+
+## 이전 인계 — 2026-10-27 독립 재검토, `claim-extract-v1.6`, 여러 문장 평가세트 `claim-eval-v3` (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: "작업 이어서 해줘"(남은 일로 보고한 새 평가세트·독립 재검토). [재검토와 v1.6](evidence/MVP_NOTICE_LINES_2026-10-27.md),
   [평가세트](evidence/CLAIM_EVAL_V3_2026-10-27.md).

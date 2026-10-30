@@ -33,6 +33,7 @@
 |---|---|---|---|
 | 건강기능식품 `claim-eval-v2` | 0/68 | 50/58 | 2/32 |
 | 건강기능식품 `claim-eval-v3` (여러 문장 광고, 문장 단위) | 0/63 (주장 아닌 문장 0/104) | 22/42 | 3/71 |
+| 건강기능식품 `claim-eval-v4` (여러 문장 광고, 문장 단위) | 0/64 (주장 아닌 문장 0/106) | 21/37 | 4/70 |
 | 기능성화장품 `cosmetic-eval-v4` | 0/71 | 27/47 | 1/16 |
 | 기능성화장품 `cosmetic-eval-v5` | 0/62 | 18/36 | 0/13 |
 
@@ -82,6 +83,10 @@ python -m venv .venv
 3단계는 고시형 원료 93개의 공식 기능성 대응표를 만든 상태이고, 개별인정형 목록(식품안전나라 `I-0040`)은 활용신청을 기다립니다
 ([대응표 기록](docs/evidence/CARRIER_TABLE_2026-09-30.md)). 현재 테스트 통과를 자동 승인·출시 허가로 해석하지 않습니다.
 
+- 2026-10-30 (고지 문구 변형 시도와 철회, 이 브랜치): 표시기준은 "의약품이 아니라는 내용"만 요구해 광고마다 고지 문구가 다릅니다. 닫힌 문형으로
+  변형을 읽어 보았지만, 새 평가세트 `claim-eval-v4`에서 고지 문구 60개 중 33개만 읽어 채점 전 기준(40개)에 못 미쳐 철회했습니다. 오인 승인은 0이었고
+  틀린 `근거 불일치`는 45에서 35로 줄었습니다. 독립 재검토가 찾은 빈 줄 결함(고지 문구 바깥 빈 줄이 많으면 정직한 광고가 `근거 불일치`)만 고쳐 남겼습니다
+  (`claim-extract-v1.9`). [기록](docs/evidence/MVP_NOTICE_VARIANTS_2026-10-30.md).
 - 2026-10-27 (줄을 따로 쓴 고지 문구, 동결 브랜치와 이 브랜치): "혈행 개선에 도움을 줄 수 있습니다⏎본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다"처럼
   마침표 없이 줄만 바꾼 정직한 광고가, 고지 문구의 "질병·치료" 때문에 `근거 불일치`를 받았습니다. 이제 줄 전체를 차지한 고지 문구는 따로 읽습니다
   (`claim-extract-v1.5`). 새로 `확인됨`을 받는 광고는 마침표를 찍어 쓰면 이미 `확인됨`이던 형태뿐이고, 평가세트 결과는 바뀌지 않았습니다.
@@ -315,11 +320,11 @@ docker compose up web
 .venv\Scripts\python.exe scripts\evaluate_dev_cases.py --cases data\eval\claim-eval-v2\cases.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
 
-여러 문장 광고 평가세트(`claim-eval-v3`, 문장마다 맹검 AI 라벨 두 벌, 238/242 일치)는 광고 전체를 판정하고 문장 단위로 채점합니다.
-채점에 앞서 문장을 읽었으므로 이것도 개발용입니다:
+여러 문장 광고 평가세트(`claim-eval-v3`·`claim-eval-v4`, 문장마다 맹검 AI 라벨 두 벌, 238/242·240/240 일치)는 광고 전체를 판정하고 문장 단위로
+채점합니다. `--manifest`를 주면 고지 문구 같은 맥락 문장을 엔진이 어떻게 읽었는지 종류별로 셉니다. 채점 뒤 문장을 읽었으므로 둘 다 개발용입니다:
 
 ```powershell
-.venv\Scripts\python.exe scripts\score_ad_eval.py --cases data\eval\claim-eval-v3\cases.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
+.venv\Scripts\python.exe scripts\score_ad_eval.py --cases data\eval\claim-eval-v4\cases.json --manifest data\eval\claim-eval-v4\manifest.json --source-export data\c003-products.jsonl --source-retrieved-at 2026-08-27T12:42:29.050550+00:00 --require-zero-false-clearance
 ```
 
 사람 검토는 2026-09-27 사용자 결정으로 생략했습니다. 지금 사용자가 할 검토 작업은 없습니다.
