@@ -115,6 +115,53 @@ def test_a_notice_between_lines_or_too_long_stays_in_the_sentence(text: str) -> 
     assert unread_sentences(text) == ()
 
 
+NOTICE_VARIANTS = [
+    # 건강기능식품의 표시기준 제4조 제10호 asks for the content, not one wording (claim-extract-v1.7).
+    "※ 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+    "* 이 제품은 의약품이 아닙니다.",
+    "본 제품은 질병의 예방·치료를 위한 의약품이 아닙니다.",
+    # The Hangul araea "ㆍ" (U+318D) used as a middle dot becomes U+119E under NFKC.
+    "본 제품은 질병의 예방ㆍ치료를 위한 의약품이 아닙니다.",
+    "본 제품은 질병의 예방･치료를 위한 의약품이 아닙니다.",
+    "본 제품은 건강기능식품이며, 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+    "(본 제품은 질병 예방 및 치료를 목적으로 하는 의약품이 아님)",
+    "본품은 의약품이 아닌 건강기능식품입니다.",
+    "건강기능식품은 의약품이 아닙니다.",
+    "본 제품은 질병의 예방 및 치료를 목적으로 하지 않습니다.",
+    "[해당 제품은 질병의 예방과 치료를 위한 의약품이 아니에요]",
+]
+
+
+@pytest.mark.parametrize("notice", NOTICE_VARIANTS)
+def test_notice_variants_are_neither_claims_nor_unread(notice: str) -> None:
+    for text, claim in (
+        (f"혈행 개선에 도움을 줄 수 있습니다. {notice}", "혈행 개선에 도움을 줄 수 있습니다."),
+        (f"혈행 개선에 도움을 줄 수 있습니다\n{notice}", "혈행 개선에 도움을 줄 수 있습니다"),
+        (f"{notice}\n혈행 개선에 도움을 줄 수 있습니다", "혈행 개선에 도움을 줄 수 있습니다"),
+    ):
+        assert [item.text for item in extract_claims(text)] == [claim], text
+        assert unread_sentences(text) == (), text
+
+
+@pytest.mark.parametrize("sentence", [
+    # Other words in the sentence keep it from being the notice: it is read as a claim or left unread.
+    "※ 본 제품은 의약품이 아니지만 효과는 확실합니다.",
+    "본 제품은 의약품이 아닌 혈행 개선 식품입니다.",
+    "본 제품은 의약품이 아닙니다만 혈행 개선에 탁월합니다.",
+    "본 제품은 질병의 예방 및 치료에 도움을 주는 의약품이 아닙니다.",
+    "질병의 예방 및 치료를 위한 의약품이 아닌 고지혈증 개선제입니다.",
+    "※※ 본 제품은 의약품이 아닙니다.",
+    "(본 제품은 의약품이 아닙니다.",
+    "본 제품은 의약품이 아닙니다(단, 혈행 개선 효과는 보장).",
+])
+def test_words_beside_a_notice_keep_the_sentence(sentence: str) -> None:
+    text = f"혈행 개선에 도움을 줄 수 있습니다. {sentence}"
+    start = text.index(sentence)
+    spans = [item.span for item in extract_claims(text)] + list(unread_sentences(text))
+
+    assert any(span[0] <= start < span[1] for span in spans)
+
+
 def test_growth_is_not_gut_health_and_plain_text_is_not_a_claim() -> None:
     claims = extract_claims("키 성장 건강 쑥쑥\n맛있는 딸기맛")
 

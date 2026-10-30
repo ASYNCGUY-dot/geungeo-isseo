@@ -283,6 +283,28 @@ def test_the_notice_on_its_own_line_does_not_clear_other_lines(text: str) -> Non
     assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
 
 
+@pytest.mark.parametrize("text", [
+    # The notice in other words of the labelling standard (claim-extract-v1.7): before, these lines were
+    # unread and withheld the claim, or "질병의 예방·치료" read as a disease claim.
+    "혈행 개선에 도움을 줄 수 있습니다.\n※ 본 제품은 질병의 예방·치료를 위한 의약품이 아닙니다.",
+    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 건강기능식품이며, 질병의 예방 및 치료를 위한 의약품이 아닙니다",
+    "혈행 개선에 도움을 줄 수 있습니다. (본품은 의약품이 아닌 건강기능식품입니다)",
+])
+def test_a_claim_beside_a_notice_variant_is_confirmed(text: str) -> None:
+    assert [decision.verdict for decision in _ad(text)] == [Verdict.CONFIRMED]
+
+
+@pytest.mark.parametrize("text", [
+    # A notice variant clears no other line, and words beside it keep the confirmation withheld.
+    "혈행 개선에 도움을 줄 수 있습니다\n※ 본 제품은 의약품이 아닙니다\n하루 3캡슐이면 충분합니다",
+    "혈행 개선에 도움을 줄 수 있습니다. ※ 본 제품은 의약품이 아니지만 효과는 확실합니다.",
+    "혈행 개선에 도움을 줄 수 있습니다. 본 제품은 의약품이 아닌 혈행 개선 식품입니다.",
+    "혈행 개선에 도움을 줄 수 있습니다. 본 제품은 의약품이 아닙니다(단, 혈행 개선 효과는 보장).",
+])
+def test_a_notice_variant_does_not_clear_other_words(text: str) -> None:
+    assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
+
+
 def test_a_notice_inside_a_wrapped_claim_keeps_the_claim_whole() -> None:
     # Split around the notice, "혈행 개선에" read as an improvement claim and an honest advertisement got
     # 근거 불일치 (independent review, 2026-10-27). Read whole, the claim is withheld as before the split.
