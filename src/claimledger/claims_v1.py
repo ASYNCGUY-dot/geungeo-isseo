@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.7"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.8"
 
 
 class ExpressionStrength(StrEnum):
@@ -77,9 +77,13 @@ _NOTICE_BODY = (
     rf"(?:{_NOTICE_TREATMENT}(?:를위한|를목적으로하는|목적의))?의약품이(?:아닙니다|아니에요|아니예요|아니다|아님)"
     rf"|(?:{_NOTICE_TREATMENT}(?:를위한|를목적으로하는|목적의))?의약품이아닌(?:건강기능)?식품(?:입니다|이에요|임)"
     rf"|{_NOTICE_TREATMENT}를목적으로하지않습니다"
-    r")[.!。]*"
+    r")"
 )
-_DISCLAIMER = re.compile(rf"[※*•·\-]?(?:\({_NOTICE_BODY}\)|\[{_NOTICE_BODY}\]|{_NOTICE_BODY})[.!。]*")
+# Closing marks are read once outside the brackets, so a failing match does not try every split of a run.
+_DISCLAIMER = re.compile(
+    "[※*•·ᆞ・\\-]?"
+    rf"(?:\({_NOTICE_BODY}[.!。]*\)|\[{_NOTICE_BODY}[.!。]*\]|{_NOTICE_BODY})[.!。]*"
+)
 # Layout wrapping is not a sentence boundary: retain the subject and trailing qualifiers. Only the
 # recognized notice filling whole lines at the start or end of a sentence is split off
 # (claim-extract-v1.5, v1.6): joined to a claim without a period, its "질병의 예방 및 치료" read as a
@@ -153,7 +157,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.7"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.8"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
@@ -188,7 +192,8 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
     """Split off the recognized notice where it fills whole lines at the start or end of a sentence.
 
     A notice between other lines stays in the sentence: split there, the lines around it became
-    sentences of their own ("혈행 개선에" read as an improvement claim; claim-extract-v1.6)."""
+    sentences of their own ("혈행 개선에" read as an improvement claim; claim-extract-v1.6). Blank lines
+    are no other lines; counted as such, they put a notice at the end "between" lines (claim-extract-v1.8)."""
     if _DISCLAIMER.fullmatch(_compact(text[start:end])[0]):
         return [(start, end)]
     lines: list[tuple[int, int]] = []
@@ -212,7 +217,9 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
             continue
         pieces.append(((lines[index][0], lines[last][1]), True))
         index = last + 1
-    other = [number for number, (_, notice) in enumerate(pieces) if not notice]
+    other = [
+        number for number, ((first, last), notice) in enumerate(pieces) if not notice and text[first:last].strip()
+    ]
     if not other:
         return [span for span, _ in pieces]
     first, last = other[0], other[-1]

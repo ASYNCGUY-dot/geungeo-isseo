@@ -294,6 +294,16 @@ def test_a_claim_beside_a_notice_variant_is_confirmed(text: str) -> None:
     assert [decision.verdict for decision in _ad(text)] == [Verdict.CONFIRMED]
 
 
+def test_blank_lines_after_the_notice_keep_honest_claims_confirmed() -> None:
+    # Nine trailing line breaks made the notice "between" lines and an honest advertisement got 근거 불일치
+    # (independent review, 2026-10-30); claim-extract-v1.5 confirmed both advertisements.
+    trailing = "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다" + "\n" * 9
+    leading = "혈중 중성지질 개선에 도움을 줄 수 있습니다." + "\n" * 8 + "본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다\n혈행 개선에 도움을 줄 수 있습니다."
+
+    assert [decision.verdict for decision in _ad(trailing)] == [Verdict.CONFIRMED]
+    assert [decision.verdict for decision in _ad(leading)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
+
+
 @pytest.mark.parametrize("text", [
     # A notice variant clears no other line, and words beside it keep the confirmation withheld.
     "혈행 개선에 도움을 줄 수 있습니다\n※ 본 제품은 의약품이 아닙니다\n하루 3캡슐이면 충분합니다",
