@@ -136,38 +136,9 @@ def test_blank_lines_do_not_move_the_notice(text: str, claims: list[str] | None)
     assert unread_sentences(text) == ()
 
 
-NOTICE_VARIANTS = [
-    # 건강기능식품의 표시기준 제4조 제10호 asks for the content, not one wording (claim-extract-v1.7).
-    "※ 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
-    "* 이 제품은 의약품이 아닙니다.",
-    "본 제품은 질병의 예방·치료를 위한 의약품이 아닙니다.",
-    # The Hangul araea "ㆍ" (U+318D) used as a middle dot becomes U+119E under NFKC.
-    "본 제품은 질병의 예방ㆍ치료를 위한 의약품이 아닙니다.",
-    "본 제품은 질병의 예방･치료를 위한 의약품이 아닙니다.",
-    "ㆍ본 제품은 의약품이 아닙니다.",
-    "･ 이 제품은 의약품이 아닙니다",
-    "본 제품은 건강기능식품이며, 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
-    "(본 제품은 질병 예방 및 치료를 목적으로 하는 의약품이 아님)",
-    "본품은 의약품이 아닌 건강기능식품입니다.",
-    "건강기능식품은 의약품이 아닙니다.",
-    "본 제품은 질병의 예방 및 치료를 목적으로 하지 않습니다.",
-    "[해당 제품은 질병의 예방과 치료를 위한 의약품이 아니에요]",
-]
-
-
-@pytest.mark.parametrize("notice", NOTICE_VARIANTS)
-def test_notice_variants_are_neither_claims_nor_unread(notice: str) -> None:
-    for text, claim in (
-        (f"혈행 개선에 도움을 줄 수 있습니다. {notice}", "혈행 개선에 도움을 줄 수 있습니다."),
-        (f"혈행 개선에 도움을 줄 수 있습니다\n{notice}", "혈행 개선에 도움을 줄 수 있습니다"),
-        (f"{notice}\n혈행 개선에 도움을 줄 수 있습니다", "혈행 개선에 도움을 줄 수 있습니다"),
-    ):
-        assert [item.text for item in extract_claims(text)] == [claim], text
-        assert unread_sentences(text) == (), text
-
-
 @pytest.mark.parametrize("sentence", [
     # Other words in the sentence keep it from being the notice: it is read as a claim or left unread.
+    # These guarded the withdrawn notice wordings (claim-extract-v1.7, v1.8) and guard any later ones.
     "※ 본 제품은 의약품이 아니지만 효과는 확실합니다.",
     "본 제품은 의약품이 아닌 혈행 개선 식품입니다.",
     "본 제품은 의약품이 아닙니다만 혈행 개선에 탁월합니다.",

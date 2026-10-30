@@ -283,17 +283,6 @@ def test_the_notice_on_its_own_line_does_not_clear_other_lines(text: str) -> Non
     assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
 
 
-@pytest.mark.parametrize("text", [
-    # The notice in other words of the labelling standard (claim-extract-v1.7): before, these lines were
-    # unread and withheld the claim, or "질병의 예방·치료" read as a disease claim.
-    "혈행 개선에 도움을 줄 수 있습니다.\n※ 본 제품은 질병의 예방·치료를 위한 의약품이 아닙니다.",
-    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 건강기능식품이며, 질병의 예방 및 치료를 위한 의약품이 아닙니다",
-    "혈행 개선에 도움을 줄 수 있습니다. (본품은 의약품이 아닌 건강기능식품입니다)",
-])
-def test_a_claim_beside_a_notice_variant_is_confirmed(text: str) -> None:
-    assert [decision.verdict for decision in _ad(text)] == [Verdict.CONFIRMED]
-
-
 def test_blank_lines_after_the_notice_keep_honest_claims_confirmed() -> None:
     # Nine trailing line breaks made the notice "between" lines and an honest advertisement got 근거 불일치
     # (independent review, 2026-10-30); claim-extract-v1.5 confirmed both advertisements.
@@ -305,7 +294,8 @@ def test_blank_lines_after_the_notice_keep_honest_claims_confirmed() -> None:
 
 
 @pytest.mark.parametrize("text", [
-    # A notice variant clears no other line, and words beside it keep the confirmation withheld.
+    # A notice clears no other line, and words beside it keep the confirmation withheld (these guarded the
+    # withdrawn notice wordings of claim-extract-v1.7 and v1.8).
     "혈행 개선에 도움을 줄 수 있습니다\n※ 본 제품은 의약품이 아닙니다\n하루 3캡슐이면 충분합니다",
     "혈행 개선에 도움을 줄 수 있습니다. ※ 본 제품은 의약품이 아니지만 효과는 확실합니다.",
     "혈행 개선에 도움을 줄 수 있습니다. 본 제품은 의약품이 아닌 혈행 개선 식품입니다.",

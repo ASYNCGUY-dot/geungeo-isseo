@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.8"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.9"
 
 
 class ExpressionStrength(StrEnum):
@@ -66,23 +66,11 @@ _STRENGTH_CUES: tuple[tuple[ExpressionStrength, re.Pattern[str]], ...] = (
     ),
     (ExpressionStrength.POSSIBILITY, re.compile(r"수있")),
 )
-# The notice that the product is no medicine. 건강기능식품의 표시기준 제4조 제10호 asks for its content, not
-# one wording, so a closed set of subjects, purposes and endings is read, with at most one leading mark
-# and one pair of brackets (claim-extract-v1.7). Any other word keeps the sentence from being the notice.
-_NOTICE_SUBJECT = r"(?:(?:본|이|해당)제품은|본품은)(?:건강기능식품(?:이며|으로서|으로),?)?|건강기능식품은"
-# Matching runs on NFKC text: "ㆍ" (U+318D) arrives as U+119E and "･" (U+FF65) as "・" (U+30FB).
-_NOTICE_TREATMENT = "(?:질병의?)?예방(?:및|과|또는|[·ᆞ・,])?치료"
-_NOTICE_BODY = (
-    rf"(?:{_NOTICE_SUBJECT})?(?:"
-    rf"(?:{_NOTICE_TREATMENT}(?:를위한|를목적으로하는|목적의))?의약품이(?:아닙니다|아니에요|아니예요|아니다|아님)"
-    rf"|(?:{_NOTICE_TREATMENT}(?:를위한|를목적으로하는|목적의))?의약품이아닌(?:건강기능)?식품(?:입니다|이에요|임)"
-    rf"|{_NOTICE_TREATMENT}를목적으로하지않습니다"
-    r")"
-)
-# Closing marks are read once outside the brackets, so a failing match does not try every split of a run.
+# The notice wordings of the labelling standard (claim-extract-v1.7, v1.8) were withdrawn: on claim-eval-v4
+# they set aside 33 of 60 written notices, under the two thirds fixed before scoring (claim-extract-v1.9).
 _DISCLAIMER = re.compile(
-    "[※*•·ᆞ・\\-]?"
-    rf"(?:\({_NOTICE_BODY}[.!。]*\)|\[{_NOTICE_BODY}[.!。]*\]|{_NOTICE_BODY})[.!。]*"
+    r"(?:본제품은|이제품은)?(?:질병의예방및치료를위한)?의약품이"
+    r"(?:아닙니다|아니에요|아니다|아님)[.!。]*"
 )
 # Layout wrapping is not a sentence boundary: retain the subject and trailing qualifiers. Only the
 # recognized notice filling whole lines at the start or end of a sentence is split off
@@ -157,7 +145,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.8"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.9"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
