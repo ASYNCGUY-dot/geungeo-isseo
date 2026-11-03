@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.6"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.9"
 
 
 class ExpressionStrength(StrEnum):
@@ -143,7 +143,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.6"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.9"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
@@ -178,7 +178,8 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
     """Split off the recognized notice where it fills whole lines at the start or end of a sentence.
 
     A notice between other lines stays in the sentence: split there, the lines around it became
-    sentences of their own ("혈행 개선에" read as an improvement claim; claim-extract-v1.6)."""
+    sentences of their own ("혈행 개선에" read as an improvement claim; claim-extract-v1.6). Blank lines
+    are no other lines; counted as such, they put a notice at the end "between" lines (claim-extract-v1.9)."""
     if _DISCLAIMER.fullmatch(_compact(text[start:end])[0]):
         return [(start, end)]
     lines: list[tuple[int, int]] = []
@@ -202,7 +203,9 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
             continue
         pieces.append(((lines[index][0], lines[last][1]), True))
         index = last + 1
-    other = [number for number, (_, notice) in enumerate(pieces) if not notice]
+    other = [
+        number for number, ((first, last), notice) in enumerate(pieces) if not notice and text[first:last].strip()
+    ]
     if not other:
         return [span for span, _ in pieces]
     first, last = other[0], other[-1]
