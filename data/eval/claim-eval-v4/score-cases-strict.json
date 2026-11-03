@@ -1,6 +1,6 @@
 {
   "engine": {
-    "extraction": "claim-extract-v1.9",
+    "extraction": "claim-extract-v1.10",
     "verdict": "claim-verdict-v1.5"
   },
   "case_count": 100,
@@ -22,22 +22,22 @@
     "of": 106
   },
   "confirmed_recall": {
-    "count": 4,
+    "count": 5,
     "of": 70
   },
   "wrong_mismatch": {
-    "count": 45,
+    "count": 35,
     "of": 176
   },
   "segment_agreement": {
-    "count": 95,
+    "count": 108,
     "of": 240
   },
   "ads": {
     "false_cleared": 0,
     "fully_labeled": 100,
     "expected_all_confirmed": 44,
-    "engine_all_confirmed": 4
+    "engine_all_confirmed": 5
   },
   "by_scenario": {
     "carryover": {
@@ -55,7 +55,7 @@
         "of": 14
       },
       "wrong_mismatch": {
-        "count": 6,
+        "count": 3,
         "of": 21
       }
     },
@@ -70,11 +70,11 @@
         "of": 40
       },
       "confirmed_recall": {
-        "count": 4,
+        "count": 5,
         "of": 30
       },
       "wrong_mismatch": {
-        "count": 14,
+        "count": 11,
         "of": 70
       }
     },
@@ -93,7 +93,7 @@
         "of": 0
       },
       "wrong_mismatch": {
-        "count": 8,
+        "count": 4,
         "of": 19
       }
     },
@@ -152,7 +152,7 @@
         "of": 16
       },
       "wrong_mismatch": {
-        "count": 7,
+        "count": 5,
         "of": 42
       }
     },
@@ -171,7 +171,7 @@
         "of": 17
       },
       "wrong_mismatch": {
-        "count": 7,
+        "count": 5,
         "of": 39
       }
     },
@@ -190,7 +190,7 @@
         "of": 19
       },
       "wrong_mismatch": {
-        "count": 21,
+        "count": 17,
         "of": 49
       }
     },
@@ -205,11 +205,11 @@
         "of": 28
       },
       "confirmed_recall": {
-        "count": 1,
+        "count": 2,
         "of": 18
       },
       "wrong_mismatch": {
-        "count": 10,
+        "count": 8,
         "of": 46
       }
     }
@@ -250,14 +250,13 @@
     "notice": {
       "count": 60,
       "reading": {
-        "claim": 34,
-        "notice": 18,
-        "unread": 8
+        "claim": 24,
+        "notice": 33,
+        "unread": 3
       },
       "actual": {
-        "mismatch": 32,
-        "none": 26,
-        "unverifiable": 2
+        "mismatch": 24,
+        "none": 36
       }
     },
     "period": {
@@ -275,8 +274,8 @@
         "claim": 4
       },
       "actual": {
-        "mismatch": 3,
-        "unverifiable": 1
+        "mismatch": 2,
+        "unverifiable": 2
       }
     },
     "usage": {
@@ -366,7 +365,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
-          "reading": "unread",
+          "reading": "notice",
           "reasons": []
         }
       ]
@@ -395,11 +394,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -821,11 +818,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -908,11 +903,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -1128,7 +1121,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
-          "reading": "unread",
+          "reading": "notice",
           "reasons": []
         }
       ]
@@ -1251,29 +1244,27 @@
         {
           "seg_no": 1,
           "expected": "none",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 2,
           "expected": "unverifiable",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -1727,7 +1718,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
-          "reading": "unread",
+          "reading": "notice",
           "reasons": []
         }
       ]
@@ -1913,11 +1904,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -1994,7 +1983,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
-          "reading": "unread",
+          "reading": "notice",
           "reasons": []
         }
       ]
@@ -2164,11 +2153,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "unverifiable",
-          "reading": "claim",
-          "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -2180,20 +2167,18 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
           "reading": "claim",
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -2519,29 +2504,27 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 2,
           "expected": "unverifiable",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -2569,11 +2552,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -2658,11 +2639,9 @@
         {
           "seg_no": 3,
           "expected": "none",
-          "actual": "unverifiable",
-          "reading": "claim",
-          "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
-          ]
+          "actual": "none",
+          "reading": "notice",
+          "reasons": []
         }
       ]
     },
@@ -2773,7 +2752,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
-          "reading": "unread",
+          "reading": "notice",
           "reasons": []
         }
       ]
