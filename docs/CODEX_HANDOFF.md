@@ -6,7 +6,14 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고
   `ambiguous` 또는 `unverifiable`로 중단한다.
 
-## 이번 인계 — 2026-10-30 고지 문구 변형 시도·철회와 `claim-eval-v4` (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-03 변형 문형 복원과 동결 브랜치 빈 줄 수정 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: 결정 두 개에 "1번 넣어, 2번 살려". [기록](evidence/MVP_NOTICE_VARIANTS_2026-10-30.md) "사용자 결정으로 복원".
+- 작업 브랜치: `claim-extract-v1.10` = `52b19c2`(v1.8) 규칙 복원. 기준 2·3 미달 기록은 그대로 둔다(개발 세션은 철회 유지를 권했음).
+  대조 4묶음(216,000·192,960·192,960·60,000)과 v4·v3 채점이 v1.8과 같음.
+- 동결 브랜치: 빈 줄 수정만 반영(`79f8736`, 동결 브랜치의 `claim-extract-v1.9`). 대조 4묶음이 작업 브랜치 v1.9와 같음.
+
+## 이전 인계 — 2026-10-30 고지 문구 변형 시도·철회와 `claim-eval-v4` (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: 추천("`main` 정리 후 고지 문구 인식 확대, 틀린 고발을 없애는 작업으로")에 "진행해". [기록](evidence/MVP_NOTICE_VARIANTS_2026-10-30.md),
   [계획·채점 전 기준](superpowers/plans/2026-10-30-notice-variants.md).
