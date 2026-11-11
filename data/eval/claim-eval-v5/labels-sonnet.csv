@@ -1,0 +1,240 @@
+case_id,seg_no,label,labeler,note
+C5-001,1,mismatch,sonnet,규칙5 개선합니다 단정
+C5-001,2,none,sonnet,규칙0 섭취방법
+C5-002,1,unverifiable,sonnet,규칙 광고흐름 3주 차 기간이 덧붙음 인정범위 확정 불가
+C5-002,2,unverifiable,sonnet,기간 언급 기능 불분명
+C5-002,3,none,sonnet,규칙0 고지
+C5-003,1,confirmed,sonnet,규칙6
+C5-003,2,confirmed,sonnet,규칙6
+C5-003,3,none,sonnet,규칙0 고지
+C5-004,1,confirmed,sonnet,규칙6
+C5-004,2,none,sonnet,규칙0
+C5-004,3,none,sonnet,규칙0 고지
+C5-005,1,unverifiable,sonnet,기간 3개월 체험담이 덧붙음 확정 불가(애매)
+C5-005,2,unverifiable,sonnet,기능 불분명 체험담
+C5-005,3,none,sonnet,규칙0 고지
+C5-006,1,confirmed,sonnet,규칙6
+C5-006,2,none,sonnet,규칙0 고지
+C5-007,1,none,sonnet,규칙0 제품소개
+C5-007,2,mismatch,sonnet,규칙3 장건강 원문에 없음
+C5-008,1,none,sonnet,규칙0
+C5-008,2,confirmed,sonnet,규칙6
+C5-009,1,confirmed,sonnet,규칙6
+C5-009,2,none,sonnet,규칙0 고지
+C5-010,1,confirmed,sonnet,규칙6 루테인=마리골드 황반
+C5-010,2,none,sonnet,규칙0
+C5-011,1,confirmed,sonnet,규칙6
+C5-011,2,confirmed,sonnet,규칙6
+C5-012,1,confirmed,sonnet,규칙6
+C5-012,2,none,sonnet,규칙0 고지
+C5-013,1,confirmed,sonnet,규칙6
+C5-013,2,none,sonnet,규칙0 고지
+C5-014,1,confirmed,sonnet,규칙6
+C5-014,2,confirmed,sonnet,규칙6
+C5-015,1,none,sonnet,규칙0
+C5-015,2,mismatch,sonnet,규칙5 개선합니다 단정
+C5-015,3,none,sonnet,규칙0
+C5-016,1,none,sonnet,규칙0
+C5-016,2,mismatch,sonnet,규칙3 공식원문에 황반 없음
+C5-016,3,none,sonnet,규칙0 고지
+C5-017,1,confirmed,sonnet,규칙6
+C5-017,2,none,sonnet,규칙0
+C5-018,1,confirmed,sonnet,규칙6
+C5-018,2,confirmed,sonnet,규칙6 EPA DHA 건조한 눈
+C5-018,3,none,sonnet,규칙0 고지
+C5-019,1,confirmed,sonnet,규칙6
+C5-019,2,none,sonnet,규칙0 고지
+C5-020,1,confirmed,sonnet,규칙6
+C5-020,2,confirmed,sonnet,규칙6
+C5-021,1,confirmed,sonnet,규칙6 EPA DHA 유지 정제어유
+C5-021,2,confirmed,sonnet,규칙6
+C5-022,1,none,sonnet,규칙0
+C5-022,2,mismatch,sonnet,규칙5 100% 확실 단정
+C5-023,1,mismatch,sonnet,규칙3 중성지질 원문에 없음
+C5-023,2,none,sonnet,규칙0
+C5-023,3,none,sonnet,규칙0 고지
+C5-024,1,unverifiable,sonnet,규칙2 피부 건강 8개 밖
+C5-024,2,none,sonnet,규칙0
+C5-024,3,none,sonnet,규칙0 고지
+C5-025,1,confirmed,sonnet,규칙6
+C5-025,2,none,sonnet,규칙0
+C5-026,1,mismatch,sonnet,환불 보장이 덧붙어 인정수준 초과
+C5-026,2,mismatch,sonnet,효과 보장 환불
+C5-026,3,none,sonnet,규칙0 고지
+C5-027,1,mismatch,sonnet,환불 보장이 덧붙어 인정수준 초과
+C5-027,2,mismatch,sonnet,효과 보장 환불
+C5-028,1,confirmed,sonnet,규칙6
+C5-028,2,confirmed,sonnet,규칙6
+C5-028,3,none,sonnet,규칙0 고지
+C5-029,1,none,sonnet,규칙0
+C5-029,2,confirmed,sonnet,규칙6
+C5-030,1,none,sonnet,규칙0
+C5-030,2,confirmed,sonnet,규칙6
+C5-031,1,confirmed,sonnet,규칙6
+C5-031,2,confirmed,sonnet,규칙6
+C5-032,1,mismatch,sonnet,환불 보장 덧붙음 인정수준 초과
+C5-032,2,mismatch,sonnet,효과 보장 환불
+C5-033,1,mismatch,sonnet,규칙3 기억력 원문에 없음
+C5-033,2,none,sonnet,규칙0
+C5-034,1,confirmed,sonnet,규칙6
+C5-034,2,confirmed,sonnet,규칙6
+C5-035,1,confirmed,sonnet,규칙6
+C5-035,2,confirmed,sonnet,규칙6
+C5-036,1,mismatch,sonnet,규칙1 혈전 뇌졸중 예방
+C5-036,2,none,sonnet,규칙0
+C5-037,1,none,sonnet,규칙0
+C5-037,2,confirmed,sonnet,규칙6
+C5-037,3,none,sonnet,규칙0 고지
+C5-038,1,confirmed,sonnet,규칙6
+C5-038,2,none,sonnet,규칙0 고지
+C5-039,1,unverifiable,sonnet,비교 표현 덧붙음 확정 불가
+C5-039,2,unverifiable,sonnet,비교 우월 기능 불분명
+C5-040,1,none,sonnet,규칙0
+C5-040,2,confirmed,sonnet,규칙6
+C5-040,3,none,sonnet,규칙0 고지
+C5-041,1,none,sonnet,규칙0
+C5-041,2,confirmed,sonnet,규칙6
+C5-042,1,confirmed,sonnet,규칙6
+C5-042,2,none,sonnet,규칙0
+C5-042,3,none,sonnet,규칙0 고지
+C5-043,1,mismatch,sonnet,규칙1 혈전 뇌졸중 예방
+C5-043,2,none,sonnet,규칙0
+C5-044,1,mismatch,sonnet,규칙3 원문에 황반 없음 개선합니다 단정
+C5-044,2,none,sonnet,규칙0
+C5-045,1,confirmed,sonnet,규칙6
+C5-045,2,confirmed,sonnet,규칙6
+C5-045,3,none,sonnet,규칙0 고지
+C5-046,1,mismatch,sonnet,환불 약속 보장 덧붙음
+C5-046,2,mismatch,sonnet,효과 보장 환불
+C5-046,3,none,sonnet,규칙0 고지
+C5-047,1,confirmed,sonnet,규칙6
+C5-047,2,confirmed,sonnet,규칙6
+C5-048,1,confirmed,sonnet,규칙6
+C5-048,2,confirmed,sonnet,규칙6
+C5-048,3,none,sonnet,규칙0 고지
+C5-049,1,confirmed,sonnet,규칙6
+C5-049,2,confirmed,sonnet,규칙6
+C5-049,3,none,sonnet,규칙0 상담 권유
+C5-050,1,confirmed,sonnet,규칙6
+C5-050,2,none,sonnet,규칙0
+C5-051,1,confirmed,sonnet,규칙6
+C5-051,2,none,sonnet,규칙0
+C5-052,1,unverifiable,sonnet,규칙2 피로 회복 8개 밖
+C5-052,2,none,sonnet,규칙0
+C5-052,3,none,sonnet,규칙0 고지
+C5-053,1,confirmed,sonnet,규칙6
+C5-053,2,confirmed,sonnet,규칙6
+C5-053,3,none,sonnet,규칙0 고지
+C5-054,1,none,sonnet,규칙0
+C5-054,2,confirmed,sonnet,규칙6
+C5-054,3,none,sonnet,규칙0 고지
+C5-055,1,none,sonnet,규칙0
+C5-055,2,confirmed,sonnet,규칙6
+C5-056,1,confirmed,sonnet,규칙6
+C5-056,2,none,sonnet,규칙0
+C5-056,3,none,sonnet,규칙0 고지
+C5-057,1,none,sonnet,규칙0
+C5-057,2,mismatch,sonnet,규칙5 100% 보장
+C5-058,1,none,sonnet,규칙0
+C5-058,2,mismatch,sonnet,규칙3 배변활동 원문에 없음
+C5-058,3,none,sonnet,규칙0
+C5-059,1,confirmed,sonnet,규칙6
+C5-059,2,none,sonnet,규칙0 고지
+C5-060,1,none,sonnet,규칙0
+C5-060,2,mismatch,sonnet,규칙5 눈에 띄게 좋아집니다 단정
+C5-061,1,none,sonnet,규칙0
+C5-061,2,confirmed,sonnet,규칙6
+C5-061,3,none,sonnet,규칙0 고지
+C5-062,1,mismatch,sonnet,규칙1 황반변성 예방
+C5-062,2,none,sonnet,규칙0
+C5-063,1,confirmed,sonnet,규칙6
+C5-063,2,confirmed,sonnet,규칙6
+C5-064,1,none,sonnet,규칙0
+C5-064,2,confirmed,sonnet,규칙6
+C5-065,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C5-065,2,unverifiable,sonnet,대상자 40대 이상 덧붙음 인정범위 확정 불가
+C5-065,3,none,sonnet,규칙0 고지
+C5-066,1,none,sonnet,규칙0
+C5-066,2,confirmed,sonnet,규칙6
+C5-066,3,none,sonnet,규칙0 고지
+C5-067,1,confirmed,sonnet,규칙6
+C5-067,2,confirmed,sonnet,규칙6
+C5-068,1,confirmed,sonnet,규칙6
+C5-068,2,none,sonnet,규칙0 섭취방법
+C5-068,3,none,sonnet,규칙0 고지
+C5-069,1,confirmed,sonnet,규칙6
+C5-069,2,none,sonnet,규칙0 고지
+C5-070,1,confirmed,sonnet,규칙6 무표시 원문 오메가3 정제어유
+C5-070,2,confirmed,sonnet,규칙6
+C5-071,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C5-071,2,unverifiable,sonnet,대상자 덧붙음 확정 불가
+C5-072,1,none,sonnet,규칙0
+C5-072,2,mismatch,sonnet,규칙5 몰라보게 좋아집니다 단정
+C5-072,3,none,sonnet,규칙0 고지
+C5-073,1,unverifiable,sonnet,기간 2주 후기가 덧붙음 확정 불가(애매)
+C5-073,2,unverifiable,sonnet,기능 불분명 후기와 기간
+C5-073,3,none,sonnet,규칙0 고지
+C5-074,1,none,sonnet,규칙0
+C5-074,2,confirmed,sonnet,규칙6
+C5-074,3,none,sonnet,규칙0 고지
+C5-075,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C5-075,2,unverifiable,sonnet,대상자 덧붙음 확정 불가
+C5-075,3,none,sonnet,규칙0 고지
+C5-076,1,mismatch,sonnet,규칙1 혈전 뇌졸중
+C5-076,2,none,sonnet,규칙0
+C5-076,3,none,sonnet,규칙0 고지
+C5-077,1,confirmed,sonnet,규칙6
+C5-077,2,confirmed,sonnet,규칙6
+C5-077,3,none,sonnet,규칙0 고지
+C5-078,1,mismatch,sonnet,규칙1 변비 해결 질병
+C5-078,2,none,sonnet,규칙0 고지
+C5-079,1,confirmed,sonnet,규칙6
+C5-079,2,none,sonnet,규칙0
+C5-080,1,confirmed,sonnet,규칙6
+C5-080,2,confirmed,sonnet,규칙6
+C5-081,1,confirmed,sonnet,규칙6
+C5-081,2,confirmed,sonnet,규칙6
+C5-081,3,none,sonnet,규칙0 고지
+C5-082,1,confirmed,sonnet,규칙6
+C5-082,2,confirmed,sonnet,규칙6
+C5-082,3,none,sonnet,규칙0 고지
+C5-083,1,confirmed,sonnet,규칙6
+C5-083,2,confirmed,sonnet,규칙6
+C5-084,1,unverifiable,sonnet,규칙4 기억력은 은행잎추출물 아래 문구 오메가3 기능 확정 불가
+C5-084,2,none,sonnet,규칙0
+C5-084,3,none,sonnet,규칙0 고지
+C5-085,1,confirmed,sonnet,규칙6
+C5-085,2,confirmed,sonnet,규칙6
+C5-086,1,unverifiable,sonnet,규칙2 피로 회복 8개 밖
+C5-086,2,none,sonnet,규칙0 고지
+C5-087,1,mismatch,sonnet,규칙3 건조한 눈 원문에 없음
+C5-087,2,none,sonnet,규칙0
+C5-088,1,none,sonnet,규칙0
+C5-088,2,confirmed,sonnet,규칙6
+C5-089,1,unverifiable,sonnet,기간 8주 체감이 덧붙음 확정 불가(애매)
+C5-089,2,unverifiable,sonnet,기간 체감 기능 불분명
+C5-090,1,confirmed,sonnet,규칙6
+C5-090,2,confirmed,sonnet,규칙6
+C5-091,1,confirmed,sonnet,규칙6
+C5-091,2,none,sonnet,규칙0
+C5-091,3,none,sonnet,규칙0 고지
+C5-092,1,unverifiable,sonnet,비교 표현 덧붙음 확정 불가
+C5-092,2,unverifiable,sonnet,비교 우월 체감 효과 기능 불분명
+C5-092,3,none,sonnet,규칙0 고지
+C5-093,1,mismatch,sonnet,규칙3 중성지질 원문에 없음
+C5-093,2,none,sonnet,규칙0 고지
+C5-094,1,none,sonnet,규칙0
+C5-094,2,mismatch,sonnet,규칙1 황반변성 예방 치료
+C5-095,1,unverifiable,sonnet,비교 표현 덧붙음 확정 불가(애매)
+C5-095,2,unverifiable,sonnet,비교 우월 효과 기능 불분명
+C5-095,3,none,sonnet,규칙0
+C5-096,1,unverifiable,sonnet,비교 후기 덧붙음 확정 불가(애매)
+C5-096,2,unverifiable,sonnet,비교 후기 기능 불분명
+C5-097,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C5-097,2,unverifiable,sonnet,대상자 덧붙음 확정 불가
+C5-098,1,none,sonnet,규칙0
+C5-098,2,mismatch,sonnet,규칙3 배변활동 원문에 없음
+C5-099,1,none,sonnet,규칙0
+C5-099,2,mismatch,sonnet,규칙1 황반변성 예방 치료
+C5-100,1,confirmed,sonnet,규칙6
+C5-100,2,confirmed,sonnet,규칙6
