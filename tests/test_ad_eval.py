@@ -277,18 +277,23 @@ def _case(case_id: str, layout: str, texts: list[str], expected: list[str | None
     }
 
 
+# A claim the rules do not read whole ("에도"): its line joins the next one when lines have no periods.
+# A line read whole would end its sentence (claim-extract-v1.11).
+JOINED_CLAIM = "오메가3는 혈행 개선에도 도움을 줄 수 있습니다."
+
+
 def test_score_matches_claims_to_sentences(tmp_path: Path) -> None:
     claim = "오메가3는 혈행 개선에 도움을 줄 수 있습니다."
     code, summary = _score(tmp_path, [
         _case("A", "inline", [claim, NOTICE + "."], ["confirmed", "none"]),
         _case("B", "lines_no_period", [claim, NOTICE + "."], ["confirmed", "none"]),
-        _case("C", "lines_no_period", [claim, "하루 한 번 드세요."], ["confirmed", "none"]),
+        _case("C", "lines_no_period", [JOINED_CLAIM, "하루 한 번 드세요."], ["confirmed", "none"]),
         _case("D", "inline", [claim, "혈행이 확실히 좋아집니다."], ["confirmed", None]),
     ])
     assert code == 0
     assert summary["engine"] == {"extraction": CLAIM_EXTRACTION_VERSION, "verdict": CLAIM_VERDICT_VERSION}
     actual = {row["case_id"]: [segment["actual"] for segment in row["segments"]] for row in summary["results"]}
-    # Lines without periods join the claim and the usage line into one sentence the rules do not read;
+    # Lines without periods join a claim the rules do not read whole and the usage line into one sentence;
     # a neighbour the rules do not fully read withholds the confirmation even without a label.
     assert actual == {
         "A": ["confirmed", "none"], "B": ["confirmed", "none"],
@@ -324,7 +329,7 @@ def test_score_reports_how_each_context_sentence_was_read(tmp_path: Path) -> Non
     cases = [
         _case("A", "inline", [claim, NOTICE + "."], ["confirmed", "none"]),
         _case("B", "inline", [claim, "하루 한 번 드세요.", "본 제품은 의약품이 아닙니다 ※."], ["confirmed", "none", "none"]),
-        _case("C", "lines_no_period", [claim, "질병의 예방 및 치료에 쓰는 의약품이 아닙니다."], ["confirmed", "none"]),
+        _case("C", "lines_no_period", [JOINED_CLAIM, "질병의 예방 및 치료에 쓰는 의약품이 아닙니다."], ["confirmed", "none"]),
     ]
     roles = {"A": ["claim", "notice"], "B": ["claim", "usage", "notice"], "C": ["claim", "notice"]}
     manifest = tmp_path / "manifest.json"
@@ -349,6 +354,11 @@ def test_score_reports_how_each_context_sentence_was_read(tmp_path: Path) -> Non
     assert summary["by_context_kind"]["usage"]["reading"] == {"unread": 1}
     # 근거 불일치 on sentences labeled confirmed or none: the joined claim and notice of C.
     assert summary["wrong_mismatch"] == {"count": 2, "of": 7}
+    # Sentences labeled confirmed that the rules read joined with another sentence, per layout.
+    assert [[segment["joined"] for segment in row["segments"]] for row in summary["results"]] == [
+        [False, False], [False, False, False], [True, True],
+    ]
+    assert summary["joined_confirmed"] == {"inline": {"count": 0, "of": 2}, "lines_no_period": {"count": 1, "of": 1}}
 
     _, without = _score(tmp_path, cases)
     assert "by_context_kind" not in without

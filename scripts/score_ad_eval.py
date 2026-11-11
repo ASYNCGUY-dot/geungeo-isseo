@@ -6,8 +6,10 @@ claims no function, null where the labelers disagreed). The whole advertisement 
 them is confirmed, so a confirmation that reaches a sentence labeled otherwise is a false clearance.
 A sentence no claim overlaps gets `none`. Expected labels are blind AI labels, not human ground truth.
 Each sentence also records how the rules read it: as (part of) a claim, as a sentence left unread
-(it withholds its neighbours' confirmation) or set aside as the notice. With --manifest, the readings
-and verdicts of the context sentences are counted per kind from the sample's sentence roles.
+(it withholds its neighbours' confirmation) or set aside as the notice, and whether they read it
+`joined` with text outside it; sentences labeled confirmed and read joined are counted per layout.
+With --manifest, the readings and verdicts of the context sentences are counted per kind from the
+sample's sentence roles.
 
 Exit codes: 0 scored, 1 false clearance found with --require-zero-false-clearance, 3 input error.
 """
@@ -73,11 +75,16 @@ def _score_case(case: dict, product: ConfirmedProduct) -> dict:
             reading = "unread"
         else:
             reading = "notice"
+        read_spans = [item.span for item in claims] + list(unread)
+        joined = any(
+            span[0] < end and span[1] > start and (span[0] < start or span[1] > end) for span in read_spans
+        )
         segments.append({
             "seg_no": segment["seg_no"],
             "expected": segment["expected"],
             "actual": actual,
             "reading": reading,
+            "joined": joined,
             "reasons": sorted({item.reason.value for item in overlapping}),
         })
     return {"case_id": case["case_id"], "scenario": case.get("scenario"), "layout": case.get("layout"), "segments": segments}
@@ -166,6 +173,15 @@ def score(
         },
         "by_scenario": {key: _metrics(value) for key, value in sorted(by["scenario"].items())},
         "by_layout": {key: _metrics(value) for key, value in sorted(by["layout"].items())},
+        "joined_confirmed": {
+            layout: _ratio(
+                sum(1 for row in results if row["layout"] == layout for s in row["segments"]
+                    if s["expected"] == "confirmed" and s["joined"]),
+                sum(1 for row in results if row["layout"] == layout for s in row["segments"]
+                    if s["expected"] == "confirmed"),
+            )
+            for layout in sorted({row["layout"] or "" for row in results})
+        },
         **({"by_context_kind": _by_context_kind(results, roles)} if roles is not None else {}),
         "results": results,
     }
