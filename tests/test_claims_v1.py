@@ -92,27 +92,76 @@ def test_the_notice_on_lines_of_its_own_is_split_from_the_claim(text: str, claim
 
 @pytest.mark.parametrize("text", [
     # Only lines that are the whole notice are split off; other words keep the lines together.
-    "본 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다",
     "혈행 개선에 도움을 줄 수 있습니다\n그래서 본 제품은 의약품이 아닙니다",
     "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한",
     "혈행 개선에 도움을 줄 수 있는\n본 제품은 의약품이 아닙니다 라고 합니다",
 ])
 def test_lines_that_are_not_the_whole_notice_stay_together(text: str) -> None:
+    # Nothing but the notice is set aside: every other character stays in a claim or an unread sentence.
     spans = [item.span for item in extract_claims(text)] + list(unread_sentences(text))
 
-    assert len(spans) <= 1
+    assert all(any(start <= i < end for start, end in spans) for i, c in enumerate(text) if not c.isspace())
+
+
+def test_a_wrapped_notice_alone_is_the_notice() -> None:
+    text = "본 제품은 질병의 예방 및 치료를 위한\n의약품이 아닙니다"
+
+    assert extract_claims(text) == () and unread_sentences(text) == ()
 
 
 @pytest.mark.parametrize("text", [
     # A notice between lines of one sentence is not split off: the lines around it became sentences of
     # their own, and "혈행 개선에" read as an improvement claim (independent review, 2026-10-27).
     "혈행 개선에\n본 제품은 의약품이 아닙니다\n도움을 줄 수 있습니다",
-    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n눈 건강에 도움을 줄 수 있습니다",
-    "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다" + "!" * 26,
+    "혈행 개선에\n도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다" + "!" * 26,
 ])
 def test_a_notice_between_lines_or_too_long_stays_in_the_sentence(text: str) -> None:
     assert [item.span for item in extract_claims(text)] == [(0, len(text))]
     assert unread_sentences(text) == ()
+
+
+@pytest.mark.parametrize(("text", "claims"), [
+    # A line that reads whole as a claim of official strength ends its sentence without a period
+    # (claim-extract-v1.11): joined to the next line, an honest claim could not be read.
+    ("혈행 개선에 도움을 줄 수 있습니다\n눈 건강에 도움을 줄 수 있어요", ["혈행 개선에 도움을 줄 수 있습니다", "눈 건강에 도움을 줄 수 있어요"]),
+    (
+        "오메가3는 혈행 개선에 도움을 줄 수 있습니다\r\n이 제품은 장 건강에 도움을 줄 수 있음",
+        ["오메가3는 혈행 개선에 도움을 줄 수 있습니다", "이 제품은 장 건강에 도움을 줄 수 있음"],
+    ),
+    (
+        "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n눈 건강에 도움을 줄 수 있습니다",
+        ["혈행 개선에 도움을 줄 수 있습니다", "눈 건강에 도움을 줄 수 있습니다"],
+    ),
+])
+def test_a_line_that_is_a_whole_claim_ends_its_sentence(text: str, claims: list[str]) -> None:
+    assert [item.text for item in extract_claims(text)] == claims
+    assert unread_sentences(text) == ()
+
+
+@pytest.mark.parametrize(("text", "first"), [
+    # What follows a whole claim line becomes a sentence of its own, read or left unread.
+    ("혈행 개선에 도움을 줄 수 있습니다\n하루 한 캡슐 드세요", "혈행 개선에 도움을 줄 수 있습니다"),
+    ("혈행 개선에 도움을 줄 수 있습니다\n는 연구 결과가 있습니다", "혈행 개선에 도움을 줄 수 있습니다"),
+])
+def test_the_line_after_a_whole_claim_is_its_own_sentence(text: str, first: str) -> None:
+    assert extract_claims(text)[0].text == first
+    assert unread_sentences(text) == ((len(first) + 1, len(text)),)
+
+
+@pytest.mark.parametrize("text", [
+    # Lines that are not whole claims still join: wrapped claims and trailing qualifiers stay in the sentence.
+    "혈행 개선에\n도움을 줄 수 있습니다",
+    "오메가3는\n혈행 개선에 도움을 줄 수 있습니다",
+    "혈행 개선에 도움을 줄 수 있는\n제품입니다",
+    "혈행 개선에 확실한 도움을 줄 수 있습니다\n하루 한 캡슐",
+    # A whole claim that ends in a noun form ("있음", "줌", a bare "도움") can go on with a particle on the next
+    # line ("있음\n이라는 주장은 사실이 아닙니다"): only a finite ending in "-다" or "-요" ends the sentence.
+    "혈행 개선에 도움을 줄 수 있음\n눈 건강에 도움을 줄 수 있음",
+    "혈행 개선에 도움을 줌\n이라는 광고는 사실이 아닙니다",
+    "혈행 개선에 도움\n이 될지는 개인마다 다릅니다",
+])
+def test_lines_that_are_not_whole_claims_still_join(text: str) -> None:
+    assert [item.span for item in extract_claims(text)] == [(0, len(text))]
 
 
 @pytest.mark.parametrize(("text", "claims"), [

@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.10"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.11"
 
 
 class ExpressionStrength(StrEnum):
@@ -89,8 +89,11 @@ _DISCLAIMER = re.compile(
 # Layout wrapping is not a sentence boundary: retain the subject and trailing qualifiers. Only the
 # recognized notice filling whole lines at the start or end of a sentence is split off
 # (claim-extract-v1.5, v1.6): joined to a claim without a period, its "질병의 예방 및 치료" read as a
-# disease claim.
+# disease claim. A line that reads whole as a claim of official strength also ends its sentence
+# (claim-extract-v1.11), as if it had a period.
 _SENTENCE = re.compile(r".+?(?:[.!?。…]+(?=\s|$)|$)", re.DOTALL)
+# A whole claim line ends its sentence only with a finite ending (claim-extract-v1.11).
+_FINITE_ENDING = re.compile(r"[다요]$")
 # A notice candidate spans at most this many lines and compact characters; longer text is no notice.
 _NOTICE_MAX_LINES = 8
 _NOTICE_MAX_CHARS = 48
@@ -159,17 +162,31 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.10"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.11"] = CLAIM_EXTRACTION_VERSION
 
 
-def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
-    compact, _ = _compact(claim.text)
+def _support_text_match(compact: str, effect: EffectKey) -> re.Match[str] | None:
     subject = _SINGLE_SUBJECT[EFFECT_GROUP[effect]]
     prefix = rf"(?:{_INTAKE}?(?P<subject>본제품|이제품|{subject})(?:은|는|이|가))?"
     body = rf"{_SINGLE_EFFECT[effect]}{_SUPPORT_ENDING}"
     if effect in _SINGLE_EFFECT_VERB:
         body = rf"(?:{body}|{_SINGLE_EFFECT_VERB[effect]}{_VERB_ENDING})"
     return re.fullmatch(prefix + body, compact)
+
+
+def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
+    return _support_text_match(_compact(claim.text)[0], effect)
+
+
+def _whole_claim_line(line: str) -> bool:
+    """A line that reads whole as a support statement of one of its effects and ends in "-다" or "-요".
+
+    A noun form ("있음", "줌", a bare "도움") can go on with a particle on the next line ("있음\\n이라는 주장은
+    사실이 아닙니다"); only a finite ending closes the clause."""
+    compact = _compact(line)[0]
+    if not _FINITE_ENDING.search(compact):
+        return False
+    return any(_support_text_match(compact, effect) for effect in _classify(line)[0])
 
 
 def supports_confirmation(claim: AdClaim, effect: EffectKey) -> bool:
@@ -229,16 +246,36 @@ def _notice_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
     return [span for span, _ in pieces[:first]] + [middle] + [span for span, _ in pieces[last + 1 :]]
 
 
+def _claim_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
+    """Cut a sentence after each line, not its last, that reads whole as a claim of official strength.
+
+    Joined to the next line, an honest claim in a layout without periods could not be read. The line after
+    the cut is a sentence of its own: if the rules do not read it, it still withholds its neighbours'
+    confirmation (claim-extract-v1.11)."""
+    pieces: list[tuple[int, int]] = []
+    piece_start = position = start
+    lines = text[start:end].split("\n")
+    for number, line in enumerate(lines):
+        line_end = position + len(line)
+        if number < len(lines) - 1 and _whole_claim_line(line):
+            pieces.append((piece_start, line_end))
+            piece_start = line_end + 1
+        position = line_end + 1
+    pieces.append((piece_start, end))
+    return pieces
+
+
 def _sentence_spans(text: str) -> list[tuple[int, int]]:
     spans: list[tuple[int, int]] = []
     for match in _SENTENCE.finditer(text):
-        for start, end in _notice_lines(text, *match.span()):
-            while start < end and text[start].isspace():
-                start += 1
-            while end > start and text[end - 1].isspace():
-                end -= 1
-            if start < end:
-                spans.append((start, end))
+        for piece in _claim_lines(text, *match.span()):
+            for start, end in _notice_lines(text, *piece):
+                while start < end and text[start].isspace():
+                    start += 1
+                while end > start and text[end - 1].isspace():
+                    end -= 1
+                if start < end:
+                    spans.append((start, end))
     return spans
 
 

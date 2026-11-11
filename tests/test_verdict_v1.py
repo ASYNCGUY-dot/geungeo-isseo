@@ -294,6 +294,28 @@ def test_a_claim_beside_a_notice_variant_is_confirmed(text: str) -> None:
     assert [decision.verdict for decision in _ad(text)] == [Verdict.CONFIRMED]
 
 
+@pytest.mark.parametrize(("text", "primary_function"), [
+    # Lines without periods, each a whole claim within the official functions (claim-extract-v1.11).
+    ("혈행 개선에 도움을 줄 수 있습니다\n눈 건강에 도움을 줄 수 있어요", THREE_HEADERS_TEXT),
+    ("혈행 개선에 도움을 줄 수 있습니다\n혈중 중성지질 개선에 도움을 줄 수 있습니다", OMEGA3_TEXT),
+])
+def test_whole_claims_on_lines_without_periods_are_confirmed(text: str, primary_function: str) -> None:
+    assert [decision.verdict for decision in _ad(text, primary_function)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
+
+
+@pytest.mark.parametrize("text", [
+    # The line after a whole claim is still read: a condition, a dose or a fragment withholds the confirmation,
+    # and a bare claim beside an ingredient subject is held by the subject gate.
+    "혈행 개선에 도움을 줄 수 있습니다\n단 2주 만에",
+    "혈행 개선에 도움을 줄 수 있습니다\n는 연구 결과가 있습니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n(고혈압 환자에 한함)",
+    "혈행 개선에 도움을 줄 수 있습니다\n하루 3캡슐이면 충분합니다",
+    "오메가3는 혈행 개선에 도움을 줄 수 있습니다\n눈 건강에 도움을 줄 수 있어요",
+])
+def test_a_whole_claim_line_does_not_clear_the_next_line(text: str) -> None:
+    assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
+
+
 def test_blank_lines_after_the_notice_keep_honest_claims_confirmed() -> None:
     # Nine trailing line breaks made the notice "between" lines and an honest advertisement got 근거 불일치
     # (independent review, 2026-10-30); claim-extract-v1.5 confirmed both advertisements.
