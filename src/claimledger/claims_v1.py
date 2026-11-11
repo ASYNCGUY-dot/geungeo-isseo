@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.11"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.12"
 
 
 class ExpressionStrength(StrEnum):
@@ -92,8 +92,10 @@ _DISCLAIMER = re.compile(
 # disease claim. A line that reads whole as a claim of official strength also ends its sentence
 # (claim-extract-v1.11), as if it had a period.
 _SENTENCE = re.compile(r".+?(?:[.!?。…]+(?=\s|$)|$)", re.DOTALL)
-# A whole claim line ends its sentence only with a finite ending (claim-extract-v1.11).
+# A whole claim line ends its sentence only with a finite ending (claim-extract-v1.11), and only before a
+# line with a letter or digit: marks alone close the claim (claim-extract-v1.12).
 _FINITE_ENDING = re.compile(r"[다요]$")
+_WORD = re.compile(r"\w")
 # A notice candidate spans at most this many lines and compact characters; longer text is no notice.
 _NOTICE_MAX_LINES = 8
 _NOTICE_MAX_CHARS = 48
@@ -162,7 +164,7 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.11"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.12"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_text_match(compact: str, effect: EffectKey) -> re.Match[str] | None:
@@ -251,13 +253,14 @@ def _claim_lines(text: str, start: int, end: int) -> list[tuple[int, int]]:
 
     Joined to the next line, an honest claim in a layout without periods could not be read. The line after
     the cut is a sentence of its own: if the rules do not read it, it still withholds its neighbours'
-    confirmation (claim-extract-v1.11)."""
+    confirmation (claim-extract-v1.11). Marks alone after the line close the claim and are not cut off
+    (claim-extract-v1.12)."""
     pieces: list[tuple[int, int]] = []
     piece_start = position = start
     lines = text[start:end].split("\n")
     for number, line in enumerate(lines):
         line_end = position + len(line)
-        if number < len(lines) - 1 and _whole_claim_line(line):
+        if any(_WORD.search(rest) for rest in lines[number + 1:]) and _whole_claim_line(line):
             pieces.append((piece_start, line_end))
             piece_start = line_end + 1
         position = line_end + 1

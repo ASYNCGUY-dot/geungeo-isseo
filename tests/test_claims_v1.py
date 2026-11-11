@@ -91,13 +91,13 @@ def test_the_notice_on_lines_of_its_own_is_split_from_the_claim(text: str, claim
 
 
 @pytest.mark.parametrize("text", [
-    # Only lines that are the whole notice are split off; other words keep the lines together.
+    # Only lines that are the whole notice are set aside; a line with other words stays in a claim or
+    # an unread sentence (since claim-extract-v1.11 the first two are cut after the whole claim line).
     "혈행 개선에 도움을 줄 수 있습니다\n그래서 본 제품은 의약품이 아닙니다",
     "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 질병의 예방 및 치료를 위한",
     "혈행 개선에 도움을 줄 수 있는\n본 제품은 의약품이 아닙니다 라고 합니다",
 ])
-def test_lines_that_are_not_the_whole_notice_stay_together(text: str) -> None:
-    # Nothing but the notice is set aside: every other character stays in a claim or an unread sentence.
+def test_lines_beside_a_notice_are_never_set_aside(text: str) -> None:
     spans = [item.span for item in extract_claims(text)] + list(unread_sentences(text))
 
     assert all(any(start <= i < end for start, end in spans) for i, c in enumerate(text) if not c.isspace())
@@ -132,6 +132,8 @@ def test_a_notice_between_lines_or_too_long_stays_in_the_sentence(text: str) -> 
         "혈행 개선에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다\n눈 건강에 도움을 줄 수 있습니다",
         ["혈행 개선에 도움을 줄 수 있습니다", "눈 건강에 도움을 줄 수 있습니다"],
     ),
+    # Spaces after the line end (tab, no-break space, ideographic space) do not keep it from ending.
+    ("혈행 개선에 도움을 줄 수 있습니다\t\xa0　\n눈 건강에 도움을 줄 수 있어요", ["혈행 개선에 도움을 줄 수 있습니다", "눈 건강에 도움을 줄 수 있어요"]),
 ])
 def test_a_line_that_is_a_whole_claim_ends_its_sentence(text: str, claims: list[str]) -> None:
     assert [item.text for item in extract_claims(text)] == claims
@@ -159,6 +161,11 @@ def test_the_line_after_a_whole_claim_is_its_own_sentence(text: str, first: str)
     "혈행 개선에 도움을 줄 수 있음\n눈 건강에 도움을 줄 수 있음",
     "혈행 개선에 도움을 줌\n이라는 광고는 사실이 아닙니다",
     "혈행 개선에 도움\n이 될지는 개인마다 다릅니다",
+    # Only marks after a whole claim line close that claim, as before claim-extract-v1.11 (independent
+    # review, 2026-11-11): cut off, a line of marks alone was an unread sentence that withheld the claim.
+    "혈행 개선에 도움을 줄 수 있습니다\n!",
+    "혈행 개선에 도움을 줄 수 있습니다\r\n.",
+    "혈행 개선에 도움을 줄 수 있습니다\n\xa0!",
 ])
 def test_lines_that_are_not_whole_claims_still_join(text: str) -> None:
     assert [item.span for item in extract_claims(text)] == [(0, len(text))]

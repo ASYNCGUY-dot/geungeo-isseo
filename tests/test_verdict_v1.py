@@ -303,6 +303,11 @@ def test_whole_claims_on_lines_without_periods_are_confirmed(text: str, primary_
     assert [decision.verdict for decision in _ad(text, primary_function)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
 
 
+def test_marks_alone_on_the_next_line_close_the_claim() -> None:
+    # As before claim-extract-v1.11, not an unread sentence of its own (independent review, 2026-11-11).
+    assert [decision.verdict for decision in _ad("혈행 개선에 도움을 줄 수 있습니다\n!")] == [Verdict.CONFIRMED]
+
+
 @pytest.mark.parametrize("text", [
     # The line after a whole claim is still read: a condition, a dose or a fragment withholds the confirmation,
     # and a bare claim beside an ingredient subject is held by the subject gate.
@@ -311,6 +316,10 @@ def test_whole_claims_on_lines_without_periods_are_confirmed(text: str, primary_
     "혈행 개선에 도움을 줄 수 있습니다\n(고혈압 환자에 한함)",
     "혈행 개선에 도움을 줄 수 있습니다\n하루 3캡슐이면 충분합니다",
     "오메가3는 혈행 개선에 도움을 줄 수 있습니다\n눈 건강에 도움을 줄 수 있어요",
+    # A function name on the next line reads as an improvement claim, as it does after a period
+    # (independent review, 2026-11-11: the next line now gets 근거 불일치); it never clears the first line.
+    "혈행 개선에 도움을 줄 수 있습니다\n혈행 개선 효과는 개인차가 있을 수 있습니다",
+    "혈행 개선에 도움을 줄 수 있습니다\n혈중 중성지질 개선",
 ])
 def test_a_whole_claim_line_does_not_clear_the_next_line(text: str) -> None:
     assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text))
