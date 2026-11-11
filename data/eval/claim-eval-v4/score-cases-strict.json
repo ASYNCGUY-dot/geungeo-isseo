@@ -1,6 +1,6 @@
 {
   "engine": {
-    "extraction": "claim-extract-v1.10",
+    "extraction": "claim-extract-v1.12",
     "verdict": "claim-verdict-v1.5"
   },
   "case_count": 100,
@@ -26,11 +26,11 @@
     "of": 70
   },
   "wrong_mismatch": {
-    "count": 35,
+    "count": 29,
     "of": 176
   },
   "segment_agreement": {
-    "count": 108,
+    "count": 113,
     "of": 240
   },
   "ads": {
@@ -55,7 +55,7 @@
         "of": 14
       },
       "wrong_mismatch": {
-        "count": 3,
+        "count": 2,
         "of": 21
       }
     },
@@ -74,7 +74,7 @@
         "of": 30
       },
       "wrong_mismatch": {
-        "count": 11,
+        "count": 10,
         "of": 70
       }
     },
@@ -93,7 +93,7 @@
         "of": 0
       },
       "wrong_mismatch": {
-        "count": 4,
+        "count": 2,
         "of": 19
       }
     },
@@ -112,7 +112,7 @@
         "of": 24
       },
       "wrong_mismatch": {
-        "count": 4,
+        "count": 3,
         "of": 30
       }
     },
@@ -131,7 +131,7 @@
         "of": 2
       },
       "wrong_mismatch": {
-        "count": 13,
+        "count": 12,
         "of": 36
       }
     }
@@ -190,7 +190,7 @@
         "of": 19
       },
       "wrong_mismatch": {
-        "count": 17,
+        "count": 11,
         "of": 49
       }
     },
@@ -212,6 +212,24 @@
         "count": 8,
         "of": 46
       }
+    }
+  },
+  "joined_confirmed": {
+    "inline": {
+      "count": 0,
+      "of": 16
+    },
+    "lines": {
+      "count": 0,
+      "of": 17
+    },
+    "lines_no_period": {
+      "count": 6,
+      "of": 19
+    },
+    "wrapped": {
+      "count": 0,
+      "of": 18
     }
   },
   "by_context_kind": {
@@ -274,20 +292,19 @@
         "claim": 4
       },
       "actual": {
-        "mismatch": 2,
-        "unverifiable": 2
+        "unverifiable": 4
       }
     },
     "usage": {
       "count": 24,
       "reading": {
-        "claim": 8,
-        "unread": 16
+        "claim": 6,
+        "unread": 18
       },
       "actual": {
-        "mismatch": 4,
-        "none": 16,
-        "unverifiable": 4
+        "mismatch": 3,
+        "none": 18,
+        "unverifiable": 3
       }
     }
   },
@@ -302,6 +319,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -311,6 +329,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -327,6 +346,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -336,6 +356,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -350,6 +371,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -359,6 +381,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -366,6 +389,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -380,6 +404,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -389,6 +414,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -396,6 +422,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -410,6 +437,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -419,6 +447,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -433,6 +462,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
           ]
@@ -442,6 +472,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
           ]
@@ -458,8 +489,9 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -467,6 +499,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -483,6 +516,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -492,6 +526,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -501,6 +536,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -517,6 +553,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -526,6 +563,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -542,6 +580,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -551,6 +590,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -567,6 +607,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -576,6 +617,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -590,10 +632,11 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -601,6 +644,7 @@
           "expected": "confirmed",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -610,6 +654,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -626,6 +671,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -635,6 +681,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -649,6 +696,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -658,6 +706,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -667,6 +716,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -681,6 +731,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -690,6 +741,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -704,6 +756,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -713,6 +766,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -729,6 +783,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -738,6 +793,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_OUTSIDE_RULE_SCOPE"
           ]
@@ -754,6 +810,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -763,6 +820,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -777,6 +835,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -786,6 +845,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -802,6 +862,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -811,6 +872,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -820,6 +882,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -834,6 +897,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -841,6 +905,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -850,6 +915,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -864,6 +930,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -873,6 +940,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -889,6 +957,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -898,6 +967,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -905,6 +975,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -919,6 +990,7 @@
           "expected": "confirmed",
           "actual": "confirmed",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
           ]
@@ -928,6 +1000,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -942,6 +1015,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -951,6 +1025,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -967,6 +1042,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -976,6 +1052,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -990,6 +1067,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -999,6 +1077,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1015,18 +1094,18 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": "none",
-          "actual": "unverifiable",
-          "reading": "claim",
-          "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
-          ]
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
         }
       ]
     },
@@ -1038,19 +1117,21 @@
         {
           "seg_no": 1,
           "expected": "none",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 2,
           "expected": "unverifiable",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
@@ -1058,6 +1139,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1074,6 +1156,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1081,6 +1164,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1090,6 +1174,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1106,6 +1191,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1115,6 +1201,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1122,6 +1209,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1136,6 +1224,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1143,6 +1232,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1152,6 +1242,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1168,6 +1259,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -1177,6 +1269,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1191,8 +1284,9 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -1200,6 +1294,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1209,6 +1304,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1223,6 +1319,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -1232,6 +1329,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1246,6 +1344,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1255,6 +1354,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1264,6 +1364,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1278,6 +1379,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -1287,6 +1389,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1303,6 +1406,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1312,6 +1416,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1328,6 +1433,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1337,6 +1443,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1346,6 +1453,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1360,6 +1468,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -1369,6 +1478,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -1385,6 +1495,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
           ]
@@ -1394,6 +1505,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1408,6 +1520,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1415,6 +1528,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1424,6 +1538,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1440,6 +1555,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1449,6 +1565,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1463,6 +1580,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1472,6 +1590,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1486,6 +1605,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -1495,6 +1615,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1511,6 +1632,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1520,6 +1642,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1536,6 +1659,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1545,6 +1669,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1561,6 +1686,7 @@
           "expected": "confirmed",
           "actual": "confirmed",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "MATCHES_OFFICIAL_FUNCTION"
           ]
@@ -1570,6 +1696,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1584,6 +1711,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1593,6 +1721,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1600,6 +1729,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1616,6 +1746,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1623,6 +1754,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
           ]
@@ -1639,6 +1771,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1648,6 +1781,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1657,6 +1791,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1671,6 +1806,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1680,6 +1816,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_OUTSIDE_RULE_SCOPE"
           ]
@@ -1689,6 +1826,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1703,6 +1841,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1712,6 +1851,7 @@
           "expected": "mismatch",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1719,6 +1859,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1733,6 +1874,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1742,6 +1884,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1758,6 +1901,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -1767,6 +1911,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1781,19 +1926,21 @@
         {
           "seg_no": 1,
           "expected": "none",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
           "seg_no": 2,
           "expected": "unverifiable",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "CLAIM_SCOPE_UNRESOLVED"
           ]
         },
         {
@@ -1801,6 +1948,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1817,6 +1965,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1826,6 +1975,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1842,6 +1992,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_OUTSIDE_RULE_SCOPE"
           ]
@@ -1851,6 +2002,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1865,6 +2017,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1874,6 +2027,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -1890,6 +2044,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1899,6 +2054,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1906,6 +2062,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1920,6 +2077,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1929,6 +2087,7 @@
           "expected": "mismatch",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1943,6 +2102,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1952,6 +2112,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -1968,6 +2129,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -1975,6 +2137,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -1984,6 +2147,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -1998,6 +2162,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
           ]
@@ -2007,6 +2172,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2014,6 +2180,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2030,6 +2197,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2039,6 +2207,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2055,6 +2224,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2064,6 +2234,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2073,6 +2244,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2089,6 +2261,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2098,6 +2271,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2114,6 +2288,7 @@
           "expected": "confirmed",
           "actual": "confirmed",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "MATCHES_OFFICIAL_FUNCTION"
           ]
@@ -2123,6 +2298,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2137,8 +2313,9 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -2146,8 +2323,9 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -2155,6 +2333,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2169,6 +2348,7 @@
           "expected": "confirmed",
           "actual": "confirmed",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "MATCHES_OFFICIAL_FUNCTION"
           ]
@@ -2178,6 +2358,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2192,6 +2373,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2199,6 +2381,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2215,6 +2398,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2224,6 +2408,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2240,6 +2425,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -2249,6 +2435,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2263,6 +2450,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2272,6 +2460,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2286,6 +2475,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2293,6 +2483,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2302,6 +2493,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2318,6 +2510,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2327,6 +2520,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2341,6 +2535,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -2350,6 +2545,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2357,6 +2553,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2373,6 +2570,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2382,6 +2580,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2398,6 +2597,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2407,6 +2607,7 @@
           "expected": "mismatch",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2414,6 +2615,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2428,6 +2630,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2437,6 +2640,7 @@
           "expected": "mismatch",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2451,6 +2655,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2460,6 +2665,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2474,6 +2680,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2483,6 +2690,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2492,6 +2700,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2506,6 +2715,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2515,6 +2725,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2524,6 +2735,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2538,6 +2750,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2547,6 +2760,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2554,6 +2768,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2568,6 +2783,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -2577,6 +2793,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]
@@ -2586,6 +2803,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2600,6 +2818,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2609,6 +2828,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2623,6 +2843,7 @@
           "expected": "none",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2632,6 +2853,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2641,6 +2863,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2655,6 +2878,7 @@
           "expected": "confirmed",
           "actual": "confirmed",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "MATCHES_OFFICIAL_FUNCTION"
           ]
@@ -2664,6 +2888,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2676,10 +2901,11 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -2687,6 +2913,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2696,6 +2923,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": true,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2712,6 +2940,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -2719,11 +2948,10 @@
         {
           "seg_no": 2,
           "expected": "none",
-          "actual": "mismatch",
-          "reading": "claim",
-          "reasons": [
-            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
-          ]
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
         }
       ]
     },
@@ -2737,6 +2965,7 @@
           "expected": "mismatch",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2746,6 +2975,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2753,6 +2983,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2767,6 +2998,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2774,6 +3006,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2781,6 +3014,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2795,6 +3029,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2802,6 +3037,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
           ]
@@ -2818,6 +3054,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2825,6 +3062,7 @@
           "expected": "unverifiable",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2839,6 +3077,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2848,6 +3087,7 @@
           "expected": "unverifiable",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2857,6 +3097,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "notice",
+          "joined": false,
           "reasons": []
         }
       ]
@@ -2871,6 +3112,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2880,6 +3122,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2887,6 +3130,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2901,19 +3145,21 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": "unverifiable",
-          "actual": "mismatch",
+          "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
-            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
@@ -2921,6 +3167,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2937,6 +3184,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2946,6 +3194,7 @@
           "expected": "none",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
           ]
@@ -2962,6 +3211,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2971,6 +3221,7 @@
           "expected": "confirmed",
           "actual": "unverifiable",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "AD_TEXT_NOT_FULLY_READ"
           ]
@@ -2987,6 +3238,7 @@
           "expected": "none",
           "actual": "none",
           "reading": "unread",
+          "joined": false,
           "reasons": []
         },
         {
@@ -2994,6 +3246,7 @@
           "expected": "mismatch",
           "actual": "mismatch",
           "reading": "claim",
+          "joined": false,
           "reasons": [
             "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
           ]

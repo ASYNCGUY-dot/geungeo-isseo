@@ -1,0 +1,3265 @@
+{
+  "engine": {
+    "extraction": "claim-extract-v1.10",
+    "verdict": "claim-verdict-v1.5"
+  },
+  "case_count": 100,
+  "segment_count": 239,
+  "labeled_segment_count": 215,
+  "expected_counts": {
+    "confirmed": 68,
+    "mismatch": 30,
+    "unverifiable": 16,
+    "none": 101
+  },
+  "false_clearance_count": 0,
+  "false_clearance_claims": {
+    "count": 0,
+    "of": 46
+  },
+  "false_clearance_none": {
+    "count": 0,
+    "of": 101
+  },
+  "confirmed_recall": {
+    "count": 3,
+    "of": 68
+  },
+  "wrong_mismatch": {
+    "count": 37,
+    "of": 169
+  },
+  "segment_agreement": {
+    "count": 88,
+    "of": 215
+  },
+  "ads": {
+    "false_cleared": 0,
+    "fully_labeled": 80,
+    "expected_all_confirmed": 42,
+    "engine_all_confirmed": 3
+  },
+  "by_scenario": {
+    "carryover": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 0
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 6
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 14
+      },
+      "wrong_mismatch": {
+        "count": 3,
+        "of": 20
+      }
+    },
+    "honest": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 0
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 40
+      },
+      "confirmed_recall": {
+        "count": 3,
+        "of": 30
+      },
+      "wrong_mismatch": {
+        "count": 15,
+        "of": 70
+      }
+    },
+    "modifier": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 20
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 13
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 0
+      },
+      "wrong_mismatch": {
+        "count": 3,
+        "of": 13
+      }
+    },
+    "two_claims": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 0
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 4
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 22
+      },
+      "wrong_mismatch": {
+        "count": 2,
+        "of": 26
+      }
+    },
+    "unsupported": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 26
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 38
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 2
+      },
+      "wrong_mismatch": {
+        "count": 14,
+        "of": 40
+      }
+    }
+  },
+  "by_layout": {
+    "inline": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 14
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 25
+      },
+      "confirmed_recall": {
+        "count": 1,
+        "of": 17
+      },
+      "wrong_mismatch": {
+        "count": 7,
+        "of": 42
+      }
+    },
+    "lines": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 7
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 22
+      },
+      "confirmed_recall": {
+        "count": 1,
+        "of": 17
+      },
+      "wrong_mismatch": {
+        "count": 7,
+        "of": 39
+      }
+    },
+    "lines_no_period": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 10
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 26
+      },
+      "confirmed_recall": {
+        "count": 1,
+        "of": 18
+      },
+      "wrong_mismatch": {
+        "count": 14,
+        "of": 44
+      }
+    },
+    "wrapped": {
+      "false_clearance_count": 0,
+      "false_clearance_claims": {
+        "count": 0,
+        "of": 15
+      },
+      "false_clearance_none": {
+        "count": 0,
+        "of": 28
+      },
+      "confirmed_recall": {
+        "count": 0,
+        "of": 16
+      },
+      "wrong_mismatch": {
+        "count": 9,
+        "of": 44
+      }
+    }
+  },
+  "joined_confirmed": {
+    "inline": {
+      "count": 0,
+      "of": 17
+    },
+    "lines": {
+      "count": 0,
+      "of": 17
+    },
+    "lines_no_period": {
+      "count": 17,
+      "of": 18
+    },
+    "wrapped": {
+      "count": 0,
+      "of": 16
+    }
+  },
+  "by_context_kind": {
+    "comparison": {
+      "count": 4,
+      "reading": {
+        "unread": 4
+      },
+      "actual": {
+        "none": 4
+      }
+    },
+    "guarantee": {
+      "count": 4,
+      "reading": {
+        "claim": 1,
+        "unread": 3
+      },
+      "actual": {
+        "none": 3,
+        "unverifiable": 1
+      }
+    },
+    "intro": {
+      "count": 24,
+      "reading": {
+        "claim": 8,
+        "unread": 16
+      },
+      "actual": {
+        "mismatch": 3,
+        "none": 16,
+        "unverifiable": 5
+      }
+    },
+    "notice": {
+      "count": 53,
+      "reading": {
+        "claim": 30,
+        "notice": 19,
+        "unread": 4
+      },
+      "actual": {
+        "mismatch": 28,
+        "none": 23,
+        "unverifiable": 2
+      }
+    },
+    "period": {
+      "count": 4,
+      "reading": {
+        "unread": 4
+      },
+      "actual": {
+        "none": 4
+      }
+    },
+    "target": {
+      "count": 4,
+      "reading": {
+        "claim": 4
+      },
+      "actual": {
+        "unverifiable": 4
+      }
+    },
+    "usage": {
+      "count": 20,
+      "reading": {
+        "claim": 4,
+        "unread": 16
+      },
+      "actual": {
+        "mismatch": 4,
+        "none": 16
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "C5-001",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-002",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-003",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-004",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-005",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-006",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-007",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-008",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-009",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-010",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-011",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-012",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-013",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-014",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-015",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-016",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-017",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-018",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-019",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-020",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-021",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-022",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-023",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-024",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-025",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-026",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_OUTSIDE_RULE_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-027",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-028",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-029",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-030",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-031",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-032",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-033",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-034",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-035",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-036",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-037",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-038",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-039",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-040",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-041",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-042",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-043",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-044",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-045",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-046",
+      "scenario": "modifier",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-047",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-048",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-049",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-050",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "MATCHES_OFFICIAL_FUNCTION"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-051",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-052",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-053",
+      "scenario": "carryover",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-054",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_OUTSIDE_RULE_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-055",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-056",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-057",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-058",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-059",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-060",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-061",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-062",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-063",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-064",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-065",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-066",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-067",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-068",
+      "scenario": "honest",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-069",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "confirmed",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-070",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-071",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-072",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EXPRESSION_STRENGTH_EXCEEDS_OFFICIAL"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-073",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-074",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-075",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-076",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-077",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-078",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-079",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-080",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-081",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-082",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-083",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-084",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "OFFICIAL_ATTRIBUTION_AMBIGUOUS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-085",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-086",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-087",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-088",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-089",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-090",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-091",
+      "scenario": "honest",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-092",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-093",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "none",
+          "actual": "none",
+          "reading": "notice",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-094",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-095",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 3,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-096",
+      "scenario": "modifier",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        }
+      ]
+    },
+    {
+      "case_id": "C5-097",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": "unverifiable",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": true,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-098",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "EFFECT_NOT_IN_OFFICIAL_FUNCTIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-099",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "none",
+          "actual": "none",
+          "reading": "unread",
+          "joined": false,
+          "reasons": []
+        },
+        {
+          "seg_no": 2,
+          "expected": "mismatch",
+          "actual": "mismatch",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "DISEASE_CLAIM_BEYOND_FUNCTIONAL_SCOPE"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C5-100",
+      "scenario": "carryover",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "expected": "confirmed",
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "AD_TEXT_NOT_FULLY_READ"
+          ]
+        },
+        {
+          "seg_no": 2,
+          "expected": null,
+          "actual": "unverifiable",
+          "reading": "claim",
+          "joined": false,
+          "reasons": [
+            "CLAIM_SCOPE_UNRESOLVED"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 - 기준일: `2026-11-11 Asia/Seoul`
 - 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지), 동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 로컬 태그
   `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영). 동결 브랜치는 사용자 결정 없이 고치지 않는다.
-- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.10`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
+- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.12`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
   기능성화장품 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`. 동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
 - 검증: 전체 재현은 `scripts/reproduce.py`(테스트와 동결 평가세트의 오인 승인 0 관문). 문장 나누기를 바꾸면 `scripts/engine_diff.py`로 만든 광고
   묶음을 이전 엔진과 대조한다(사용법은 스크립트 첫머리).
@@ -11,7 +11,16 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고 `검증 불가`로 멈춘다. 평가 라벨은 모두 AI 라벨이다.
 - 2026-10-16 이전 인계와 9월 단계 기록은 [archive/CODEX_HANDOFF_HISTORY.md](archive/CODEX_HANDOFF_HISTORY.md)로 옮겼다(내용은 그대로).
 
-## 이번 인계 — 2026-11-03 변형 문형 복원과 동결 브랜치 빈 줄 수정 (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-11 개선 작업: 대조 도구, 문서 정리, 마침표 없는 줄 규칙과 `claim-eval-v5` (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: 개선사항 점검 보고에 "개선 작업 ㄱㄱ". [기록](evidence/MVP_WHOLE_CLAIM_LINES_2026-11-11.md), [계획·기준](superpowers/plans/2026-11-11-whole-claim-lines.md).
+- `scripts/engine_diff.py`(`6ddf111`): 임시 폴더에서 두 번 사라진 대조 도구를 저장소로 옮김. 묶음 네 개가 복원한 원본과 줄 단위로 같고 기록을 재현함.
+- 문서(`26bb14d`): 이 머리말 갱신, 10/16 이전 인계를 archive로 이동, AGENTS.md의 9/28 "P1 미완료"를 이력으로 표시.
+- 엔진: `claim-extract-v1.11`(`86086b9`) → 재검토 P3 수정 `v1.12`(`86ec3dd`). 독립 재검토 P1 0, P2 1(남김), P3 3(2건 고침).
+- `claim-eval-v5`(맹검 라벨 215/239 일치): 오인 승인 0, 합쳐 읽힘 17 → 7, 틀린 `근거 불일치` 37 → 35, 재현율 3/68 그대로 → 기준 통과, 유지.
+- 남은 것(사용자 결정): 재현율의 큰 원인인 끝맺음("에도"·"있답니다")과 옆 문장(섭취법·소개·고지 문구), 동결 브랜치 반영. `I-0040`·Docker는 사용자 조치.
+
+## 이전 인계 — 2026-11-03 변형 문형 복원과 동결 브랜치 빈 줄 수정 (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: 결정 두 개에 "1번 넣어, 2번 살려". [기록](evidence/MVP_NOTICE_VARIANTS_2026-10-30.md) "사용자 결정으로 복원".
 - 작업 브랜치: `claim-extract-v1.10` = `52b19c2`(v1.8) 규칙 복원. 기준 2·3 미달 기록은 그대로 둔다(개발 세션은 철회 유지를 권했음).

@@ -75,7 +75,7 @@ def steps(source_export: Path, retrieved_at: str, output_dir: Path, skip_tests: 
             ],
             True,
         ))
-    for eval_id in ("claim-eval-v4", "claim-eval-v3"):
+    for eval_id in ("claim-eval-v5", "claim-eval-v4", "claim-eval-v3"):
         folder = ROOT / "data" / "eval" / eval_id
         planned.append(Step(
             f"{eval_id} (advertisements of several sentences)",
