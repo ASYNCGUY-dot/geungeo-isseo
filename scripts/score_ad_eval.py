@@ -8,6 +8,8 @@ A sentence no claim overlaps gets `none`. Expected labels are blind AI labels, n
 Each sentence also records how the rules read it: as (part of) a claim, as a sentence left unread
 (it withholds its neighbours' confirmation) or set aside as the notice, and whether they read it
 `joined` with text outside it; sentences labeled confirmed and read joined are counted per layout.
+Each sentence is also judged `alone`, as an advertisement of its own, so the sentences labeled confirmed
+that the grammar reads whole are counted apart from the neighbours that withhold them (`confirmed_alone`).
 With --manifest, the readings and verdicts of the context sentences are counted per kind from the
 sample's sentence roles.
 
@@ -59,6 +61,15 @@ def _validate(case: dict) -> None:
             raise AdScoreError(f"{case['case_id']}/{segment['seg_no']}: invalid label {segment['expected']!r}")
 
 
+def _strongest(verdicts: set[Verdict]) -> str:
+    return next((verdict.value for verdict in _RANK if verdict in verdicts), "none")
+
+
+def _alone(text: str, product: ConfirmedProduct) -> str:
+    """The verdict of one sentence judged as an advertisement of its own: whether the rules read it whole."""
+    return _strongest({item.verdict for item in decide_ad(text, confirm_claims(extract_claims(text), "all"), product)})
+
+
 def _score_case(case: dict, product: ConfirmedProduct) -> dict:
     claims = confirm_claims(extract_claims(case["ad_text"]), "all")
     decisions = list(decide_ad(case["ad_text"], claims, product))
@@ -67,8 +78,7 @@ def _score_case(case: dict, product: ConfirmedProduct) -> dict:
     for segment in case["segments"]:
         start, end = segment["span"]
         overlapping = [item for item in decisions if item.claim.span[0] < end and item.claim.span[1] > start]
-        verdicts = {item.verdict for item in overlapping}
-        actual = next((verdict.value for verdict in _RANK if verdict in verdicts), "none")
+        actual = _strongest({item.verdict for item in overlapping})
         if any(item.span[0] < end and item.span[1] > start for item in claims):
             reading = "claim"
         elif any(span[0] < end and span[1] > start for span in unread):
@@ -83,6 +93,7 @@ def _score_case(case: dict, product: ConfirmedProduct) -> dict:
             "seg_no": segment["seg_no"],
             "expected": segment["expected"],
             "actual": actual,
+            "alone": _alone(segment["text"], product),
             "reading": reading,
             "joined": joined,
             "reasons": sorted({item.reason.value for item in overlapping}),
@@ -158,6 +169,10 @@ def score(
         "labeled_segment_count": len(pairs),
         "expected_counts": expected_counts,
         **_metrics(pairs),
+        "confirmed_alone": _ratio(
+            sum(1 for _, segment in labeled if segment["expected"] == "confirmed" and segment["alone"] == "confirmed"),
+            expected_counts["confirmed"],
+        ),
         "segment_agreement": _ratio(sum(1 for expected, actual in pairs if expected == actual), len(pairs)),
         "ads": {
             "false_cleared": sum(

@@ -277,9 +277,9 @@ def _case(case_id: str, layout: str, texts: list[str], expected: list[str | None
     }
 
 
-# A claim the rules do not read whole ("에도"): its line joins the next one when lines have no periods.
+# A claim the rules do not read whole ("우리 몸의"): its line joins the next one when lines have no periods.
 # A line read whole would end its sentence (claim-extract-v1.11).
-JOINED_CLAIM = "오메가3는 혈행 개선에도 도움을 줄 수 있습니다."
+JOINED_CLAIM = "오메가3는 우리 몸의 혈행 개선에 도움을 줄 수 있습니다."
 
 
 def test_score_matches_claims_to_sentences(tmp_path: Path) -> None:
@@ -303,6 +303,14 @@ def test_score_matches_claims_to_sentences(tmp_path: Path) -> None:
     assert summary["false_clearance_count"] == 0
     assert summary["labeled_segment_count"] == 7
     assert summary["ads"]["expected_all_confirmed"] == 3 and summary["ads"]["engine_all_confirmed"] == 2
+    # Each sentence is also judged as an advertisement of its own: the grammar reads three of the four claims
+    # labeled confirmed whole, and the neighbours of C and D withhold the confirmation in the advertisement.
+    alone = {row["case_id"]: [segment["alone"] for segment in row["segments"]] for row in summary["results"]}
+    assert alone == {
+        "A": ["confirmed", "none"], "B": ["confirmed", "none"],
+        "C": ["unverifiable", "none"], "D": ["confirmed", "mismatch"],
+    }
+    assert summary["confirmed_alone"] == {"count": 3, "of": 4}
 
 
 def test_false_clearance_counts_sentences_labeled_as_no_claim(tmp_path: Path) -> None:
