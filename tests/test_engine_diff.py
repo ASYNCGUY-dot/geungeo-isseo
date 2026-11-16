@@ -4,14 +4,17 @@ from pathlib import Path
 from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION
 from scripts import engine_diff
 
+ENDINGS_SIZE = 289200  # the claim endings: 249,600 rows expect the claim as written, 39,600 the same text
+
 
 def test_corpora_keep_their_recorded_sizes() -> None:
     # The sizes the evidence records cite: 276,480 (neighbour gate), 216,000 (notice lines),
-    # 192,960 (notice variants), 192,960 (blank lines) and 255,600 (claim endings, claim-extract-v1.13).
+    # 192,960 (notice variants), 192,960 (blank lines) and the claim endings (claim-extract-v1.13, v1.14).
     sizes = {name: sum(1 for _ in rows()) for name, rows in engine_diff.CORPORA.items()}
 
     assert sizes == {
-        "neighbour": 276480, "notice-lines": 216000, "notice-variants": 192960, "blank-lines": 192960, "endings": 255600,
+        "neighbour": 276480, "notice-lines": 216000, "notice-variants": 192960, "blank-lines": 192960,
+        "endings": ENDINGS_SIZE,
     }
 
 
@@ -37,8 +40,30 @@ def test_endings_rewrite_only_the_claim() -> None:
         assert row["text"] == row["canonical"].replace(row["core"], row["variant"], 1)
     # Every way is applied to the claims it can rewrite, and the leading connectives to every claim.
     leads = {row["core"] for row in rows if row["way"] == "lead:또한"}
-    assert leads == set(engine_diff.NEIGHBOUR_CORES)
+    assert leads == set(engine_diff.NEIGHBOUR_CORES + engine_diff.ENDING_INTAKE_CORES)
     assert next(row for row in rows if row["way"] == "에도")["variant"].count("에도 도움") == 1
+    # A connective before an intake word or a verb phrase is left unread (claim-extract-v1.14): those rows
+    # expect the reading of the same text by the engine before, every other row the claim as written.
+    expect = {(row["way"].startswith(("lead:", "그리고+")), row["core"] in engine_diff.ENDING_LEAD_OUT, row["expect"])
+              for row in rows}
+    assert expect == {(True, True, "text"), (True, False, "canonical"), (False, True, "canonical"),
+                      (False, False, "canonical")}
+
+
+def test_compare_endings_takes_the_expected_reading_per_row(tmp_path: Path) -> None:
+    cases = tmp_path / "cases.jsonl"
+    cases.write_text("".join(json.dumps({"text": t, "expect": e}) + "\n" for t, e in
+                             (("a", "canonical"), ("b", "text"), ("c", "text"))), encoding="utf-8")
+    canon, old, new = (tmp_path / f"{name}.jsonl" for name in ("canon", "old", "new"))
+    c, u = [["s", "confirmed", "R"]], [["s", "unverifiable", "R"]]
+    canon.write_text("".join(json.dumps(x) + "\n" for x in (c, c, c)), encoding="utf-8")
+    old.write_text("".join(json.dumps(x) + "\n" for x in (u, u, u)), encoding="utf-8")
+    new.write_text("".join(json.dumps(x) + "\n" for x in (c, u, c)), encoding="utf-8")
+
+    counts = engine_diff.compare_endings(cases, canon, old, new)["counts"]
+
+    assert counts == {"canonical: as expected": 1, "text: as expected": 1, "text: NOT AS EXPECTED": 1}
+    assert engine_diff.main(["compare-endings", str(cases), str(canon), str(old), str(new)]) == 1
 
 
 def test_blank_lines_rewrite_only_blank_line_layouts() -> None:

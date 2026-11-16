@@ -419,6 +419,18 @@ def test_a_whole_claim_line_with_the_new_endings_ends_its_sentence() -> None:
     "오메가3는 원활한 혈행에도 도움을 줄 수 있답니다.",
     "또한 혈행 개선에 도움을 줄 수 있습니다. 하루 3캡슐이면 충분합니다.",
     "루테인은 눈 건강에 도움을 줄 수 있습니다. 또한 혈행 개선에도 도움을 줄 수 있답니다.",
+    # Before an intake word or a verb phrase a connective can read as its adverb ("더불어 섭취하는": taken
+    # together; "또 드시는": taken again; "먼저 챙기는": taken first), with a comma or without (independent
+    # review of claim-extract-v1.13, 2026-11-16, P1).
+    "더불어 섭취하는 오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+    "루테인은 눈 건강에 도움을 줄 수 있습니다. 또한 섭취하는 오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+    "루테인은 눈 건강에 도움을 줄 수 있어요\n더불어 섭취하는 오메가3는 혈행 개선에 도움을 줄 수 있어요",
+    "또 드시는 프로바이오틱스는 장 건강에도 도움을 줄 수 있답니다.",
+    "먼저 챙기는 루테인은 눈 건강에 도움을 줄 수 있어요.",
+    "먼저 드시는 이 제품은 혈행 개선에 도움을 줄 수 있습니다.",
+    "먼저 혈행을 개선하는 데 도움을 줄 수 있습니다.",
+    "먼저, 섭취하는 오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+    "또한 매일 섭취하는 오메가3는 혈행 개선에도 도움을 줄 수 있습니다.",
 ])
 def test_forms_left_out_of_the_endings_are_not_confirmed(text: str) -> None:
     assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text, THREE_HEADERS_TEXT))

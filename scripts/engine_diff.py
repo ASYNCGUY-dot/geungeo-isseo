@@ -11,9 +11,11 @@ live in session scratch folders and were lost):
   advertisement holding the canonical notice instead (claim-extract-v1.7; 192,960)
 - blank-lines: notice-variants laid out with one blank line, rewritten with longer blank-line runs; `base`
   holds the one-blank-line text (claim-extract-v1.8; 192,960)
-- endings: neighbour advertisements with the claim rewritten in the forms of claim-extract-v1.13 ("에도",
-  "데에도", "있답니다", "드릴 수", one leading connective); `canonical` holds the claim as written (255,600). The
-  new engine on `text` must read as the engine before it reads `canonical` (`compare` with --expect-same).
+- endings: neighbour advertisements, and two with an intake word, with the claim rewritten in the forms of
+  claim-extract-v1.13 ("에도", "데에도", "있답니다", "드릴 수", one leading connective); `canonical` holds the claim
+  as written (289,200). The new engine on `text` must read as the engine before it reads `canonical`, except
+  where a connective stands before an intake word or a verb phrase (`expect: text`, claim-extract-v1.14): there
+  it reads as the engine before reads the same text (`compare-endings`).
 
 Every corpus row has `text` (the advertisement) and `product` (a key of PRODUCTS). The judge loads
 `claimledger` from --engine-src when given (export an older engine with `git archive <commit> src | tar -x -C
@@ -25,6 +27,7 @@ usage: engine_diff.py corpus <name> <cases.jsonl>
        engine_diff.py period-lines <cases.jsonl> <out.jsonl> [--engine-src DIR]
        engine_diff.py compare <cases.jsonl> <a.jsonl> <b.jsonl> [--expect-same]
        engine_diff.py compare-variants <cases.jsonl> <old_text> <old_canonical> <new_text>
+       engine_diff.py compare-endings <cases.jsonl> <old_canonical> <old_text> <new_text>
 
 `compare` reports per advertisement whether the verdicts (verdict and reason per claim) differ. With
 --expect-same any difference is a failure (exit 1). `compare-variants` checks claim-extract-v1.7's
@@ -165,6 +168,10 @@ ENDING_WAYS = {
 }
 ENDING_NEIGHBOURS = ["none", "disclaimer", "period", "dose", "support_claim"]
 ENDING_ENDINGS = [".", "", "!", "…"]
+# Claims with an intake word; with the verb-form claim of NEIGHBOUR_CORES, a connective before them can read
+# as an adverb of the next word and is left unread (claim-extract-v1.14, review of v1.13).
+ENDING_INTAKE_CORES = ["매일 섭취하는 오메가3는 혈행 개선에 도움을 줄 수 있습니다", "꾸준히 챙기는 루테인은 눈 건강에 도움을 줄 수 있어요"]
+ENDING_LEAD_OUT = {"혈행을 개선하는 데 도움을 줄 수 있습니다", *ENDING_INTAKE_CORES}
 
 
 def _compact(text: str) -> str:
@@ -180,11 +187,15 @@ def neighbour_rows() -> Iterator[dict]:
 
 
 def ending_rows() -> Iterator[dict]:
-    """The neighbour layout with the claim in a claim-extract-v1.13 form, beside the claim as written."""
-    for core, (way, rewrite) in itertools.product(NEIGHBOUR_CORES, ENDING_WAYS.items()):
+    """The neighbour layout with the claim in a claim-extract-v1.13 form, beside the claim as written.
+
+    `expect` names the reading the new engine must give: the claim as written (`canonical`), or, for a
+    connective before an intake word or a verb phrase, the old engine's reading of the same text (`text`)."""
+    for core, (way, rewrite) in itertools.product(NEIGHBOUR_CORES + ENDING_INTAKE_CORES, ENDING_WAYS.items()):
         variant = rewrite(core)
         if variant == core:
             continue
+        lead_out = way.startswith(("lead:", "그리고+")) and core in ENDING_LEAD_OUT
         for ending, before, after, sep, product in itertools.product(
             ENDING_ENDINGS, ENDING_NEIGHBOURS, ENDING_NEIGHBOURS, (" ", "\n"), PRODUCTS,
         ):
@@ -193,7 +204,7 @@ def ending_rows() -> Iterator[dict]:
             yield {
                 "text": layout.replace("{core}", variant + ending), "canonical": layout.replace("{core}", core + ending),
                 "product": product, "way": way, "core": core, "variant": variant, "ending": ending,
-                "before": before, "after": after,
+                "before": before, "after": after, "expect": "text" if lead_out else "canonical",
             }
 
 
@@ -432,6 +443,24 @@ def compare_variants(cases: Path, old_text: Path, old_canonical: Path, new_text:
     return {"counts": dict(counts), "examples": shown}
 
 
+def compare_endings(cases: Path, old_canonical: Path, old_text: Path, new_text: Path, examples: int = 10) -> dict:
+    """Check the endings expectation: per row, the new engine on `text` reads as the old engine on
+    `canonical` or, where the row expects `text`, as the old engine on the same text."""
+    counts: Counter = Counter()
+    shown = []
+    with cases.open(encoding="utf-8") as rows, old_canonical.open(encoding="utf-8") as a, \
+            old_text.open(encoding="utf-8") as b, new_text.open(encoding="utf-8") as c:
+        for case_line, a_line, b_line, c_line in zip(rows, a, b, c, strict=True):
+            case = json.loads(case_line)
+            canon, old, new = (_verdicts(json.loads(x)) for x in (a_line, b_line, c_line))
+            expected = old if case["expect"] == "text" else canon
+            outcome = "as expected" if new == expected else "NOT AS EXPECTED"
+            counts[f"{case['expect']}: {outcome}"] += 1
+            if new != expected and len(shown) < examples:
+                shown.append({"text": case["text"], "expect": case["expect"], "expected": expected, "new": new})
+    return {"counts": dict(counts), "examples": shown}
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Differential checks of the health-food engine")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -458,6 +487,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     variants.add_argument("old_text", type=Path)
     variants.add_argument("old_canonical", type=Path)
     variants.add_argument("new_text", type=Path)
+    endings = commands.add_parser("compare-endings", help="check the endings expectation")
+    endings.add_argument("cases", type=Path)
+    endings.add_argument("old_canonical", type=Path)
+    endings.add_argument("old_text", type=Path)
+    endings.add_argument("new_text", type=Path)
     return parser.parse_args(argv)
 
 
@@ -476,6 +510,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = compare(args.cases, args.a, args.b)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 1 if args.expect_same and result["counts"].get("different") else 0
+    if args.command == "compare-endings":
+        result = compare_endings(args.cases, args.old_canonical, args.old_text, args.new_text)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 1 if any("NOT AS EXPECTED" in key for key in result["counts"]) else 0
     result = compare_variants(args.cases, args.old_text, args.old_canonical, args.new_text)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 1 if result["counts"].get("NOT AS EXPECTED") else 0

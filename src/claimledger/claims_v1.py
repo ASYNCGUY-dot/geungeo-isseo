@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from claimledger.domain import IngredientGroup
 from claimledger.official_v2 import EFFECT_GROUP, EffectKey, _compact
 
-CLAIM_EXTRACTION_VERSION = "claim-extract-v1.13"
+CLAIM_EXTRACTION_VERSION = "claim-extract-v1.14"
 
 
 class ExpressionStrength(StrEnum):
@@ -106,15 +106,16 @@ _NOTICE_MAX_CHARS = 48
 # forms end in "에", verb forms in "데", followed by the support predicate. The sentence may end in
 # one plain mark (claim-extract-v1.4): an ellipsis or a run of marks may trail off into something else.
 # claim-extract-v1.13 adds the same proposition with "에도" and "데에/데도/데에도", the endings "있답니다" and
-# "드릴 수", and one leading connective from a closed list. Emphasis ("특히", "무엇보다") can read as strength or
-# comparison, and decorated subjects or reworded function names need a judgement of their own: all stay out.
+# "드릴 수", and one leading connective from a closed list, right before the subject or the noun form of the
+# function only (claim-extract-v1.14, see _support_text_match). Emphasis ("특히", "무엇보다") can read as strength
+# or comparison, and decorated subjects or reworded function names need a judgement of their own: all stay out.
 _HELP = (
     r"도움(?:을(?:(?:줄|드릴)수(?:있음|있습니다|있어요|있답니다)|줌|줍니다)|이(?:될수(?:있음|있습니다|있어요|있답니다)|됩니다)"
     r"|을줄수있는(?:기능성)?원료(?:입니다|예요|이에요))?"
 )
 _SUPPORT_ENDING = rf"에(?:도)?{_HELP}[.!。]?"
 _VERB_ENDING = rf"데(?:에)?(?:도)?{_HELP}[.!。]?"
-_LEAD = r"(?:(?:또한|그리고|또|더불어|게다가|뿐만아니라|아울러|먼저|우선),?)?"
+_LEAD = r"(?:또한|그리고|또|더불어|게다가|뿐만아니라|아울러|먼저|우선),?"
 _EYE_HEALTH = r"눈(?:의)?건강(?:관리)?"
 _MACULAR = (
     r"(?:노화로인해감소될수있는)?황반색소밀도(?:를|의)?유지"
@@ -168,16 +169,24 @@ class AdClaim(BaseModel):
     strength: ExpressionStrength | None
     strength_cues: tuple[str, ...]
     confirmed_by_user: bool = False
-    extraction_version: Literal["claim-extract-v1.13"] = CLAIM_EXTRACTION_VERSION
+    extraction_version: Literal["claim-extract-v1.14"] = CLAIM_EXTRACTION_VERSION
 
 
 def _support_text_match(compact: str, effect: EffectKey) -> re.Match[str] | None:
-    subject = _SINGLE_SUBJECT[EFFECT_GROUP[effect]]
-    prefix = rf"{_LEAD}(?:{_INTAKE}?(?P<subject>본제품|이제품|{subject})(?:은|는|이|가))?"
-    body = rf"{_SINGLE_EFFECT[effect]}{_SUPPORT_ENDING}"
+    """The whole support statement, if the text is one. A leading connective stands only right before the
+    subject or the noun form of the function: before an intake word or a verb phrase it can read as an
+    adverb of that word ("더불어 섭취하는": taken together, "또 드시는": taken again), with a comma or without
+    (independent review of claim-extract-v1.13, 2026-11-16)."""
+    subjects = rf"(?P<subject>본제품|이제품|{_SINGLE_SUBJECT[EFFECT_GROUP[effect]]})(?:은|는|이|가)"
+    noun = rf"{_SINGLE_EFFECT[effect]}{_SUPPORT_ENDING}"
+    body = noun
     if effect in _SINGLE_EFFECT_VERB:
-        body = rf"(?:{body}|{_SINGLE_EFFECT_VERB[effect]}{_VERB_ENDING})"
-    return re.fullmatch(prefix + body, compact)
+        body = rf"(?:{noun}|{_SINGLE_EFFECT_VERB[effect]}{_VERB_ENDING})"
+    for pattern in (rf"(?:{_INTAKE}?{subjects})?{body}", rf"{_LEAD}{subjects}{body}", rf"{_LEAD}{noun}"):
+        match = re.fullmatch(pattern, compact)
+        if match:
+            return match
+    return None
 
 
 def _support_match(claim: AdClaim, effect: EffectKey) -> re.Match[str] | None:
@@ -206,7 +215,7 @@ def read_subjects(claim: AdClaim) -> frozenset[str | None]:
     Empty when the claim is not read as a whole statement for any of its effect candidates.
     """
     matches = (_support_match(claim, effect) for effect in claim.effect_candidates)
-    return frozenset(match["subject"] for match in matches if match)
+    return frozenset(match.groupdict().get("subject") for match in matches if match)
 
 
 def _literal(text: str, positions: list[int], match: re.Match[str]) -> str:
