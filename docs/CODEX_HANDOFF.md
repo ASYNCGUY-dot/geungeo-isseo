@@ -1,9 +1,9 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-11-11 Asia/Seoul`
+- 기준일: `2026-11-16 Asia/Seoul`
 - 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지), 동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 로컬 태그
   `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영). 동결 브랜치는 사용자 결정 없이 고치지 않는다.
-- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.12`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
+- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.14`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
   기능성화장품 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`. 동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
 - 검증: 전체 재현은 `scripts/reproduce.py`(테스트와 동결 평가세트의 오인 승인 0 관문). 문장 나누기를 바꾸면 `scripts/engine_diff.py`로 만든 광고
   묶음을 이전 엔진과 대조한다(사용법은 스크립트 첫머리).
@@ -11,7 +11,19 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고 `검증 불가`로 멈춘다. 평가 라벨은 모두 AI 라벨이다.
 - 2026-10-16 이전 인계와 9월 단계 기록은 [archive/CODEX_HANDOFF_HISTORY.md](archive/CODEX_HANDOFF_HISTORY.md)로 옮겼다(내용은 그대로).
 
-## 이번 인계 — 2026-11-11 개선 작업: 대조 도구, 문서 정리, 마침표 없는 줄 규칙과 `claim-eval-v5` (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-16 끝맺음·첫머리 접속어 확장과 `claim-eval-v6` (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: "근거 있어 작업 하던 것 이어서 해줘". 동결 브랜치 반영(명시 결정 필요)과 LLM 구조화(별도 계획)를 빼고 개선 점검 4번의 끝맺음 확장을 이어 감.
+  [기록](evidence/MVP_CLAIM_ENDINGS_2026-11-16.md), [계획·채점 전 기준](superpowers/plans/2026-11-16-claim-endings.md)(`cbff6fe`).
+- 엔진: `claim-extract-v1.13`(`dc44511`, "에도·데에도", "있답니다", "드릴 수", 첫머리 접속어 하나) → 재검토 P1 수정 `v1.14`(`7b5fabd`, 접속어는 주어나
+  기능 명사 바로 앞에서만. 섭취 수식어·동사형 앞에서는 "함께·다시·먼저 섭취"로 읽혀 막음).
+- 채점기: 문장마다 그 문장만으로 판정한 결과(`alone`)와 `confirmed_alone`. 대조 도구: 새 묶음 `endings`(289,200)와 `compare-endings`.
+- `claim-eval-v6`(맹검 라벨 219/234 일치, kappa 0.909): 오인 승인 0, 혼자서도 확인 못 하는 정직한 주장 26 → 16, 재현율 8/68 → 20/68, 틀린 `근거 불일치`
+  31 그대로 → 기준 통과, 유지. v6도 이제 개발용. 재현 실행에 v6 관문.
+- 남은 것(사용자 결정): 남은 정직한 주장 48개 중 30개를 막는 옆 문장(섭취법·소개·고지 문구)과 풀어 쓴 공식 문구·꾸민 주어는 닫힌 목록으로 끝나지 않음 →
+  LLM 구조화 별도 계획. 동결 브랜치에 줄 규칙·끝맺음 반영. 재검토 P2(끊긴 다음 줄의 기능 이름)는 남아 있음. `I-0040`·Docker는 사용자 조치.
+
+## 이전 인계 — 2026-11-11 개선 작업: 대조 도구, 문서 정리, 마침표 없는 줄 규칙과 `claim-eval-v5` (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: 개선사항 점검 보고에 "개선 작업 ㄱㄱ". [기록](evidence/MVP_WHOLE_CLAIM_LINES_2026-11-11.md), [계획·기준](superpowers/plans/2026-11-11-whole-claim-lines.md).
 - `scripts/engine_diff.py`(`6ddf111`): 임시 폴더에서 두 번 사라진 대조 도구를 저장소로 옮김. 묶음 네 개가 복원한 원본과 줄 단위로 같고 기록을 재현함.

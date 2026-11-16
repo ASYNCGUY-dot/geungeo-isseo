@@ -1,6 +1,6 @@
 {
   "engine": {
-    "extraction": "claim-extract-v1.12",
+    "extraction": "claim-extract-v1.14",
     "verdict": "claim-verdict-v1.5"
   },
   "case_count": 100,
@@ -22,22 +22,26 @@
     "of": 101
   },
   "confirmed_recall": {
-    "count": 3,
+    "count": 13,
     "of": 68
   },
   "wrong_mismatch": {
     "count": 35,
     "of": 169
   },
+  "confirmed_alone": {
+    "count": 53,
+    "of": 68
+  },
   "segment_agreement": {
-    "count": 90,
+    "count": 100,
     "of": 215
   },
   "ads": {
     "false_cleared": 0,
     "fully_labeled": 80,
     "expected_all_confirmed": 42,
-    "engine_all_confirmed": 3
+    "engine_all_confirmed": 8
   },
   "by_scenario": {
     "carryover": {
@@ -108,7 +112,7 @@
         "of": 4
       },
       "confirmed_recall": {
-        "count": 0,
+        "count": 10,
         "of": 22
       },
       "wrong_mismatch": {
@@ -148,7 +152,7 @@
         "of": 25
       },
       "confirmed_recall": {
-        "count": 1,
+        "count": 3,
         "of": 17
       },
       "wrong_mismatch": {
@@ -167,7 +171,7 @@
         "of": 22
       },
       "confirmed_recall": {
-        "count": 1,
+        "count": 5,
         "of": 17
       },
       "wrong_mismatch": {
@@ -186,7 +190,7 @@
         "of": 26
       },
       "confirmed_recall": {
-        "count": 1,
+        "count": 5,
         "of": 18
       },
       "wrong_mismatch": {
@@ -224,7 +228,7 @@
       "of": 17
     },
     "lines_no_period": {
-      "count": 7,
+      "count": 6,
       "of": 18
     },
     "wrapped": {
@@ -317,6 +321,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -327,6 +332,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -344,6 +350,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -354,6 +361,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -362,6 +370,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -377,6 +386,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -387,16 +397,18 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -414,6 +426,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -422,6 +435,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -430,6 +444,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -447,6 +462,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -457,6 +473,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -465,6 +482,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -480,6 +498,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -490,6 +509,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -507,6 +527,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -515,6 +536,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -532,6 +554,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -540,10 +563,11 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         }
       ]
@@ -557,6 +581,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -567,6 +592,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -582,6 +608,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -592,6 +619,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -607,6 +635,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -617,6 +646,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -634,6 +664,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -644,6 +675,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -661,6 +693,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -671,6 +704,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -685,21 +719,23 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         }
       ]
@@ -713,6 +749,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -721,6 +758,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -731,6 +769,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -746,6 +785,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -756,6 +796,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -766,6 +807,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -783,6 +825,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -793,6 +836,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -808,6 +852,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -818,16 +863,18 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -845,6 +892,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -855,6 +903,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -871,21 +920,23 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         }
       ]
@@ -899,20 +950,22 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         }
       ]
@@ -926,6 +979,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -934,6 +988,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -951,6 +1006,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -961,6 +1017,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -969,6 +1026,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -986,6 +1044,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -994,6 +1053,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1002,6 +1062,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1019,6 +1080,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1029,6 +1091,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1044,6 +1107,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1054,6 +1118,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1064,6 +1129,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1081,6 +1147,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1091,6 +1158,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1106,6 +1174,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1116,16 +1185,18 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -1141,6 +1212,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1151,6 +1223,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1168,6 +1241,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1176,6 +1250,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1192,21 +1267,23 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         }
       ]
@@ -1220,16 +1297,18 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1245,6 +1324,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1255,6 +1335,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1269,21 +1350,23 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "MATCHES_UNLABELED_OFFICIAL_FUNCTION"
           ]
         }
       ]
@@ -1297,6 +1380,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1307,6 +1391,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1324,6 +1409,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1334,6 +1420,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1351,6 +1438,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1361,6 +1449,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1371,6 +1460,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1386,6 +1476,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1396,6 +1487,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1413,6 +1505,7 @@
           "seg_no": 1,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1423,6 +1516,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1438,6 +1532,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1446,6 +1541,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1456,6 +1552,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -1471,6 +1568,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1479,6 +1577,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1496,6 +1595,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "mismatch",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1506,6 +1606,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1516,6 +1617,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1533,6 +1635,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1543,6 +1646,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1558,6 +1662,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1568,6 +1673,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1583,6 +1689,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1593,6 +1700,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1603,6 +1711,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1618,6 +1727,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1628,6 +1738,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1636,6 +1747,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1653,6 +1765,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1663,6 +1776,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1680,6 +1794,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1690,16 +1805,18 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1717,6 +1834,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1727,16 +1845,18 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1752,6 +1872,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1762,6 +1883,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -1777,6 +1899,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1787,6 +1910,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -1802,6 +1926,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1810,6 +1935,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1818,6 +1944,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1835,6 +1962,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1845,6 +1973,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1855,6 +1984,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1872,6 +2002,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1882,6 +2013,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1892,6 +2024,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -1907,6 +2040,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1917,6 +2051,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -1934,6 +2069,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1944,6 +2080,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1952,6 +2089,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1969,6 +2107,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -1977,6 +2116,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -1994,6 +2134,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2004,6 +2145,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2014,6 +2156,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2031,6 +2174,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2041,6 +2185,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2058,6 +2203,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2066,6 +2212,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2083,6 +2230,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2091,6 +2239,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2101,6 +2250,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2116,6 +2266,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2126,6 +2277,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2143,6 +2295,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2153,6 +2306,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2170,6 +2324,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2178,6 +2333,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2195,6 +2351,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2205,6 +2362,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2215,6 +2373,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2230,6 +2389,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2238,6 +2398,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2248,6 +2409,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2265,6 +2427,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2275,6 +2438,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2292,16 +2456,18 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2310,6 +2476,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2327,6 +2494,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2337,6 +2505,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2352,6 +2521,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2362,6 +2532,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2379,6 +2550,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2389,6 +2561,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2406,6 +2579,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2414,6 +2588,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2424,6 +2599,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2441,6 +2617,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2451,6 +2628,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2459,6 +2637,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2474,6 +2653,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2484,6 +2664,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2494,6 +2675,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2511,6 +2693,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2521,6 +2704,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2531,6 +2715,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2546,6 +2731,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2556,6 +2742,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2564,6 +2751,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2579,6 +2767,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2589,6 +2778,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2599,6 +2789,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2616,6 +2807,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2626,6 +2818,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2643,6 +2836,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2653,6 +2847,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2668,6 +2863,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2678,6 +2874,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2695,6 +2892,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2705,6 +2903,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2715,6 +2914,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2730,6 +2930,7 @@
           "seg_no": 1,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2740,16 +2941,18 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -2765,6 +2968,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2775,10 +2979,11 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         }
       ]
@@ -2792,6 +2997,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2802,6 +3008,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2810,6 +3017,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2826,21 +3034,23 @@
         {
           "seg_no": 1,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "AD_TEXT_NOT_FULLY_READ"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         },
         {
           "seg_no": 2,
           "expected": "confirmed",
-          "actual": "unverifiable",
+          "actual": "confirmed",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "MATCHES_OFFICIAL_FUNCTION"
           ]
         }
       ]
@@ -2854,6 +3064,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "mismatch",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2864,6 +3075,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2881,6 +3093,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2891,6 +3104,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2906,6 +3120,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2916,6 +3131,7 @@
           "seg_no": 2,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -2933,6 +3149,7 @@
           "seg_no": 1,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2943,6 +3160,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -2958,18 +3176,20 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
-          "joined": true,
+          "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         },
         {
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
-          "joined": true,
+          "joined": false,
           "reasons": [
             "CLAIM_SCOPE_UNRESOLVED"
           ]
@@ -2985,6 +3205,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -2995,6 +3216,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3003,6 +3225,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -3018,6 +3241,7 @@
           "seg_no": 1,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3028,6 +3252,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3036,6 +3261,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3053,6 +3279,7 @@
           "seg_no": 1,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3063,6 +3290,7 @@
           "seg_no": 2,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "notice",
           "joined": false,
           "reasons": []
@@ -3078,6 +3306,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3086,6 +3315,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3103,6 +3333,7 @@
           "seg_no": 1,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3113,6 +3344,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3121,6 +3353,7 @@
           "seg_no": 3,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3136,6 +3369,7 @@
           "seg_no": 1,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "unverifiable",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3146,6 +3380,7 @@
           "seg_no": 2,
           "expected": null,
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3161,6 +3396,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "unverifiable",
+          "alone": "none",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -3171,6 +3407,7 @@
           "seg_no": 2,
           "expected": "unverifiable",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": true,
           "reasons": [
@@ -3188,6 +3425,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3196,6 +3434,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3213,6 +3452,7 @@
           "seg_no": 1,
           "expected": "none",
           "actual": "none",
+          "alone": "none",
           "reading": "unread",
           "joined": false,
           "reasons": []
@@ -3221,6 +3461,7 @@
           "seg_no": 2,
           "expected": "mismatch",
           "actual": "mismatch",
+          "alone": "mismatch",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3238,6 +3479,7 @@
           "seg_no": 1,
           "expected": "confirmed",
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
@@ -3248,10 +3490,11 @@
           "seg_no": 2,
           "expected": null,
           "actual": "unverifiable",
+          "alone": "confirmed",
           "reading": "claim",
           "joined": false,
           "reasons": [
-            "CLAIM_SCOPE_UNRESOLVED"
+            "AD_TEXT_NOT_FULLY_READ"
           ]
         }
       ]
