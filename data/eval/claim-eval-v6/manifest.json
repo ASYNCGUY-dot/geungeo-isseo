@@ -1,0 +1,3097 @@
+{
+  "eval_id": "claim-eval-v6",
+  "question": "What verdict should each sentence of the advertisement get against the product's official function text?",
+  "labeling": "Two blind AI labelers label every sentence of the frozen advertisements later; see the evidence record.",
+  "seed": 20261116,
+  "source": {
+    "source_id": "C003",
+    "file_name": "c003-products.jsonl",
+    "sha256": "CF0D58B478408448F1D9FC0C2A5EB22E3E08055675072C8B863CD6E112703B7E",
+    "retrieved_at": "2026-08-27T12:42:29.050550+00:00"
+  },
+  "engine_versions": {
+    "parser": "official-function-v2.11",
+    "headerless": "headerless-attribution-v3",
+    "extraction": "claim-extract-v1.13",
+    "verdict": "claim-verdict-v1.5"
+  },
+  "excluded_sources": [
+    {
+      "id": "claim-eval-v1",
+      "file_name": "manifest.json",
+      "sha256": "C104F1B2F46BDBC0E0A3C1809CEBEBE2BA46C9B98ABDBA5A6DEB2EC124D9DF6B",
+      "products": 100
+    },
+    {
+      "id": "claim-eval-v2",
+      "file_name": "manifest.json",
+      "sha256": "DD24C7164554D0C0B4DEDEB3B25AE0E7F154EAFAA4F45BA041B6043B0B5780DF",
+      "products": 100
+    },
+    {
+      "id": "claim-eval-v3",
+      "file_name": "manifest.json",
+      "sha256": "0CF1F422F6F4843795591DAC9B2B45E4BCCDDCAD71BD1F289985F847A210F570",
+      "products": 100
+    },
+    {
+      "id": "claim-eval-v4",
+      "file_name": "manifest.json",
+      "sha256": "9A79C043C7104374498B9F596DB81A1F844A6528D3F9EB1C7519B79D1DF795E5",
+      "products": 100
+    },
+    {
+      "id": "claim-eval-v5",
+      "file_name": "manifest.json",
+      "sha256": "E99E413DB1E2CFA4E502D46FCBC2860D28B391F27FE1681056AAE1126E0761AB",
+      "products": 100
+    }
+  ],
+  "excluded_products": 500,
+  "cells": [
+    [
+      "honest",
+      "header_attributed",
+      "official",
+      18
+    ],
+    [
+      "honest",
+      "headerless_attributed",
+      "official",
+      12
+    ],
+    [
+      "modifier",
+      "header_attributed",
+      "official",
+      10
+    ],
+    [
+      "modifier",
+      "headerless_attributed",
+      "official",
+      6
+    ],
+    [
+      "two_claims",
+      "two_attributed_effects",
+      "official",
+      12
+    ],
+    [
+      "carryover",
+      "two_attributed_groups",
+      "official",
+      14
+    ],
+    [
+      "unsupported",
+      "header_attributed",
+      "exaggerated",
+      4
+    ],
+    [
+      "unsupported",
+      "header_attributed",
+      "disease",
+      3
+    ],
+    [
+      "unsupported",
+      "header_attributed",
+      "other_effect",
+      3
+    ],
+    [
+      "unsupported",
+      "header_attributed",
+      "out_of_scope",
+      3
+    ],
+    [
+      "unsupported",
+      "headerless_attributed",
+      "exaggerated",
+      2
+    ],
+    [
+      "unsupported",
+      "headerless_attributed",
+      "disease",
+      2
+    ],
+    [
+      "unsupported",
+      "headerless_attributed",
+      "other_effect",
+      2
+    ],
+    [
+      "unsupported",
+      "held",
+      "official",
+      3
+    ],
+    [
+      "unsupported",
+      "held",
+      "exaggerated",
+      1
+    ],
+    [
+      "unsupported",
+      "no_effect",
+      "official",
+      3
+    ],
+    [
+      "unsupported",
+      "no_effect",
+      "disease",
+      2
+    ]
+  ],
+  "frame_counts": {
+    "header_attributed": 15204,
+    "headerless_attributed": 4432,
+    "held": 2101,
+    "no_effect": 955,
+    "two_attributed_effects": 6024,
+    "two_attributed_groups": 358
+  },
+  "layout_counts": {
+    "inline": 24,
+    "lines": 26,
+    "lines_no_period": 26,
+    "wrapped": 24
+  },
+  "items": [
+    {
+      "case_id": "C6-001",
+      "report_no": "200400200071863",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "other_effect",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "other_effect",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-002",
+      "report_no": "200400200022905",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-003",
+      "report_no": "200400170061399",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-004",
+      "report_no": "200400200022692",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-005",
+      "report_no": "2004001536225",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-006",
+      "report_no": "200400200061225",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "out_of_scope",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "out_of_scope",
+          "effect": null,
+          "topic": "면역력",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-007",
+      "report_no": "2018000391552",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-008",
+      "report_no": "200400150831599",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-009",
+      "report_no": "200400150831153",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-010",
+      "report_no": "200400200073294",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-011",
+      "report_no": "200400150832391",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-012",
+      "report_no": "200400200072190",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-013",
+      "report_no": "200400200022852",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-014",
+      "report_no": "2020000299411",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "guarantee"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-015",
+      "report_no": "20040020020875",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "disease",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "disease",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "disease",
+          "disease_hint": "과민성대장증후군"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-016",
+      "report_no": "200700170351956",
+      "scenario": "unsupported",
+      "stratum": "held",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-017",
+      "report_no": "200400200141277",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-018",
+      "report_no": "20040020028502",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-019",
+      "report_no": "20172880193342",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-020",
+      "report_no": "20140020012229",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-021",
+      "report_no": "200400150831465",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-022",
+      "report_no": "2022002000249",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "exaggerated",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "exaggerated",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-023",
+      "report_no": "20040020016658",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "target"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-024",
+      "report_no": "200600200032747",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "guarantee"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-025",
+      "report_no": "202400208862",
+      "scenario": "unsupported",
+      "stratum": "held",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-026",
+      "report_no": "20040017067105",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-027",
+      "report_no": "200400200083072",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-028",
+      "report_no": "200400200141917",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-029",
+      "report_no": "200400200023870",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "period"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-030",
+      "report_no": "20040016020185",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-031",
+      "report_no": "20070017035819",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-032",
+      "report_no": "20040017013104",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-033",
+      "report_no": "20060020008798",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "disease",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "disease",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "disease",
+          "disease_hint": "치매"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-034",
+      "report_no": "200400170061533",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-035",
+      "report_no": "2019000910589",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "target"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-036",
+      "report_no": "20040020016702",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "period"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-037",
+      "report_no": "20040016020198",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-038",
+      "report_no": "20040020020657",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "period"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-039",
+      "report_no": "2004001606125",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-040",
+      "report_no": "200600200031012",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "disease",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "disease",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "disease",
+          "disease_hint": "황반변성"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-041",
+      "report_no": "200600200033281",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "disease",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "disease",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "disease",
+          "disease_hint": "황반변성"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-042",
+      "report_no": "20040017068216",
+      "scenario": "unsupported",
+      "stratum": "held",
+      "claim_type": "exaggerated",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "exaggerated",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-043",
+      "report_no": "200400200072522",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "other_effect",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "other_effect",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-044",
+      "report_no": "2004001704972",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-045",
+      "report_no": "20180012174179",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "comparison"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-046",
+      "report_no": "200600200032713",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-047",
+      "report_no": "200600200081256",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-048",
+      "report_no": "20140017002615",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-049",
+      "report_no": "200400200081435",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-050",
+      "report_no": "20060020008357",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-051",
+      "report_no": "200700170352192",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-052",
+      "report_no": "200600200032325",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "disease",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "disease",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "disease",
+          "disease_hint": "혈전·뇌졸중"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-053",
+      "report_no": "20190009483493",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "comparison"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-054",
+      "report_no": "20040020029798",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-055",
+      "report_no": "200400170211889",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "exaggerated",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "exaggerated",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-056",
+      "report_no": "20040016020249",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-057",
+      "report_no": "200400200061489",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "comparison"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-058",
+      "report_no": "200400200022659",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-059",
+      "report_no": "200400200061347",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-060",
+      "report_no": "20220011370282",
+      "scenario": "unsupported",
+      "stratum": "no_effect",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-061",
+      "report_no": "2012001900710",
+      "scenario": "unsupported",
+      "stratum": "no_effect",
+      "claim_type": "disease",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "disease",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "disease",
+          "disease_hint": "황반변성"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-062",
+      "report_no": "200400200141825",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-063",
+      "report_no": "20060020008763",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "exaggerated",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "exaggerated",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "improvement",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-064",
+      "report_no": "200400200073357",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "target"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-065",
+      "report_no": "200400200061447",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "other_effect",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "other_effect",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-066",
+      "report_no": "200400200021629",
+      "scenario": "unsupported",
+      "stratum": "no_effect",
+      "claim_type": "disease",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "disease",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "disease",
+          "disease_hint": "안구건조증"
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-067",
+      "report_no": "20180012174493",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "target"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-068",
+      "report_no": "20040020028763",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "guarantee"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-069",
+      "report_no": "200400150831520",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-070",
+      "report_no": "200400200061303",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-071",
+      "report_no": "20240028095179",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-072",
+      "report_no": "20200012016159",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-073",
+      "report_no": "20040020006402",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "exaggerated",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "exaggerated",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-074",
+      "report_no": "20140017002635",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-075",
+      "report_no": "200400200141087",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "out_of_scope",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "out_of_scope",
+          "effect": null,
+          "topic": "면역력",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-076",
+      "report_no": "200400200072395",
+      "scenario": "unsupported",
+      "stratum": "no_effect",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-077",
+      "report_no": "20220011370453",
+      "scenario": "unsupported",
+      "stratum": "held",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-078",
+      "report_no": "200400200201023",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "other_effect",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "other_effect",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-079",
+      "report_no": "200600200081375",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-080",
+      "report_no": "200600200081196",
+      "scenario": "unsupported",
+      "stratum": "no_effect",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-081",
+      "report_no": "20160006007107",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "exaggerated",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "exaggerated",
+          "effect": "bowel_movement",
+          "topic": "배변활동 원활",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-082",
+      "report_no": "20040017006737",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "dry_eye_eye_health",
+          "topic": "건조한 눈 개선으로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-083",
+      "report_no": "200400200023901",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-084",
+      "report_no": "200400200061227",
+      "scenario": "unsupported",
+      "stratum": "headerless_attributed",
+      "claim_type": "other_effect",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "other_effect",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-085",
+      "report_no": "200400170061297",
+      "scenario": "carryover",
+      "stratum": "two_attributed_groups",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-086",
+      "report_no": "20120019007180",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-087",
+      "report_no": "20110020099266",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "gut_health",
+          "topic": "장 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-088",
+      "report_no": "200400200022143",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-089",
+      "report_no": "20040017006678",
+      "scenario": "two_claims",
+      "stratum": "two_attributed_effects",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "blood_circulation",
+          "topic": "혈행 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-090",
+      "report_no": "200600200032770",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "guarantee"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-091",
+      "report_no": "200400200023985",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-092",
+      "report_no": "200400200072178",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-093",
+      "report_no": "20060020008815",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "memory",
+          "topic": "기억력 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-094",
+      "report_no": "20040020001337",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "omega3",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "blood_triglyceride",
+          "topic": "혈중 중성지질 개선",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-095",
+      "report_no": "2020001626835",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "exaggerated",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "product",
+          "claim_type": "exaggerated",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "guarantee",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "usage"
+        },
+        {
+          "seg_no": 3,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-096",
+      "report_no": "200700170353034",
+      "scenario": "unsupported",
+      "stratum": "header_attributed",
+      "claim_type": "out_of_scope",
+      "layout": "inline",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "omitted",
+          "claim_type": "out_of_scope",
+          "effect": null,
+          "topic": "수면의 질",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-097",
+      "report_no": "20040016020320",
+      "scenario": "honest",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "notice"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-098",
+      "report_no": "20060020008891",
+      "scenario": "modifier",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "ingredient",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "period"
+        }
+      ]
+    },
+    {
+      "case_id": "C6-099",
+      "report_no": "2009002001451",
+      "scenario": "honest",
+      "stratum": "headerless_attributed",
+      "claim_type": "official",
+      "layout": "lines_no_period",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "context",
+          "kind": "intro"
+        },
+        {
+          "seg_no": 2,
+          "role": "claim",
+          "group": "probiotics",
+          "subject_mode": "product",
+          "claim_type": "official",
+          "effect": "probiotic_growth_harmful_inhibition",
+          "topic": "유산균 증식 및 유해균 억제",
+          "style": "support",
+          "disease_hint": null
+        }
+      ]
+    },
+    {
+      "case_id": "C6-100",
+      "report_no": "2019001602498",
+      "scenario": "modifier",
+      "stratum": "header_attributed",
+      "claim_type": "official",
+      "layout": "wrapped",
+      "segments": [
+        {
+          "seg_no": 1,
+          "role": "claim",
+          "group": "lutein_zeaxanthin",
+          "subject_mode": "omitted",
+          "claim_type": "official",
+          "effect": "macular_pigment_eye_health",
+          "topic": "황반색소밀도 유지로 눈 건강",
+          "style": "support",
+          "disease_hint": null
+        },
+        {
+          "seg_no": 2,
+          "role": "context",
+          "kind": "comparison"
+        }
+      ]
+    }
+  ]
+}
