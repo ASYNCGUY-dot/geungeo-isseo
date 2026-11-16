@@ -7,10 +7,12 @@ from scripts import engine_diff
 
 def test_corpora_keep_their_recorded_sizes() -> None:
     # The sizes the evidence records cite: 276,480 (neighbour gate), 216,000 (notice lines),
-    # 192,960 (notice variants) and 192,960 (blank lines).
+    # 192,960 (notice variants), 192,960 (blank lines) and 255,600 (claim endings, claim-extract-v1.13).
     sizes = {name: sum(1 for _ in rows()) for name, rows in engine_diff.CORPORA.items()}
 
-    assert sizes == {"neighbour": 276480, "notice-lines": 216000, "notice-variants": 192960, "blank-lines": 192960}
+    assert sizes == {
+        "neighbour": 276480, "notice-lines": 216000, "notice-variants": 192960, "blank-lines": 192960, "endings": 255600,
+    }
 
 
 def test_corpus_rows_name_the_text_and_a_known_product() -> None:
@@ -24,6 +26,19 @@ def test_notice_variants_are_fixed() -> None:
 
     assert len(variants) == 51 and variants == engine_diff.notice_variants()
     assert variants[-len(engine_diff.PLAIN_VARIANTS):] == engine_diff.PLAIN_VARIANTS
+
+
+def test_endings_rewrite_only_the_claim() -> None:
+    rows = list(engine_diff.ending_rows())
+
+    assert {row["way"] for row in rows} == set(engine_diff.ENDING_WAYS)
+    for row in rows:
+        assert row["variant"] != row["core"]
+        assert row["text"] == row["canonical"].replace(row["core"], row["variant"], 1)
+    # Every way is applied to the claims it can rewrite, and the leading connectives to every claim.
+    leads = {row["core"] for row in rows if row["way"] == "lead:또한"}
+    assert leads == set(engine_diff.NEIGHBOUR_CORES)
+    assert next(row for row in rows if row["way"] == "에도")["variant"].count("에도 도움") == 1
 
 
 def test_blank_lines_rewrite_only_blank_line_layouts() -> None:

@@ -11,6 +11,9 @@ live in session scratch folders and were lost):
   advertisement holding the canonical notice instead (claim-extract-v1.7; 192,960)
 - blank-lines: notice-variants laid out with one blank line, rewritten with longer blank-line runs; `base`
   holds the one-blank-line text (claim-extract-v1.8; 192,960)
+- endings: neighbour advertisements with the claim rewritten in the forms of claim-extract-v1.13 ("에도",
+  "데에도", "있답니다", "드릴 수", one leading connective); `canonical` holds the claim as written (255,600). The
+  new engine on `text` must read as the engine before it reads `canonical` (`compare` with --expect-same).
 
 Every corpus row has `text` (the advertisement) and `product` (a key of PRODUCTS). The judge loads
 `claimledger` from --engine-src when given (export an older engine with `git archive <commit> src | tar -x -C
@@ -147,6 +150,23 @@ BLANK_WAYS = {
 }
 
 
+# endings: the neighbour claims rewritten with the claim-extract-v1.13 forms; `canonical` holds the claim as written
+ENDING_LEADS = ["또한", "그리고", "또", "더불어", "게다가", "뿐만 아니라", "아울러", "먼저", "우선", "또한,"]
+ENDING_WAYS = {
+    "에도": lambda core: core.replace("에 도움", "에도 도움", 1),
+    "데도": lambda core: core.replace("데 도움", "데도 도움", 1),
+    "데에": lambda core: core.replace("데 도움", "데에 도움", 1),
+    "데에도": lambda core: core.replace("데 도움", "데에도 도움", 1),
+    "있답니다": lambda core: core.replace("수 있습니다", "수 있답니다", 1).replace("수 있어요", "수 있답니다", 1),
+    "드릴": lambda core: core.replace("도움을 줄 수", "도움을 드릴 수", 1),
+    "그리고+에도+있답니다": lambda core: "그리고 " + core.replace("에 도움", "에도 도움", 1).replace(
+        "수 있습니다", "수 있답니다", 1).replace("수 있어요", "수 있답니다", 1),
+    **{f"lead:{lead}": (lambda core, lead=lead: f"{lead} {core}") for lead in ENDING_LEADS},
+}
+ENDING_NEIGHBOURS = ["none", "disclaimer", "period", "dose", "support_claim"]
+ENDING_ENDINGS = [".", "", "!", "…"]
+
+
 def _compact(text: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFKC", text).casefold() if not c.isspace())
 
@@ -157,6 +177,24 @@ def neighbour_rows() -> Iterator[dict]:
     ):
         text = sep.join(part for part in (b, core + ending, a) if part)
         yield {"text": text, "product": product, "before": before, "after": after, "ending": ending, "core": core}
+
+
+def ending_rows() -> Iterator[dict]:
+    """The neighbour layout with the claim in a claim-extract-v1.13 form, beside the claim as written."""
+    for core, (way, rewrite) in itertools.product(NEIGHBOUR_CORES, ENDING_WAYS.items()):
+        variant = rewrite(core)
+        if variant == core:
+            continue
+        for ending, before, after, sep, product in itertools.product(
+            ENDING_ENDINGS, ENDING_NEIGHBOURS, ENDING_NEIGHBOURS, (" ", "\n"), PRODUCTS,
+        ):
+            parts = [NEIGHBOURS[before], "{core}", NEIGHBOURS[after]]
+            layout = sep.join(part for part in parts if part)
+            yield {
+                "text": layout.replace("{core}", variant + ending), "canonical": layout.replace("{core}", core + ending),
+                "product": product, "way": way, "core": core, "variant": variant, "ending": ending,
+                "before": before, "after": after,
+            }
 
 
 def _line_parts(layout: str, core: str, notice: str, other: str | None) -> list[str]:
@@ -254,6 +292,7 @@ CORPORA = {
     "notice-lines": notice_line_rows,
     "notice-variants": notice_variant_rows,
     "blank-lines": blank_line_rows,
+    "endings": ending_rows,
 }
 
 

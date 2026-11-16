@@ -370,3 +370,55 @@ def test_the_advertisement_decision_takes_only_the_claims_of_its_text() -> None:
     claims = confirm_claims(extract_claims("혈행 개선에 도움을 줄 수 있습니다."), "all")
     with pytest.raises(ValueError):
         decide_ad("단 2주. 혈행 개선에 도움을 줄 수 있습니다.", claims, _product(OMEGA3_TEXT))
+
+
+@pytest.mark.parametrize("text", [
+    # The same support statement with "에도"/"데에도", "있답니다", "드릴 수" or one leading connective
+    # (claim-extract-v1.13): read alone, each is confirmed within the official function.
+    "오메가3는 혈행 개선에도 도움을 줄 수 있습니다.",
+    "혈중 중성지질 개선에도 도움이 될 수 있어요.",
+    "오메가3는 혈중 중성지질을 개선하는 데도 도움을 줄 수 있습니다.",
+    "혈행을 개선하는 데에도 도움을 줄 수 있어요.",
+    "혈행을 개선하는 데에 도움을 줄 수 있습니다.",
+    "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있답니다.",
+    "루테인은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있답니다.",
+    "이 제품은 장 건강에 도움이 될 수 있답니다.",
+    "오메가3는 혈행 개선에 도움을 드릴 수 있습니다.",
+    "또한 오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+    "그리고, 이 제품은 배변활동 원활에도 도움을 줄 수 있어요.",
+    "뿐만 아니라 오메가3는 혈중 중성지질을 개선하는 데도 도움을 줄 수 있습니다.",
+    "먼저 유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다.",
+    "게다가 장 건강에도 도움을 줄 수 있답니다.",
+])
+def test_endings_and_a_leading_connective_of_a_support_statement_are_confirmed(text: str) -> None:
+    assert [decision.verdict for decision in _ad(text, THREE_HEADERS_TEXT)] == [Verdict.CONFIRMED]
+
+
+def test_a_whole_claim_line_with_the_new_endings_ends_its_sentence() -> None:
+    text = "혈행 개선에도 도움을 줄 수 있답니다\n또한 눈 건강에 도움을 줄 수 있어요"
+    assert [decision.verdict for decision in _ad(text, THREE_HEADERS_TEXT)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
+
+
+@pytest.mark.parametrize("text", [
+    # Left unread by claim-extract-v1.13: emphasis, two connectives or one inside the sentence, a target group,
+    # a denial, a named source, a stronger predicate, a doubled particle or comma, decorated subjects and
+    # reworded function names.
+    "특히 혈행 개선에 도움을 줄 수 있습니다.",
+    "무엇보다 혈행 개선에 도움을 줄 수 있습니다.",
+    "그리고 또한 혈행 개선에 도움을 줄 수 있습니다.",
+    "오메가3는 또한 혈행 개선에 도움을 줄 수 있습니다.",
+    "또한 고혈압 환자의 혈행 개선에도 도움을 줄 수 있답니다.",
+    "혈행 개선에도 도움을 줄 수 없습니다.",
+    "연구에 따르면 혈행 개선에 도움을 줄 수 있답니다.",
+    "혈행 개선에도 확실히 도움을 줍니다.",
+    "혈행 개선에도도 도움을 줄 수 있습니다.",
+    "또한,, 혈행 개선에 도움을 줄 수 있습니다.",
+    "또는 혈행 개선에 도움을 줄 수 있습니다.",
+    "혈행 개선에도 도움을 드립니다.",
+    "엄선한 오메가3는 혈행 개선에도 도움을 줄 수 있어요.",
+    "오메가3는 원활한 혈행에도 도움을 줄 수 있답니다.",
+    "또한 혈행 개선에 도움을 줄 수 있습니다. 하루 3캡슐이면 충분합니다.",
+    "루테인은 눈 건강에 도움을 줄 수 있습니다. 또한 혈행 개선에도 도움을 줄 수 있답니다.",
+])
+def test_forms_left_out_of_the_endings_are_not_confirmed(text: str) -> None:
+    assert all(decision.verdict is not Verdict.CONFIRMED for decision in _ad(text, THREE_HEADERS_TEXT))
