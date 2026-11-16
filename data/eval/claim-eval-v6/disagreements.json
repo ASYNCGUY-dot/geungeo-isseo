@@ -1,0 +1,122 @@
+[
+  {
+    "case_id": "C6-014",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-024",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-029",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-029",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-036",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-036",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-038",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-038",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-045",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-053",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-057",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-068",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-090",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-098",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C6-100",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  }
+]
