@@ -1,0 +1,238 @@
+case_id,seg_no,label,labeler,note
+C7-001,1,confirmed,sonnet,규칙6 프로바이오틱스 배변활동 원문 일치
+C7-001,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 프로바이오틱스 중성지질은 EPA/DHA 기능 주체 불명
+C7-002,1,confirmed,sonnet,규칙6 제품에 EPA DHA 기억력 개선 원문 있음
+C7-002,2,confirmed,sonnet,규칙6 이 제품 중성지질 도움
+C7-003,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C7-003,2,unverifiable,sonnet,규칙4 앞 문장이 대상자 직장인 덧붙임 인정범위 확정 불가
+C7-004,1,none,sonnet,규칙0 제품 소개
+C7-004,2,confirmed,sonnet,규칙6
+C7-005,1,confirmed,sonnet,규칙6 마리골드 황반색소밀도 원문 일치
+C7-005,2,none,sonnet,규칙0 환불 안내
+C7-005,3,none,sonnet,규칙0 의약품 아님 고지
+C7-006,1,confirmed,sonnet,규칙6 오메가3 혈행 개선
+C7-006,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 배변활동은 프로바이오틱스 기능
+C7-007,1,mismatch,sonnet,규칙5 루테인(마리골드) 유지를 개선 좋아지게 단정
+C7-007,2,none,sonnet,규칙0 고지
+C7-008,1,confirmed,sonnet,규칙6 루테인 마리골드 황반색소밀도 유지 도움
+C7-008,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 루테인 중성지질은 EPA/DHA
+C7-009,1,none,sonnet,규칙0 제품 소개
+C7-009,2,confirmed,sonnet,규칙6
+C7-010,1,confirmed,sonnet,규칙6
+C7-010,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 프로바이오틱스
+C7-010,3,none,sonnet,규칙0 고지
+C7-011,1,none,sonnet,규칙0 제품 소개
+C7-011,2,mismatch,sonnet,규칙5 반드시 지켜 드립니다 보장
+C7-011,3,none,sonnet,규칙0 고지
+C7-012,1,mismatch,sonnet,규칙1 안구건조증 질병 표현
+C7-012,2,none,sonnet,규칙0 고지
+C7-013,1,none,sonnet,규칙0 제품 소개
+C7-013,2,mismatch,sonnet,규칙5 좋아지게 개선합니다 단정 원문은 유지 도움
+C7-014,1,confirmed,sonnet,규칙6
+C7-014,2,none,sonnet,규칙0 고지
+C7-015,1,confirmed,sonnet,규칙6
+C7-015,2,none,sonnet,규칙0 고지
+C7-016,1,confirmed,sonnet,규칙6
+C7-016,2,none,sonnet,규칙0 섭취방법
+C7-016,3,none,sonnet,규칙0 고지
+C7-017,1,confirmed,sonnet,규칙6 루테인 마리골드
+C7-017,2,none,sonnet,규칙0 고지 섭취안내
+C7-018,1,confirmed,sonnet,규칙6 마리골드 원문 일치
+C7-018,2,none,sonnet,규칙0 섭취방법
+C7-018,3,none,sonnet,규칙0 고지
+C7-019,1,confirmed,sonnet,규칙6
+C7-019,2,confirmed,sonnet,규칙6
+C7-019,3,none,sonnet,규칙0 고지
+C7-020,1,unverifiable,sonnet,규칙2 피부 건강은 8개 기능 밖
+C7-020,2,none,sonnet,규칙0 섭취방법
+C7-020,3,none,sonnet,규칙0 고지
+C7-021,1,confirmed,sonnet,규칙6
+C7-021,2,confirmed,sonnet,규칙6
+C7-021,3,none,sonnet,규칙0 고지
+C7-022,1,confirmed,sonnet,규칙6 제품에 프로바이오틱스 배변활동
+C7-022,2,none,sonnet,규칙0 섭취방법
+C7-022,3,none,sonnet,규칙0 고지
+C7-023,1,mismatch,sonnet,규칙3 원문에 황반색소밀도 기능 없음
+C7-023,2,none,sonnet,규칙0 고지
+C7-024,1,confirmed,sonnet,규칙6
+C7-024,2,none,sonnet,규칙0 고지
+C7-025,1,confirmed,sonnet,규칙6
+C7-025,2,none,sonnet,규칙0 고지
+C7-026,1,confirmed,sonnet,규칙6
+C7-026,2,confirmed,sonnet,규칙6 같은 원료 기능
+C7-027,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C7-027,2,unverifiable,sonnet,규칙4 앞 문장이 대상자 40대 이상 덧붙임 인정범위 확정 불가
+C7-027,3,none,sonnet,규칙0 고지
+C7-028,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C7-028,2,unverifiable,sonnet,규칙4 앞 문장이 대상자 덧붙임 인정범위 확정 불가
+C7-029,1,confirmed,sonnet,규칙6
+C7-029,2,confirmed,sonnet,규칙6
+C7-030,1,mismatch,sonnet,규칙5 개선합니다 단정 원문은 유지 도움
+C7-030,2,none,sonnet,규칙0 고지
+C7-031,1,confirmed,sonnet,규칙6
+C7-031,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 루테인 중성지질은 EPA/DHA
+C7-032,1,none,sonnet,규칙0 제품 소개
+C7-032,2,confirmed,sonnet,규칙6
+C7-033,1,confirmed,sonnet,규칙6
+C7-033,2,none,sonnet,규칙0 환불 안내
+C7-033,3,none,sonnet,규칙0 고지
+C7-034,1,confirmed,sonnet,규칙6
+C7-034,2,confirmed,sonnet,규칙6 같은 원료 기능
+C7-034,3,none,sonnet,규칙0 고지
+C7-035,1,confirmed,sonnet,규칙6
+C7-035,2,none,sonnet,규칙0 섭취방법
+C7-036,1,mismatch,sonnet,규칙3 원문에 기억력 개선 없음
+C7-036,2,none,sonnet,규칙0 고지
+C7-037,1,none,sonnet,규칙0 제품 소개
+C7-037,2,mismatch,sonnet,규칙3 원문에 유산균 증식 기능 없음
+C7-038,1,unverifiable,sonnet,규칙4 뒷 문장 효과 없으면 환불 보장이 주장에 덧붙음 범위 확정 불가 (애매)
+C7-038,2,none,sonnet,규칙0 환불 정책 안내
+C7-038,3,none,sonnet,규칙0 고지
+C7-039,1,mismatch,sonnet,규칙1 황반변성 예방 질병 표현
+C7-039,2,none,sonnet,규칙0 섭취방법
+C7-040,1,confirmed,sonnet,규칙6
+C7-040,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-041,1,confirmed,sonnet,규칙6
+C7-041,2,none,sonnet,규칙0 고지
+C7-042,1,unverifiable,sonnet,규칙4 뒷 문장 비교 우위가 주장에 덧붙음 범위 확정 불가 (애매)
+C7-042,2,unverifiable,sonnet,규칙2 체감 효과 비교는 8개 기능 밖
+C7-042,3,none,sonnet,규칙0 고지 상담 안내
+C7-043,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C7-043,2,unverifiable,sonnet,규칙4 앞 문장이 대상자 덧붙임 인정범위 확정 불가
+C7-044,1,confirmed,sonnet,규칙6
+C7-044,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-044,3,none,sonnet,규칙0 고지
+C7-045,1,mismatch,sonnet,규칙5 개선해 좋아집니다 단정
+C7-045,2,none,sonnet,규칙0 고지
+C7-046,1,confirmed,sonnet,규칙6
+C7-046,2,none,sonnet,규칙0 고지
+C7-047,1,confirmed,sonnet,규칙6
+C7-047,2,none,sonnet,규칙0 고지
+C7-048,1,confirmed,sonnet,규칙6
+C7-048,2,none,sonnet,규칙0 고지
+C7-049,1,unverifiable,sonnet,규칙2 면역력은 8개 기능 밖
+C7-049,2,none,sonnet,규칙0 고지
+C7-050,1,confirmed,sonnet,규칙6
+C7-050,2,none,sonnet,규칙0 섭취방법
+C7-051,1,mismatch,sonnet,규칙3 원문에 기억력 개선 없음
+C7-051,2,none,sonnet,규칙0 고지
+C7-052,1,unverifiable,sonnet,규칙4 뒷 문장 비교 우위가 주장에 덧붙음 범위 확정 불가 (애매)
+C7-052,2,unverifiable,sonnet,규칙2 흡수율 효과 비교는 8개 기능 밖
+C7-052,3,none,sonnet,규칙0 고지
+C7-053,1,mismatch,sonnet,규칙5 개선합니다 단정
+C7-053,2,none,sonnet,규칙0 섭취방법
+C7-053,3,none,sonnet,규칙0 고지
+C7-054,1,confirmed,sonnet,규칙6
+C7-054,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-054,3,none,sonnet,규칙0 고지
+C7-055,1,none,sonnet,규칙0 제품 소개
+C7-055,2,mismatch,sonnet,규칙1 혈전 뇌졸중 예방 질병 표현
+C7-055,3,none,sonnet,규칙0 고지
+C7-056,1,confirmed,sonnet,규칙6
+C7-056,2,none,sonnet,규칙0 섭취방법
+C7-056,3,none,sonnet,규칙0 고지
+C7-057,1,mismatch,sonnet,규칙1 안구건조증 예방 질병 표현
+C7-057,2,none,sonnet,규칙0 섭취방법
+C7-057,3,none,sonnet,규칙0 고지
+C7-058,1,confirmed,sonnet,규칙6
+C7-058,2,none,sonnet,규칙0 섭취방법
+C7-059,1,confirmed,sonnet,규칙6
+C7-059,2,confirmed,sonnet,규칙6
+C7-059,3,none,sonnet,규칙0 고지
+C7-060,1,mismatch,sonnet,규칙3 원문에 배변활동 원활 없음
+C7-060,2,none,sonnet,규칙0 고지
+C7-061,1,unverifiable,sonnet,규칙4 뒷 문장 기간 두세 달 변화가 주장에 덧붙음 범위 확정 불가
+C7-061,2,unverifiable,sonnet,규칙2 달라진 변화는 어떤 기능인지 불분명
+C7-061,3,none,sonnet,규칙0 고지
+C7-062,1,confirmed,sonnet,규칙6
+C7-062,2,none,sonnet,규칙0 고지
+C7-063,1,none,sonnet,규칙0 제품 소개
+C7-063,2,mismatch,sonnet,규칙3 원문에 혈행 개선 없음
+C7-064,1,none,sonnet,규칙0 제품 소개
+C7-064,2,confirmed,sonnet,규칙6
+C7-064,3,none,sonnet,규칙0 고지
+C7-065,1,confirmed,sonnet,규칙6
+C7-065,2,none,sonnet,규칙0 섭취방법
+C7-066,1,confirmed,sonnet,규칙6
+C7-066,2,none,sonnet,규칙0 고지
+C7-067,1,confirmed,sonnet,규칙6
+C7-067,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 프로바이오틱스 중성지질은 EPA/DHA
+C7-068,1,unverifiable,sonnet,규칙4 뒷 문장 기간 한 달 환불 보장이 주장에 덧붙음 범위 확정 불가 (애매)
+C7-068,2,none,sonnet,규칙0 환불 정책 안내
+C7-069,1,confirmed,sonnet,규칙6
+C7-069,2,none,sonnet,규칙0 섭취방법
+C7-069,3,none,sonnet,규칙0 고지
+C7-070,1,confirmed,sonnet,규칙6
+C7-070,2,none,sonnet,규칙0 고지
+C7-071,1,none,sonnet,규칙0 제품 소개
+C7-071,2,confirmed,sonnet,규칙6
+C7-071,3,none,sonnet,규칙0 고지
+C7-072,1,confirmed,sonnet,규칙6
+C7-072,2,none,sonnet,규칙0 섭취방법
+C7-072,3,none,sonnet,규칙0 고지
+C7-073,1,unverifiable,sonnet,규칙4 뒷 문장 비교 우위가 주장에 덧붙음 범위 확정 불가 (애매)
+C7-073,2,unverifiable,sonnet,규칙2 비교 효과는 8개 기능 밖
+C7-073,3,none,sonnet,규칙0 고지
+C7-074,1,unverifiable,sonnet,규칙4 뒷 문장 기간 2주 변화 보장이 덧붙음 범위 확정 불가
+C7-074,2,unverifiable,sonnet,규칙2 달라진 걸 느낌은 어떤 기능인지 불분명
+C7-074,3,none,sonnet,규칙0 고지
+C7-075,1,none,sonnet,규칙0 제품 소개
+C7-075,2,unverifiable,sonnet,규칙2 면역력은 8개 기능 밖
+C7-075,3,none,sonnet,규칙0 고지
+C7-076,1,confirmed,sonnet,규칙6
+C7-076,2,confirmed,sonnet,규칙6
+C7-077,1,confirmed,sonnet,규칙6
+C7-077,2,confirmed,sonnet,규칙6
+C7-077,3,none,sonnet,규칙0 고지
+C7-078,1,confirmed,sonnet,규칙6
+C7-078,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-079,1,confirmed,sonnet,규칙6 루테인 마리골드
+C7-079,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 루테인 혈행은 EPA/DHA 기능
+C7-079,3,none,sonnet,규칙0 고지 (part3 중복 제거용)
+C7-080,1,unverifiable,sonnet,규칙4 뒷 문장 기간 8주 변화가 주장에 덧붙음 범위 확정 불가
+C7-080,2,unverifiable,sonnet,규칙2 눈이 달라진 걸 실감은 어떤 기능인지 불분명
+C7-081,1,confirmed,sonnet,규칙6
+C7-081,2,confirmed,sonnet,규칙6
+C7-082,1,none,sonnet,규칙0 제품 소개
+C7-082,2,confirmed,sonnet,규칙6
+C7-083,1,mismatch,sonnet,규칙1 황반변성 예방 질병 표현
+C7-083,2,none,sonnet,규칙0 고지
+C7-084,1,none,sonnet,규칙0 제품 소개
+C7-084,2,mismatch,sonnet,규칙3 원문에 장 건강 기능 없음
+C7-084,3,none,sonnet,규칙0 고지
+C7-085,1,confirmed,sonnet,규칙6
+C7-085,2,confirmed,sonnet,규칙6
+C7-086,1,none,sonnet,규칙0 제품 소개
+C7-086,2,mismatch,sonnet,규칙1 황반변성 예방 질병 표현
+C7-087,1,confirmed,sonnet,규칙6
+C7-087,2,none,sonnet,규칙0 고지
+C7-088,1,confirmed,sonnet,규칙6
+C7-088,2,confirmed,sonnet,규칙6 같은 원료 기능
+C7-089,1,confirmed,sonnet,규칙6
+C7-089,2,none,sonnet,규칙0 고지
+C7-090,1,none,sonnet,규칙0 제품 소개
+C7-090,2,mismatch,sonnet,규칙3 원문에 혈행 개선 없음
+C7-090,3,none,sonnet,규칙0 고지
+C7-091,1,confirmed,sonnet,규칙6
+C7-091,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-092,1,confirmed,sonnet,규칙6 이 제품 주어 원문에 배변활동 원활 있음 (원료명 이눌린/치커리추출물과 원재료 치커리식이섬유 대응이 애매)
+C7-092,2,none,sonnet,규칙0 고지
+C7-093,1,confirmed,sonnet,규칙6
+C7-093,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 다른 원료 기능
+C7-093,3,none,sonnet,규칙0 고지
+C7-094,1,mismatch,sonnet,규칙1 변비 해소 질병 표현
+C7-094,2,none,sonnet,규칙0 고지
+C7-095,1,confirmed,sonnet,규칙6
+C7-095,2,none,sonnet,규칙0 고지
+C7-096,1,unverifiable,sonnet,규칙4 뒷 문장 기간 2주 변화가 주장에 덧붙음 범위 확정 불가
+C7-096,2,unverifiable,sonnet,규칙2 변화가 느껴짐은 어떤 기능인지 불분명
+C7-097,1,confirmed,sonnet,규칙6
+C7-097,2,none,sonnet,규칙0 섭취방법
+C7-098,1,confirmed,sonnet,규칙6
+C7-098,2,unverifiable,sonnet,규칙4 주어 없음 직전 주어 오메가3 황반색소밀도는 마리골드 기능
+C7-099,1,unverifiable,sonnet,규칙4 뒷 문장 비교 우위가 주장에 덧붙음 범위 확정 불가 (애매)
+C7-099,2,unverifiable,sonnet,규칙2 비교 효과는 8개 기능 밖
+C7-099,3,none,sonnet,규칙0 고지
+C7-100,1,mismatch,sonnet,규칙5 100% 보장
+C7-100,2,none,sonnet,규칙0 섭취방법
+C7-100,3,none,sonnet,규칙0 고지
