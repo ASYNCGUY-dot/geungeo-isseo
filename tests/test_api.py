@@ -125,6 +125,11 @@ def test_full_flow_produces_receipt(client: TestClient) -> None:
     assert [claim["verdict"] for claim in receipt["claims"]] == ["unverifiable", "mismatch"]
     assert [claim["verdict_label"] for claim in receipt["claims"]] == ["검증 불가", "근거 불일치"]
     assert receipt["claims"][0]["reason_code"] == "AD_TEXT_NOT_FULLY_READ"
+    # The receipt names the sentence that held it.
+    assert [(item["text"], item["kind"]) for item in receipt["holding_sentences"]] == [
+        ("혈액순환이 좋아집니다!", "CLAIM_NOT_FULLY_READ")
+    ]
+    assert receipt["holding_sentences"][0]["message"]
     assert client.get(f"/api/v1/analyses/{analysis_id}/receipt").json() == receipt
     markdown = client.get(f"/api/v1/analyses/{analysis_id}/receipt", params={"format": "markdown"})
     assert markdown.headers["content-type"].startswith("text/markdown")

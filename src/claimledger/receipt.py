@@ -7,13 +7,20 @@ from typing import Literal
 
 from pydantic import AwareDatetime, BaseModel
 
-from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION, ExpressionStrength
+from claimledger.claims_v1 import CLAIM_EXTRACTION_VERSION, ExpressionStrength, extract_claims
 from claimledger.domain import ConfirmedProduct, Verdict
 from claimledger.headerless import HEADERLESS_ATTRIBUTION_VERSION, headerless_references
 from claimledger.official_v2 import OFFICIAL_FUNCTION_V2_VERSION, EffectKey
-from claimledger.verdict_v1 import CLAIM_VERDICT_VERSION, ClaimDecision, VerdictReason
+from claimledger.verdict_v1 import (
+    CLAIM_VERDICT_VERSION,
+    ClaimDecision,
+    HoldKind,
+    VerdictReason,
+    holding_sentences,
+)
 
-RECEIPT_VERSION = "receipt-v1"
+# receipt-v1.1: the sentences that withhold the confirmation are listed with the reason.
+RECEIPT_VERSION = "receipt-v1.1"
 
 PUBLIC_VERDICT_LABELS: dict[Verdict, str] = {
     Verdict.CONFIRMED: "확인됨",
@@ -54,9 +61,24 @@ REASON_MESSAGES: dict[VerdictReason, str] = {
         "개별인정형 원료는 일부만 확인됩니다. 광고는 같은 범위·강도로 표현했습니다."
     ),
     VerdictReason.AD_TEXT_NOT_FULLY_READ: (
-        "이 문장은 공식 문구와 맞지만, 광고문의 다른 문장을 판정 규칙으로 끝까지 읽지 못했습니다. "
-        "옆 문장이 기간·조건·부정·섭취량을 덧붙이거나, 주어 없는 문장이 다른 문장의 원료 이야기로 읽혀 뜻이 바뀔 수 있어 "
-        "확인을 보류했습니다."
+        "이 문장은 공식 문구와 맞지만, 광고문에 판정 규칙이 끝까지 읽지 못한 문장이 있어 확인을 보류했습니다. "
+        "그 문장이 기간·조건·부정·섭취량을 덧붙이거나, 주어 없는 문장이 다른 원료의 이야기로 읽혀 뜻이 바뀔 수 있습니다. "
+        "어느 문장인지는 '끝까지 읽지 못한 문장'에 적었습니다."
+    ),
+}
+
+HOLD_MESSAGES: dict[HoldKind, str] = {
+    HoldKind.SENTENCE_NOT_READ: (
+        "기능성 주장도, 의약품이 아니라는 고지 문구도 아니어서 판정 규칙이 읽지 못한 문장입니다. "
+        "기간·조건·섭취량·부정처럼 옆 주장의 뜻을 바꾸는 말일 수 있습니다."
+    ),
+    HoldKind.CLAIM_NOT_FULLY_READ: (
+        "기능을 말하는 문장이지만 정해진 문형 밖의 말이 섞여 있어 문장 전체를 끝까지 읽지 못했습니다. "
+        "이 문장 자체의 판정은 주장별 결과에 있습니다."
+    ),
+    HoldKind.SUBJECT_OMITTED: (
+        "원료를 주어로 쓴 다른 문장이 있어, 주어 없이 쓴 이 문장이 그 원료의 이야기로 읽힐 수 있습니다. "
+        "어느 원료의 주장인지 정하지 않았습니다."
     ),
 }
 
@@ -88,7 +110,7 @@ LIMITATIONS: tuple[str, ...] = (
     (
         "'확인됨'은 광고문의 다른 문장이 모두 끝까지 읽힌 기능성 문장이거나 의약품이 아니라는 고지 문구일 때만 냅니다. "
         "그 밖의 문장이 섞이면 공식 문구와 같은 문장도 보류합니다. 원료를 주어로 쓴 문장이 있으면 주어 없는 문장도 "
-        "그 원료의 주장으로 읽힐 수 있어 보류합니다."
+        "그 원료의 주장으로 읽힐 수 있어 보류합니다. 보류하게 한 문장은 '끝까지 읽지 못한 문장'에 따로 보여 줍니다."
     ),
 )
 
@@ -128,15 +150,26 @@ class ReceiptClaim(BaseModel):
     official_quote: ReceiptOfficialQuote | None
 
 
+class ReceiptHoldingSentence(BaseModel):
+    model_config = {"frozen": True}
+
+    text: str
+    span: tuple[int, int]
+    kind: HoldKind
+    message: str
+
+
 class Receipt(BaseModel):
     model_config = {"frozen": True}
 
-    receipt_version: Literal["receipt-v1"] = RECEIPT_VERSION
+    receipt_version: Literal["receipt-v1.1"] = RECEIPT_VERSION
     generated_at: AwareDatetime
     ad_text: str
     ad_text_sha256: str
     product: ReceiptProduct | None
     claims: tuple[ReceiptClaim, ...]
+    # The sentences that withhold every confirmation of the advertisement (empty when none does).
+    holding_sentences: tuple[ReceiptHoldingSentence, ...]
     verdict_counts: dict[str, int]
     rule_versions: tuple[str, ...]
     limitations: tuple[str, ...]
@@ -199,6 +232,10 @@ def build_receipt(
         ad_text_sha256=hashlib.sha256(ad_text.encode("utf-8")).hexdigest(),
         product=receipt_product,
         claims=tuple(_receipt_claim(decision) for decision in decisions),
+        holding_sentences=tuple(
+            ReceiptHoldingSentence(text=item.text, span=item.span, kind=item.kind, message=HOLD_MESSAGES[item.kind])
+            for item in holding_sentences(ad_text, extract_claims(ad_text))
+        ),
         verdict_counts=dict(sorted(counts.items())),
         rule_versions=(
             CLAIM_EXTRACTION_VERSION,
@@ -251,6 +288,15 @@ def render_markdown(receipt: Receipt) -> str:
             header = f"[{claim.official_quote.header}] " if claim.official_quote.header else ""
             lines.append(f"- 공식 기능성 원문: {header}\"{claim.official_quote.statement_text}\"")
         lines.append("")
+    if receipt.holding_sentences:
+        lines += [
+            "## 끝까지 읽지 못한 문장",
+            "",
+            "아래 문장이 광고문에 있으면 공식 문구와 같은 다른 문장도 '확인됨'으로 표시하지 않습니다.",
+            "",
+        ]
+        for item in receipt.holding_sentences:
+            lines += [f"> {item.text}", "", f"- 이유: {item.message}", ""]
     lines += ["## 이 영수증의 한계", ""]
     lines += [f"- {item}" for item in receipt.limitations]
     return "\n".join(lines) + "\n"
@@ -258,12 +304,14 @@ def render_markdown(receipt: Receipt) -> str:
 
 __all__ = [
     "EFFECT_LABELS",
+    "HOLD_MESSAGES",
     "LIMITATIONS",
     "PUBLIC_VERDICT_LABELS",
     "REASON_MESSAGES",
     "RECEIPT_VERSION",
     "Receipt",
     "ReceiptClaim",
+    "ReceiptHoldingSentence",
     "ReceiptOfficialQuote",
     "ReceiptProduct",
     "build_receipt",

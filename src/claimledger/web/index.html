@@ -199,6 +199,15 @@ function renderReceipt(receipt) {
     root.append(el("article", { className: "card", ariaLabel: `${claim.claim_id} ${claim.verdict_label}` }, parts));
   }
   if (!receipt.claims.length) root.append(el("p", { textContent: "판정할 주장이 없습니다." }));
+  const holding = receipt.holding_sentences || [];
+  if (holding.length) {
+    root.append(el("h3", { textContent: "끝까지 읽지 못한 문장" }),
+      el("p", { className: "meta", textContent: "아래 문장이 광고문에 있으면 공식 문구와 같은 다른 문장도 '확인됨'으로 표시하지 않습니다." }));
+    for (const item of holding) {
+      root.append(el("article", { className: "card", ariaLabel: "끝까지 읽지 못한 문장" }, [
+        el("blockquote", { textContent: item.text }), el("div", { textContent: `이유: ${item.message}` })]));
+    }
+  }
   root.append(el("h3", { textContent: "이 영수증의 한계" }),
     el("ul", { className: "limits" }, receipt.limitations.map((text) => el("li", { textContent: text }))),
     el("a", { href: `/api/v1/analyses/${analysisId}/receipt?format=markdown`, target: "_blank", rel: "noopener", textContent: "Markdown으로 보기" }));

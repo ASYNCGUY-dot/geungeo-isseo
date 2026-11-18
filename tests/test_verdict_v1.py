@@ -260,6 +260,44 @@ def test_claims_whose_subjects_are_clear_stay_confirmed(text: str) -> None:
     assert [decision.verdict for decision in _ad(text, THREE_HEADERS_TEXT)] == [Verdict.CONFIRMED, Verdict.CONFIRMED]
 
 
+@pytest.mark.parametrize(("text", "held"), [
+    # Fully read claims and the notice withhold nothing.
+    ("혈행 개선에 도움을 줄 수 있습니다. 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.", []),
+    ("혈행 개선에 도움을 줄 수 있습니다. 장 건강에 도움을 줄 수 있습니다.", []),
+    ("루테인은 눈 건강에 도움을 줄 수 있습니다. 오메가3는 혈행 개선에 도움을 줄 수 있습니다.", []),
+    # A sentence that is neither a claim nor the notice.
+    ("단 2주. 혈행 개선에 도움을 줄 수 있습니다.", [("단 2주.", "SENTENCE_NOT_READ")]),
+    ("혈행 개선에 도움을 줄 수 있습니다. 하루 3캡슐이면 충분합니다.", [("하루 3캡슐이면 충분합니다.", "SENTENCE_NOT_READ")]),
+    # A claim the rules do not read to its end, whatever its own verdict.
+    ("혈행 개선에 도움을 줄 수 있습니다. 혈액순환이 확실히 좋아집니다!",
+     [("혈액순환이 확실히 좋아집니다!", "CLAIM_NOT_FULLY_READ")]),
+    # A claim without a subject beside one that names an ingredient.
+    ("루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다.",
+     [("혈행 개선에 도움을 줄 수 있습니다.", "SUBJECT_OMITTED")]),
+    # In the order of the text.
+    ("단 2주. 루테인은 눈 건강에 도움을 줄 수 있습니다. 혈행 개선에 도움을 줄 수 있습니다. 혈액순환이 확실히 좋아집니다!",
+     [("단 2주.", "SENTENCE_NOT_READ"), ("혈행 개선에 도움을 줄 수 있습니다.", "SUBJECT_OMITTED"),
+      ("혈액순환이 확실히 좋아집니다!", "CLAIM_NOT_FULLY_READ")]),
+])
+def test_holding_sentences_name_what_withholds_the_confirmation(text: str, held: list[tuple[str, str]]) -> None:
+    from claimledger.verdict_v1 import holding_sentences
+
+    claims = confirm_claims(extract_claims(text), "all")
+    holding = holding_sentences(text, claims)
+
+    assert [(item.text, item.kind.value) for item in holding] == held
+    assert all(text[item.span[0]:item.span[1]] == item.text for item in holding)
+    # The advertisement's confirmations are withheld exactly when a sentence holds them.
+    alone = [decide_claim(claim, _product(THREE_HEADERS_TEXT)) for claim in claims]
+    expected = [
+        (Verdict.UNVERIFIABLE, VerdictReason.AD_TEXT_NOT_FULLY_READ)
+        if holding and decision.verdict is Verdict.CONFIRMED
+        else (decision.verdict, decision.reason)
+        for decision in alone
+    ]
+    assert [(decision.verdict, decision.reason) for decision in _ad(text, THREE_HEADERS_TEXT)] == expected
+
+
 @pytest.mark.parametrize("text", [
     # An honest advertisement with the notice on its own line: joined to the claim, the notice's
     # "질병의 예방 및 치료" read as a disease claim (independent review, 2026-10-26).

@@ -50,6 +50,25 @@ class VerdictReason(StrEnum):
     AD_TEXT_NOT_FULLY_READ = "AD_TEXT_NOT_FULLY_READ"
 
 
+class HoldKind(StrEnum):
+    """Why a sentence withholds every confirmation of its advertisement."""
+
+    # Neither a claim nor the recognized disclaimer ("단 2주.", "하루 3캡슐이면 충분합니다.").
+    SENTENCE_NOT_READ = "SENTENCE_NOT_READ"
+    # A claim the rules do not read to its end as a whole support statement, whatever its own verdict.
+    CLAIM_NOT_FULLY_READ = "CLAIM_NOT_FULLY_READ"
+    # A claim without a subject beside one that names an ingredient: it may continue that ingredient's topic.
+    SUBJECT_OMITTED = "SUBJECT_OMITTED"
+
+
+class HoldingSentence(BaseModel):
+    model_config = {"frozen": True}
+
+    text: str
+    span: tuple[int, int]
+    kind: HoldKind
+
+
 class ClaimDecision(BaseModel):
     model_config = {"frozen": True}
 
@@ -144,9 +163,26 @@ def decide_claim(claim: AdClaim, product: ConfirmedProduct | None) -> ClaimDecis
     return _decision(claim, Verdict.CONFIRMED, match_reason, official)
 
 
-def _fully_read(claim: AdClaim, ingredient_named: bool) -> bool:
-    subjects = read_subjects(claim)
-    return bool(subjects) and not (ingredient_named and subjects == {None})
+def holding_sentences(text: str, claims: Sequence[AdClaim]) -> tuple[HoldingSentence, ...]:
+    """The sentences that withhold every confirmation of the advertisement, in the order of the text.
+
+    `claims` are the claims extracted from `text`. A confirmation stands only when this is empty.
+    """
+    held = [
+        HoldingSentence(text=text[start:end], span=(start, end), kind=HoldKind.SENTENCE_NOT_READ)
+        for start, end in unread_sentences(text)
+    ]
+    ingredient_named = any(read_subjects(claim) - {None} - _PRODUCT_SUBJECTS for claim in claims)
+    for claim in claims:
+        subjects = read_subjects(claim)
+        if not subjects:
+            kind = HoldKind.CLAIM_NOT_FULLY_READ
+        elif ingredient_named and subjects == {None}:
+            kind = HoldKind.SUBJECT_OMITTED
+        else:
+            continue
+        held.append(HoldingSentence(text=claim.text, span=claim.span, kind=kind))
+    return tuple(sorted(held, key=lambda item: item.span))
 
 
 def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | None) -> tuple[ClaimDecision, ...]:
@@ -163,8 +199,7 @@ def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | 
     if unconfirmed != list(extract_claims(text)):
         raise ValueError("the claims are not the ones extracted from this advertisement text")
     decisions = tuple(decide_claim(claim, product) for claim in claims)
-    ingredient_named = any(read_subjects(claim) - {None} - _PRODUCT_SUBJECTS for claim in claims)
-    if not unread_sentences(text) and all(_fully_read(claim, ingredient_named) for claim in claims):
+    if not holding_sentences(text, claims):
         return decisions
     return tuple(
         _decision(decision.claim, Verdict.UNVERIFIABLE, VerdictReason.AD_TEXT_NOT_FULLY_READ)
@@ -173,4 +208,13 @@ def decide_ad(text: str, claims: Sequence[AdClaim], product: ConfirmedProduct | 
     )
 
 
-__all__ = ["CLAIM_VERDICT_VERSION", "ClaimDecision", "VerdictReason", "decide_ad", "decide_claim"]
+__all__ = [
+    "CLAIM_VERDICT_VERSION",
+    "ClaimDecision",
+    "HoldKind",
+    "HoldingSentence",
+    "VerdictReason",
+    "decide_ad",
+    "decide_claim",
+    "holding_sentences",
+]
