@@ -147,6 +147,20 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     sheet.add_argument("--labeling-sheet", type=Path, required=True)
     sheet.add_argument("--labels-template", type=Path, required=True)
 
+    subset = commands.add_parser("subset", help="pick the cases for human labels: the same share of every scenario")
+    subset.add_argument("--manifest", type=Path, required=True)
+    subset.add_argument("--seed", type=int, required=True)
+    subset.add_argument("--size", type=int, required=True)
+    subset.add_argument("--output", type=Path, required=True)
+
+    human = commands.add_parser("human-sheet", help="write the labeling sheet of the chosen cases for human labelers")
+    human.add_argument("--manifest", type=Path, required=True)
+    human.add_argument("--ads", type=Path, required=True)
+    human.add_argument("--source-export", type=Path, required=True)
+    human.add_argument("--cases", type=Path, required=True)
+    human.add_argument("--labeling-sheet", type=Path, required=True)
+    human.add_argument("--labels-template", type=Path, required=True)
+
     cases = commands.add_parser("cases", help="merge two label files into a case file")
     cases.add_argument("--manifest", type=Path, required=True)
     cases.add_argument("--ads", type=Path, required=True)
@@ -589,6 +603,73 @@ def _sheet(args: argparse.Namespace) -> int:
     return 0
 
 
+HUMAN_PREFACE = (
+    "이 라벨지는 사람 검토자용입니다. 엔진 결과, AI 라벨, 다른 사람의 라벨을 보지 않고 아래 규칙만으로 판정합니다.",
+    "판단이 서지 않는 문장은 규칙대로 `unverifiable`을 고르고 note에 이유를 적습니다.",
+    "labeler 칸에는 이름 대신 역할을 적습니다(예: human-developer). 공개 저장소에 올라가기 때문입니다.",
+)
+
+
+def human_subset(items: list[dict], seed: int, size: int) -> list[str]:
+    """Case ids for human labels: each scenario's share of the sample, picked by the seed, in manifest order.
+
+    Quotas follow the largest remainder of the scenario's share, ties broken by scenario name."""
+    if not 0 < size <= len(items):
+        raise AdEvalError(f"the subset size must be between 1 and {len(items)}")
+    groups: dict[str, list[str]] = defaultdict(list)
+    for item in items:
+        groups[item["scenario"]].append(item["case_id"])
+    quotas = {name: size * len(ids) // len(items) for name, ids in groups.items()}
+    by_remainder = sorted(groups, key=lambda name: (-(size * len(groups[name]) % len(items)), name))
+    for name in by_remainder[: size - sum(quotas.values())]:
+        quotas[name] += 1
+    rng = random.Random(seed)
+    chosen: set[str] = set()
+    for name in sorted(groups):
+        ids = sorted(groups[name])
+        rng.shuffle(ids)
+        chosen.update(ids[: quotas[name]])
+    return [item["case_id"] for item in items if item["case_id"] in chosen]
+
+
+def _subset(args: argparse.Namespace) -> int:
+    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    chosen = human_subset(manifest["items"], args.seed, args.size)
+    _write_json(args.output, {
+        "eval_id": manifest["eval_id"], "seed": args.seed, "size": args.size, "stratified_by": "scenario",
+        "cases": chosen,
+    })
+    print(f"{len(chosen)} of {len(manifest['items'])} cases chosen for human labels -> {args.output}")
+    return 0
+
+
+def _human_sheet(args: argparse.Namespace) -> int:
+    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    items = manifest["items"]
+    chosen = json.loads(args.cases.read_text(encoding="utf-8"))["cases"]
+    known = {item["case_id"] for item in items}
+    if not chosen or len(set(chosen)) != len(chosen) or not set(chosen) <= known:
+        raise AdEvalError("the chosen cases must be distinct cases of the manifest")
+    ads = json.loads(args.ads.read_text(encoding="utf-8"))["cases"]
+    if [ad["case_id"] for ad in ads] != [item["case_id"] for item in items]:
+        raise AdEvalError("the advertisement file must hold the manifest cases in order")
+    selected = [ad for ad in ads if ad["case_id"] in set(chosen)]
+    rows = {row["report_no"]: row for row in _rows(args.source_export)[1]}
+    title, rest = _labeling_sheet(manifest["eval_id"], selected, rows).split("\n", 1)
+    sheet = "\n".join([title.replace("기대 판정 라벨지", "사람 기대 판정 라벨지"), "", *HUMAN_PREFACE]) + "\n" + rest
+    args.labeling_sheet.parent.mkdir(parents=True, exist_ok=True)
+    args.labeling_sheet.write_text(sheet, encoding="utf-8", newline="\n")
+    # With a byte order mark, Excel opens the file as UTF-8; the label files are read as utf-8-sig.
+    with args.labels_template.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=LABEL_FIELDS, lineterminator="\n")
+        writer.writeheader()
+        for ad in selected:
+            for segment in ad["segments"]:
+                writer.writerow({"case_id": ad["case_id"], "seg_no": segment["seg_no"], "label": "", "labeler": "", "note": ""})
+    print(f"human labeling sheet for {len(selected)} cases -> {args.labeling_sheet}")
+    return 0
+
+
 def _cases(args: argparse.Namespace) -> int:
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     items = {item["case_id"]: item for item in manifest["items"]}
@@ -632,7 +713,9 @@ def _cases(args: argparse.Namespace) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
-    command = {"sample": _sample, "sheet": _sheet, "cases": _cases}[args.command]
+    command = {
+        "sample": _sample, "sheet": _sheet, "subset": _subset, "human-sheet": _human_sheet, "cases": _cases,
+    }[args.command]
     try:
         return command(args)
     except (AdEvalError, ValueError, OSError, KeyError) as exc:

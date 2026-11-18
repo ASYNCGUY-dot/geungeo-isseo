@@ -1,8 +1,9 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-11-16 Asia/Seoul`
-- 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지), 동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 로컬 태그
-  `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영). 동결 브랜치는 사용자 결정 없이 고치지 않는다.
+- 기준일: `2026-11-18 Asia/Seoul`
+- 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지). 공개·시연 엔진은 `main`, 고정점은 태그 `public-engine-2026-11-18`.
+  동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 태그 `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영)는
+  기록으로 남긴다. 동결 브랜치는 사용자 결정 없이 고치지 않는다.
 - 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.14`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
   기능성화장품 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`. 동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
 - 검증: 전체 재현은 `scripts/reproduce.py`(테스트와 동결 평가세트의 오인 승인 0 관문). 문장 나누기를 바꾸면 `scripts/engine_diff.py`로 만든 광고
@@ -11,7 +12,21 @@
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고 `검증 불가`로 멈춘다. 평가 라벨은 모두 AI 라벨이다.
 - 2026-10-16 이전 인계와 9월 단계 기록은 [archive/CODEX_HANDOFF_HISTORY.md](archive/CODEX_HANDOFF_HISTORY.md)로 옮겼다(내용은 그대로).
 
-## 이번 인계 — 2026-11-16 끝맺음·첫머리 접속어 확장과 `claim-eval-v6` (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-18 공개 엔진 정리, 영수증의 보류 문장, 사람 라벨 준비 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: 신뢰도를 높이는 추천 다섯 가지에 "차례대로 해줘". [1·2번 기록](evidence/PUBLIC_ENGINE_AND_RECEIPT_2026-11-18.md),
+  [5번·3·4번 계획](superpowers/plans/2026-11-18-human-labels-and-llm-context.md).
+- 1번: 공개·시연 엔진 = `main`, 태그 `public-engine-2026-11-18`. 동결 브랜치는 건드리지 않음(줄 규칙·끝맺음 미반영, 기록으로 남김).
+- 2번: `verdict_v1.holding_sentences`(종류 `SENTENCE_NOT_READ`·`CLAIM_NOT_FULLY_READ`·`SUBJECT_OMITTED`), 영수증 `receipt-v1.1`의
+  `holding_sentences`와 "끝까지 읽지 못한 문장" 절(Markdown·웹). 판정 규칙 불변, 대조 다섯 묶음 1,167,600개가 v1.14와 같음.
+- 5번(A부): `claim-eval-v7` 표본(시드 20261118, v1~v6 제품 600개 제외, 광고 100개·문장 237개)과 사람 라벨 대상 50개(`human-cases.json`, 시나리오마다
+  절반). 작성 에이전트·맹검 AI 라벨 뒤 사람 라벨지를 사용자에게 넘긴다. v7은 B부의 동결 시험이라 개발자는 문장·라벨을 읽지 않고, A부 채점에서는
+  요약 수치만 본다(문장별 채점 파일은 `build/claim-eval-v7/`).
+- 3·4번(B부): 계획만. v6에서 옆 문장 보류 30개 중 9개는 주어 생략(풀 대상 아님), 섭취법 7, 고지 문구 7(+겹침 2), 소개 3(+겹침 1), 주장 2.
+  읽지 못한 섭취법 17개는 모두 횟수·양 표현이 있어 숫자 금지 교차 확인으로는 풀리지 않음 → 공식 섭취방법(C003 `intake_method`) 대조.
+  SDK 설치·유료 호출·키·모델은 사용자 결정.
+
+## 이전 인계 — 2026-11-16 끝맺음·첫머리 접속어 확장과 `claim-eval-v6` (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: "근거 있어 작업 하던 것 이어서 해줘". 동결 브랜치 반영(명시 결정 필요)과 LLM 구조화(별도 계획)를 빼고 개선 점검 4번의 끝맺음 확장을 이어 감.
   [기록](evidence/MVP_CLAIM_ENDINGS_2026-11-16.md), [계획·채점 전 기준](superpowers/plans/2026-11-16-claim-endings.md)(`cbff6fe`).

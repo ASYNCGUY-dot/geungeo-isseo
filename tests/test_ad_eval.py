@@ -246,6 +246,60 @@ def test_cases_merge_labels_per_sentence(tmp_path: Path) -> None:
     assert build_ad_eval.main([*arguments, "--labels", str(bad), "--labels", str(labels[1])]) == 3
 
 
+def _subset(tmp_path: Path, seed: str = "11", size: str = "50") -> int:
+    return build_ad_eval.main([
+        "subset", "--manifest", str(tmp_path / "manifest.json"), "--seed", seed, "--size", size,
+        "--output", str(tmp_path / "human-cases.json"),
+    ])
+
+
+def test_subset_takes_the_same_share_of_every_scenario_by_seed(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path)
+    assert _subset(tmp_path) == 0
+    first = (tmp_path / "human-cases.json").read_bytes()
+    assert _subset(tmp_path) == 0 and (tmp_path / "human-cases.json").read_bytes() == first
+
+    chosen = json.loads(first)["cases"]
+    order = [item["case_id"] for item in manifest["items"]]
+    assert len(chosen) == 50 and chosen == [case_id for case_id in order if case_id in chosen]
+    scenario = {item["case_id"]: item["scenario"] for item in manifest["items"]}
+    total, picked = Counter(scenario.values()), Counter(scenario[case_id] for case_id in chosen)
+    assert all(picked[name] * 2 == count for name, count in total.items())
+    assert _subset(tmp_path, seed="12") == 0
+    assert json.loads((tmp_path / "human-cases.json").read_text(encoding="utf-8"))["cases"] != chosen
+    assert _subset(tmp_path, size="101") == 3 and _subset(tmp_path, size="0") == 3
+
+
+def test_human_sheet_lists_only_the_chosen_cases_without_hints(tmp_path: Path) -> None:
+    manifest = _sample(tmp_path)
+    assert _sheet(tmp_path, _segments(tmp_path, manifest)) == 0
+    assert _subset(tmp_path) == 0
+    chosen = json.loads((tmp_path / "human-cases.json").read_text(encoding="utf-8"))["cases"]
+    arguments = [
+        "human-sheet", "--manifest", str(tmp_path / "manifest.json"), "--ads", str(tmp_path / "ads.json"),
+        "--source-export", str(tmp_path / "c003.jsonl"), "--cases", str(tmp_path / "human-cases.json"),
+        "--labeling-sheet", str(tmp_path / "human.md"), "--labels-template", str(tmp_path / "labels-human.csv"),
+    ]
+    assert build_ad_eval.main(arguments) == 0
+
+    sheet = (tmp_path / "human.md").read_text(encoding="utf-8")
+    headings = [line[3:] for line in sheet.splitlines() if line.startswith("## ")]
+    assert headings == chosen
+    assert "사람 검토자" in sheet and "AI 라벨" in sheet and "`none`" in sheet and EYE in sheet
+    for hidden in ("carryover", "unsupported", "honest", "modifier", "exaggerated", "headerless", "stratum"):
+        assert hidden not in sheet
+    assert (tmp_path / "labels-human.csv").read_bytes().startswith("﻿".encode())
+    with (tmp_path / "labels-human.csv").open(encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    items = {item["case_id"]: item for item in manifest["items"]}
+    assert [(row["case_id"], int(row["seg_no"])) for row in rows] == [
+        (case_id, segment["seg_no"]) for case_id in chosen for segment in items[case_id]["segments"]
+    ]
+    unknown = tmp_path / "unknown.json"
+    unknown.write_text(json.dumps({"cases": ["C3-001", "X-1"]}), encoding="utf-8")
+    assert build_ad_eval.main([*arguments[:-6], "--cases", str(unknown), *arguments[-4:]]) == 3
+
+
 OMEGA_HEADER = "[EPA 및 DHA 함유 유지] 혈중 중성지질 개선·혈행 개선에 도움을 줄 수 있음"
 NOTICE = "본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다"
 
