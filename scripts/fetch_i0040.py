@@ -49,25 +49,29 @@ def _api_key(env_file: Path | None) -> str:
     return ""
 
 
-def fetch_all(client: I0040Client, page_size: int) -> list[IngredientApproval]:
+def fetch_all(client: I0040Client, page_size: int) -> tuple[list[IngredientApproval], int]:
+    """Every named row, and the number of rows without a name; together they must make the total."""
     approvals: list[IngredientApproval] = []
+    incomplete = 0
     total = None
-    while total is None or len(approvals) < total:
-        page = client.fetch_page(len(approvals) + 1, len(approvals) + page_size)
+    while total is None or len(approvals) + incomplete < total:
+        start = len(approvals) + incomplete + 1
+        page = client.fetch_page(start, start + page_size - 1)
         total = page.total_count if total is None else total
-        if not page.approvals:
+        if not page.approvals and not page.incomplete_count:
             break
         approvals.extend(page.approvals)
-    if total is None or len(approvals) != total:
-        raise DataSourceError(f"I-0040 returned {len(approvals)} rows, expected {total}")
-    return approvals
+        incomplete += page.incomplete_count
+    if total is None or len(approvals) + incomplete != total:
+        raise DataSourceError(f"I-0040 returned {len(approvals) + incomplete} rows, expected {total}")
+    return approvals, incomplete
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
         client = I0040Client(_api_key(args.env_file), _http_client())
-        approvals = fetch_all(client, args.page_size)
+        approvals, incomplete = fetch_all(client, args.page_size)
     except (DataSourceError, OSError) as exc:
         print(f"error: {exc}")
         return 3
@@ -80,14 +84,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     manifest = {
         "source_id": SERVICE_ID,
         "retrieved_at": (approvals[0].retrieved_at if approvals else datetime.now(UTC)).isoformat(),
-        "total_count": len(approvals),
+        "total_count": len(approvals) + incomplete,
         "row_count": len(approvals),
+        "incomplete_count": incomplete,
         "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest().upper(),
     }
     args.output.with_suffix(".manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
     )
-    print(f"{len(approvals)} I-0040 rows -> {args.output}")
+    print(f"{len(approvals)} I-0040 rows ({incomplete} without a name left out) -> {args.output}")
     return 0
 
 

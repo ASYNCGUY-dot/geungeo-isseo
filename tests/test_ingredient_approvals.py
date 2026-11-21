@@ -51,12 +51,23 @@ def test_parse_keeps_only_identity_and_function_fields() -> None:
 @pytest.mark.parametrize("payload", [
     {"I-0040": {"RESULT": {"CODE": "INFO-300", "MSG": "유효 호출건수를 이미 초과하셨습니다."}}},
     {"C003": {}},
-    _payload([_row("", "라피노스", "도움")]),
     _payload([], total=-1),
 ])
 def test_parse_rejects_errors_and_invalid_rows(payload: dict) -> None:
     with pytest.raises(DataSourceError):
         parse_i0040_payload(payload, NOW)
+
+
+def test_parse_keeps_rows_without_a_number_and_counts_rows_without_a_name() -> None:
+    # The live list (2026-11-21) has two numbered rows with no name or function and one named row with no number.
+    page = parse_i0040_payload(_payload([
+        _row("", "풋사과농축분말", "피부건강 유지에 도움"), _row("2017-23", "", ""), _row("2006-15", "라피노스", "도움"),
+    ]), NOW)
+
+    assert [(item.approval_no, item.ingredient_name) for item in page.approvals] == [
+        ("", "풋사과농축분말"), ("2006-15", "라피노스"),
+    ]
+    assert page.incomplete_count == 1
 
 
 def test_client_path_and_sanitized_errors() -> None:
@@ -114,7 +125,7 @@ def test_env_file_without_the_key_yields_no_key(tmp_path: Path, monkeypatch: pyt
 def test_fetch_script_pages_writes_minimal_rows_and_manifest(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    rows = [_row(f"2006-{i}", f"원료{i}", "도움") for i in range(3)]
+    rows = [_row(f"2006-{i}", f"원료{i}", "도움") for i in range(3)] + [_row("2004-1", "", "")]
 
     def handler(request: httpx.Request) -> httpx.Response:
         start, end = (int(part) for part in request.url.path.rsplit("/", 2)[-2:])
@@ -134,7 +145,7 @@ def test_fetch_script_pages_writes_minimal_rows_and_manifest(
     assert set(lines[0]) == {"approval_no", "approved_on", "company", "ingredient_name", "function_text"}
     manifest = json.loads(output.with_suffix(".manifest.json").read_text(encoding="utf-8"))
     assert manifest["source_id"] == "I-0040"
-    assert manifest["row_count"] == manifest["total_count"] == 3
+    assert (manifest["total_count"], manifest["row_count"], manifest["incomplete_count"]) == (4, 3, 1)
     assert len(manifest["sha256"]) == 64
     assert "secret-key" not in capsys.readouterr().out
 
