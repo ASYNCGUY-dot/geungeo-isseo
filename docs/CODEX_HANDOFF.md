@@ -1,6 +1,6 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-11-21 Asia/Seoul`
+- 기준일: `2026-11-22 Asia/Seoul`
 - 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지). 공개·시연 엔진은 `main`, 고정점은 태그 `public-engine-2026-11-18`.
   동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 태그 `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영)는
   기록으로 남긴다. 동결 브랜치는 사용자 결정 없이 고치지 않는다.
@@ -9,11 +9,31 @@
   동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
 - 검증: 전체 재현은 `scripts/reproduce.py`(테스트와 동결 평가세트의 오인 승인 0 관문). 문장 나누기를 바꾸면 `scripts/engine_diff.py`로 만든 광고
   묶음을 이전 엔진과 대조한다(사용법은 스크립트 첫머리).
-- 사용자 조치 대기: `claim-eval-v7` 사람 라벨(50개 광고), Docker Desktop 복구(이미지 빌드·컨테이너 실행 미검증). `I-0040`은 2026-11-21 승인·반영.
+- 사용자 조치 대기: `claim-eval-v7` 사람 라벨(50개 광고, `labels-human.csv`. Codex의 AI 대리 라벨은 사람 라벨이 아님), Docker Desktop 복구(이미지 빌드·컨테이너 실행 미검증). `I-0040`은 2026-11-21 승인·반영.
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고 `검증 불가`로 멈춘다. 평가 라벨은 모두 AI 라벨이다.
 - 2026-10-16 이전 인계와 9월 단계 기록은 [archive/CODEX_HANDOFF_HISTORY.md](archive/CODEX_HANDOFF_HISTORY.md)로 옮겼다(내용은 그대로).
 
-## 이번 인계 — 2026-11-21 개별인정형 원료 `I-0040` 반영 (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-22 Codex의 `claim-eval-v7` AI 대리 라벨 정리 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: 이름을 바꿔 커밋하고 인계 문서를 합치자는 제안에 "진행해".
+- 루트 체크아웃에 미커밋으로 있던 Codex 파일 세 개를 커밋했다. 라벨은 `data/eval/claim-eval-v7/labels-ai-proxy-codex.csv`(내용 그대로),
+  작성 기록은 `labels-ai-proxy-codex-provenance.md`, 채점 기록은 [CLAIM_EVAL_V7_AI_PROXY_SCORE_2026-11-21.md](evidence/CLAIM_EVAL_V7_AI_PROXY_SCORE_2026-11-21.md)다.
+  문서 안의 파일 이름만 고쳤다. AI 라벨이 사람 라벨로 읽히지 않도록 `labels-human.csv`는 실제 사람 라벨 자리로 비워 둔다.
+- 사람 기준선은 여전히 미측정이다. Claude Code 세션은 v7 문장·라벨을 읽지 않았고, Codex 기록의 요약 수치만 봤다.
+  Codex 세션(11/21)은 대상 광고 50개의 문장을 봤다. 그 세션이 엔진이나 B부를 조정하면 v7을 미공개 시험으로 쓰지 않는다(Codex 기록과 같음).
+
+## 이전 인계 — 2026-11-21 `claim-eval-v7` 라벨 작성 대행과 AI 대리 채점 (Codex, 11/22 Claude Code가 파일 이름만 바꿔 커밋)
+
+사용자의 "이것 좀 대신해줘" 요청으로 `data/eval/claim-eval-v7/labels-human.csv`(11/22 `labels-ai-proxy-codex.csv`로 이름 변경) 122행을 작성했다.
+모든 작성자는 `ai-proxy-codex`이며 사람 라벨이 아니다. 사람 기준선은 여전히 미측정이다.
+라벨 작성 때는 다른 AI 라벨과 엔진 결과를 보지 않았다. 이후 사용자 "채점해봐" 요청으로 고정 라벨을 채점했다.
+AI 대리 라벨 기준 오인 승인 0/86, 확인됨 재현율 12/36, 틀린 근거 불일치 20/90이다.
+기존 Sonnet·Opus와 일치율은 각각 113/122·120/122다. 사람 기준 결과로 쓰지 않는다.
+채점 정본은 [2026-11-21 기록](evidence/CLAIM_EVAL_V7_AI_PROXY_SCORE_2026-11-21.md)이다.
+작성 경위·파일 해시·맹검 한계는 [작성 기록](../data/eval/claim-eval-v7/labels-ai-proxy-codex-provenance.md)을 따른다.
+아래 11/18 인계의 사람 라벨 대기 설명과 구분한다.
+
+## 이전 인계 — 2026-11-21 개별인정형 원료 `I-0040` 반영 (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: `I-0040` 활용신청 완료 → "응 진행해". [기록](evidence/INDIVIDUAL_APPROVALS_2026-11-21.md).
 - 수집: 기존 `FOODSAFETY_API_KEY`로 779행(이름 없는 빈 행 2개는 세고 뺌, 777행). 원본은 `build/i0040/`. 수집기는 이름 없는 행을 세고 빼도록 바꿈.

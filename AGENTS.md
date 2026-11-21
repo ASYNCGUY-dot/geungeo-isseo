@@ -164,6 +164,9 @@ v1은 개발 세션이 읽었으므로 개발용이며, 엔진을 고치면 `cos
 비었을 때만 확인을 남깁니다(판정 규칙 불변, 만든 광고 1,167,600개에서 v1.14와 판정 같음). 보류된 주장에는 공식 원문 인용을 붙이지 않습니다.
 다음은 사람 라벨 기준선 `claim-eval-v7`(A부)과 LLM 맥락 문장 판독(B부, SDK·유료 호출·키는 사용자 승인 뒤)입니다
 (`docs/superpowers/plans/2026-11-18-human-labels-and-llm-context.md`). v7은 B부의 동결 시험이라 A부 채점에서 개발자는 요약 수치만 봅니다.
+2026-11-21 Codex가 사용자 요청으로 사람 라벨 대상 122문장에 AI 대리 라벨을 붙였습니다(`labels-ai-proxy-codex.csv`, 사람 라벨 아님,
+`docs/evidence/CLAIM_EVAL_V7_AI_PROXY_SCORE_2026-11-21.md`). 사람 기준선은 미측정이며 `labels-human.csv`는 실제 사람 라벨 자리로 비워 둡니다.
+AI 라벨을 그 이름으로 저장하지 않습니다. 그 Codex 세션은 v7 문장을 봤으므로, 그 세션이 엔진이나 B부를 조정하면 v7을 미공개 시험으로 쓰지 않습니다.
 2026-11-21 사용자가 `I-0040` 활용신청을 마쳤고("응 진행해"), 기존 `FOODSAFETY_API_KEY`로 779건을 받았습니다(`docs/evidence/INDIVIDUAL_APPROVALS_2026-11-21.md`).
 대상 기능을 가진 개별인정 110건이 `individual_approvals_v1.json`이고, `headerless-attribution-v4`가 그 원료들을 보류 단서로 씁니다.
 병풀추출분말(2021-24)도 "황반색소밀도"로 인정돼 있어 이 문구는 더 이상 루테인 전용으로 통과시키지 않습니다(원재료에 병풀·센텔라가 있으면 보류).

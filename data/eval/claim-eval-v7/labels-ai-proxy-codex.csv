@@ -1,0 +1,123 @@
+﻿case_id,seg_no,label,labeler,note
+C7-002,1,confirmed,ai-proxy-codex,주어 생략은 뒤의 이 제품으로 읽히며 EPA 및 DHA 원문에 기억력 개선이 있고 도움 수준이다.
+C7-002,2,confirmed,ai-proxy-codex,제품 원문의 EPA 및 DHA 기능에 혈중 중성지질 개선이 있고 도움 가능성 표현이다.
+C7-008,1,confirmed,ai-proxy-codex,마리골드꽃추출물과 황반색소밀도 유지 원문이 루테인 주장에 대응하며 도움 수준이다.
+C7-008,2,unverifiable,ai-proxy-codex,앞 문장의 루테인이 이어지는 주어인데 중성지질 개선은 EPA 및 DHA에 적혀 있어 주체 연결을 확정할 수 없다.
+C7-012,1,mismatch,ai-proxy-codex,안구건조증 증상 완화를 주장하여 질병 완화 금지 기준에 해당한다.
+C7-012,2,none,ai-proxy-codex,질병 예방과 치료용 의약품이 아니라는 고지이며 건강 효과 주장이 아니다.
+C7-015,1,confirmed,ai-proxy-codex,제품의 루테인지아잔틴복합추출물 원문에 황반색소밀도 유지가 있고 전체 표현은 도움 가능성 수준이다.
+C7-015,2,none,ai-proxy-codex,질병 예방과 치료를 위한 의약품이 아니라는 고지이다.
+C7-016,1,confirmed,ai-proxy-codex,제품 원문에 황반색소밀도 유지 기능이 있으며 별도 섭취 안내가 효과를 보장하지는 않는다.
+C7-016,2,none,ai-proxy-codex,횟수와 캡슐 수 및 섭취 시점을 안내할 뿐 효과를 주장하지 않는다.
+C7-016,3,none,ai-proxy-codex,질병 예방과 치료용 의약품이 아니라는 고지이다.
+C7-018,1,confirmed,ai-proxy-codex,광고의 주체는 제품으로 읽히고 마리골드꽃추출물 원문과 황반색소밀도 유지 기능이 일치한다.
+C7-018,2,none,ai-proxy-codex,식후 섭취 방법을 안내하며 효과나 발현 기간을 주장하지 않는다.
+C7-018,3,none,ai-proxy-codex,질병 예방과 치료를 목적으로 하지 않는다는 고지이다.
+C7-020,1,unverifiable,ai-proxy-codex,피부 건강은 검토지에서 정한 여덟 기능 밖이므로 원문 유무보다 먼저 검증 불가를 적용한다.
+C7-020,2,none,ai-proxy-codex,하루 횟수와 캡슐 수 및 물과 함께 섭취하라는 방법 안내이다.
+C7-020,3,none,ai-proxy-codex,질병 예방과 치료용 의약품이 아니라는 고지이다.
+C7-021,1,confirmed,ai-proxy-codex,EPA 및 DHA 원문에 중성지질 개선이 명시되어 있고 오메가3 주장의 강도가 도움 수준이다.
+C7-021,2,confirmed,ai-proxy-codex,EPA 및 DHA 원문에 건조한 눈 개선을 통한 눈 건강 기능이 있고 도움 가능성 표현이다.
+C7-021,3,none,ai-proxy-codex,건강기능식품이 질병 치료용 의약품이 아니라는 고지이다.
+C7-022,1,confirmed,ai-proxy-codex,주어는 광고 대상 제품으로 읽히며 프로바이오틱스 원문에 배변활동 원활 기능이 명시되어 있다.
+C7-022,2,none,ai-proxy-codex,한 포의 섭취 방법과 요거트에 섞는 방법을 안내한다.
+C7-022,3,none,ai-proxy-codex,질병을 예방하거나 치료하는 의약품이 아니라는 고지이다.
+C7-027,1,none,ai-proxy-codex,화면을 오래 보는 40대 이상에게 권유하지만 이 문장 자체에는 건강 효과 주장이 없다.
+C7-027,2,unverifiable,ai-proxy-codex,앞의 화면 노출 및 40대 이상 대상 권유가 붙은 주장으로 읽히나 공식 원문만으로 그 대상과 조건의 범위를 확정할 수 없다.
+C7-027,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-028,1,none,ai-proxy-codex,바쁜 직장인과 채소 및 과일을 적게 먹는 사람에게 권유할 뿐 건강 효과를 말하지 않는다.
+C7-028,2,unverifiable,ai-proxy-codex,앞 문장의 식생활 및 직장인 대상 조건이 붙은 효과 주장이나 공식 원문에는 그 조건의 인정 범위가 없다.
+C7-031,1,confirmed,ai-proxy-codex,마리골드꽃추출물 원문과 루테인의 황반색소밀도 유지 주장이 대응하고 도움 수준이다.
+C7-031,2,unverifiable,ai-proxy-codex,직전 주어 루테인에 이어진 주장이나 중성지질 개선은 EPA 및 DHA 기능으로 적혀 있어 귀속을 확정할 수 없다.
+C7-035,1,confirmed,ai-proxy-codex,EPA 및 DHA 함유 유지의 혈행 개선 원문과 오메가3 주장이 도움 수준에서 일치한다.
+C7-035,2,none,ai-proxy-codex,섭취 횟수와 시점 및 캡슐 수를 안내할 뿐 건강 효과를 주장하지 않는다.
+C7-036,1,mismatch,ai-proxy-codex,공식 원문에는 중성지질과 혈행 및 건조한 눈 기능만 있고 기억력 개선은 없다.
+C7-036,2,none,ai-proxy-codex,주의를 환기하며 질병 예방과 치료용 의약품이 아니라는 고지를 한다.
+C7-037,1,none,ai-proxy-codex,원료와 향 및 캡슐을 소개하며 건강 기능을 주장하지 않는다.
+C7-037,2,mismatch,ai-proxy-codex,공식 원문 어디에도 유산균 증식 및 유해균 억제 기능이 없다.
+C7-039,1,mismatch,ai-proxy-codex,황반변성 예방이라는 질병 예방 표현이 포함되어 있다.
+C7-039,2,none,ai-proxy-codex,하루 한 알을 식후 물과 섭취하라는 방법 안내이다.
+C7-041,1,confirmed,ai-proxy-codex,원재료의 유산균들과 프로바이오틱스 제품 원문에 배변활동 원활 기능이 대응하며 도움 수준이다.
+C7-041,2,none,ai-proxy-codex,질병 치료용으로 쓰지 말라는 의약품 아님 고지이다.
+C7-043,1,none,ai-proxy-codex,외식과 불규칙한 식사를 하는 사람에게 권유할 뿐 효과를 직접 말하지 않는다.
+C7-043,2,unverifiable,ai-proxy-codex,앞 문장의 외식 및 불규칙 식사 대상 조건이 붙은 주장으로 읽히며 그 조건의 인정 범위는 원문으로 확정할 수 없다.
+C7-044,1,confirmed,ai-proxy-codex,EPA 및 DHA 원문에 혈행 개선이 있고 오메가3의 도움 가능성 표현과 일치한다.
+C7-044,2,unverifiable,ai-proxy-codex,직전 오메가3 주어가 이어지나 황반색소밀도 유지는 마리골드꽃추출물 기능으로 적혀 있어 연결이 불확실하다.
+C7-044,3,none,ai-proxy-codex,건강기능식품의 질병 예방 및 치료 효과를 부정하는 고지이다.
+C7-047,1,confirmed,ai-proxy-codex,광고 대상 제품의 EPA 및 DHA 원문에 건조한 눈 개선을 통한 눈 건강 기능이 명시되어 있다.
+C7-047,2,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-048,1,confirmed,ai-proxy-codex,제품의 마리골드꽃추출물 원문에 황반색소밀도 유지가 있고 광고도 도움 가능성 수준이다.
+C7-048,2,none,ai-proxy-codex,질병 예방과 치료를 위한 의약품이 아니라는 고지이다.
+C7-050,1,confirmed,ai-proxy-codex,제품 원문의 프로바이오틱스 기능에 배변활동 원활이 적혀 있고 도움 수준이다.
+C7-050,2,none,ai-proxy-codex,공복에 두 정을 물과 섭취하라는 방법 안내로 효과를 보장하지 않는다.
+C7-052,1,mismatch,ai-proxy-codex,다음 문장의 다른 제품보다 효과가 앞선다는 단정이 이 주장에도 붙어 공식 도움 가능성 수준을 넘는다.
+C7-052,2,mismatch,ai-proxy-codex,앞의 중성지질 개선 효과를 다른 어유 제품보다 우월하다고 단정하여 원문의 인정 수준보다 강하다.
+C7-052,3,none,ai-proxy-codex,질병 진단과 치료 및 예방을 위한 의약품이 아니라는 고지이다.
+C7-053,1,mismatch,ai-proxy-codex,프로바이오틱스의 배변활동 효과를 개선한다고 단정하여 원문의 도움 가능성보다 강하다.
+C7-053,2,none,ai-proxy-codex,한 포를 물과 함께 먹는 공복 섭취 방법을 안내한다.
+C7-053,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-054,1,confirmed,ai-proxy-codex,EPA 및 DHA 원문의 중성지질 개선과 일치하며 도움 가능성 수준이다.
+C7-054,2,unverifiable,ai-proxy-codex,앞의 오메가3를 이어받는 주어인데 황반색소밀도 유지는 마리골드꽃추출물 아래 적혀 있어 귀속이 불확실하다.
+C7-054,3,none,ai-proxy-codex,섭취 전 참고를 요청하며 질병 예방과 치료용 의약품이 아니라는 고지를 한다.
+C7-055,1,none,ai-proxy-codex,포장과 휴대성 및 목 넘김을 소개하며 건강 효과를 주장하지 않는다.
+C7-055,2,mismatch,ai-proxy-codex,혈전과 뇌졸중 예방이라는 질병 예방 표현을 명시한다.
+C7-055,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-056,1,confirmed,ai-proxy-codex,EPA 및 DHA 원문에 혈행 개선이 있고 오메가3 주장이 도움 가능성 수준이다.
+C7-056,2,none,ai-proxy-codex,식후 하루 한 번 두 캡슐을 섭취하라는 방법 안내이다.
+C7-056,3,none,ai-proxy-codex,질병 예방과 치료용 의약품이 아니라는 고지이다.
+C7-060,1,mismatch,ai-proxy-codex,공식 원문은 혈중 지질과 혈행 및 눈 기능이며 배변활동 원활 기능은 없다.
+C7-060,2,none,ai-proxy-codex,질병 예방과 치료 목적의 의약품이 아니라는 고지이다.
+C7-061,1,mismatch,ai-proxy-codex,다음 문장의 두세 달 후 변화를 느낀다는 단정이 붙어 도움 가능성 수준을 넘는 효과 보장이 된다.
+C7-061,2,mismatch,ai-proxy-codex,앞의 눈 건강 효과를 두세 달 섭취하면 체감한다고 단정하여 원문의 도움 가능성보다 강하다.
+C7-061,3,none,ai-proxy-codex,건강기능식품은 의약품이 아니라는 고지이다.
+C7-064,1,none,ai-proxy-codex,스틱 포장과 맛 및 먹기 편함을 소개하며 아이의 건강 효과를 주장하지 않는다.
+C7-064,2,confirmed,ai-proxy-codex,원재료의 프로바이오틱스와 원문의 배변활동 원활 기능이 대응하고 도움 가능성 수준이다.
+C7-064,3,none,ai-proxy-codex,질병 예방과 치료를 위한 의약품이 아니라는 확인 요청이다.
+C7-065,1,confirmed,ai-proxy-codex,제품의 루테인지아잔틴복합추출물 원문에 황반색소밀도 유지 기능이 있고 도움 수준이다.
+C7-065,2,none,ai-proxy-codex,아침 식후 하루 한 알의 섭취 방법을 안내한다.
+C7-067,1,confirmed,ai-proxy-codex,프로바이오틱스 원문에 장 건강 기능이 있고 도움 가능성 수준이다.
+C7-067,2,unverifiable,ai-proxy-codex,앞 문장의 프로바이오틱스가 이어지는 주어이나 중성지질 개선은 EPA 및 DHA 기능이라 주체 연결이 불확실하다.
+C7-068,1,unverifiable,ai-proxy-codex,다음 문장의 한 달 효과 체험 및 환불 조건이 붙은 주장으로 읽히며 공식 원문에는 한 달 조건의 근거가 없다.
+C7-068,2,unverifiable,ai-proxy-codex,환불은 효과 없을 가능성도 인정하므로 확정 보장으로 단정하지 않되 한 달 효과 조건은 공식 원문으로 확인할 수 없다.
+C7-071,1,none,ai-proxy-codex,원료의 산지와 캡슐 크기를 소개하며 건강 기능을 주장하지 않는다.
+C7-071,2,confirmed,ai-proxy-codex,원재료의 EPA 및 DHA와 중성지질 개선 원문이 대응하고 도움 가능성 수준이다.
+C7-071,3,none,ai-proxy-codex,질병 치료용 의약품이 아니라는 고지이다.
+C7-072,1,confirmed,ai-proxy-codex,프로바이오틱스 원재료와 원문의 유산균 및 배변활동 기능 묶음이 대응하며 도움 수준이다.
+C7-072,2,none,ai-proxy-codex,하루 한 포를 물과 먹는 방법을 안내하며 효과를 보장하지 않는다.
+C7-072,3,none,ai-proxy-codex,질병 예방과 치료용 의약품이 아니라는 고지와 의사 상담 권고이다.
+C7-074,1,mismatch,ai-proxy-codex,다음 문장의 이 주 후 확실한 변화 보장이 붙어 도움 가능성 수준을 넘는다.
+C7-074,2,mismatch,ai-proxy-codex,프로바이오틱스 효과를 이 주만 먹으면 확실히 체감한다고 보장한다.
+C7-074,3,none,ai-proxy-codex,질병 예방이나 치료를 위한 의약품이 아니라는 고지이다.
+C7-075,1,none,ai-proxy-codex,첨가물과 맛 및 스틱 제형을 소개하며 건강 효과를 주장하지 않는다.
+C7-075,2,unverifiable,ai-proxy-codex,면역력은 라벨지에서 정한 여덟 기능 밖이므로 원문의 아연 기능과 관계없이 검증 불가이다.
+C7-075,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-076,1,confirmed,ai-proxy-codex,제품 원문의 EPA 및 DHA 함유 유지에 중성지질 개선 기능이 있고 도움 가능성 수준이다.
+C7-076,2,confirmed,ai-proxy-codex,EPA 및 DHA 함유 유지의 혈행 개선 원문과 오메가3 주장이 도움 수준에서 일치한다.
+C7-077,1,confirmed,ai-proxy-codex,프로바이오틱스 원문에 유산균 증식 및 유해균 억제 기능이 있고 도움 수준이다.
+C7-077,2,confirmed,ai-proxy-codex,프로바이오틱스 원문에 장 건강 기능이 있고 도움 가능성 수준이다.
+C7-077,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
+C7-081,1,confirmed,ai-proxy-codex,프로바이오틱스 원재료와 배변활동 원활 원문이 대응하고 도움 가능성 수준이다.
+C7-081,2,confirmed,ai-proxy-codex,프로바이오틱스 원재료와 유산균 증식 및 유해균 억제 원문이 대응하고 도움 수준이다.
+C7-082,1,none,ai-proxy-codex,제조 공법과 스틱 포장 및 맛을 소개하며 건강 효과를 주장하지 않는다.
+C7-082,2,confirmed,ai-proxy-codex,제품 주장의 유산균 증식 및 유해균 억제가 프로바이오틱스 제품 원문에 명시되어 있다.
+C7-084,1,none,ai-proxy-codex,연구 경력과 캡슐을 소개할 뿐 특정 건강 효과를 주장하지 않는다.
+C7-084,2,mismatch,ai-proxy-codex,공식 원문에는 단백질 관련 기능만 있고 장 건강 기능은 없다.
+C7-084,3,none,ai-proxy-codex,질병 예방과 치료에 사용할 수 없는 의약품 아님 고지이다.
+C7-085,1,confirmed,ai-proxy-codex,제품의 EPA 및 DHA 원문에 건조한 눈 개선을 통한 눈 건강 기능이 있고 도움 수준이다.
+C7-085,2,confirmed,ai-proxy-codex,EPA 및 DHA 원문에 중성지질 개선이 있으며 오메가3 주장이 도움 가능성 수준이다.
+C7-090,1,none,ai-proxy-codex,어종과 추출 공법 및 비린내에 관한 제품 소개로 건강 효과 주장이 아니다.
+C7-090,2,mismatch,ai-proxy-codex,공식 원문에는 초록입홍합추출오일복합물의 관절건강만 있고 혈행 개선 기능은 없다.
+C7-090,3,none,ai-proxy-codex,의약품이 아닌 건강기능식품이라는 고지이다.
+C7-091,1,confirmed,ai-proxy-codex,EPA 및 DHA 아래 중성지질 개선 기능이 명시되어 있고 오메가3 주장이 도움 수준이다.
+C7-091,2,unverifiable,ai-proxy-codex,앞의 오메가3를 이어받는 문장이지만 황반색소밀도 유지는 마리골드꽃추출물 아래 적혀 있어 귀속이 불확실하다.
+C7-092,1,confirmed,ai-proxy-codex,제품 주장이며 이눌린 및 치커리 원문에 배변활동 원활 기능이 있어 프로바이오틱스 귀속이 필요하지 않다.
+C7-092,2,none,ai-proxy-codex,건강기능식품이며 의약품이 아니라는 고지이다.
+C7-094,1,mismatch,ai-proxy-codex,변비를 해소한다는 질병 완화 표현과 배변 효과 단정이 포함되어 있다.
+C7-094,2,none,ai-proxy-codex,질병 예방과 치료를 위한 의약품이 아니라는 고지이다.
+C7-095,1,confirmed,ai-proxy-codex,마리골드꽃추출물 원재료와 황반색소밀도 유지 문구가 대응하며 함께 적힌 눈 피로 기능과 구별된다.
+C7-095,2,none,ai-proxy-codex,건강기능식품이 질병 치료용 의약품이 아니라는 고지이다.
+C7-098,1,confirmed,ai-proxy-codex,EPA 및 DHA 원문의 건조한 눈 개선을 통한 눈 건강 기능과 도움 수준에서 일치한다.
+C7-098,2,unverifiable,ai-proxy-codex,직전 오메가3 주어가 이어지나 황반색소밀도 유지는 마리골드꽃추출물 기능이므로 연결을 확정할 수 없다.
+C7-099,1,mismatch,ai-proxy-codex,다음 문장의 다른 제품보다 효과가 우월하다는 단정이 붙어 공식 도움 가능성 수준을 넘는다.
+C7-099,2,mismatch,ai-proxy-codex,앞의 눈 건강 효과가 다른 제품보다 한 수 위라고 단정하여 원문의 인정 수준보다 강하다.
+C7-099,3,none,ai-proxy-codex,의약품이 아니라는 고지이다.
