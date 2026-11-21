@@ -101,7 +101,7 @@ C003 문장 소유 원료표(`official_statement_owners_v1.json`)와 원재료�
 보류 검사를 하고(다른 원료 핵심어, 고시 원료, 정체를 모르는 원재료 항목이면 보류), 오메가3 고유 효과 조합은 알려진 다른 원료가
 모든 효과를 채울 때만 보류합니다. 판정은 `claim-verdict-v1.3`, 사유 `MATCHES_UNLABELED_OFFICIAL_FUNCTION`입니다.
 기록: `docs/evidence/HEADERLESS_ATTRIBUTION_2026-10-01.md`. 독립 재검토 두 번에서 실제 C003 오인 승인이 나왔으므로,
-이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다. `I-0040`은 2026-10-22에도 활용신청 내역 없음(INFO-110)입니다.
+이 경로를 넓힐 때는 반드시 실패 테스트·새 평가 표본·재검토를 거칩니다. `I-0040`은 2026-11-21 활용신청이 승인돼 반영했습니다(`headerless-attribution-v4`, 아래 11-21 기록).
 2026-10-03 주장 단위 동결 평가세트 `claim-eval-v1`(`docs/evidence/CLAIM_EVAL_V1_2026-10-03.md`, AI 생성 문장·맹검 AI 라벨 두 벌)은
 오인 승인 0/68이지만 `확인됨` 재현율 6/30입니다. 이 세트로 엔진을 조정하지 말고, 개선 후에는 새 평가세트로 다시 잽니다.
 2026-10-04 `claim-extract-v1.3`(질병 단서 보강·광고 확인 문법 허용 목록 확대)부터 v1은 개발용입니다. 독립 평가세트 `claim-eval-v2`
@@ -164,6 +164,10 @@ v1은 개발 세션이 읽었으므로 개발용이며, 엔진을 고치면 `cos
 비었을 때만 확인을 남깁니다(판정 규칙 불변, 만든 광고 1,167,600개에서 v1.14와 판정 같음). 보류된 주장에는 공식 원문 인용을 붙이지 않습니다.
 다음은 사람 라벨 기준선 `claim-eval-v7`(A부)과 LLM 맥락 문장 판독(B부, SDK·유료 호출·키는 사용자 승인 뒤)입니다
 (`docs/superpowers/plans/2026-11-18-human-labels-and-llm-context.md`). v7은 B부의 동결 시험이라 A부 채점에서 개발자는 요약 수치만 봅니다.
+2026-11-21 사용자가 `I-0040` 활용신청을 마쳤고("응 진행해"), 기존 `FOODSAFETY_API_KEY`로 779건을 받았습니다(`docs/evidence/INDIVIDUAL_APPROVALS_2026-11-21.md`).
+대상 기능을 가진 개별인정 110건이 `individual_approvals_v1.json`이고, `headerless-attribution-v4`가 그 원료들을 보류 단서로 씁니다.
+병풀추출분말(2021-24)도 "황반색소밀도"로 인정돼 있어 이 문구는 더 이상 루테인 전용으로 통과시키지 않습니다(원재료에 병풀·센텔라가 있으면 보류).
+새 목록을 받으면 `scripts/fetch_i0040.py` → `scripts/build_individual_approvals.py`로 대응표를 다시 만들고, 전수 검사 테스트가 모든 인정을 보류하는지 봅니다.
 발표 시점 엔진은 로컬 태그 `mvp-frozen-2026-10-07`입니다. 동결 브랜치는 계속 사용자 결정 없이 고치지 않습니다.
 2026-10-12 재현율 개선을 시도했습니다(`docs/evidence/COSMETICS_RECALL_ITERATION_2026-10-12.md`, `cosmetic-claim-v1.7`·`cosmetic-verdict-v1.3`).
 판매 문구를 읽는 문법을 넣었지만 새 평가세트 `cosmetic-eval-v2`의 `확인됨` 재현율은 1/19로 수정 전과 같습니다(오인 승인 0/77).
@@ -192,10 +196,10 @@ v1은 개발 세션이 읽었으므로 개발용이며, 엔진을 고치면 `cos
 지수 과장 재현율이 필요하면 LLM 구조화(지수의 주인 제품)와 명시적 판정을 나누는 별도 계획이 필요합니다. v1~v5는 모두 개발용입니다.
 공식 문장 사전은 `scripts/build_header_vocabulary.py --kind clause`로 다시 만들며, 새 스냅샷을 쓰면 두 사전을 모두 다시 검토합니다.
 2단계 독립 재검토는 P1 0건이며 P3 2건은 v2.6에서 고쳤습니다. 3단계(기능성-원료 대응표)는 진행 중입니다
-(`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040`은 사용자 활용신청 대기입니다.
+(`docs/evidence/CARRIER_TABLE_2026-09-30.md`). 고시형 대응표는 완료했고, 개별인정형 `I-0040` 대응표는 2026-11-21에 만들었습니다.
 `I-0040` 키는 프로젝트 `.env`의 `FOODSAFETY_API_KEY`에서 스크립트가 읽으며 출력하지 않습니다.
 재검토 P2는 사용자가 고른 좁은 규칙(`src/claimledger/carriers.py`, 판정 `claim-verdict-v1.2`)으로 해결했고 실제 C003 보류는 0개입니다.
-남은 것은 `I-0040` 수집과 원료명 없는 나열의 귀속 규칙입니다.
+원료명 없는 나열의 귀속 규칙은 2026-10-01 `headerless.py`로, `I-0040` 수집·반영은 2026-11-21에 마쳤습니다.
 4단계 평가세트 v1(`docs/evidence/ATTRIBUTION_EVAL_2026-09-30.md`, `data/eval/attribution-eval-v1/`)은 귀속 60쌍 오류 0,
 보류 30쌍 중 29쌍 귀속 가능이며, 라벨은 AI 개발자 라벨입니다. 맹검 AI 교차 라벨(`labels-independent.csv`)은
 99/100 일치(kappa 0.918)이고 잘못 귀속 0입니다. 두 라벨 모두 AI라서 평가 수치를 사람 정확도로 표현하지 않습니다.

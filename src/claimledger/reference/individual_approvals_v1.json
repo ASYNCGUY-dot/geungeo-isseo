@@ -1,0 +1,944 @@
+{
+  "table_version": "individual-approvals-v1",
+  "source": {
+    "source_id": "I-0040",
+    "retrieved_at": "2026-11-21T08:27:03.301119+00:00",
+    "total_count": 779,
+    "row_count": 777,
+    "incomplete_count": 2,
+    "sha256": "2DD4F9D9638263744586976D8D238FDDDB8357398766D1A2EB5162A52744F82B"
+  },
+  "criterion": "Approvals whose function text mentions a target function by the broad keywords of the notice table (effect_mentioned). Rows without an ingredient name are left out by the fetcher.",
+  "row_count": 777,
+  "carrier_count": 110,
+  "items": [
+    {
+      "approval_no": "2004-3",
+      "ingredient_name": "씨제이 테아닌등 복합추출물",
+      "function_text": "“기억력 개선에 도움을 줄 수도 있으나 아직은 과학적 근거가 부족합니다”\n\n(동물시험을 통하여 기억력을 개선시키는 데 도움이 됨을 확인하였으나 인체시험에서는 확인되지 않았음)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2005-10",
+      "ingredient_name": "이소말토올리고당",
+      "function_text": "\"장내 유익균의 증식과 유해균의 억제에 도움을 줄 수 있습니다.\", \"배변활동을 원활히 하는데 도움을 줄 수 있습니다.\"\n\n◆ 인체시험에서 이소말토올리고당을 섭취할 경우 장내 유익균의 증식과 유해균을 억제하고, 배변활동을 원활히 하는데 도움을 줄 수 있음을 확인하였으나 자료의 수가 제한되어 있음. 따라서 반드시 ‘---에 도움을 줄 수 있습니다’의 형식으로 표시하여야 함.",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2005-20",
+      "ingredient_name": "대두올리고당",
+      "function_text": "\"장내 유익균의 증식과 유해균의 억제에 도움을 줄 수 있습니다.\", \"배변활동을 원활히 하는데 도움을 줄 수 있습니다.\"\n\n◆ 인체시험에서 대두올리고당을 섭취할 경우 장내 유익균의 증식과 유해균을 억제하고, 배변활동을 원활히 하는데 도움을 줄 수 있음을 확인하였으나 자료의 수가 제한되어 있음. 따라서 반드시 ‘---에 도움을 줄 수 있습니다’의 형식으로 표시하여야 함",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2006-15",
+      "ingredient_name": "라피노스",
+      "function_text": "\"장내 유익균의 증식과 유해균의 억제에 도움을 줄 수 있습니다.\" “배변활동을 원활히 하는데 도움을 줄 수 있습니다.” (기타기능II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2007-1",
+      "ingredient_name": "Free Lutein 복합물(Lutein 20% FS)",
+      "function_text": "루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.”(기타Ⅰ등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2007-2",
+      "ingredient_name": "FloraGLO Lutein(20% liquid in safflower oil)",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 \n 유지시켜 주어 눈건강에 도움을 줍니다.”(기타Ⅰ등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2008-1",
+      "ingredient_name": "루테인추출복합물OS20",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(기타Ⅰ등급)”",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2008-2",
+      "ingredient_name": "루테인추출복합분말CWD10",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(기타Ⅰ등급)”",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2008-65",
+      "ingredient_name": "지아잔틴 추출물",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다. (생리활성기능 1등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2008-66",
+      "ingredient_name": "루테인 지아잔틴 복합 추출물",
+      "function_text": "노화로 인해 감소도리 수 있는 환반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(생리활성기능 1등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2008-9",
+      "ingredient_name": "칸탈로프멜론추출물",
+      "function_text": "1)산화스트레스로부터 인체를 보호하는데 도움을 줄 수 있습니다(기타II) 2)혈관벽 두께 증가 억제를 통한 혈행개선에 도움을 줄 수 있습니다(기타II) 3) 자외선에 의한 피부홍반개선으로 피부건강에 도움을 줄수 있음(기타II)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2009-10",
+      "ingredient_name": "구아검가수분해물(Sunfiberⓡ)",
+      "function_text": "\"장내 유익균 증식에 도움을 줄 수 있음(기타기능 II)\"",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2009-12",
+      "ingredient_name": "BT-11원지추출분말",
+      "function_text": "성인의 기억력 개선을 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2009-15",
+      "ingredient_name": "커피만노올리고당분말",
+      "function_text": "“장내 유익균 증식, 유해균 억제, 배변활동에 도움을 줄 수 있음\" (기타기능 II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2009-28",
+      "ingredient_name": "프로바이오틱스(드시모네)",
+      "function_text": "1) 유익한 유산균 증식, 유해균 억제, 배변활동 원활 2) 장 면역을 조절하여 장 건강에 도움을 줄 수 있음(기타기능II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2009-4",
+      "ingredient_name": "난소화성말토덱스트린",
+      "function_text": "혈중 중성지질 개선에 도움을 줄 수 있음(기타기능 II)",
+      "effects": [
+        "blood_triglyceride"
+      ]
+    },
+    {
+      "approval_no": "2009-40",
+      "ingredient_name": "락추로스분말",
+      "function_text": "“유익균 증식, 유해균 억제에 도움을 줄 수 있습니다.”(기타기능 II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition"
+      ]
+    },
+    {
+      "approval_no": "2009-46",
+      "ingredient_name": "피브로인추출물 (BF-7®)",
+      "function_text": "기억력 개선에 도움을 줄 수 있습니다. (기타 II등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2009-50",
+      "ingredient_name": "HK 나토배양물",
+      "function_text": "혈액의 흐름을 방해할 수 있는 혈소판응집을 억제하여, 혈액흐름을 원활히 하는데 도움을 줄 수 있음(기타 II)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2009-51",
+      "ingredient_name": "루테인복합물VBAF",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(기타 I등급)”",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2009-54",
+      "ingredient_name": "루테인복합물 SF20",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(기타 I등급)”",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2009-79",
+      "ingredient_name": "인삼가시오갈피 등 혼합추출물",
+      "function_text": "“기억력 개선에 도움을 줄 수 있으나 인체시험을 통한 확인이 필요함”(기타기능Ⅲ)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2009-80",
+      "ingredient_name": "자일로올리고당(xylooligosaccharide) 분말",
+      "function_text": "“장내 유익균 증식, 유해균 억제, 배변활동에 도움을 줄 수 있음”(기타기능II",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2009-81",
+      "ingredient_name": "자일로올리고당(xylooligosaccharide) 액상",
+      "function_text": "“장내 유익균 증식, 유해균 억제, 배변활동에 도움을 줄 수 있음”(기타기능II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2009-96",
+      "ingredient_name": "루테인추출물20%",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈 건강에 도움을 줍니다.”(기타 I등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2010-19",
+      "ingredient_name": "라피노스",
+      "function_text": "1) 장내 유익균의 증식과 유해균의 억제에 도움을 줄 수 있습니다.(기타기능 II) 2) 배변활동을 원활히 하는데 도움을 줄 수 있습니다.(기타기능 II)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "bowel_movement",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2010-3",
+      "ingredient_name": "루테인지아잔틴복합추출물20%",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줌\r\n(기타 I등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2010-31",
+      "ingredient_name": "은행잎 추출물",
+      "function_text": "1) 성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II) 2) 혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-42",
+      "ingredient_name": "루테인",
+      "function_text": "“노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줌”(기타기능Ⅰ)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2010-51",
+      "ingredient_name": "녹차추출물/테아닌 복합물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있으나 \r\n인체에서의 확인이 필요함(기타기능III)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-56",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "1) 성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II) 2) 혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-57",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "1) 성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II) 2) 혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-63",
+      "ingredient_name": "은행잎 추출물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II)\r\n혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-64",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "인의 기억력 개선에 도움을 줄 수 있음 (기타기능II)\r\n혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-66",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II)\r\n혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-67",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II)\r\n혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-68",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있음 (기타기능II)\r\n혈행 개선에 도움을 줄 수 있음 (기타기능II)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2010-9",
+      "ingredient_name": "Lutein20%(Parry Xanmax 20%)",
+      "function_text": "“루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈건강에 도움을 줍니다.(기타 I등급)”",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2011-21",
+      "ingredient_name": "글로빈 가수분해물",
+      "function_text": "식후 혈중 중성지질 개선에 도움을 줄 수 있음(기타기능Ⅱ)",
+      "effects": [
+        "blood_triglyceride"
+      ]
+    },
+    {
+      "approval_no": "2011-22",
+      "ingredient_name": "유산균발효다시마추출물(동결건조물 및 분무건조물)",
+      "function_text": "알콜성 손상으로부터 간 보호 및 기억력 개선에 도움기억기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2011-3",
+      "ingredient_name": "당귀등추출복합물",
+      "function_text": "노인의 기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2011-6",
+      "ingredient_name": "밀전분유래 난소화성말토덱스트린",
+      "function_text": "장내 유익균의 증식과 유해균의 억제에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2012-22",
+      "ingredient_name": "마리골드 추출물(루테인 에스테르)",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2012-29",
+      "ingredient_name": "은행잎추출물",
+      "function_text": "성인의 기억력 개선에 도움을 줄 수 있음, \r\n혈행 개선에 도움을 줄 수 있음 (생리활성기능 2등급)",
+      "effects": [
+        "blood_circulation",
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2012-7",
+      "ingredient_name": "나토균배양분말",
+      "function_text": "혈소판 응집억제에 의한 혈행개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2013-22",
+      "ingredient_name": "들쭉열매추출물",
+      "function_text": "눈 건강에 도움을 줄 수 있으나 관련 인체적용시험이 미흡함(생리활성기능 3등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2013-23",
+      "ingredient_name": "루테인 지아잔틴 복합 추출물 20%",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지시켜 주어 눈 건강에 도움을 줌(생리활성기능 1등급)",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2013-6",
+      "ingredient_name": "나토균배양분말",
+      "function_text": "혈행 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2014-10",
+      "ingredient_name": "오메가-3 지방산 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-25",
+      "ingredient_name": "카카오분말",
+      "function_text": "혈관이완을 통한 혈행개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2014-27",
+      "ingredient_name": "UREX 프로바이오틱스",
+      "function_text": "유산균 증식을 통한 여성 질 건강에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "probiotic_growth_harmful_inhibition"
+      ]
+    },
+    {
+      "approval_no": "2014-29",
+      "ingredient_name": "무화과페이스트",
+      "function_text": "배변활동 원활에 도움을 줄 수 있음\r\n(생리활성기능 2등급)",
+      "effects": [
+        "bowel_movement"
+      ]
+    },
+    {
+      "approval_no": "2014-36",
+      "ingredient_name": "오메가-3 지방산 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-37",
+      "ingredient_name": "오메가-3 지방산 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-41",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-42",
+      "ingredient_name": "오메가-3 지방산 함유유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-46",
+      "ingredient_name": "비파엽추출물",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-51",
+      "ingredient_name": "구기자추출물",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-54",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음. (생리활성 기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-55",
+      "ingredient_name": "오메가-3 지방산 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2014-63",
+      "ingredient_name": "오메가-3 지방산 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음\r\n (생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2015-17",
+      "ingredient_name": "천마 등 복합추출물(HX106)",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2015-19",
+      "ingredient_name": "L-아르기닌",
+      "function_text": "혈관이완을 통해 혈행 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2015-20",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-24",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-25",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-26",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-27",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선아혀 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-29",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-30",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-31",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2015-8",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-1",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음. (생리활성 기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-12",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-13",
+      "ingredient_name": "EPA & DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-14",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-15",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-17",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-18",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-19",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-2",
+      "ingredient_name": "EPA및DHA함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음(생리활성기능 2등급)",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-20",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-3",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음.",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-4",
+      "ingredient_name": "EPA 및 DHA 함유 유지(고시형 원료)",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-5",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-6",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-7",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2016-8",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2016-9",
+      "ingredient_name": "EPA 및 DHA 함유유지",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2017-4",
+      "ingredient_name": "EPA 및 DHA 함유 유지",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2018-11",
+      "ingredient_name": "루테인지아잔틴복합추출물",
+      "function_text": "눈 건강에 도움",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2018-4",
+      "ingredient_name": "루테인지아잔틴복합추출물",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2019-18",
+      "ingredient_name": "쇠비름주정추출분말(KDC16-2)",
+      "function_text": "장건강",
+      "effects": [
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2019-27",
+      "ingredient_name": "포도과피 효소발효추출물(KL-GEFE)",
+      "function_text": "안구건조 개선에 도움을 줄 수 있음",
+      "effects": [
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2019-30",
+      "ingredient_name": "포도블루베리추출혼합분말",
+      "function_text": "신청원료 섭취를 통한 단기 및 장기 기억력 강화",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2019-8",
+      "ingredient_name": "상황버섯등 추출복합물",
+      "function_text": "혈관 건강 개선을 통해 혈행개선에 도움을 줄 수 있습니다.",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2020-13",
+      "ingredient_name": "Bimuno GOS powder",
+      "function_text": "장 내 유익균 증식 및 유해균 억제에 도움을 줄 수 있음.",
+      "effects": [
+        "probiotic_growth_harmful_inhibition",
+        "gut_health"
+      ]
+    },
+    {
+      "approval_no": "2021-21",
+      "ingredient_name": "루테인지아잔틴추출복합물",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2021-24",
+      "ingredient_name": "병풀추출분말",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소 밀도를 유지하여 눈 건강에 도움을 줄 수 있음 , 간 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2022-16",
+      "ingredient_name": "Bacillus coagulans Unique IS-2 프로바이오틱스",
+      "function_text": "배변활동 원활에 도움을 줄 수 있음",
+      "effects": [
+        "bowel_movement"
+      ]
+    },
+    {
+      "approval_no": "2022-18",
+      "ingredient_name": "감잎주정추출분말",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음.",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2022-29",
+      "ingredient_name": "루테인지아잔틴추출복합물",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2022-31",
+      "ingredient_name": "포도잎추출물(HP-01)",
+      "function_text": "혈소판 응집억제를 통한 혈행개선에 도움을 줌",
+      "effects": [
+        "blood_circulation"
+      ]
+    },
+    {
+      "approval_no": "2022-34",
+      "ingredient_name": "열처리녹차추출물",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2022-45",
+      "ingredient_name": "Bacillus coagulans Unique IS-2 프로바이오틱스",
+      "function_text": "배변활동 원활에 도움을 줄 수 있음",
+      "effects": [
+        "bowel_movement"
+      ]
+    },
+    {
+      "approval_no": "2023-27",
+      "ingredient_name": "새싹인삼추출분말",
+      "function_text": "기억력 개선에 도움을 줄 수 있음",
+      "effects": [
+        "memory"
+      ]
+    },
+    {
+      "approval_no": "2023-34",
+      "ingredient_name": "Bacillus coagulans SNZ 1969 프로바이오틱스",
+      "function_text": "배변활동 원활에 도움을 줄 수 있음",
+      "effects": [
+        "bowel_movement"
+      ]
+    },
+    {
+      "approval_no": "2023-37",
+      "ingredient_name": "루테인지아잔틴추출복합물",
+      "function_text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을줄 수 있음",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2025-8",
+      "ingredient_name": "마키베리추출물",
+      "function_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음.",
+      "effects": [
+        "macular_pigment_eye_health",
+        "dry_eye_eye_health"
+      ]
+    },
+    {
+      "approval_no": "2025-9",
+      "ingredient_name": "티아이소크라이시스루테아분말",
+      "function_text": "눈 건강에 도움",
+      "effects": [
+        "macular_pigment_eye_health"
+      ]
+    }
+  ]
+}

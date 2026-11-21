@@ -323,6 +323,77 @@ def test_genus_inside_another_approved_ingredient_holds() -> None:
     assert not _pairs(MEMORY_STATEMENT, raw, SINGLE_OWNERS)
 
 
+# headerless-attribution-v4: individually approved ingredients (Food Safety Korea I-0040, 2026-11-21).
+# Statements of each target function, owned by the target family in C003, with the target in the raw materials.
+FUNCTION_CASES: dict[EffectKey, tuple[str, dict, str]] = {
+    EffectKey.MACULAR_PIGMENT_EYE_HEALTH: (EYE_STATEMENT, MULTI_OWNERS, "마리골드꽃추출물(고시형)"),
+    EffectKey.DRY_EYE_EYE_HEALTH: (
+        "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+        {"건조한눈을개선하여눈건강에도움을줄수있음": {"group:omega3": 45}}, "EPA 및 DHA 함유 유지(고시형)",
+    ),
+    EffectKey.BLOOD_TRIGLYCERIDE: ("혈중 중성지질 개선에 도움을 줄 수 있음", SINGLE_OWNERS, "EPA 및 DHA 함유 유지(고시형)"),
+    EffectKey.BLOOD_CIRCULATION: (CIRCULATION, SINGLE_OWNERS, "EPA 및 DHA 함유 유지(고시형)"),
+    EffectKey.MEMORY: (MEMORY_STATEMENT, SINGLE_OWNERS, "EPA 및 DHA 함유 유지(고시형)"),
+    EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: (
+        "유산균 증식 및 유해균 억제에 도움을 줄 수 있음",
+        {"유산균증식및유해균억제에도움을줄수있음": {"group:probiotics": 46}}, "프로바이오틱스(고시형)",
+    ),
+    EffectKey.BOWEL_MOVEMENT: (BOWEL_STATEMENT, SINGLE_OWNERS, "프로바이오틱스(고시형)"),
+    EffectKey.GUT_HEALTH: ("장 건강에 도움을 줄 수 있음", SINGLE_OWNERS, "프로바이오틱스(고시형)"),
+}
+# A phrase only the target's notified statement has; an approval with the phrase is another owner of it.
+TARGET_ONLY_PHRASES = {
+    EffectKey.MACULAR_PIGMENT_EYE_HEALTH: "황반색소밀도",
+    EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: "유산균증식및유해균억제",
+}
+
+
+def test_function_cases_attribute_with_the_target_alone() -> None:
+    for effect, (text, owners, target) in FUNCTION_CASES.items():
+        assert {found for _, found in _pairs(text, target, owners)} == {effect}, effect
+
+
+def test_every_individually_approved_carrier_of_a_target_function_holds_it() -> None:
+    from claimledger.headerless import individual_approvals
+
+    table = individual_approvals()
+    assert table.source_id == "I-0040" and len(table.source_sha256) == 64
+    assert table.items
+    from claimledger.official_v2 import EFFECT_GROUP
+
+    for item in table.items:
+        squashed = "".join(item.function_text.split())
+        for effect in item.effects:
+            if owner_key(item.ingredient_name) == f"group:{EFFECT_GROUP[effect].value}":
+                continue  # the target itself under an approved name (EPA/DHA oils, lutein extracts, strains)
+            phrase = TARGET_ONLY_PHRASES.get(effect)
+            if phrase is not None and phrase not in squashed:
+                continue  # the statement carries the target-only phrase; this approval does not
+            text, owners, target = FUNCTION_CASES[effect]
+            pairs = _pairs(text, f"{target}, {item.ingredient_name}", owners)
+            assert effect not in {found for _, found in pairs}, (item.approval_no, item.ingredient_name, effect)
+
+
+@pytest.mark.parametrize(("effect", "entry"), [
+    # 병풀추출분말 (2021-24) is approved for 황반색소밀도: the phrase is not lutein's alone.
+    (EffectKey.MACULAR_PIGMENT_EYE_HEALTH, "병풀잎추출물분말"),
+    (EffectKey.MACULAR_PIGMENT_EYE_HEALTH, "병풀추출분말(제2021-24호)"),
+    # Notified names whose notified functions lack the effect, approved for it under I-0040.
+    (EffectKey.MEMORY, "녹차추출물(고시형)"),
+    (EffectKey.MEMORY, "L-테아닌(고시형)"),
+    (EffectKey.BLOOD_CIRCULATION, "카카오분말"),
+    (EffectKey.GUT_HEALTH, "쇠비름주정추출분말"),
+])
+def test_individually_approved_carriers_hold_their_functions(effect: EffectKey, entry: str) -> None:
+    text, owners, target = FUNCTION_CASES[effect]
+    assert effect not in {found for _, found in _pairs(text, f"{target}, {entry}", owners)}
+
+
+def test_a_colour_named_after_a_carrier_does_not_hold() -> None:
+    text, owners, target = FUNCTION_CASES[EffectKey.BLOOD_CIRCULATION]
+    assert {found for _, found in _pairs(text, f"{target}, 젤라틴, 카카오색소", owners)} == {EffectKey.BLOOD_CIRCULATION}
+
+
 # P2-F: nutrients and excipients are judged on the entry name, not on its composition in brackets.
 @pytest.mark.parametrize(("text", "raw"), [
     (CIRCULATION, "정제어유, 미지추출분말(미지추출물 50%, 덱스트린 50%)"),

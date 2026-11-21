@@ -24,6 +24,10 @@ a vitamin or mineral, an excipient, or a notified ingredient lacking the effect,
 say; individually approved entries (approval numbers) are never identified by a notified name;
 nutrients and excipients are judged on the entry name, not its bracketed composition; unbalanced
 raw lists hold; spelling variants (아르지닌, 락툴로즈) and bracket entities are normalized.
+v4 (individually approved ingredients, Food Safety Korea I-0040 of 2026-11-21): the carrier keywords
+cover every approval of a target function, including notified names approved for another function
+(녹차추출물 and 테아닌 for memory), and a target-only phrase no longer releases a statement when an
+approved owner of the same phrase may be in the raw materials (병풀추출분말 for 황반색소밀도).
 """
 
 import hashlib
@@ -50,11 +54,13 @@ from claimledger.official_v2 import (
     span_effects,
 )
 
-HEADERLESS_ATTRIBUTION_VERSION = "headerless-attribution-v3"
+HEADERLESS_ATTRIBUTION_VERSION = "headerless-attribution-v4"
 STATEMENT_OWNERS_VERSION = "official-statement-owners-v1"
+INDIVIDUAL_APPROVALS_VERSION = "individual-approvals-v1"
 MIN_COMPANIES = 2
 _OWNERS_PATH = Path(__file__).with_name("reference") / "official_statement_owners_v1.json"
 _NOTICE_PATH = Path(__file__).with_name("reference") / "notice_functions_2026_43.json"
+_INDIVIDUAL_PATH = Path(__file__).with_name("reference") / "individual_approvals_v1.json"
 # Notified items that are the target groups themselves (고시 제3. 2. 기능성 원료).
 _TARGET_NOTICE_ITEMS = frozenset({"2-26", "2-16", "2-51"})
 # Bacillus subtilis (natto) is not a probiotic; only B. coagulans (now Weizmannia) is.
@@ -101,6 +107,13 @@ _TARGET_ONLY: dict[IngredientGroup, re.Pattern[str] | None] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: re.compile(r"황반색소밀도"),
     IngredientGroup.OMEGA3: None,
 }
+# Individually approved owners of a target-only phrase (I-0040): 병풀추출분말 (2021-24) is approved for
+# "황반색소 밀도를 유지하여 눈 건강에 도움". No approval outside the probiotics has the probiotic phrase.
+_TARGET_ONLY_OTHERS: dict[IngredientGroup, re.Pattern[str] | None] = {
+    IngredientGroup.PROBIOTICS: None,
+    IngredientGroup.LUTEIN_ZEAXANTHIN: re.compile(r"병풀|센텔라|centella"),
+    IngredientGroup.OMEGA3: None,
+}
 # Effects each target family can carry, to judge it as another owner of a single-effect statement.
 _FAMILY_EFFECTS: dict[IngredientGroup, frozenset[EffectKey]] = {
     IngredientGroup.LUTEIN_ZEAXANTHIN: frozenset(
@@ -115,20 +128,31 @@ _FAMILY_EFFECTS: dict[IngredientGroup, frozenset[EffectKey]] = {
     }),
 }
 # Other carriers of a single effect under the names raw materials actually use (generous on purpose).
+# v4 adds the individually approved carriers (I-0040, individual_approvals_v1.json); a colour named after
+# one ("카카오색소") is no carrier. The tests check every approval of the table against these keywords.
 _EFFECT_CARRIERS: dict[EffectKey, re.Pattern[str] | None] = {
     EffectKey.BLOOD_CIRCULATION: re.compile(
         r"은행|홍삼|인삼|영지|불로초|감마리놀렌|보라지|달맞이꽃|까막까치밥|블랙커런트|(?<!안)나토|natto|아르기닌"
+        r"|상황버섯|카카오(?!색소)|코코아(?!색소)|칸탈로프|멜론|포도잎"
     ),
-    EffectKey.MEMORY: re.compile(r"은행|홍삼|인삼|원지|피브로인|포스파티딜세린|바코파|아쉬와간다|ashwagandha"),
+    EffectKey.MEMORY: re.compile(
+        r"은행|홍삼|인삼|원지|피브로인|포스파티딜세린|바코파|아쉬와간다|ashwagandha"
+        r"|구기자|녹차|테아닌|당귀|비파|천마|다시마|블루베리"
+    ),
     EffectKey.BLOOD_TRIGLYCERIDE: re.compile(r"난소화|저항성말토|저항성덱스트린|식이섬유|글로빈"),
     EffectKey.BOWEL_MOVEMENT: re.compile(
         r"알로에|차전자|질경이|한천|이눌린|치커리|올리고당|식이섬유|난소화|저항성말토|저항성덱스트린|폴리덱스트로스"
         r"|구아검|글루코만난|곤약|아카시아검|아라비아검|호로파|목이버섯|라피노스|락추로스|귀리|보리|밀기울|키토산"
+        r"|무화과"
     ),
-    EffectKey.GUT_HEALTH: re.compile(r"알로에|올리고당|식이섬유|이눌린|치커리"),
-    EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: re.compile(r"올리고당|이눌린|치커리|식이섬유|락추로스"),
-    EffectKey.DRY_EYE_EYE_HEALTH: re.compile(r"루테인|지아잔틴|마리골드|빌베리|감잎|헤마토코쿠스"),
-    EffectKey.MACULAR_PIGMENT_EYE_HEALTH: None,
+    EffectKey.GUT_HEALTH: re.compile(
+        r"알로에|올리고당|식이섬유|이눌린|치커리|갈락토|(?<![a-z])gos(?![a-z])|구아검|라피노스|난소화|쇠비름"
+    ),
+    EffectKey.PROBIOTIC_GROWTH_HARMFUL_INHIBITION: re.compile(
+        r"올리고당|이눌린|치커리|식이섬유|락추로스|갈락토|(?<![a-z])gos(?![a-z])|구아검|라피노스|난소화"
+    ),
+    EffectKey.DRY_EYE_EYE_HEALTH: re.compile(r"루테인|지아잔틴|마리골드|빌베리|감잎|헤마토코쿠스|마키베리|포도과피"),
+    EffectKey.MACULAR_PIGMENT_EYE_HEALTH: _TARGET_ONLY_OTHERS[IngredientGroup.LUTEIN_ZEAXANTHIN],
 }
 # An individually approved ingredient (approval number or label): never identified by a notified name.
 _APPROVAL_MARK = re.compile(r"\d{4}-\d{1,3}|개별인정|인정형|인정번호|인증번호|기능성원료인정")
@@ -227,6 +251,46 @@ def known_statement_owners() -> StatementOwners:
         source_retrieved_at=payload["source"]["retrieved_at"],
         min_companies=payload["min_companies"],
         statements=payload["statements"],
+    )
+
+
+@dataclass(frozen=True)
+class IndividualApproval:
+    approval_no: str
+    ingredient_name: str
+    function_text: str
+    effects: frozenset[EffectKey]
+
+
+@dataclass(frozen=True)
+class IndividualApprovals:
+    version: str
+    source_id: str
+    source_sha256: str
+    source_retrieved_at: str
+    items: tuple[IndividualApproval, ...]
+
+
+@cache
+def individual_approvals() -> IndividualApprovals:
+    """I-0040 approvals that carry a target function (scripts/build_individual_approvals.py)."""
+    payload = json.loads(_INDIVIDUAL_PATH.read_text(encoding="utf-8"))
+    if payload["table_version"] != INDIVIDUAL_APPROVALS_VERSION:
+        raise ValueError("individual approval table does not match this attribution rule")
+    return IndividualApprovals(
+        version=payload["table_version"],
+        source_id=payload["source"]["source_id"],
+        source_sha256=payload["source"]["sha256"],
+        source_retrieved_at=payload["source"]["retrieved_at"],
+        items=tuple(
+            IndividualApproval(
+                approval_no=item["approval_no"],
+                ingredient_name=item["ingredient_name"],
+                function_text=item["function_text"],
+                effects=frozenset(EffectKey(effect) for effect in item["effects"]),
+            )
+            for item in payload["items"]
+        ),
     )
 
 
@@ -365,7 +429,8 @@ def _owned(
         return False
     target_only = _TARGET_ONLY[group]
     if target_only is not None and target_only.search(statement):
-        return True
+        others = _TARGET_ONLY_OTHERS[group]
+        return others is None or others.search(raw) is None
     if not balanced:
         return False
     if _set_specific(effects, group):
@@ -410,19 +475,25 @@ def headerless_references() -> tuple[str, ...]:
     table = known_statement_owners()
     data = _NOTICE_PATH.read_bytes()
     notice = json.loads(data.decode("utf-8"))
+    approvals = individual_approvals()
     return (
         f"{table.version}@{table.source_sha256[:12]}",
         f"{notice['reference_version']}@{hashlib.sha256(data).hexdigest()[:12].upper()}",
+        f"{approvals.version}@{approvals.source_sha256[:12]}",
     )
 
 
 __all__ = [
     "HEADERLESS_ATTRIBUTION_VERSION",
+    "INDIVIDUAL_APPROVALS_VERSION",
     "MIN_COMPANIES",
     "STATEMENT_OWNERS_VERSION",
+    "IndividualApproval",
+    "IndividualApprovals",
     "StatementOwners",
     "headerless_effects",
     "headerless_references",
+    "individual_approvals",
     "known_statement_owners",
     "owner_key",
 ]

@@ -63,10 +63,11 @@ def test_receipt_records_each_claim_with_public_label_and_quote() -> None:
     assert receipt.verdict_counts == {"confirmed": 1, "mismatch": 2}
     assert receipt.product is not None and receipt.product.report_no == "200400000000002"
     assert receipt.rule_versions == (
-        "claim-extract-v1.14", "official-function-v2.11", "headerless-attribution-v3",
+        "claim-extract-v1.14", "official-function-v2.11", "headerless-attribution-v4",
         *headerless_references(), "claim-verdict-v1.5",
     )
     assert headerless_references()[0].startswith("official-statement-owners-v1@")
+    assert headerless_references()[-1].startswith("individual-approvals-v1@")
     assert receipt.limitations
 
 

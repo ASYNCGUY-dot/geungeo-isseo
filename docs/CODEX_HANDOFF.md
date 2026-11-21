@@ -1,18 +1,29 @@
 # Codex 인수인계 — 근거있어
 
-- 기준일: `2026-11-18 Asia/Seoul`
+- 기준일: `2026-11-21 Asia/Seoul`
 - 브랜치: 작업 브랜치 `cosmetics-data-gate`(원격 `main`과 같게 유지). 공개·시연 엔진은 `main`, 고정점은 태그 `public-engine-2026-11-18`.
   동결 브랜치 `phase-0-c003-data-gate`(발표 시점 엔진은 태그 `mvp-frozen-2026-10-07`, 이후 사용자 결정으로 옆 문장·주어·고지 문구 수정만 반영)는
   기록으로 남긴다. 동결 브랜치는 사용자 결정 없이 고치지 않는다.
-- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.14`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v3`,
-  기능성화장품 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`. 동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
+- 현재 엔진(작업 브랜치): 건강기능식품 `claim-extract-v1.14`·`claim-verdict-v1.5`·`official-function-v2.11`·`headerless-attribution-v4`
+  (`individual-approvals-v1`, 태그 `public-engine-2026-11-18`은 v3), 기능성화장품 `cosmetic-claim-v1.14`·`cosmetic-efficacy-v1.3`·`cosmetic-verdict-v1.9`.
+  동결 브랜치는 `claim-extract-v1.9`(고지 문구 변형 문형 없음).
 - 검증: 전체 재현은 `scripts/reproduce.py`(테스트와 동결 평가세트의 오인 승인 0 관문). 문장 나누기를 바꾸면 `scripts/engine_diff.py`로 만든 광고
   묶음을 이전 엔진과 대조한다(사용법은 스크립트 첫머리).
-- 사용자 조치 대기: `I-0040` 활용신청, Docker Desktop 복구(이미지 빌드·컨테이너 실행 미검증).
+- 사용자 조치 대기: `claim-eval-v7` 사람 라벨(50개 광고), Docker Desktop 복구(이미지 빌드·컨테이너 실행 미검증). `I-0040`은 2026-11-21 승인·반영.
 - 정확도 원칙: 신원·공식 출처·필수 근거가 부족하거나 충돌하면 추정하지 않고 `검증 불가`로 멈춘다. 평가 라벨은 모두 AI 라벨이다.
 - 2026-10-16 이전 인계와 9월 단계 기록은 [archive/CODEX_HANDOFF_HISTORY.md](archive/CODEX_HANDOFF_HISTORY.md)로 옮겼다(내용은 그대로).
 
-## 이번 인계 — 2026-11-18 공개 엔진 정리, 영수증의 보류 문장, 사람 라벨 준비 (Claude Code, `main` = `cosmetics-data-gate`)
+## 이번 인계 — 2026-11-21 개별인정형 원료 `I-0040` 반영 (Claude Code, `main` = `cosmetics-data-gate`)
+
+- 사용자: `I-0040` 활용신청 완료 → "응 진행해". [기록](evidence/INDIVIDUAL_APPROVALS_2026-11-21.md).
+- 수집: 기존 `FOODSAFETY_API_KEY`로 779행(이름 없는 빈 행 2개는 세고 뺌, 777행). 원본은 `build/i0040/`. 수집기는 이름 없는 행을 세고 빼도록 바꿈.
+- 대응표: `src/claimledger/reference/individual_approvals_v1.json`(대상 기능을 가진 인정 110건, `scripts/build_individual_approvals.py`).
+- 규칙 `headerless-attribution-v4`: 개별인정 원료 이름을 효과별 보류 단서로 추가. "황반색소밀도"는 병풀추출분말(2021-24)도 가져 원재료에 병풀·센텔라가
+  있으면 보류. 카카오색소는 단서 아님. 전수 검사 테스트가 대응표의 모든 인정을 보류하는지 확인.
+- C003: 헤더 없는 귀속 1,860 → 1,859개 제품(병풀이 든 루테인 1개만 바뀜, 새 귀속 0). 인정번호로 보류를 풀어 주는 규칙은 측정 이득 0이라 넣지 않음.
+- `claim-eval-v7` A부 채점은 계획대로 태그 `public-engine-2026-11-18`(v3)로 하고, `main`(v4) 결과도 함께 적는다.
+
+## 이전 인계 — 2026-11-18 공개 엔진 정리, 영수증의 보류 문장, 사람 라벨 준비 (Claude Code, `main` = `cosmetics-data-gate`)
 
 - 사용자: 신뢰도를 높이는 추천 다섯 가지에 "차례대로 해줘". [1·2번 기록](evidence/PUBLIC_ENGINE_AND_RECEIPT_2026-11-18.md),
   [5번·3·4번 계획](superpowers/plans/2026-11-18-human-labels-and-llm-context.md).
