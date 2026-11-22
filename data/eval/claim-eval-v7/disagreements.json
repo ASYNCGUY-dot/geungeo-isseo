@@ -1,0 +1,146 @@
+[
+  {
+    "case_id": "C7-038",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-042",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-042",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-052",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-052",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-061",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-061",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-068",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-073",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-073",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-074",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-074",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-080",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-080",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-096",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-096",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-099",
+    "seg_no": 1,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  },
+  {
+    "case_id": "C7-099",
+    "seg_no": 2,
+    "labels": {
+      "sonnet": "unverifiable",
+      "opus": "mismatch"
+    }
+  }
+]

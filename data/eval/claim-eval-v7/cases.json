@@ -1,0 +1,3041 @@
+{
+  "dataset_id": "claim-eval-v7",
+  "purpose": "frozen multi-sentence advertisement evaluation; AI-written advertisements for real C003 products",
+  "labeling": "Expected verdicts per sentence are blind AI labels (sonnet, opus), agreed labels; null where they disagree. They are not human or expert labels.",
+  "source_snapshot": "C003 JSONL retrieved 2026-08-27T12:42:29.050550+00:00",
+  "cases": [
+    {
+      "case_id": "C7-001",
+      "report_no": "200400200061370",
+      "scenario": "carryover",
+      "layout": "lines",
+      "ad_text": "프로바이오틱스는 원활한 배변활동에 도움을 줄 수 있습니다.\n혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            32
+          ],
+          "text": "프로바이오틱스는 원활한 배변활동에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            33,
+            58
+          ],
+          "text": "혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-002",
+      "report_no": "20040017006932",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "ad_text": "기억력 개선에 도움을 줄 수 있습니다.\n뿐만 아니라 이 제품은 혈중 중성지질 개선에도 도움을 줄 수 있어요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            21
+          ],
+          "text": "기억력 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            22,
+            60
+          ],
+          "text": "뿐만 아니라 이 제품은 혈중 중성지질 개선에도 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-003",
+      "report_no": "200400200072269",
+      "scenario": "modifier",
+      "layout": "lines",
+      "ad_text": "하루 종일 모니터 앞에 앉아 지내는 직장인분들께 권해 드립니다.\n이 제품은 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "하루 종일 모니터 앞에 앉아 지내는 직장인분들께 권해 드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            72
+          ],
+          "text": "이 제품은 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-004",
+      "report_no": "200400200023467",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "국내 GMP 인증 시설에서 꼼꼼하게 생산해 비린 맛 없이 깔끔한 소프트캡슐로 완성했습니다\n이 제품은 혈중 중성지질 개선에 도움이 될 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            49
+          ],
+          "text": "국내 GMP 인증 시설에서 꼼꼼하게 생산해 비린 맛 없이 깔끔한 소프트캡슐로 완성했습니다",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            50,
+            80
+          ],
+          "text": "이 제품은 혈중 중성지질 개선에 도움이 될 수 있습니다",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-005",
+      "report_no": "20120019007289",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "ad_text": "이 제품은 황반색소밀도 유지를 통해 눈 건강에\n도움을 줄 수 있는 건강기능식품입니다.\n드셔 보시고 만족하지 못하시면 30일 이내 전액 환불해 드립니다.\n본 제품은 의약품이 아니며 질병의 진단·치료·예방을 위한 것이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            47
+          ],
+          "text": "이 제품은 황반색소밀도 유지를 통해 눈 건강에\n도움을 줄 수 있는 건강기능식품입니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            48,
+            84
+          ],
+          "text": "드셔 보시고 만족하지 못하시면 30일 이내 전액 환불해 드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            85,
+            125
+          ],
+          "text": "본 제품은 의약품이 아니며 질병의 진단·치료·예방을 위한 것이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-006",
+      "report_no": "201200190071095",
+      "scenario": "carryover",
+      "layout": "lines",
+      "ad_text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다.\n배변활동 원활에도 도움을 줄 수 있답니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            50
+          ],
+          "text": "배변활동 원활에도 도움을 줄 수 있답니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-007",
+      "report_no": "20200016052196",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "루테인은 황반색소밀도를 개선하여 눈 건강을 좋아지게 합니다\n이 제품은 의약품이 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            32
+          ],
+          "text": "루테인은 황반색소밀도를 개선하여 눈 건강을 좋아지게 합니다",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            33,
+            48
+          ],
+          "text": "이 제품은 의약품이 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-008",
+      "report_no": "200400200141815",
+      "scenario": "carryover",
+      "layout": "inline",
+      "ad_text": "루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있습니다. 아울러 혈중 중성지질 개선에도 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            52
+          ],
+          "text": "루테인은 노화로 인해 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            53,
+            83
+          ],
+          "text": "아울러 혈중 중성지질 개선에도 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-009",
+      "report_no": "200400200061131",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "국내 자체 공장에서 만든 프리미엄 소프트젤 타입으로 작고 삼키기 편한 사이즈입니다\n오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            45
+          ],
+          "text": "국내 자체 공장에서 만든 프리미엄 소프트젤 타입으로 작고 삼키기 편한 사이즈입니다",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            46,
+            76
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-010",
+      "report_no": "200400170061353",
+      "scenario": "carryover",
+      "layout": "inline",
+      "ad_text": "프로바이오틱스는 배변활동 원활에 도움을 줄 수 있어요. 혈중 중성지질 개선에 도움이 될 수 있습니다. 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "프로바이오틱스는 배변활동 원활에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            56
+          ],
+          "text": "혈중 중성지질 개선에 도움이 될 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            57,
+            89
+          ],
+          "text": "본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-011",
+      "report_no": "202500263385",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "깔끔한 블루 패키지에 60정 한 달분이 담긴 대용량 구성입니다. 이 제품은 황반색소밀도 유지로 눈 건강을 반드시 지켜 드립니다. 건강기능식품은 의약품이 아니므로 질병의 치료를 위해 사용할 수 없습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "깔끔한 블루 패키지에 60정 한 달분이 담긴 대용량 구성입니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            71
+          ],
+          "text": "이 제품은 황반색소밀도 유지로 눈 건강을 반드시 지켜 드립니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            72,
+            112
+          ],
+          "text": "건강기능식품은 의약품이 아니므로 질병의 치료를 위해 사용할 수 없습니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-012",
+      "report_no": "201000190041542",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "이 제품은 안구건조증 증상을 완화해 건조한 눈을 촉촉하게 지켜 줍니다.\n이 제품은 질병의 예방 및 치료를 위한 의약품이 아님을 알려드립니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            39
+          ],
+          "text": "이 제품은 안구건조증 증상을 완화해 건조한 눈을 촉촉하게 지켜 줍니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            40,
+            78
+          ],
+          "text": "이 제품은 질병의 예방 및 치료를 위한 의약품이 아님을 알려드립니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-013",
+      "report_no": "20060020008855",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "식물성 캡슐을 사용해 비건 분들도 안심하고 드실 수 있습니다.\n이 제품은 황반색소밀도를 좋아지게\n해 눈 건강을 개선합니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            34
+          ],
+          "text": "식물성 캡슐을 사용해 비건 분들도 안심하고 드실 수 있습니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            35,
+            68
+          ],
+          "text": "이 제품은 황반색소밀도를 좋아지게\n해 눈 건강을 개선합니다.",
+          "expected": "mismatch"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-014",
+      "report_no": "200400200083172",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "프로바이오틱스가 배변활동을 원활하게 하는 데 도움을 줄 수 있습니다.\n※ 건강기능식품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "프로바이오틱스가 배변활동을 원활하게 하는 데 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            75
+          ],
+          "text": "※ 건강기능식품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-015",
+      "report_no": "20172880193413",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "이 제품은 황반색소밀도 유지에 도움을 주어 눈 건강에 도움을 줄 수 있습니다.\n본 상품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            43
+          ],
+          "text": "이 제품은 황반색소밀도 유지에 도움을 주어 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            44,
+            76
+          ],
+          "text": "본 상품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-016",
+      "report_no": "20040017006849",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "이 제품은 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있습니다.\n하루 1회, 1캡슐을 아침 식사 후 물과 함께 드세요.\n해당 제품은 건강기능식품이며, 질병의 예방·치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "이 제품은 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            69
+          ],
+          "text": "하루 1회, 1캡슐을 아침 식사 후 물과 함께 드세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            70,
+            111
+          ],
+          "text": "해당 제품은 건강기능식품이며, 질병의 예방·치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-017",
+      "report_no": "20190004553219",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "루테인은 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있습니다\n의약품이 아닌 건강기능식품이니 용법에 맞게 섭취하세요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            36
+          ],
+          "text": "루테인은 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            37,
+            66
+          ],
+          "text": "의약품이 아닌 건강기능식품이니 용법에 맞게 섭취하세요",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-018",
+      "report_no": "20040017006736",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "노화로 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있어요. 저녁 식사 직후 한 알씩, 미지근한 물과 함께 삼켜 주세요. 본 제품은 의약품이 아니며 질병의 예방 및 치료를 목적으로 하지 않습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            43
+          ],
+          "text": "노화로 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            44,
+            77
+          ],
+          "text": "저녁 식사 직후 한 알씩, 미지근한 물과 함께 삼켜 주세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            78,
+            119
+          ],
+          "text": "본 제품은 의약품이 아니며 질병의 예방 및 치료를 목적으로 하지 않습니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-019",
+      "report_no": "200700170352808",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "ad_text": "프로바이오틱스는 유산균 증식 및 유해균 억제에 도움을 줄 수 있어요. 이 제품은 배변활동 원활에 도움을 줄 수 있습니다. 이 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "프로바이오틱스는 유산균 증식 및 유해균 억제에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            67
+          ],
+          "text": "이 제품은 배변활동 원활에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            68,
+            84
+          ],
+          "text": "이 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-020",
+      "report_no": "20040017006473",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "오메가3는 피부 건강에 도움을 줄 수 있습니다.\n1일 2회, 1회 1캡슐씩 식후에 충분한 물과 함께 섭취하시면 됩니다.\n질병 예방·치료용 의약품이 아니라는 점 참고해 주세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3는 피부 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            66
+          ],
+          "text": "1일 2회, 1회 1캡슐씩 식후에 충분한 물과 함께 섭취하시면 됩니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            67,
+            97
+          ],
+          "text": "질병 예방·치료용 의약품이 아니라는 점 참고해 주세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-021",
+      "report_no": "200700170352514",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "ad_text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다. 오메가3는 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있습니다. 건강기능식품은 질병을 치료하는 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            68
+          ],
+          "text": "오메가3는 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            69,
+            96
+          ],
+          "text": "건강기능식품은 질병을 치료하는 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-022",
+      "report_no": "200400170211583",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "원활한 배변활동에 도움을\n줄 수 있습니다.\n하루 한 포를 물 없이 그대로 드시거나 요거트에 섞어 드셔도 좋아요.\n이 제품은 건강기능식품으로, 질병을 예방하거나 치료하는 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            23
+          ],
+          "text": "원활한 배변활동에 도움을\n줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            24,
+            62
+          ],
+          "text": "하루 한 포를 물 없이 그대로 드시거나 요거트에 섞어 드셔도 좋아요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            63,
+            104
+          ],
+          "text": "이 제품은 건강기능식품으로, 질병을 예방하거나 치료하는 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-023",
+      "report_no": "200400200072977",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "이 제품이 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있다는 점을 기억해 주세요.\n의약품이 아니라 건강기능식품입니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            46
+          ],
+          "text": "이 제품이 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있다는 점을 기억해 주세요.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            47,
+            66
+          ],
+          "text": "의약품이 아니라 건강기능식품입니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-024",
+      "report_no": "20060020008753",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "기억력을 개선하는 데 도움을 줄 수 있습니다.\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아니니 참고 바랍니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            25
+          ],
+          "text": "기억력을 개선하는 데 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            26,
+            65
+          ],
+          "text": "본 제품은 질병의 예방 및 치료를 위한 의약품이 아니니 참고 바랍니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-025",
+      "report_no": "200400200021934",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다. 이 상품은 질병을 진단하거나 치료하는 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            62
+          ],
+          "text": "이 상품은 질병을 진단하거나 치료하는 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-026",
+      "report_no": "200600200032953",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "ad_text": "오메가3가 혈행 개선에 도움을 줄 수 있습니다.\n더불어 혈중 중성지질을 개선하는 데에도 도움을 줄 수 있어요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3가 혈행 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            61
+          ],
+          "text": "더불어 혈중 중성지질을 개선하는 데에도 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-027",
+      "report_no": "200400150832449",
+      "scenario": "modifier",
+      "layout": "lines",
+      "ad_text": "스마트폰과 컴퓨터 화면을 오래 보는 40대 이상 분들께 추천합니다.\n이 제품은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.\n본 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            37
+          ],
+          "text": "스마트폰과 컴퓨터 화면을 오래 보는 40대 이상 분들께 추천합니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            38,
+            74
+          ],
+          "text": "이 제품은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            75,
+            91
+          ],
+          "text": "본 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-028",
+      "report_no": "2022002132858",
+      "scenario": "modifier",
+      "layout": "lines",
+      "ad_text": "아침마다 바쁜 직장인, 채소와 과일을 잘 챙겨 먹지 못하는 분들께 권해 드립니다.\n배변활동 원활에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            45
+          ],
+          "text": "아침마다 바쁜 직장인, 채소와 과일을 잘 챙겨 먹지 못하는 분들께 권해 드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            46,
+            68
+          ],
+          "text": "배변활동 원활에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-029",
+      "report_no": "200400200072416",
+      "scenario": "two_claims",
+      "layout": "inline",
+      "ad_text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다. 오메가3는 기억력 개선에도 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            55
+          ],
+          "text": "오메가3는 기억력 개선에도 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-030",
+      "report_no": "20040015083571",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "루테인이 황반색소밀도를 지켜 눈 건강을 개선합니다.\n[주의] 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            28
+          ],
+          "text": "루테인이 황반색소밀도를 지켜 눈 건강을 개선합니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            29,
+            66
+          ],
+          "text": "[주의] 본 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-031",
+      "report_no": "201200190071037",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "ad_text": "루테인은 황반색소밀도 유지로 눈\n건강에 도움을 줄 수 있습니다.\n혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "루테인은 황반색소밀도 유지로 눈\n건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            61
+          ],
+          "text": "혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-032",
+      "report_no": "20040020006959",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "청정 해역에서 얻은 원료를 저온 정제 공법으로 담고, 캡슐 크기를 줄여 삼키기 편하게 만들었어요\n이 제품은 혈중 중성지질 개선에 도움을 드릴 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            53
+          ],
+          "text": "청정 해역에서 얻은 원료를 저온 정제 공법으로 담고, 캡슐 크기를 줄여 삼키기 편하게 만들었어요",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            54,
+            85
+          ],
+          "text": "이 제품은 혈중 중성지질 개선에 도움을 드릴 수 있습니다",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-033",
+      "report_no": "20040020016605",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "ad_text": "오메가3는 건조한 눈 개선으로 눈\n건강에 도움을 줄 수 있습니다.\n마음에 들지 않으시면 개봉 후에도 100% 환불을 약속드립니다.\n이 제품은 질병 치료용 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            36
+          ],
+          "text": "오메가3는 건조한 눈 개선으로 눈\n건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            37,
+            72
+          ],
+          "text": "마음에 들지 않으시면 개봉 후에도 100% 환불을 약속드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            73,
+            96
+          ],
+          "text": "이 제품은 질병 치료용 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-034",
+      "report_no": "200600200081300",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "ad_text": "이 제품은 혈중 중성지질 개선에\n도움을 줄 수 있습니다.\n또한 혈행 개선에도 도움을 줄 수 있어요.\n건강기능식품은 의약품이 아니므로 질병 치료를 대신할 수 없습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "이 제품은 혈중 중성지질 개선에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            55
+          ],
+          "text": "또한 혈행 개선에도 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            56,
+            92
+          ],
+          "text": "건강기능식품은 의약품이 아니므로 질병 치료를 대신할 수 없습니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-035",
+      "report_no": "200400170061947",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다.\n하루 한 번 식사 후 물과 함께 2캡슐 드세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3는 혈행 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            53
+          ],
+          "text": "하루 한 번 식사 후 물과 함께 2캡슐 드세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-036",
+      "report_no": "2014002007317",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "이 제품은 기억력 개선에 도움이 될 수 있어요. 꼭 기억해 주세요, 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "이 제품은 기억력 개선에 도움이 될 수 있어요.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            70
+          ],
+          "text": "꼭 기억해 주세요, 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-037",
+      "report_no": "20190009483859",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "프리미엄 원료로 비린내 없이 만든 레몬향 캡슐입니다\n오메가3는 유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            28
+          ],
+          "text": "프리미엄 원료로 비린내 없이 만든 레몬향 캡슐입니다",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            29,
+            64
+          ],
+          "text": "오메가3는 유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다",
+          "expected": "mismatch"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-038",
+      "report_no": "200400200062128",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "ad_text": "루테인은 황반색소밀도 유지를 통해\n눈 건강에 도움을 줄 수 있습니다.\n섭취 후 효과를 느끼지 못하시면 구매 금액 전액을 돌려드립니다.\n본 상품은 의약품이 아닌 건강기능식품입니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "루테인은 황반색소밀도 유지를 통해\n눈 건강에 도움을 줄 수 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            74
+          ],
+          "text": "섭취 후 효과를 느끼지 못하시면 구매 금액 전액을 돌려드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            75,
+            99
+          ],
+          "text": "본 상품은 의약품이 아닌 건강기능식품입니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-039",
+      "report_no": "2016000396678",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "루테인은 황반색소밀도를 유지해 황반변성을 예방하고 눈 건강에 도움을 줍니다.\n하루 한 알 식후에 물과 함께 섭취하세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            42
+          ],
+          "text": "루테인은 황반색소밀도를 유지해 황반변성을 예방하고 눈 건강에 도움을 줍니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            43,
+            66
+          ],
+          "text": "하루 한 알 식후에 물과 함께 섭취하세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-040",
+      "report_no": "20120019007749",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "ad_text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다\n그리고 노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있어요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            81
+          ],
+          "text": "그리고 노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있어요",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-041",
+      "report_no": "201300170231",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "프로바이오틱스가 원활한 배변활동에 도움을 줄 수 있습니다. 의약품이 아니므로 질병 치료 목적으로 쓰지 마세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            32
+          ],
+          "text": "프로바이오틱스가 원활한 배변활동에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            33,
+            61
+          ],
+          "text": "의약품이 아니므로 질병 치료 목적으로 쓰지 마세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-042",
+      "report_no": "2023002721116",
+      "scenario": "modifier",
+      "layout": "inline",
+      "ad_text": "프로바이오틱스는 장 건강에 도움을 줄 수 있습니다. 시중의 일반 유산균 제품과 비교해 체감 효과가 훨씬 뛰어납니다. 질병의 예방이나 치료를 위한 의약품이 아니니, 치료가 필요하시면 전문의와 상담하세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            28
+          ],
+          "text": "프로바이오틱스는 장 건강에 도움을 줄 수 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            29,
+            64
+          ],
+          "text": "시중의 일반 유산균 제품과 비교해 체감 효과가 훨씬 뛰어납니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            65,
+            112
+          ],
+          "text": "질병의 예방이나 치료를 위한 의약품이 아니니, 치료가 필요하시면 전문의와 상담하세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-043",
+      "report_no": "200400170211110",
+      "scenario": "modifier",
+      "layout": "lines",
+      "ad_text": "외식이 잦고 식사 시간이 불규칙한 분들께 권해 드립니다.\n이 제품은 장 건강에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "외식이 잦고 식사 시간이 불규칙한 분들께 권해 드립니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            57
+          ],
+          "text": "이 제품은 장 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-044",
+      "report_no": "200400170061836",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "ad_text": "오메가3, 혈행 개선에 도움을 줄 수 있어요!\n황반색소밀도를 유지해 눈 건강에도 도움을 줄 수 있습니다\n의약품이 아닌 건강기능식품으로, 질병의 예방 및 치료 효과를 기대할 수 없습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            25
+          ],
+          "text": "오메가3, 혈행 개선에 도움을 줄 수 있어요!",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            26,
+            57
+          ],
+          "text": "황반색소밀도를 유지해 눈 건강에도 도움을 줄 수 있습니다",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            58,
+            102
+          ],
+          "text": "의약품이 아닌 건강기능식품으로, 질병의 예방 및 치료 효과를 기대할 수 없습니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-045",
+      "report_no": "200400200072434",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "오메가3가 건조한 눈을 개선해\n눈 건강이 좋아집니다.\n의약품이 아닌 건강기능식품입니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            29
+          ],
+          "text": "오메가3가 건조한 눈을 개선해\n눈 건강이 좋아집니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            30,
+            48
+          ],
+          "text": "의약품이 아닌 건강기능식품입니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-046",
+      "report_no": "202300092648",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "배변활동이 원활하도록 도움을 줄 수 있습니다\n이 제품은 질병 예방 및 치료를 위한 의약품이 아니에요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            24
+          ],
+          "text": "배변활동이 원활하도록 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            25,
+            55
+          ],
+          "text": "이 제품은 질병 예방 및 치료를 위한 의약품이 아니에요",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-047",
+      "report_no": "200400200023456",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다. 본 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            47
+          ],
+          "text": "본 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-048",
+      "report_no": "20190009105223",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "황반색소밀도 유지로 눈 건강에 도움이 될 수 있습니다\n질병의 예방 및 치료를 위한 의약품이 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            29
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움이 될 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            30,
+            55
+          ],
+          "text": "질병의 예방 및 치료를 위한 의약품이 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-049",
+      "report_no": "200400200083401",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "루테인은 면역력에 도움을 줄 수 있습니다. 건강기능식품은 의약품이 아니며 질병의 예방·치료 목적이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            23
+          ],
+          "text": "루테인은 면역력에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            24,
+            60
+          ],
+          "text": "건강기능식품은 의약품이 아니며 질병의 예방·치료 목적이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-050",
+      "report_no": "2017278206810",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "이 제품은 배변활동 원활에 도움을 줄 수 있습니다\n아침 공복에 2정을 물 한 컵과 함께 드시는 것을 권장합니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "이 제품은 배변활동 원활에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            61
+          ],
+          "text": "아침 공복에 2정을 물 한 컵과 함께 드시는 것을 권장합니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-051",
+      "report_no": "20060020008579",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "기억력 개선에 도움을\n줄 수 있습니다.\n본 제품은 의약품이 아니므로 치료용으로 사용하지 마세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            21
+          ],
+          "text": "기억력 개선에 도움을\n줄 수 있습니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            22,
+            53
+          ],
+          "text": "본 제품은 의약품이 아니므로 치료용으로 사용하지 마세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-052",
+      "report_no": "2010001600413",
+      "scenario": "modifier",
+      "layout": "inline",
+      "ad_text": "오메가3가 혈중 중성지질 개선에 도움을 줄 수 있습니다. 다른 어유 제품보다 흡수율도 효과도 한 단계 앞서 있습니다. 본 제품은 의약품이 아니며, 질병의 진단·치료·예방을 위한 것이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "오메가3가 혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            65
+          ],
+          "text": "다른 어유 제품보다 흡수율도 효과도 한 단계 앞서 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            66,
+            107
+          ],
+          "text": "본 제품은 의약품이 아니며, 질병의 진단·치료·예방을 위한 것이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-053",
+      "report_no": "200400170061780",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "프로바이오틱스가 배변활동을 개선합니다. 아침 공복에 물 한 컵과 함께 1포씩 드세요. 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            21
+          ],
+          "text": "프로바이오틱스가 배변활동을 개선합니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            22,
+            47
+          ],
+          "text": "아침 공복에 물 한 컵과 함께 1포씩 드세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            48,
+            58
+          ],
+          "text": "의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-054",
+      "report_no": "200400200023121",
+      "scenario": "carryover",
+      "layout": "inline",
+      "ad_text": "오메가3는 혈중 중성지질을 개선하는 데 도움을 줄 수 있습니다. 게다가 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있어요. 섭취 전 참고하세요: 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "오메가3는 혈중 중성지질을 개선하는 데 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            71
+          ],
+          "text": "게다가 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있어요.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            72,
+            116
+          ],
+          "text": "섭취 전 참고하세요: 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-055",
+      "report_no": "200400170061483",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "스틱형 파우치라 휴대하기 편하고 알이 작아 목 넘김이 부드럽습니다\n오메가3는 혈행을 개선해 혈전과 뇌졸중을 예방합니다\n이 제품은 의약품이 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            36
+          ],
+          "text": "스틱형 파우치라 휴대하기 편하고 알이 작아 목 넘김이 부드럽습니다",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            37,
+            65
+          ],
+          "text": "오메가3는 혈행을 개선해 혈전과 뇌졸중을 예방합니다",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            66,
+            81
+          ],
+          "text": "이 제품은 의약품이 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-056",
+      "report_no": "20172880193335",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "오메가3는 혈행을 개선하는 데 도움을 줄 수 있어요. 식사 후 하루 한 번, 두 캡슐을 물과 함께 섭취하세요. ※ 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            29
+          ],
+          "text": "오메가3는 혈행을 개선하는 데 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            30,
+            61
+          ],
+          "text": "식사 후 하루 한 번, 두 캡슐을 물과 함께 섭취하세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            62,
+            96
+          ],
+          "text": "※ 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-057",
+      "report_no": "20040017006723",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "이 제품은 건조한 눈을 개선해 안구건조증\n예방과 눈 건강에 도움을 줍니다.\n식사 후 하루 두 번 한 알씩 드세요.\n건강기능식품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            41
+          ],
+          "text": "이 제품은 건조한 눈을 개선해 안구건조증\n예방과 눈 건강에 도움을 줍니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            42,
+            63
+          ],
+          "text": "식사 후 하루 두 번 한 알씩 드세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            64,
+            82
+          ],
+          "text": "건강기능식품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-058",
+      "report_no": "200400170061277",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "오메가3는 기억력 개선에\n도움을 줄 수 있습니다.\n점심 식사 후 한 캡슐, 잊지 말고 챙겨 드세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "오메가3는 기억력 개선에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            55
+          ],
+          "text": "점심 식사 후 한 캡슐, 잊지 말고 챙겨 드세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-059",
+      "report_no": "20040020020713",
+      "scenario": "two_claims",
+      "layout": "lines",
+      "ad_text": "이 제품은 원활한 배변활동에 도움을 줄 수 있습니다.\n프로바이오틱스는 장 건강에 도움을 줄 수 있습니다.\n본 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            29
+          ],
+          "text": "이 제품은 원활한 배변활동에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            30,
+            58
+          ],
+          "text": "프로바이오틱스는 장 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            59,
+            75
+          ],
+          "text": "본 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-060",
+      "report_no": "200400200061555",
+      "scenario": "unsupported",
+      "layout": "lines",
+      "ad_text": "배변활동 원활에 도움을 드릴 수 있어요.\n본 제품은 질병의 예방 및 치료를 목적으로 하는 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            22
+          ],
+          "text": "배변활동 원활에 도움을 드릴 수 있어요.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            23,
+            60
+          ],
+          "text": "본 제품은 질병의 예방 및 치료를 목적으로 하는 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-061",
+      "report_no": "2019000948391",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "ad_text": "이 제품은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다\n꾸준히 두세 달 드시면 달라진 변화를 느끼실 거예요\n건강기능식품은 의약품이 아니라는 점을 알려 드립니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "이 제품은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            64
+          ],
+          "text": "꾸준히 두세 달 드시면 달라진 변화를 느끼실 거예요",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            65,
+            93
+          ],
+          "text": "건강기능식품은 의약품이 아니라는 점을 알려 드립니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-062",
+      "report_no": "200400200201412",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "루테인은 황반색소밀도를 유지해 눈\n건강에 도움을 줄 수 있어요.\n건강기능식품이므로 질병의 예방 및 치료를 위한 의약품으로 오인하지 마시기 바랍니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "루테인은 황반색소밀도를 유지해 눈\n건강에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            82
+          ],
+          "text": "건강기능식품이므로 질병의 예방 및 치료를 위한 의약품으로 오인하지 마시기 바랍니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-063",
+      "report_no": "20160012278132",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "한 알씩 개별 포장된 휴대용 블리스터 타입 제품입니다.\n프로바이오틱스는 혈행 개선에\n도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "한 알씩 개별 포장된 휴대용 블리스터 타입 제품입니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            60
+          ],
+          "text": "프로바이오틱스는 혈행 개선에\n도움을 줄 수 있습니다.",
+          "expected": "mismatch"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-064",
+      "report_no": "2024002809538",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "보관이 편하도록 한 포씩 개별 스틱으로 포장했고, 상큼한 요거트 맛이라 아이들도 잘 먹어요. 프로바이오틱스는 배변활동 원활에 도움을 줄 수 있습니다. 질병의 예방·치료를 위해 만든 의약품이 아니라는 점, 꼭 확인해 주세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            51
+          ],
+          "text": "보관이 편하도록 한 포씩 개별 스틱으로 포장했고, 상큼한 요거트 맛이라 아이들도 잘 먹어요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            52,
+            83
+          ],
+          "text": "프로바이오틱스는 배변활동 원활에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            84,
+            124
+          ],
+          "text": "질병의 예방·치료를 위해 만든 의약품이 아니라는 점, 꼭 확인해 주세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-065",
+      "report_no": "20060020008950",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있어요. 아침 식사 후 하루 한 번 한 알을 물과 함께 드세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            29
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            30,
+            60
+          ],
+          "text": "아침 식사 후 하루 한 번 한 알을 물과 함께 드세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-066",
+      "report_no": "20180012174404",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "배변활동을 원활하게 하는 데 도움을 줄 수 있어요.\n본 제품은 의약품이 아닌 식품이므로 질병의 예방·치료 목적으로 드시지 마세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            28
+          ],
+          "text": "배변활동을 원활하게 하는 데 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            29,
+            72
+          ],
+          "text": "본 제품은 의약품이 아닌 식품이므로 질병의 예방·치료 목적으로 드시지 마세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-067",
+      "report_no": "200700170352083",
+      "scenario": "carryover",
+      "layout": "lines_no_period",
+      "ad_text": "프로바이오틱스는 장 건강에 도움을 줄 수 있습니다\n혈중 중성지질 개선에도 도움을 줄 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "프로바이오틱스는 장 건강에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            53
+          ],
+          "text": "혈중 중성지질 개선에도 도움을 줄 수 있습니다",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-068",
+      "report_no": "20140017002270",
+      "scenario": "modifier",
+      "layout": "wrapped",
+      "ad_text": "프로바이오틱스는 장 건강에\n도움을 줄 수 있어요.\n한 달 드셔 보고 효과가 없으면 묻지도 따지지도 않고 환불해 드립니다!",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "프로바이오틱스는 장 건강에\n도움을 줄 수 있어요.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            67
+          ],
+          "text": "한 달 드셔 보고 효과가 없으면 묻지도 따지지도 않고 환불해 드립니다!",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-069",
+      "report_no": "200600200033212",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다.\n하루 두 번 식사 직후에 한 캡슐씩 드시길 권장합니다.\n이 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            62
+          ],
+          "text": "하루 두 번 식사 직후에 한 캡슐씩 드시길 권장합니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            63,
+            79
+          ],
+          "text": "이 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-070",
+      "report_no": "20190004553151",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "황반색소밀도를 유지하여 눈\n건강에 도움을 줄 수 있답니다.\n이 상품은 질병의 예방 및 치료를 위한 의약품이 아니라 건강기능식품입니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            32
+          ],
+          "text": "황반색소밀도를 유지하여 눈\n건강에 도움을 줄 수 있답니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            33,
+            74
+          ],
+          "text": "이 상품은 질병의 예방 및 치료를 위한 의약품이 아니라 건강기능식품입니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-071",
+      "report_no": "20060020008603",
+      "scenario": "honest",
+      "layout": "inline",
+      "ad_text": "엄선한 북대서양 원료로 만든 작은 연질캡슐입니다. 오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다. 건강기능식품은 질병 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "엄선한 북대서양 원료로 만든 작은 연질캡슐입니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            59
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            60,
+            88
+          ],
+          "text": "건강기능식품은 질병 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-072",
+      "report_no": "20180003915138",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "프로바이오틱스는 원활한 배변활동에\n도움을 줄 수 있어요.\n하루 한 번 편한 시간에 한 포씩, 찬물이나 미지근한 물과 함께 드세요.\n본 제품은 질병의 예방 및 치료를 위한 의약품이 아니므로, 질병이 있으시면 의사와 상의하세요.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "프로바이오틱스는 원활한 배변활동에\n도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            72
+          ],
+          "text": "하루 한 번 편한 시간에 한 포씩, 찬물이나 미지근한 물과 함께 드세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            73,
+            125
+          ],
+          "text": "본 제품은 질병의 예방 및 치료를 위한 의약품이 아니므로, 질병이 있으시면 의사와 상의하세요.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-073",
+      "report_no": "200400170211020",
+      "scenario": "modifier",
+      "layout": "inline",
+      "ad_text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다. 다른 어떤 제품보다 훨씬 뛰어난 효과를 자랑합니다. 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            59
+          ],
+          "text": "다른 어떤 제품보다 훨씬 뛰어난 효과를 자랑합니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            60,
+            70
+          ],
+          "text": "의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-074",
+      "report_no": "20040020071442",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "ad_text": "프로바이오틱스는 유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다\n꾸준히 2주만 드셔 보면 확실히 달라진 걸 느끼실 거예요\n어디까지나 건강기능식품이며, 질병의 예방이나 치료를 위한 의약품은 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "프로바이오틱스는 유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            70
+          ],
+          "text": "꾸준히 2주만 드셔 보면 확실히 달라진 걸 느끼실 거예요",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            71,
+            112
+          ],
+          "text": "어디까지나 건강기능식품이며, 질병의 예방이나 치료를 위한 의약품은 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-075",
+      "report_no": "20040017062132",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "합성 첨가물을 줄이고 상큼한 오렌지 맛을 더한 데일리 스틱입니다\n면역력에 도움을 줄 수 있습니다\n본 제품은 의약품이 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "합성 첨가물을 줄이고 상큼한 오렌지 맛을 더한 데일리 스틱입니다",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            53
+          ],
+          "text": "면역력에 도움을 줄 수 있습니다",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            54,
+            69
+          ],
+          "text": "본 제품은 의약품이 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-076",
+      "report_no": "2022002000299",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "ad_text": "이 제품은 혈중 중성지질을 개선하는 데 도움을 줄 수 있습니다\n오메가3는 혈행 개선에도 도움을 줄 수 있어요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            34
+          ],
+          "text": "이 제품은 혈중 중성지질을 개선하는 데 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            35,
+            60
+          ],
+          "text": "오메가3는 혈행 개선에도 도움을 줄 수 있어요",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-077",
+      "report_no": "200400200201090",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "ad_text": "프로바이오틱스는 유산균 증식 및 유해균\n억제에 도움을 줄 수 있습니다.\n프로바이오틱스는 장 건강에도 도움을 줄 수 있습니다.\n이 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            39
+          ],
+          "text": "프로바이오틱스는 유산균 증식 및 유해균\n억제에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            40,
+            69
+          ],
+          "text": "프로바이오틱스는 장 건강에도 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            70,
+            86
+          ],
+          "text": "이 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-078",
+      "report_no": "200400170061210",
+      "scenario": "carryover",
+      "layout": "inline",
+      "ad_text": "오메가3는 혈중 중성지질 개선에 도움이 될 수 있어요. 노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에도 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움이 될 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            80
+          ],
+          "text": "노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에도 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-079",
+      "report_no": "200400200072454",
+      "scenario": "carryover",
+      "layout": "lines",
+      "ad_text": "루테인은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.\n혈행 개선에 도움을 줄 수 있습니다.\n건강기능식품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "루테인은 황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            56
+          ],
+          "text": "혈행 개선에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            57,
+            75
+          ],
+          "text": "건강기능식품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-080",
+      "report_no": "20120019007601",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "ad_text": "이 제품은 노화로 인해 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있어요\n8주 정도 꾸준히 드시면 눈이 한결 달라진 걸 실감하실 거예요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            51
+          ],
+          "text": "이 제품은 노화로 인해 감소될 수 있는 황반색소밀도를 유지해 눈 건강에 도움을 줄 수 있어요",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            52,
+            86
+          ],
+          "text": "8주 정도 꾸준히 드시면 눈이 한결 달라진 걸 실감하실 거예요",
+          "expected": null
+        }
+      ]
+    },
+    {
+      "case_id": "C7-081",
+      "report_no": "20040020029724",
+      "scenario": "two_claims",
+      "layout": "wrapped",
+      "ad_text": "프로바이오틱스는 배변활동 원활에\n도움을 줄 수 있습니다.\n프로바이오틱스는 유산균 증식 및 유해균 억제에도 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "프로바이오틱스는 배변활동 원활에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            72
+          ],
+          "text": "프로바이오틱스는 유산균 증식 및 유해균 억제에도 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-082",
+      "report_no": "20140017002621",
+      "scenario": "honest",
+      "layout": "lines_no_period",
+      "ad_text": "동결건조 공법으로 만든 분말을 휴대하기 좋은 스틱에 담았고, 달지 않은 플레인 맛이에요\n유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            48
+          ],
+          "text": "동결건조 공법으로 만든 분말을 휴대하기 좋은 스틱에 담았고, 달지 않은 플레인 맛이에요",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            49,
+            78
+          ],
+          "text": "유산균 증식 및 유해균 억제에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-083",
+      "report_no": "200400200062015",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "황반색소밀도를 유지해 황반변성을 예방하고 눈 건강에 도움을 줍니다\n본 제품은 의약품이 아닙니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            36
+          ],
+          "text": "황반색소밀도를 유지해 황반변성을 예방하고 눈 건강에 도움을 줍니다",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            37,
+            52
+          ],
+          "text": "본 제품은 의약품이 아닙니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-084",
+      "report_no": "20040020010405",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "30년 발효 연구 노하우를 담아 작은 캡슐 하나에 정성껏 채웠습니다.\n장 건강에 도움을\n줄 수 있어요.\n이 제품은 의약품이 아니므로 질병의 예방 및 치료에 사용할 수 없습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "30년 발효 연구 노하우를 담아 작은 캡슐 하나에 정성껏 채웠습니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            57
+          ],
+          "text": "장 건강에 도움을\n줄 수 있어요.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            58,
+            98
+          ],
+          "text": "이 제품은 의약품이 아니므로 질병의 예방 및 치료에 사용할 수 없습니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-085",
+      "report_no": "200400170061521",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "ad_text": "이 제품은 건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다\n오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "이 제품은 건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            66
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-086",
+      "report_no": "20040015107825",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "독일산 원료를 식물성 캡슐에 담아 냄새 없이 깔끔하게 드실 수 있습니다. 루테인은 황반변성을 예방해 소중한 눈 건강을 지켜 줍니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            40
+          ],
+          "text": "독일산 원료를 식물성 캡슐에 담아 냄새 없이 깔끔하게 드실 수 있습니다.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            41,
+            73
+          ],
+          "text": "루테인은 황반변성을 예방해 소중한 눈 건강을 지켜 줍니다.",
+          "expected": "mismatch"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-087",
+      "report_no": "20172880193388",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "루테인은 황반색소밀도를 유지해 눈\n건강에 도움을 줄 수 있어요.\n의약품이 아닌 건강기능식품입니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "루테인은 황반색소밀도를 유지해 눈\n건강에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            54
+          ],
+          "text": "의약품이 아닌 건강기능식품입니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-088",
+      "report_no": "20040020029689",
+      "scenario": "two_claims",
+      "layout": "lines_no_period",
+      "ad_text": "프로바이오틱스, 배변활동 원활에 도움을 줄 수 있습니다\n유산균 증식과 유해균 억제에도 도움을 줄 수 있어요",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "프로바이오틱스, 배변활동 원활에 도움을 줄 수 있습니다",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            59
+          ],
+          "text": "유산균 증식과 유해균 억제에도 도움을 줄 수 있어요",
+          "expected": "confirmed"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-089",
+      "report_no": "200700170352402",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "장 건강에 도움을 줄 수 있습니다.\n이 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            19
+          ],
+          "text": "장 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            20,
+            36
+          ],
+          "text": "이 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-090",
+      "report_no": "20040020013188",
+      "scenario": "unsupported",
+      "layout": "lines_no_period",
+      "ad_text": "청정 바다에서 잡은 작은 어종만 골라 초임계 추출로 비린내를 잡았어요\n오메가3는 혈행 개선에 도움을 드릴 수 있습니다\n의약품이 아닌 건강기능식품이라는 점을 알려드립니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "청정 바다에서 잡은 작은 어종만 골라 초임계 추출로 비린내를 잡았어요",
+          "expected": "none"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            65
+          ],
+          "text": "오메가3는 혈행 개선에 도움을 드릴 수 있습니다",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            66,
+            93
+          ],
+          "text": "의약품이 아닌 건강기능식품이라는 점을 알려드립니다",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-091",
+      "report_no": "200400150832471",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "ad_text": "오메가3는 혈중 중성지질 개선에\n도움을 줄 수 있습니다.\n황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            62
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-092",
+      "report_no": "20190009105121",
+      "scenario": "unsupported",
+      "layout": "wrapped",
+      "ad_text": "이 제품이 원활한 배변활동을\n도와줄 수 있어요.\n본 제품은 건강기능식품이며 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "이 제품이 원활한 배변활동을\n도와줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            52
+          ],
+          "text": "본 제품은 건강기능식품이며 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-093",
+      "report_no": "200600200081376",
+      "scenario": "carryover",
+      "layout": "wrapped",
+      "ad_text": "오메가3는 혈행 개선에\n도움을 줄 수 있습니다.\n황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.\n본 제품은 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            26
+          ],
+          "text": "오메가3는 혈행 개선에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            27,
+            57
+          ],
+          "text": "황반색소밀도 유지로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            58,
+            74
+          ],
+          "text": "본 제품은 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-094",
+      "report_no": "20040020020689",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "이 제품은 지긋지긋한 변비를 해소해 시원하고 원활한 배변활동을 만들어 줍니다. 이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            43
+          ],
+          "text": "이 제품은 지긋지긋한 변비를 해소해 시원하고 원활한 배변활동을 만들어 줍니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            44,
+            76
+          ],
+          "text": "이 제품은 질병의 예방 및 치료를 위한 의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-095",
+      "report_no": "200400200071837",
+      "scenario": "honest",
+      "layout": "lines",
+      "ad_text": "루테인은 황반색소밀도 유지를 통해 눈 건강에 도움을 줄 수 있습니다.\n건강기능식품은 의약품이 아니며 질병 치료용이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            38
+          ],
+          "text": "루테인은 황반색소밀도 유지를 통해 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            39,
+            69
+          ],
+          "text": "건강기능식품은 의약품이 아니며 질병 치료용이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-096",
+      "report_no": "200600200081406",
+      "scenario": "modifier",
+      "layout": "lines_no_period",
+      "ad_text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있습니다\n섭취 2주 차부터 변화가 느껴지기 시작합니다",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            30
+          ],
+          "text": "건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있습니다",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            31,
+            55
+          ],
+          "text": "섭취 2주 차부터 변화가 느껴지기 시작합니다",
+          "expected": null
+        }
+      ]
+    },
+    {
+      "case_id": "C7-097",
+      "report_no": "200400150831425",
+      "scenario": "honest",
+      "layout": "wrapped",
+      "ad_text": "오메가3는 혈중 중성지질 개선에\n도움을 줄 수 있습니다.\n하루 한 번 식사와 함께 두 캡슐을 드시면 됩니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            31
+          ],
+          "text": "오메가3는 혈중 중성지질 개선에\n도움을 줄 수 있습니다.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            32,
+            60
+          ],
+          "text": "하루 한 번 식사와 함께 두 캡슐을 드시면 됩니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-098",
+      "report_no": "20120019007926",
+      "scenario": "carryover",
+      "layout": "lines",
+      "ad_text": "오메가3는 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있어요.\n또한 황반색소밀도를 유지해 눈 건강에도 도움을 줄 수 있습니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            35
+          ],
+          "text": "오메가3는 건조한 눈을 개선해 눈 건강에 도움을 줄 수 있어요.",
+          "expected": "confirmed"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            36,
+            71
+          ],
+          "text": "또한 황반색소밀도를 유지해 눈 건강에도 도움을 줄 수 있습니다.",
+          "expected": "unverifiable"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-099",
+      "report_no": "200400170061895",
+      "scenario": "modifier",
+      "layout": "inline",
+      "ad_text": "오메가3는 건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다. 시중의 다른 제품들보다 효과가 한 수 위입니다. 의약품이 아닙니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            36
+          ],
+          "text": "오메가3는 건조한 눈 개선으로 눈 건강에 도움을 줄 수 있습니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            37,
+            63
+          ],
+          "text": "시중의 다른 제품들보다 효과가 한 수 위입니다.",
+          "expected": null
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            64,
+            74
+          ],
+          "text": "의약품이 아닙니다.",
+          "expected": "none"
+        }
+      ]
+    },
+    {
+      "case_id": "C7-100",
+      "report_no": "200400150831720",
+      "scenario": "unsupported",
+      "layout": "inline",
+      "ad_text": "이 제품은 혈행 개선 효과를 100% 보장합니다. 하루 두 번 아침저녁으로 1캡슐씩 식후에 드세요. 질병의 예방과 치료를 위한 의약품이 아님을 유의하시기 바랍니다.",
+      "segments": [
+        {
+          "seg_no": 1,
+          "span": [
+            0,
+            27
+          ],
+          "text": "이 제품은 혈행 개선 효과를 100% 보장합니다.",
+          "expected": "mismatch"
+        },
+        {
+          "seg_no": 2,
+          "span": [
+            28,
+            55
+          ],
+          "text": "하루 두 번 아침저녁으로 1캡슐씩 식후에 드세요.",
+          "expected": "none"
+        },
+        {
+          "seg_no": 3,
+          "span": [
+            56,
+            91
+          ],
+          "text": "질병의 예방과 치료를 위한 의약품이 아님을 유의하시기 바랍니다.",
+          "expected": "none"
+        }
+      ]
+    }
+  ]
+}
