@@ -1,0 +1,238 @@
+case_id,seg_no,label,labeler,note
+C8-001,1,mismatch,sonnet,규칙1 황반변성 걱정 줄임=질병 예방 암시
+C8-001,2,none,sonnet,규칙0 섭취방법
+C8-001,3,none,sonnet,규칙0 의약품 아님 고지
+C8-002,1,mismatch,sonnet,대상자 앞말+옆문장 비교·확실 보장이 덧붙어 인정 수준 초과(규칙5); 애매함
+C8-002,2,mismatch,sonnet,비교·확실 보장 표현 도움 수준 초과 앞 문장 주장에 붙음
+C8-002,3,none,sonnet,규칙0 고지
+C8-003,1,mismatch,sonnet,규칙3 원문에 기억력 개선 없음
+C8-003,2,none,sonnet,규칙0 고지
+C8-004,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치 주체 확정
+C8-004,2,confirmed,sonnet,프로바이오틱스 유산균증식 유해균억제 원문 일치
+C8-004,3,none,sonnet,규칙0 고지
+C8-005,1,confirmed,sonnet,오메가3=EPA/DHA 함유유지 혈행개선 원문 일치(정제어유 표기 애매)
+C8-005,2,confirmed,sonnet,흐름상 오메가3 건조한 눈 원문 일치
+C8-005,3,none,sonnet,규칙0 고지
+C8-006,1,mismatch,sonnet,황반색소밀도는 마리골드 원문 일치이나 옆문장 비교 우월 덧붙음으로 인정 초과
+C8-006,2,mismatch,sonnet,비교 우월 단정 도움 수준 초과
+C8-006,3,none,sonnet,규칙0 고지
+C8-007,1,mismatch,sonnet,건조한 눈 원문 일치이나 옆문장 비교 효과 덧붙음 인정 초과
+C8-007,2,mismatch,sonnet,비교 우월 후기 단정 도움 수준 초과 애매
+C8-008,1,confirmed,sonnet,프로바이오틱스 배변활동 원활 원문 일치
+C8-008,2,none,sonnet,규칙0 섭취방법
+C8-009,1,confirmed,sonnet,EPA/DHA 건조한 눈 원문 일치
+C8-009,2,confirmed,sonnet,EPA/DHA 혈중 중성지질 원문 일치
+C8-010,1,unverifiable,sonnet,상황 앞말(뻑뻑해지는 요즘) 덧붙어 인정 범위 확정 불가
+C8-010,2,none,sonnet,규칙0 섭취방법
+C8-011,1,mismatch,sonnet,규칙3 원문에 루테인 황반색소밀도 없음
+C8-011,2,none,sonnet,규칙0 고지
+C8-012,1,unverifiable,sonnet,대상자 앞말(식습관이 걱정되는 분들께) 인정 범위 확정 불가
+C8-012,2,none,sonnet,규칙0 고지
+C8-013,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치
+C8-013,2,none,sonnet,규칙0 섭취방법
+C8-013,3,none,sonnet,규칙0 고지
+C8-014,1,confirmed,sonnet,오메가3 혈중 중성지질 원문 일치
+C8-014,2,confirmed,sonnet,오메가3 건조한 눈 원문 일치 주체 이어받음
+C8-014,3,none,sonnet,규칙0 고지
+C8-015,1,mismatch,sonnet,규칙3 건조한 눈 개선은 원문에 없음(황반색소밀도만)
+C8-015,2,none,sonnet,규칙0 고지
+C8-016,1,unverifiable,sonnet,상황 앞말(검사 수치 신경) 인정 범위 확정 불가
+C8-016,2,none,sonnet,규칙0 고지
+C8-017,1,none,sonnet,규칙0 제품 소개
+C8-017,2,confirmed,sonnet,프로바이오틱스 유산균증식 유해균억제 원문 일치
+C8-018,1,none,sonnet,규칙0 제품 소개
+C8-018,2,confirmed,sonnet,기억력 개선 원문 일치 제품 주어
+C8-019,1,confirmed,sonnet,오메가3 혈행 개선 원문 일치
+C8-019,2,unverifiable,sonnet,주어 없음 앞 문장은 오메가3라 루테인 기능인지 확정 불가(규칙4)
+C8-020,1,none,sonnet,규칙0 제품 소개
+C8-020,2,confirmed,sonnet,혈중 중성지질 원문 일치 꾸준히는 기간 한정 아님 애매
+C8-021,1,mismatch,sonnet,규칙3 원문에 기억력 없음
+C8-021,2,none,sonnet,규칙0 섭취방법
+C8-021,3,none,sonnet,규칙0 고지
+C8-022,1,confirmed,sonnet,오메가3 혈중 중성지질 원문 일치
+C8-022,2,confirmed,sonnet,오메가3 건조한 눈 원문 일치
+C8-023,1,confirmed,sonnet,프로바이오틱스 배변활동 원문 일치
+C8-023,2,confirmed,sonnet,원문 일치
+C8-023,3,none,sonnet,규칙0 고지
+C8-024,1,unverifiable,sonnet,하루 한 번 횟수 앞말이 붙어 인정 범위 확정 불가 애매
+C8-024,2,none,sonnet,규칙0 섭취방법
+C8-025,1,none,sonnet,규칙0 제품 소개
+C8-025,2,unverifiable,sonnet,규칙2 수면의 질은 판정 기능 8개 밖
+C8-026,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치 바쁜 일상은 수사로 봄 애매
+C8-026,2,confirmed,sonnet,원문 일치
+C8-027,1,confirmed,sonnet,원문 일치
+C8-027,2,none,sonnet,규칙0 섭취방법
+C8-028,1,none,sonnet,규칙0 제품 소개
+C8-028,2,mismatch,sonnet,규칙5 개선합니다 단정 도움 수준 초과
+C8-029,1,none,sonnet,규칙0 제품 소개
+C8-029,2,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치
+C8-029,3,none,sonnet,규칙0 고지
+C8-030,1,mismatch,sonnet,8주 기간·체감 보장 문장이 덧붙어 인정 수준 초과
+C8-030,2,mismatch,sonnet,규칙5 8주 기간과 달라진 걸 느낌 보장 도움 초과
+C8-030,3,none,sonnet,규칙0 고지
+C8-031,1,none,sonnet,규칙0 제품 소개
+C8-031,2,mismatch,sonnet,규칙3 원문에 기억력 개선 없음
+C8-031,3,none,sonnet,규칙0 고지
+C8-032,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치
+C8-032,2,confirmed,sonnet,배변활동 원활 원문 일치 주체 프로바이오틱스
+C8-033,1,confirmed,sonnet,오메가3 건조한 눈 원문 일치
+C8-033,2,none,sonnet,규칙0 고지
+C8-034,1,mismatch,sonnet,규칙3 프로바이오틱스 원문에 황반색소밀도 없음
+C8-034,2,none,sonnet,규칙0 섭취방법
+C8-035,1,mismatch,sonnet,규칙1 장염 예방 치료 질병 표현
+C8-035,2,none,sonnet,규칙0 고지
+C8-036,1,unverifiable,sonnet,중년 이후 대상자 수식이 덧붙어 인정 범위 확정 불가
+C8-036,2,none,sonnet,규칙0 고지
+C8-037,1,mismatch,sonnet,규칙5 100% 확실 보장
+C8-037,2,none,sonnet,규칙0 고지
+C8-038,1,mismatch,sonnet,규칙1 혈전 뇌졸중 예방 질병 표현
+C8-038,2,none,sonnet,규칙0 고지
+C8-039,1,none,sonnet,규칙0 제품 소개
+C8-039,2,mismatch,sonnet,규칙5 반드시 유지 보장
+C8-040,1,confirmed,sonnet,오메가3 혈중 중성지질 원문 일치
+C8-040,2,confirmed,sonnet,여기에=제품 차원 황반색소밀도 마리골드 원문 일치 애매
+C8-040,3,none,sonnet,규칙0 고지
+C8-041,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C8-041,2,unverifiable,sonnet,앞 문장의 대상자가 주장에 붙어 인정 범위 확정 불가 애매
+C8-042,1,unverifiable,sonnet,규칙2 수면의 질은 판정 기능 밖
+C8-042,2,none,sonnet,규칙0 섭취방법
+C8-042,3,none,sonnet,규칙0 고지
+C8-043,1,mismatch,sonnet,황반색소밀도 원문 일치이나 옆문장 환불 보장 덧붙어 인정 초과
+C8-043,2,mismatch,sonnet,효과 없으면 전액 환불 보장 표현
+C8-043,3,none,sonnet,규칙0 고지
+C8-044,1,none,sonnet,규칙0 제품 소개
+C8-044,2,confirmed,sonnet,제품 차원 유산균 증식 유해균 억제 원문 일치 애매(개별인정 균주)
+C8-044,3,none,sonnet,규칙0 고지
+C8-045,1,none,sonnet,규칙0 제품 소개
+C8-045,2,confirmed,sonnet,루테인=마리골드 황반색소밀도 원문 일치
+C8-045,3,none,sonnet,규칙0 고지
+C8-046,1,none,sonnet,규칙0 제품 소개
+C8-046,2,mismatch,sonnet,규칙1 황반변성 예방 질병 표현
+C8-047,1,confirmed,sonnet,배변활동 원활 원문 일치 제품 차원
+C8-047,2,confirmed,sonnet,원문 일치
+C8-048,1,none,sonnet,규칙0 제품 소개
+C8-048,2,mismatch,sonnet,규칙1 황반변성 증상 완화 질병 표현
+C8-049,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C8-049,2,unverifiable,sonnet,앞 문장의 대상자가 주장에 붙어 인정 범위 확정 불가 애매
+C8-049,3,none,sonnet,규칙0 고지
+C8-050,1,unverifiable,sonnet,대상자 앞말(앉아 일하는 분들) 인정 범위 확정 불가
+C8-050,2,unverifiable,sonnet,주어 없음 앞 문장 오메가3 흐름이라 마리골드 기능인지 확정 불가+대상자
+C8-051,1,unverifiable,sonnet,규칙2 수면의 질은 판정 기능 밖
+C8-051,2,none,sonnet,규칙0 고지
+C8-052,1,unverifiable,sonnet,조건 앞말(스마트폰 오래 보는 날) 대상자 성격 확정 불가
+C8-052,2,unverifiable,sonnet,주어 없음 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-052,3,none,sonnet,규칙0 고지
+C8-053,1,mismatch,sonnet,규칙5 혈행이 좋아집니다 단정 도움 수준 초과
+C8-053,2,none,sonnet,규칙0 섭취방법
+C8-054,1,mismatch,sonnet,규칙1 안구건조증 치료 질병 표현
+C8-054,2,none,sonnet,규칙0 고지
+C8-055,1,confirmed,sonnet,제품 차원 황반색소밀도 마리골드 원문 일치
+C8-055,2,none,sonnet,규칙0 고지
+C8-056,1,unverifiable,sonnet,조건 앞말(깜빡하는 일 잦다면) 인정 범위 확정 불가
+C8-056,2,none,sonnet,규칙0 섭취방법
+C8-056,3,none,sonnet,규칙0 고지
+C8-057,1,mismatch,sonnet,규칙5 100% 보장
+C8-057,2,none,sonnet,규칙0 고지
+C8-058,1,mismatch,sonnet,하루 한 포+옆문장 비교 효과 보장 덧붙어 인정 초과
+C8-058,2,mismatch,sonnet,비교 효과 차이 확실 보장 표현
+C8-059,1,none,sonnet,규칙0 제품 소개
+C8-059,2,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치
+C8-059,3,none,sonnet,규칙0 고지
+C8-060,1,confirmed,sonnet,원문 일치
+C8-060,2,none,sonnet,규칙0 섭취방법
+C8-060,3,none,sonnet,규칙0 고지
+C8-061,1,confirmed,sonnet,오메가3 혈중 중성지질 원문 일치
+C8-061,2,unverifiable,sonnet,주어 없음 앞 문장 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-061,3,none,sonnet,규칙0 고지
+C8-062,1,confirmed,sonnet,루테인지아잔틴 황반색소밀도 원문 일치
+C8-062,2,unverifiable,sonnet,주어 없음 앞 문장 루테인 흐름이라 EPA/DHA 기능인지 확정 불가
+C8-063,1,confirmed,sonnet,오메가3 건조한 눈 EPA/DHA 원문 일치
+C8-063,2,unverifiable,sonnet,주어 없음 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-064,1,confirmed,sonnet,제품 차원 황반색소밀도 마리골드 원문 일치
+C8-064,2,none,sonnet,규칙0 섭취방법
+C8-065,1,confirmed,sonnet,루테인=마리골드 황반색소밀도 원문 일치
+C8-065,2,none,sonnet,규칙0 섭취방법
+C8-065,3,none,sonnet,규칙0 고지
+C8-066,1,confirmed,sonnet,원문 일치
+C8-066,2,confirmed,sonnet,장 건강 원문 일치
+C8-067,1,confirmed,sonnet,루테인=마리골드 황반색소밀도 원문 일치
+C8-067,2,unverifiable,sonnet,주어 없음 루테인 흐름이라 EPA/DHA 기능인지 확정 불가
+C8-067,3,none,sonnet,규칙0 고지
+C8-068,1,mismatch,sonnet,규칙3 공식 원문에 프로바이오틱스 장 건강 기능 없음
+C8-068,2,none,sonnet,규칙0 보관·섭취방법
+C8-068,3,none,sonnet,규칙0 고지
+C8-069,1,none,sonnet,규칙0 제품 소개
+C8-069,2,mismatch,sonnet,규칙3 원문에 건조한 눈 개선 없음
+C8-070,1,mismatch,sonnet,황반색소밀도 원문 일치이나 옆문장 한 달 체감 덧붙어 인정 초과
+C8-070,2,mismatch,sonnet,기간+달라진 느낌 보장 표현
+C8-071,1,confirmed,sonnet,프로바이오틱스 배변활동 원활 원문 일치
+C8-071,2,unverifiable,sonnet,주어 없음 프로바이오틱스 흐름이라 마리골드 기능인지 확정 불가
+C8-072,1,confirmed,sonnet,오메가3 혈행 개선 원문 일치
+C8-072,2,unverifiable,sonnet,주어 없음 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-073,1,none,sonnet,규칙0 제품 소개
+C8-073,2,confirmed,sonnet,루테인=마리골드 황반색소밀도 원문 일치
+C8-074,1,confirmed,sonnet,제품 차원 황반색소밀도 원문 일치 꾸준히는 기간 한정 아님 애매
+C8-074,2,none,sonnet,규칙0 섭취방법
+C8-074,3,none,sonnet,규칙0 고지
+C8-075,1,confirmed,sonnet,루테인=마리골드 황반색소밀도 원문 일치
+C8-075,2,unverifiable,sonnet,주어 없음 루테인 흐름이라 EPA/DHA 기능인지 확정 불가
+C8-076,1,mismatch,sonnet,규칙5 눈에 띄게 좋아집니다 단정
+C8-076,2,none,sonnet,규칙0 고지
+C8-077,1,mismatch,sonnet,배변활동 원문 일치이나 옆문장 100% 환불 보장 덧붙어 인정 초과
+C8-077,2,mismatch,sonnet,100% 환불 보장 표현
+C8-077,3,none,sonnet,규칙0 고지
+C8-078,1,mismatch,sonnet,규칙5 100% 확실 개선 단정
+C8-078,2,none,sonnet,규칙0 섭취방법
+C8-078,3,none,sonnet,규칙0 고지
+C8-079,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치 제품 차원
+C8-079,2,none,sonnet,규칙0 고지
+C8-080,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치
+C8-080,2,confirmed,sonnet,제품 차원 배변활동 원활 원문 일치
+C8-081,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C8-081,2,unverifiable,sonnet,앞 문장의 대상자가 주장에 붙어 인정 범위 확정 불가 애매
+C8-082,1,mismatch,sonnet,건조한 눈 원문 일치이나 옆문장 환불 보장 덧붙어 인정 초과
+C8-082,2,mismatch,sonnet,효과 못 느끼면 전액 환불 보장
+C8-083,1,confirmed,sonnet,제품 차원 배변활동 원활 원문 일치
+C8-083,2,confirmed,sonnet,원문 일치
+C8-084,1,none,sonnet,규칙0 제품 소개
+C8-084,2,mismatch,sonnet,규칙1 안구건조증 증상 완화 질병 표현
+C8-085,1,none,sonnet,규칙0 효과 없는 대상자 권유
+C8-085,2,unverifiable,sonnet,앞 문장의 대상자가 주장에 붙어 인정 범위 확정 불가 애매
+C8-085,3,none,sonnet,규칙0 고지
+C8-086,1,mismatch,sonnet,규칙3 공식 원문에 황반색소밀도 없음
+C8-086,2,none,sonnet,규칙0 고지
+C8-087,1,confirmed,sonnet,루테인지아잔틴 황반색소밀도 원문 일치
+C8-087,2,none,sonnet,규칙0 섭취방법
+C8-088,1,unverifiable,sonnet,대상자 앞말(40대 이후 걱정되는) 인정 범위 확정 불가
+C8-088,2,none,sonnet,규칙0 섭취·보관방법
+C8-089,1,mismatch,sonnet,원문 일치이나 옆문장 3주 체감 덧붙어 인정 초과
+C8-089,2,mismatch,sonnet,기간 3주+달라짐 체감 후기 표현
+C8-090,1,confirmed,sonnet,오메가3 혈행 개선 원문 일치 꾸준히 찾는 분 많다는 인기 언급
+C8-090,2,unverifiable,sonnet,주어 없음 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-090,3,none,sonnet,규칙0 고지
+C8-091,1,confirmed,sonnet,오메가3 혈행 개선 원문 일치
+C8-091,2,unverifiable,sonnet,주어 없음 오메가3 흐름이라 마리골드 기능인지 확정 불가
+C8-091,3,none,sonnet,규칙0 고지
+C8-092,1,mismatch,sonnet,황반색소밀도 원문 일치이나 옆문장 100% 환불 약속 덧붙어 인정 초과
+C8-092,2,mismatch,sonnet,조건 없이 100% 환불 보장
+C8-092,3,none,sonnet,규칙0 고지
+C8-093,1,none,sonnet,규칙0 제품 소개
+C8-093,2,confirmed,sonnet,혈중 중성지질 원문 일치 제품 차원
+C8-093,3,none,sonnet,규칙0 고지
+C8-094,1,confirmed,sonnet,루테인 황반색소밀도 원문 일치 디지털 일상은 수사로 봄 애매
+C8-094,2,none,sonnet,규칙0 섭취방법
+C8-095,1,confirmed,sonnet,배변활동 원활 원문 일치
+C8-095,2,none,sonnet,규칙0 섭취방법
+C8-096,1,confirmed,sonnet,루테인 황반색소밀도 원문 일치
+C8-096,2,unverifiable,sonnet,주어 없음 루테인 흐름이라 EPA/DHA 기능인지 확정 불가
+C8-096,3,none,sonnet,규칙0 고지
+C8-097,1,confirmed,sonnet,혈중 중성지질 원문 일치
+C8-097,2,none,sonnet,규칙0 섭취방법
+C8-097,3,none,sonnet,규칙0 고지
+C8-098,1,confirmed,sonnet,프로바이오틱스 장 건강 원문 일치 조건은 주장 자체와 같아 애매
+C8-098,2,none,sonnet,규칙0 고지
+C8-099,1,mismatch,sonnet,원문 일치이나 옆문장 2주 변화 체감 덧붙어 인정 초과
+C8-099,2,mismatch,sonnet,기간 2주+변화 체감 후기 표현
+C8-100,1,confirmed,sonnet,황반색소밀도 마리골드 원문 일치
+C8-100,2,none,sonnet,규칙0 섭취방법
+C8-100,3,none,sonnet,규칙0 고지

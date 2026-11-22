@@ -171,6 +171,9 @@ AI 라벨을 그 이름으로 저장하지 않습니다. 그 Codex 세션은 v7 
 v7은 AI 라벨로 한 번 채점한 뒤 개발용입니다(`docs/evidence/CLAIM_EVAL_V7_2026-11-22.md`, 오인 승인 0/43·주장 아닌 문장 0/103, 재현율 21/73, 재현 실행 관문).
 B부는 Codex가 구현합니다. SDK 설치·유료 호출·키·모델은 구현 전에 사용자 승인을 받습니다. LLM은 문장을 "읽지 못함"에서 "주장 없는 맥락 문장"으로
 옮기는 일만 하고, `확인됨`은 지금처럼 규칙만 냅니다. B부는 B부를 개발하지 않는 세션이 만든 `claim-eval-v8`로 한 번 채점하며, B부 개발자는 v8 파일을 읽지 않습니다.
+`claim-eval-v8`은 2026-11-22 Claude Code 세션이 만들어 동결했습니다(`docs/evidence/CLAIM_EVAL_V8_2026-11-22.md`, 맹검 AI 라벨 223/237 일치).
+Codex는 `data/eval/claim-eval-v8/`의 어떤 파일도(manifest 포함) 열지 않고, 검색할 때도 이 폴더를 뺍니다(`rg --glob '!data/eval/claim-eval-v8/**'`).
+B부를 채점할 때까지 v8은 어떤 엔진으로도 채점하지 않으며 재현 실행에도 넣지 않습니다.
 2026-11-21 사용자가 `I-0040` 활용신청을 마쳤고("응 진행해"), 기존 `FOODSAFETY_API_KEY`로 779건을 받았습니다(`docs/evidence/INDIVIDUAL_APPROVALS_2026-11-21.md`).
 대상 기능을 가진 개별인정 110건이 `individual_approvals_v1.json`이고, `headerless-attribution-v4`가 그 원료들을 보류 단서로 씁니다.
 병풀추출분말(2021-24)도 "황반색소밀도"로 인정돼 있어 이 문구는 더 이상 루테인 전용으로 통과시키지 않습니다(원재료에 병풀·센텔라가 있으면 보류).
